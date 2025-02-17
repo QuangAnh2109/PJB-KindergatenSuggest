@@ -52,6 +52,21 @@
 			<artifactId>jakarta.servlet.jsp.jstl</artifactId>
 			<version>2.0.0</version>
 		</dependency>
+		<!--Logging-->
+		<!-- https://mvnrepository.com/artifact/log4j/log4j -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		<!-- BCrypt -->
+		<!-- https://mvnrepository.com/artifact/at.favre.lib/bcrypt -->
+		<dependency>
+			<groupId>at.favre.lib</groupId>
+			<artifactId>bcrypt</artifactId>
+			<version>0.10.2</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
