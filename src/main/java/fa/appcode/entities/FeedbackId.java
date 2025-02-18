@@ -2,11 +2,15 @@ package fa.appcode.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import java.time.Instant;
 import java.util.Objects;
 
+@Getter
+@Setter
 @Embeddable
 public class FeedbackId implements java.io.Serializable {
     private static final long serialVersionUID = 4261769430719373111L;
@@ -18,30 +22,6 @@ public class FeedbackId implements java.io.Serializable {
 
     @Column(name = "feedback_time", nullable = false)
     private Instant feedbackTime;
-
-    public Integer getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Integer accountId) {
-        this.accountId = accountId;
-    }
-
-    public Integer getSchoolId() {
-        return schoolId;
-    }
-
-    public void setSchoolId(Integer schoolId) {
-        this.schoolId = schoolId;
-    }
-
-    public Instant getFeedbackTime() {
-        return feedbackTime;
-    }
-
-    public void setFeedbackTime(Instant feedbackTime) {
-        this.feedbackTime = feedbackTime;
-    }
 
     @Override
     public boolean equals(Object o) {

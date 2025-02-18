@@ -10,35 +10,15 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "request")
-public class Request {
-    @Id
-    @Column(name = "request_id", nullable = false)
-    private Integer id;
+@Table(name = "school_facilities")
+public class SchoolFacility {
+    @EmbeddedId
+    private SchoolFacilityId id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "account_id", nullable = false)
-    private AccountInfo account;
-
+    @MapsId("schoolId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "school_id", nullable = false)
     private SchoolInfo school;
-
-    @Column(name = "full_name", nullable = false)
-    private String fullName;
-
-    @Column(name = "request_email", nullable = false)
-    private String requestEmail;
-
-    @Column(name = "request_phone", nullable = false, length = 12)
-    private String requestPhone;
-
-    @Lob
-    @Column(name = "inquiries")
-    private String inquiries;
-
-    @Column(name = "request_master_id", nullable = false)
-    private Integer requestMasterId;
 
     @ColumnDefault("(1)")
     @Column(name = "record_no", nullable = false)

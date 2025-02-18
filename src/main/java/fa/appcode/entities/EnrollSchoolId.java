@@ -11,26 +11,26 @@ import java.util.Objects;
 @Getter
 @Setter
 @Embeddable
-public class SchoolutilityId implements java.io.Serializable {
-    private static final long serialVersionUID = 2213004473313777246L;
+public class EnrollSchoolId implements java.io.Serializable {
+    private static final long serialVersionUID = 5785588693013304289L;
+    @Column(name = "account_id", nullable = false)
+    private Integer accountId;
+
     @Column(name = "school_id", nullable = false)
     private Integer schoolId;
-
-    @Column(name = "utilities_id", nullable = false)
-    private Integer utilitiesId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        SchoolutilityId entity = (SchoolutilityId) o;
-        return Objects.equals(this.utilitiesId, entity.utilitiesId) &&
+        EnrollSchoolId entity = (EnrollSchoolId) o;
+        return Objects.equals(this.accountId, entity.accountId) &&
                 Objects.equals(this.schoolId, entity.schoolId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(utilitiesId, schoolId);
+        return Objects.hash(accountId, schoolId);
     }
 
 }

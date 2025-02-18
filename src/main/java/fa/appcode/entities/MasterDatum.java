@@ -1,6 +1,9 @@
 package fa.appcode.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -10,18 +13,20 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "ward")
-public class Ward {
+@Table(name = "master_data")
+public class MasterDatum {
     @Id
-    @Column(name = "ward_id", nullable = false)
+    @Column(name = "master_id", nullable = false)
     private Integer id;
 
-    @Column(name = "ward_name", nullable = false)
-    private String wardName;
+    @Column(name = "type_name", nullable = false, length = 50)
+    private String typeName;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "district_id", nullable = false)
-    private District district;
+    @Column(name = "type_key", nullable = false)
+    private Integer typeKey;
+
+    @Column(name = "type_value", nullable = false)
+    private String typeValue;
 
     @ColumnDefault("(1)")
     @Column(name = "record_no", nullable = false)
