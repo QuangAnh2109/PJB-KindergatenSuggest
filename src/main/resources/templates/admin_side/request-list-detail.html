@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- Mirrored from coderthemes.com/simple/layouts/vertical/forms-general.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 28 Aug 2024 07:26:06 GMT -->
+<head>
+    <meta charset="utf-8" />
+    <title>Dashboard | Simple - Responsive Bootstrap 4 Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Responsive bootstrap 4 admin template" name="description" />
+    <meta content="Coderthemes" name="author" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" th:href="@{/admin_side/images/favicon.ico}">
+    <!-- App css -->
+    <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css" id="bootstrap-stylesheet" />
+    <link th:href="@{/admin_side/css/icons.min.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css" id="app-stylesheet" />
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
+    <style>
+        .form-horizontal label{
+            color: buttontext;
+        }
+        .logout-container {
+            display: flex;
+            align-items: center; /* Căn giữa theo chiều dọc */
+            justify-content: flex-end; /* Đẩy sang phải */
+            flex-grow: 1; /* Cho phép chiếm không gian còn lại để đẩy sang phải */
+            padding-right: 20px; /* Khoảng cách với mép phải */
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            color: #3498db; /* Màu xanh */
+            margin-top: 20px;
+        }
+
+        .logout-btn i {
+            font-size: 22px;
+            color: #333; /* Màu tối hơn */
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- Begin page -->
+<div id="wrapper">
+    <!-- Topbar Start -->
+    <div class="navbar-custom">
+        <!-- LOGO -->
+        <div class="logo-box">
+            <a href="index.html" class="logo text-center logo-dark">
+                        <span class="logo-lg">
+                            <img th:src="@{/admin_side/images/logo-dark.png}" alt="" height="26">
+                            <!-- <span class="logo-lg-text-dark">Simple</span> -->
+                        </span>
+            </a>
+        </div>
+        <div class="logout-container">
+            <a href="#" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+    <!-- end Topbar --> <!-- ========== Left Sidebar Start ========== -->
+    <div class="left-side-menu">
+        <div id="sidebar-menu">
+            <ul class="metismenu" id="side-menu">
+                <li>
+                    <a href="index.html">
+                        <i class="ti-home"></i>
+                        <span> School Managment </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html">
+                        <i class="fa-regular fa-user"></i>
+                        <span> User Management </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html">
+                        <i class="fa-regular fa-bell"></i>
+                        <span> Reminder </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html">
+                        <i class="fa-solid fa-user-tie"></i>
+                        <span> Parent Management </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html">
+                        <i class="fa-regular fa-clipboard"></i>
+                        <span> Request Managment </span>
+                    </a>
+                </li>
+        </div>
+        <!-- End Sidebar -->
+
+        <div class="clearfix"></div>
+
+
+    </div>
+    <!-- Left Sidebar End -->
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+
+    <div class="content-page">
+        <div class="content">
+
+            <!-- Start container-fluid -->
+            <div class="container-fluid">
+
+                <!-- start  -->
+                <div class="row">
+                    <div class="col-12">
+                        <div>
+                            <h3 style="color: buttontext;">Request details</h3>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- end row -->
+
+                <div class="row justify-content-center">
+                    <div class="col-lg-8"> <!-- Tăng kích thước cột để input dài hơn -->
+                        <form class="form-horizontal" style="margin-top: 50px">
+                            <div class="mb-3 row">
+                                <label class="col-md-4 col-form-label fw-bold text-end">Full Name</label>
+                                <div class="col-md-7">
+                                    <input type="text" class="form-control" value="Nguyễn Khắc Hoàn" readonly>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label class="col-md-4 col-form-label fw-bold text-end">Email</label>
+                                <div class="col-md-7">
+                                    <input type="email" class="form-control" value="hoankh@gmail.com" readonly>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label class="col-md-4 col-form-label fw-bold text-end">Phone No.</label>
+                                <div class="col-md-7">
+                                    <input type="text" class="form-control" value="012345678" readonly>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label class="col-md-4 col-form-label fw-bold text-end">Address</label>
+                                <div class="col-md-7">
+                                    <input type="text" class="form-control" value="Hà Đông, Hà Nội" readonly>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label class="col-md-4 col-form-label fw-bold text-end">Requested school</label>
+                                <div class="col-md-7">
+                                    <input type="text" class="form-control" value="Ban Mai Xanh" readonly>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label class="col-md-4 col-form-label fw-bold text-end">Inquires</label>
+                                <div class="col-md-7">
+                                    <textarea class="form-control" rows="3" readonly>How can I enroll for my kid to this school?</textarea>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-primary">Mark it resolved</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+                <!-- end container-fluid -->
+
+
+
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                2017 - 2020 &copy; Simple theme by <a href="#">Coderthemes</a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+            <!-- end content -->
+
+        </div>
+        <!-- END content-page -->
+
+    </div>
+    <!-- END wrapper -->
+
+
+    <!-- Right Sidebar -->
+    <div class="right-bar">
+        <div class="rightbar-title">
+            <a href="javascript:void(0);" class="right-bar-toggle float-right">
+                <i class="mdi mdi-close"></i>
+            </a>
+            <h5 class="font-16 m-0 text-white">Theme Customizer</h5>
+        </div>
+        <div class="slimscroll-menu">
+
+            <div class="p-4">
+                <div class="alert alert-warning" role="alert">
+                    <strong>Customize </strong> the overall color scheme, layout, etc.
+                </div>
+                <div class="mb-2">
+                    <img src="assets/images/layouts/light.png" class="img-fluid img-thumbnail" alt="">
+                </div>
+                <div class="custom-control custom-switch mb-3">
+                    <input type="checkbox" class="custom-control-input theme-choice" id="light-mode-switch" checked />
+                    <label class="custom-control-label" for="light-mode-switch">Light Mode</label>
+                </div>
+
+                <div class="mb-2">
+                    <img src="assets/images/layouts/dark.png" class="img-fluid img-thumbnail" alt="">
+                </div>
+                <div class="custom-control custom-switch mb-3">
+                    <input type="checkbox" class="custom-control-input theme-choice" id="dark-mode-switch" data-bsStyle="assets/css/bootstrap-dark.min.css"
+                           data-appStyle="assets/css/app-dark.min.css" />
+                    <label class="custom-control-label" for="dark-mode-switch">Dark Mode</label>
+                </div>
+
+                <div class="mb-2">
+                    <img src="assets/images/layouts/rtl.png" class="img-fluid img-thumbnail" alt="">
+                </div>
+                <div class="custom-control custom-switch mb-5">
+                    <input type="checkbox" class="custom-control-input theme-choice" id="rtl-mode-switch" data-appStyle="assets/css/app-rtl.min.css" />
+                    <label class="custom-control-label" for="rtl-mode-switch">RTL Mode</label>
+                </div>
+
+                <a href="https://1.envato.market/EK71X" class="btn btn-danger btn-block mt-3" target="_blank"><i class="mdi mdi-download mr-1"></i> Download Now</a>
+            </div>
+        </div> <!-- end slimscroll-menu-->
+    </div>
+    <!-- /Right-bar -->
+
+    <!-- Right bar overlay-->
+    <div class="rightbar-overlay"></div>
+
+
+
+    <!-- Vendor js -->
+    <script src="assets/js/vendor.min.js"></script>
+
+    <!-- App js -->
+    <script src="assets/js/app.min.js"></script>
+
+</body>
+
+
+<!-- Mirrored from coderthemes.com/simple/layouts/vertical/forms-general.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 28 Aug 2024 07:26:06 GMT -->
+</html>

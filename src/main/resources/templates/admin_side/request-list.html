@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+<!-- Mirrored from coderthemes.com/simple/layouts/vertical/tables-basic.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 28 Aug 2024 07:26:12 GMT -->
+<head>
+    <meta charset="utf-8" />
+    <title>Dashboard | Simple - Responsive Bootstrap 4 Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Responsive bootstrap 4 admin template" name="description" />
+    <meta content="Coderthemes" name="author" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" th:href="@{/admin_side/images/favicon.ico}">
+    <!-- App css -->
+    <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css" id="bootstrap-stylesheet" />
+    <link th:href="@{/admin_side/css/icons.min.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css" id="app-stylesheet" />
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
+    <style>
+        .btn-closed {
+            background-color: #E6FAE6; /* Màu xanh nhạt */
+            color: #28a745; /* Màu chữ xanh lá */
+            border: 2px solid #555; /* Viền màu xám đậm */
+            border-radius: 20px; /* Bo góc tròn */
+            padding: 5px 15px;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-closed:hover {
+            border-color: #333; /* Viền tối hơn khi hover */
+            background-color: #D4F5D4; /* Hiệu ứng nhẹ khi hover */
+        }
+        .app-search {
+            display: flex;
+            justify-content: flex-end; /* Căn trái */
+        }
+
+        .app-search-box {
+            width: 100%;
+            max-width: 300px; /* Giới hạn chiều rộng */
+        }
+
+        .app-search .form-control {
+            border-radius: 20px; /* Viền tròn */
+            border: 2px solid #ccc;
+            padding: 10px 15px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .app-search .form-control:focus {
+            border-color: #28a745; /* Viền xanh khi focus */
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+        }
+
+        .app-search .btn {
+            background-color: #28a745;
+            color: white;
+            border-radius: 20px; /* Nút tìm kiếm cũng bo tròn */
+            padding: 8px 15px;
+            border: none;
+        }
+
+        .app-search .btn:hover {
+            background-color: #218838;
+        }
+        .head th {
+            color: buttontext; /* Hoặc dùng số: 100 - 900 */
+        }
+        .pagination-container {
+            margin-top: 20px; /* Tạo khoảng cách phía trên */
+        }
+        .logout-container {
+            display: flex;
+            align-items: center; /* Căn giữa theo chiều dọc */
+            justify-content: flex-end; /* Đẩy sang phải */
+            flex-grow: 1; /* Cho phép chiếm không gian còn lại để đẩy sang phải */
+            padding-right: 20px; /* Khoảng cách với mép phải */
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            color: #3498db; /* Màu xanh */
+            margin-top:20px;
+        }
+
+        .logout-btn i {
+            font-size: 22px;
+            color: #333; /* Màu tối hơn */
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- Begin page -->
+<div id="wrapper">
+
+
+    <!-- Topbar Start -->
+    <div class="navbar-custom">
+        <!-- LOGO -->
+        <div class="logo-box">
+            <a href="index.html" class="logo text-center logo-dark">
+                        <span class="logo-lg">
+                            <img th:src="@{/admin_side/images/logo-dark.png}" alt="" height="26">
+                            <!-- <span class="logo-lg-text-dark">Simple</span> -->
+                        </span>
+            </a>
+        </div>
+        <div class="logout-container">
+            <a href="#" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+    <!-- end Topbar --> <!-- ========== Left Sidebar Start ========== -->
+    <div class="left-side-menu">
+        <!--- Sidemenu -->
+        <div id="sidebar-menu">
+            <ul class="metismenu" id="side-menu">
+                <li>
+                    <a href="index.html">
+                        <i class="ti-home"></i>
+                        <span> School Managment </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html">
+                        <i class="fa-regular fa-user"></i>
+                        <span> User Management </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html">
+                        <i class="fa-regular fa-bell"></i>
+                        <span> Reminder </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html">
+                        <i class="fa-solid fa-user-tie"></i>
+                        <span> Parent Management </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html">
+                        <i class="fa-regular fa-clipboard"></i>
+                        <span> Request Managment </span>
+                    </a>
+                </li>
+        </div>
+    </div>
+    <!-- End Sidebar -->
+    <div class="content-page">
+        <div class="content">
+            <div class="container-fluid">
+                <!-- start  -->
+                <div class="row">
+                    <div class="col-12">
+                        <div>
+                            <form class="app-search">
+                                <div class="app-search-box">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Search...">
+                                        <div class="input-group-append">
+                                            <button class="btn" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- end row -->
+
+                <!-- row -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="mt-5 mt-lg-0">
+                            <h3 style="color: buttontext;">Request List</h3>
+                            <div class="table-responsive">
+                                <table class="table table-striped m-0">
+                                    <thead class="head">
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Email</th>
+                                        <th>Phone No.</th>
+                                        <th>Request Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>Mark</td>
+                                        <td>Otto</td>
+                                        <td><button class="btn btn-closed">Closed</button></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end row -->
+            </div>
+            <!-- end container-fluid -->
+            <nav aria-label="Page navigation example" class="pagination-container">
+                <ul class="pagination justify-content-center"> <!-- Căn giữa -->
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+
+
+            <!-- Footer Start -->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            2017 - 2020 &copy; Simple theme by <a href="#">Coderthemes</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- end Footer -->
+
+        </div>
+        <!-- end content -->
+
+    </div>
+    <!-- END content-page -->
+
+</div>
+<!-- END wrapper -->
+
+
+<!-- Right Sidebar -->
+<div class="right-bar">
+    <div class="rightbar-title">
+        <a href="javascript:void(0);" class="right-bar-toggle float-right">
+            <i class="mdi mdi-close"></i>
+        </a>
+        <h5 class="font-16 m-0 text-white">Theme Customizer</h5>
+    </div>
+    <div class="slimscroll-menu">
+
+        <div class="p-4">
+            <div class="alert alert-warning" role="alert">
+                <strong>Customize </strong> the overall color scheme, layout, etc.
+            </div>
+            <div class="mb-2">
+                <img th:src="@{/admin_side/images/layouts/light.png}" class="img-fluid img-thumbnail" alt="">
+            </div>
+            <div class="custom-control custom-switch mb-3">
+                <input type="checkbox" class="custom-control-input theme-choice" id="light-mode-switch" checked />
+                <label class="custom-control-label" for="light-mode-switch">Light Mode</label>
+            </div>
+
+            <div class="mb-2">
+                <img th:src="@{/admin_side/images/layouts/dark.png}" class="img-fluid img-thumbnail" alt="">
+            </div>
+            <div class="custom-control custom-switch mb-3">
+                <input type="checkbox" class="custom-control-input theme-choice" id="dark-mode-switch" data-bsStyle="assets/css/bootstrap-dark.min.css"
+                       data-appStyle="assets/css/app-dark.min.css" />
+                <label class="custom-control-label" for="dark-mode-switch">Dark Mode</label>
+            </div>
+
+            <div class="mb-2">
+                <img th:src="@{/admin_side/images/layouts/rtl.png}" class="img-fluid img-thumbnail" alt="">
+            </div>
+            <div class="custom-control custom-switch mb-5">
+                <input type="checkbox" class="custom-control-input theme-choice" id="rtl-mode-switch" data-appStyle="assets/css/app-rtl.min.css" />
+                <label class="custom-control-label" for="rtl-mode-switch">RTL Mode</label>
+            </div>
+
+            <a href="https://1.envato.market/EK71X" class="btn btn-danger btn-block mt-3" target="_blank"><i class="mdi mdi-download mr-1"></i> Download Now</a>
+        </div>
+    </div> <!-- end slimscroll-menu-->
+</div>
+<!-- /Right-bar -->
+
+<!-- Right bar overlay-->
+<div class="rightbar-overlay"></div>
+
+
+
+<!-- Vendor js -->
+<script th:src="@{/admin_side/js/vendor.min.js}"></script>
+
+<!-- App js -->
+<script th:src="@{/admin_side/js/app.min.js}"></script>
+
+</body>
+
+
+<!-- Mirrored from coderthemes.com/simple/layouts/vertical/tables-basic.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 28 Aug 2024 07:26:12 GMT -->
+</html>
