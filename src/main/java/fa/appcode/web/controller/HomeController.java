@@ -7,8 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/")
 public class HomeController {
-    @GetMapping("home")
+    @GetMapping("/")
     public String home() {
-        return "index";
+        return "user_side/index";
+    }
+    @GetMapping("/admin/home")
+    public String admin_home() {
+        return "admin_side/index";
     }
 }
