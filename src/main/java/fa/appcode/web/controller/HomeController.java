@@ -15,4 +15,5 @@ public class HomeController {
     public String admin_home() {
         return "admin_side/index";
     }
+
 }
