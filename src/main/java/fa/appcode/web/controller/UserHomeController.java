@@ -1,18 +1,18 @@
 package fa.appcode.web.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Controller
+import java.security.Principal;
+
 @RequestMapping("/")
-public class HomeController {
-    @GetMapping("/")
-    public String home() {
+@Controller
+public class UserHomeController {
+    @GetMapping()
+    public String homepage(Principal principal, Model model){
+        model.addAttribute("user", principal);
         return "user_side/index";
-    }
-    @GetMapping("/admin/home")
-    public String admin_home() {
-        return "admin_side/index";
     }
 }
