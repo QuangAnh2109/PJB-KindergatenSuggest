@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Luv2code Company HomePage</title>
+</head>
+<body>
+<h2>luv2code Company Home Page -- yohohoho</h2>
+<hr>
+Welcome to Luv2code Company Home Page!
+<hr>
+<!--display username and role-->
+<p>
+    User: <span sec:authentication="principal.getUsername()"></span>
+    <br>
+    Role: <span sec:authentication="principal.authorities"></span>
+</p>
+<div sec:authorize="hasAuthority('School owner')">
+
+    <!-- Add a link to point to /leaders for manager-->
+    <p>
+        <a th:href="@{/school-owner}">Leadership Meeting</a>
+        (Only for Manager)
+    </p>
+</div>
+
+
+<hr>
+<div sec:authorize="hasAuthority('Admin')">
+    <!-- Add a link to point to /systems for admin-->
+    <p>
+        <a th:href="@{/admin}">It System Settings</a>
+        (Only for Admin)
+    </p>
+</div>
+
+<form action="#" th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout"/>
+</form>
+
+</body>
+</html>
