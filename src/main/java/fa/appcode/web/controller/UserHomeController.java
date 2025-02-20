@@ -17,19 +17,14 @@ public class UserHomeController {
         return "user_side/school-owner";
     }
 
-    @GetMapping("/parent/home")
+    @GetMapping("/home")
     public String parentHome() {
-        return "user_side/parent-home";
+        return "user_side/index";
     }
 
     @GetMapping("/homeless")
     public String defaultHome1() {
         return "user_side/admin-home";
-    }
-
-    @GetMapping("/home")
-    public String defaultHome() {
-        return "admin_side/index";
     }
 
     @GetMapping("/access-denied")
@@ -53,5 +48,3 @@ public class UserHomeController {
         return "user_side/reset-password";
     }
 }
-
-

@@ -19,14 +19,14 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         for (GrantedAuthority authority : authorities) {
             String role = authority.getAuthority();
             if (role.equals("Admin")) {
-                redirectUrl = "/admin/home";
+                redirectUrl = "/school-owner/home";
                 break;
             }else if (role.equals("School owner")) {
                 redirectUrl = "/school-owner/home";
                 break;
             }
             else if (role.equals("Parent")) {
-                redirectUrl = "/parent/home";
+                redirectUrl = "/home";
                 break;
             }
         }
