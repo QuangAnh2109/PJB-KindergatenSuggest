@@ -16,11 +16,16 @@ public class HomeController {
         return "admin_side/index";
     }
     @GetMapping("/admin/request-list")
-    public String admin_home1() {
+    public String request_list() {
         return "admin_side/request-list";
     }
     @GetMapping("/admin/request-list-detail")
-    public String admin_home2() {
+    public String request_list_detail() {
         return "admin_side/request-list-detail";
+    }
+
+    @GetMapping("/admin/request-reminder")
+    public String request_reminder() {
+        return "admin_side/request-reminder";
     }
 }
