@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head>
+  <title>Upload Ảnh</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+    img { max-width: 400px; margin-top: 20px; border-radius: 10px; }
+  </style>
+</head>
+<body>
+
+<h2></h2>
+<form action="/upload" method="post" enctype="multipart/form-data">
+  <input type="file" name="file" required>
+  <button type="submit">Upload</button>
+</form>
+
+
+<div th:if="${imageUrl}">
+  <h3>Image:</h3>
+  <img th:src="${imageUrl}" alt="Uploaded Image">
+</div>
+
+<div th:if="${error}" style="color: red;">
+  <p th:text="${error}"></p>
+</div>
+
+</body>
+</html>
