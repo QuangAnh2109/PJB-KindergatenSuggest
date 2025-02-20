@@ -717,9 +717,7 @@
                             <td>School Introduction</td>
                             <td>
                                 <div id="editor">
-                                    <p>Hello World!</p>
-                                    <p>Some initial <strong>bold</strong> text</p>
-                                    <p><br /></p>
+                                    <div th:utext="${schoolIntroduction}"></div>
                                 </div>
                             </td>
                         </tr>
@@ -732,6 +730,12 @@
                     <input type="submit" class="btn btn-primary" style="background-color: white;color: #458bc4;" value="Cancel"></button>
                     <input type="submit" class="btn btn-primary" value="Save draft"></button>
                     <input type="submit" class="btn btn-primary" value="Submit"></button>
+                    <input type="submit" class="btn btn-primary" style="background-color: red;" value="Delete"></button>
+                    <input type="submit" class="btn btn-primary" value="Edit"></button>
+                    <input type="submit" class="btn btn-primary" style="background-color: red;" value="Reject"></button>
+                    <input type="submit" class="btn btn-primary" value="Approve"></button>
+                    <input type="submit" class="btn btn-primary" value="Publish"></button>
+                    <input type="submit" class="btn btn-primary" style="background-color: white;color: #458bc4;" value="Unpublish"></button>
                 </form>
 
                 <!-- end row -->
