@@ -1,5 +1,6 @@
 package fa.appcode.entities;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @Table(name = "account_info")
 public class AccountInfo {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id", nullable = false)
     private Integer id;
 
@@ -32,7 +34,8 @@ public class AccountInfo {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "address")
+    @Nullable
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -69,7 +72,7 @@ public class AccountInfo {
     @Column(name = "update_time", nullable = false)
     private Instant updateTime;
 
-    @Column(name = "delete_flg", nullable = false)
+    @Column(name = "delete_flg", nullable = true)
     private Boolean deleteFlg = false;
 
 }

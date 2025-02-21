@@ -17,70 +17,7 @@
 <div id="wrapper">
   <div id="de-preloader"></div>
   <!-- header begin -->
-  <header class="transparent scroll-light has-topbar">
-    <div id="topbar" class="topbar-dark text-light">
-      <div class="container">
-        <div class="topbar-left xs-hide">
-          <div class="topbar-widget">
-            <div class="topbar-widget"><a href="#"><i class="fa fa-phone"></i>+208 333 9296</a></div>
-            <div class="topbar-widget"><a href="#"><i class="fa fa-envelope"></i>contact@rentaly.com</a></div>
-            <div class="topbar-widget"><a href="#"><i class="fa fa-clock-o"></i>Mon - Fri 08.00 - 18.00</a></div>
-          </div>
-        </div>
-
-        <div class="topbar-right">
-          <div class="social-icons">
-            <a href="#"><i class="fa fa-facebook fa-lg"></i></a>
-            <a href="#"><i class="fa fa-twitter fa-lg"></i></a>
-            <a href="#"><i class="fa fa-youtube fa-lg"></i></a>
-            <a href="#"><i class="fa fa-pinterest fa-lg"></i></a>
-            <a href="#"><i class="fa fa-instagram fa-lg"></i></a>
-          </div>
-        </div>
-        <div class="clearfix"></div>
-      </div>
-    </div>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="de-flex sm-pt10">
-            <div class="de-flex-col">
-              <div class="de-flex-col">
-                <!-- logo begin -->
-                <div id="logo">
-                  <a th:href="@{/home}">
-                    <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
-                    <img class="logo-2" src="/user_side/images/logo1.png" alt="">
-                  </a>
-                </div>
-                <!-- logo close -->
-              </div>
-            </div>
-            <div class="de-flex-col header-col-mid">
-              <ul id="mainmenu">
-                <li><a class="menu-item" href="index.html">School Search</a>
-                </li>
-                <li><a class="menu-item" href="index.html">Community</a>
-                </li>
-                <li><a class="menu-item" href="index.html">About Us</a>
-                </li>
-              </ul>
-            </div>
-            <div class="de-flex-col">
-              <div class="menu_side_area" >
-                <a th:href="@{/showMyLoginPage}" class="btn-main"> Login</a>
-                <span class="menu-btn"></span>
-              </div>
-              <div class="menu_side_area">
-                <a th:href="@{/register}" class="btn-main">Sign Up</a>
-                <span class="menu-btn"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
+  <div th:replace="user_side/header :: header"></div>
   <section id="subheader" class="jarallax text-light">
     <img th:src="@{user_side/images/background/subheader.jpg}" class="jarallax-img" alt="">
     <div class="center-y relative text-center">
@@ -98,38 +35,50 @@
       <div class="row">
         <div class="col-md-8 offset-md-2">
           <h3>Create a new user</h3>
-          <form th:action="@{/register}" method="post">
+          <form th:action="@{/register}" th:object="${accountInfo}" method="post">
             <div class="row">
               <div class="col-md-12">
                 <div class="field-set">
                   <label>Full Name:</label>
-                  <input type="text"  class="form-control" placeholder="Enter your full name">
+                  <input type="text" th:field="*{fullName}" class="form-control" placeholder="Enter your full name">
+                  <span th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" class="text-danger"></span>
                 </div>
               </div>
+
               <div class="col-md-12">
                 <div class="field-set">
                   <label>Email Address:</label>
-                  <input type="email"  class="form-control" placeholder="info@xyz.com">
+                  <input type="email" th:field="*{email}" class="form-control" placeholder="info@xyz.com">
+                  <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></span>
+                  <span th:if="${emailError}" th:text="${emailError}" class="text-danger"></span>
                 </div>
               </div>
+
               <div class="col-md-12">
                 <div class="field-set">
                   <label>Mobile No.:</label>
-                  <input type="text"  class="form-control" placeholder="099999999">
+                  <input type="text" th:field="*{phone}" class="form-control" placeholder="099999999">
+                  <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger"></span>
+                  <span th:if="${phoneError}" th:text="${phoneError}" class="text-danger"></span>
                 </div>
               </div>
+
               <div class="col-md-12">
                 <div class="field-set">
                   <label>Password:</label>
-                  <input type="password"  class="form-control" placeholder="xxxxxxxxxxxx">
+                  <input type="password" th:field="*{password}" class="form-control" placeholder="xxxxxxxxxxxx">
+                  <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></span>
+                  <span th:if="${passwordError}" th:text="${passwordError}" class="text-danger"></span>
                 </div>
               </div>
+
               <div class="col-md-12">
                 <div class="field-set">
                   <label>Confirm Password:</label>
                   <input type="password" name="repassword" class="form-control" placeholder="xxxxxxxxxxxx">
                 </div>
               </div>
+
               <div class="col-md-12 d-flex justify-content-center">
                 <div class="col-md-4 mb60 d-flex gap-4 justify-content-center">
                   <input type="reset" value="Cancel" class="btn-main">
@@ -138,6 +87,8 @@
               </div>
             </div>
           </form>
+
+
         </div>
       </div>
     </div>

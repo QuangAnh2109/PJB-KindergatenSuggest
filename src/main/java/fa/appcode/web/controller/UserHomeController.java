@@ -33,18 +33,4 @@ public class UserHomeController {
 
     }
 
-    @GetMapping("/forgot-password")
-    public String forgotPassword() {
-        return "user_side/forgot-password";
-    }
-
-    @GetMapping("/register")
-    public String register() {
-        System.out.println("User accessed: /register");
-        return "user_side/register";
-    }
-    @GetMapping("/reset-password")
-    public String resetPassword() {
-        return "user_side/reset-password";
-    }
 }
