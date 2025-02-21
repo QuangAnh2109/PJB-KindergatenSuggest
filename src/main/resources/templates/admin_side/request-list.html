@@ -87,6 +87,8 @@
             font-size: 12px; /* Giảm kích thước chữ */
             padding: 3px 10px; /* Giảm padding */
             border-radius: 15px; /* Giảm độ bo tròn */
+            min-width: 70px; /* Đặt chiều rộng tối thiểu */
+            text-align: center;
         }
     </style>
 </head>
@@ -127,7 +129,7 @@
     </div>
     <!-- End Sidebar -->
 
-    <div class="content-page">
+    5<div class="content-page">
         <div class="content">
             <div class="container-fluid">
 
@@ -165,12 +167,12 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark Otto</td>
-                                    <td>mark@example.com</td>
-                                    <td>+123456789</td>
-                                    <td><button class="btn btn-closed">Closed</button></td>
+                                <tr th:each="request : ${requestList}" th:attr="onclick='redirectToDetail('+ ${request.id}+')'">
+                                       <th scope="row" th:text="${request.id}"/>
+                                       <th th:text="${request.fullName}"/>
+                                       <th th:text="${request.requestEmail}"/>
+                                       <th th:text="${request.requestPhone}"/>
+                                       <td><button class="btn btn-closed" th:text="${request.requestMasterName}"/></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -206,6 +208,10 @@
 <!-- Vendor js -->
 <script th:src="@{/admin_side/js/vendor.min.js}"></script>
 <script th:src="@{/admin_side/js/app.min.js}"></script>
-
+<script>
+    function redirectToDetail(id) {
+        window.location.href = "/admin/request-list-detail?id="+id;
+    }
+</script>
 </body>
 </html>
