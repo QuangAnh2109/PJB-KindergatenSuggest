@@ -11,17 +11,17 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "enroll_school")
+@Table(name = "enroll_school", schema = "instance_kintergarden_db")
 public class EnrollSchool {
-    @EmbeddedId
-    private EnrollSchoolId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "enroll_id", nullable = false)
+    private Integer id;
 
-    @MapsId("accountId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "account_id", nullable = false)
     private AccountInfo account;
 
-    @MapsId("schoolId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "school_id", nullable = false)
     private SchoolInfo school;

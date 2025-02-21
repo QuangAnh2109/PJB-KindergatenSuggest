@@ -12,6 +12,12 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties
 @Getter
 public class GlobalConfig {
-    @Value("${page.init}")
+    @Value("1")
     private Integer initPage;
+
+
+
+
+
 }
+
