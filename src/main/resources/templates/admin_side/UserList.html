@@ -310,22 +310,27 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h4 class="header-title">User List</h4>
                             <div class="d-flex align-items-center">
-                                <button class="btn btn-primary" onclick="goToAddUser()">Add User</button>
+                                <a th:ref="@{/admin/adduser}" class="btn btn-success">Add User</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <script>
-                    function goToAddUser() {
-                        window.location.href = "/admin/adduser";
-                    }
-                </script>
+
                 <!-- end row -->
 
                 <div class="row">
                     <div class="col-12">
-                        <div>
-                            <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <div class="row">
+                                    <div class="col-8">
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="d-flex justify-content-end align-items-center mb-3">
+                                            <input type="search" class="form-control rounded" id="userSearchField" placeholder="Enter to search here..."
+                                                   aria-label="Search" autofocus th:value="${searchField}" aria-describedby="search-addon" />                                        </div>
+                                    </div>
+                                </div>
+                        <div id="userListContent">
+                            <table class="table table-bordered">
                                 <thead>
                                 <tr>
                                     <th>Full Name</th>
@@ -338,53 +343,54 @@
                                     <th>Actions</th>
                                 </tr>
                                 </thead>
-
                                 <tbody>
-                                <tr>
-                                    <td><a th:href="@{/admin/userdetail}"> Tiger Nixon</a></td>
-                                    <td>System Architect</td>
-                                    <td>Edinburgh</td>
-                                    <td>61</td>
-                                    <td>2011/04/25</td>
-                                    <td>School Owner</td>
-                                    <td><span class="badge badge-danger">Deactivated</span></td>
+                                <tr th:each="account : ${listAccounts}">
+                                    <td th:text="${account.fullName}"></td>
+                                    <td th:text="${account.email}"></td>
+                                    <td th:text="${account.phone}"></td>
+                                    <td th:text="${account.dob}"></td>
+                                    <td th:text="${account.fullAddress}"></td>
+                                    <td th:text="${account.role}"></td>
                                     <td>
-                                        <a th:href="@{/admin/edituser}" class="btn btn-sm btn-light"><i class="ti-pencil"></i></a>
-                                        <a th:href="@{/delete}" class="btn btn-sm btn-danger"><i class="ti-trash"></i></a>
+                                        <span th:if="${account.status == 'Active'}" class="badge badge-success">Activated</span>
+                                        <span th:if="${account.status != 'Active'}" class="badge badge-danger">Deactivated</span>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td><a th:href="@{/admin/userdetail}"> Garrett Winters</a></td>
-                                    <td>Accountant</td>
-                                    <td>Tokyo</td>
-                                    <td>63</td>
-                                    <td>2011/07/25</td>
-                                    <td>$170,750</td>
-                                    <td><span class="badge badge-success">Activated</span></td>
                                     <td>
                                         <a th:href="@{/admin/edituser}" class="btn btn-sm btn-light"><i class="ti-pencil"></i></a>
-                                        <button class="btn btn-sm btn-danger"><i class="ti-trash"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><a th:href="@{/admin/userdetail}"> Ashton Cox</a></td>
-                                    <td>Junior Technical Author</td>
-                                    <td>San Francisco</td>
-                                    <td>66</td>
-                                    <td>2009/01/12</td>
-                                    <td>$86,000</td>
-                                    <td><span class="badge badge-success">Activated</span></td>
-                                    <td>
-                                        <a th:href="@{/admin/edituser}" class="btn btn-sm btn-light"><i class="ti-pencil"></i></a>
-                                        <button class="btn btn-sm btn-danger"><i class="ti-trash"></i></button>
+                                        <a th:href="@{/admin/deleteuser}" class="btn btn-sm btn-danger"><i class="ti-trash"></i></a>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
-
                         </div>
+                        <div class="row">
+                            <div class="col-9"></div>
+                            <div class="col-3">
+                                <nav aria-label="Pagination" style="float:right">
+                                    <th:block th:if="${numberPage > 1}">
+                                        <ul class="pagination">
+                                            <!-- Nút Previous -->
+                                            <li th:classappend="${currentPage > 0} ? 'page-item' : 'page-item disabled'">
+                                                <a class="page-link user-page-item" href="#" th:data-page="${currentPage - 1}">Previous</a>
+                                            </li>
 
-                        <!-- end -->
+                                            <!-- Các số trang -->
+                                            <th:block th:each="page : ${#numbers.sequence(0, numberPage - 1)}">
+                                                <li th:classappend="${page == currentPage} ? 'page-item active' : 'page-item'">
+                                                    <a class="page-link user-page-item" href="#" th:data-page="${page}" th:text="${page + 1}"></a>
+                                                </li>
+                                            </th:block>
+
+                                            <!-- Nút Next -->
+                                            <li th:classappend="${currentPage < numberPage - 1} ? 'page-item' : 'page-item disabled'">
+                                                <a class="page-link user-page-item" href="#" th:data-page="${currentPage + 1}">Next</a>
+                                            </li>
+
+                                        </ul>
+                                    </th:block>
+                                </nav>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -398,7 +404,6 @@
 
     </div>
     <!-- END content-page -->
-
 
 
 </div>
@@ -461,31 +466,16 @@
 <!-- Vendor js -->
 <script src="/admin_side/js/vendor.min.js"></script>
 
-<!-- Required datatable js -->
-<script src="/admin_side/libs/datatables/jquery.dataTables.min.js"></script>
-<script src="/admin_side/libs/datatables/dataTables.bootstrap4.min.js"></script>
-
 <!-- Buttons examples -->
-<script src="/admin_side/libs/datatables/dataTables.buttons.min.js"></script>
-<script src="/admin_side/libs/datatables/buttons.bootstrap4.min.js"></script>
-<script src="/admin_side/libs/datatables/dataTables.keyTable.min.js"></script>
-<script src="/admin_side/libs/datatables/dataTables.select.min.js"></script>
 <script src="/admin_side/libs/jszip/jszip.min.js"></script>
 <script src="/admin_side/libs/pdfmake/pdfmake.min.js"></script>
 <script src="/admin_side/libs/pdfmake/vfs_fonts.js"></script>
-<script src="/admin_side/libs/datatables/buttons.html5.min.js"></script>
-<script src="/admin_side/libs/datatables/buttons.print.min.js"></script>
-
-<!-- Responsive examples -->
-<script src="/admin_side/libs/datatables/dataTables.responsive.min.js"></script>
-<script src="/admin_side/libs/datatables/responsive.bootstrap4.min.js"></script>
-
-<!-- Datatables init -->
-<script src="/admin_side/js/pages/datatables.init.js"></script>
 
 <!-- App js -->
 <script src="/admin_side/js/app.min.js"></script>
+<script src="/admin_side/js/UserList.js"></script>
 
 </body>
+
 
 </html>
