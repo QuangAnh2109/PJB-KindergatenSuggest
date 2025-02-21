@@ -7,17 +7,13 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
-@PropertySource("classpath:messages.properties")
 @PropertySource("classpath:webconfig.properties")
 @ConfigurationProperties
 @Getter
 public class GlobalConfig {
-    @Value("1")
+    @Value("${page.init}")
     private Integer initPage;
 
-
-
-
-
+    @Value("${page.size}")
+    private Integer sizeOfPage;
 }
-
