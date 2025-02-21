@@ -34,7 +34,7 @@ public class RequestController {
         return new RequestVo(id, fullName, email, phone, requestMasterName);
     }
     
-    @GetMapping("/admin/request-list")
+    @GetMapping("/school-owner/request-list")
     public String showRequestList(Model model) {
         List<Request> listRequest = requestService.findAll();
         List<RequestVo> requestList = new ArrayList<>();
@@ -45,7 +45,7 @@ public class RequestController {
         model.addAttribute("requestList", requestList);
         return "admin_side/request-list";
     }
-    @GetMapping("/admin/request-list-detail")
+    @GetMapping("/school-owner/request-list-detail")
     public String request_list_detail(@RequestParam Integer id, Model model) {
         Request request = requestService.findById(id);
 
@@ -55,5 +55,15 @@ public class RequestController {
         model.addAttribute("requestVo", requestVo);
         return "admin_side/request-list-detail";
     }
-
+    @GetMapping("/school-owner/request-reminder")
+    public String showRequestReminder(Model model) {
+        List<Request> listRequest = requestService.findOpenedRequest();
+        List<RequestVo> requestList = new ArrayList<>();
+        for (Request request : listRequest) {
+            RequestVo requestVo = getRequestVo(request);
+            requestList.add(requestVo);
+        }
+        model.addAttribute("requestList", requestList);
+        return "admin_side/request-reminder";
+    }
 }

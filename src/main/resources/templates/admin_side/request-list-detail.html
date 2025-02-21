@@ -107,36 +107,11 @@
     <div class="left-side-menu">
         <div id="sidebar-menu">
             <ul class="metismenu" id="side-menu">
-                <li>
-                    <a href="index.html">
-                        <i class="ti-home"></i>
-                        <span> School Managment </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.html">
-                        <i class="fa-regular fa-user"></i>
-                        <span> User Management </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.html">
-                        <i class="fa-regular fa-bell"></i>
-                        <span> Reminder </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.html">
-                        <i class="fa-solid fa-user-tie"></i>
-                        <span> Parent Management </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.html">
-                        <i class="fa-regular fa-clipboard"></i>
-                        <span> Request Managment </span>
-                    </a>
-                </li>
+                <li><a th:href="@{/school-owner/request-list}"><i class="ti-home"></i> <span> School Management </span></a></li>
+                <li><a th:href="@{/school-owner/request-list}"><i class="fa-regular fa-user"></i> <span> User Management </span></a></li>
+                <li><a th:href="@{/school-owner/request-reminder}"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a></li>
+                <li><a th:href="@{/school-owner/request-list}"><i class="fa-solid fa-user-tie"></i> <span> Parent Management </span></a></li>
+                <li><a th:href="@{/school-owner/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a></li>
             </ul>
         </div>
         <!-- End Sidebar -->
