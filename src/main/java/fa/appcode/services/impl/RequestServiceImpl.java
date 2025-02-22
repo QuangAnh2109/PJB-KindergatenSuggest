@@ -6,6 +6,8 @@ import fa.appcode.entities.Request;
 import fa.appcode.repositories.RequestRepository;
 import fa.appcode.services.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +20,8 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Override
-    public List<RequestVo> findAll() {
-        return (List<RequestVo>)requestRepository.listAllRequest();
+    public Page<RequestVo> findAll(Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.listAllRequest(pageable);
     }
 
     @Override
@@ -28,7 +30,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<RequestVo> findOpenedRequest() {
-        return (List<RequestVo>)requestRepository.findOpenedRequest();
+    public Page<RequestVo> findOpenedRequest(Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.findOpenedRequest(pageable);
     }
 }

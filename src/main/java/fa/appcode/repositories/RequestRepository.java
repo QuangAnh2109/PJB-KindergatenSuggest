@@ -3,6 +3,8 @@ package fa.appcode.repositories;
 import fa.appcode.common.vo.RequestDetailVo;
 import fa.appcode.common.vo.RequestVo;
 import fa.appcode.entities.Request;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,11 +21,11 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
     RequestDetailVo findRequestsById(Integer id);
 
     @Query("Select new fa.appcode.common.vo.RequestVo(r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)"
-            + "From MasterDatum m Join Request r ON m.id = r.requestMasterId "
+            + "From  Request r Join MasterDatum m ON m.id = r.requestMasterId "
             + "where r.requestMasterId !=44")
-    List<RequestVo> findOpenedRequest();
+    Page<RequestVo> findOpenedRequest(Pageable pageable);
 
     @Query("Select new fa.appcode.common.vo.RequestVo(r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)"
-            + "From MasterDatum m Join Request r ON m.id = r.requestMasterId")
-    List<RequestVo> listAllRequest();
+            + "From Request r Join MasterDatum m  ON m.id = r.requestMasterId")
+    Page<RequestVo> listAllRequest(Pageable pageable);
 }
