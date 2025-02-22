@@ -1,5 +1,6 @@
 package fa.appcode.web.controller;
 
+import fa.appcode.common.vo.RequestDetailVo;
 import fa.appcode.common.vo.RequestVo;
 import fa.appcode.entities.MasterDatum;
 import fa.appcode.entities.Request;
@@ -36,33 +37,19 @@ public class RequestController {
     
     @GetMapping("/school-owner/request-list")
     public String showRequestList(Model model) {
-        List<Request> listRequest = requestService.findAll();
-        List<RequestVo> requestList = new ArrayList<>();
-        for (Request request : listRequest) {
-            RequestVo requestVo = getRequestVo(request);
-            requestList.add(requestVo);
-        }
+        List<RequestVo> requestList = requestService.findAll();
         model.addAttribute("requestList", requestList);
         return "admin_side/request-list";
     }
     @GetMapping("/school-owner/request-list-detail")
     public String request_list_detail(@RequestParam Integer id, Model model) {
-        Request request = requestService.findById(id);
-
-        RequestVo requestVo = getRequestVo(request);
-
-        model.addAttribute("request", request);
-        model.addAttribute("requestVo", requestVo);
+        RequestDetailVo requestDetail = requestService.findById(id);
+        model.addAttribute("requestDetail", requestDetail);
         return "admin_side/request-list-detail";
     }
     @GetMapping("/school-owner/request-reminder")
     public String showRequestReminder(Model model) {
-        List<Request> listRequest = requestService.findOpenedRequest();
-        List<RequestVo> requestList = new ArrayList<>();
-        for (Request request : listRequest) {
-            RequestVo requestVo = getRequestVo(request);
-            requestList.add(requestVo);
-        }
+        List<RequestVo> requestList = requestService.findOpenedRequest();
         model.addAttribute("requestList", requestList);
         return "admin_side/request-reminder";
     }

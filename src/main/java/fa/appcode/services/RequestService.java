@@ -1,12 +1,14 @@
 package fa.appcode.services;
 
+import fa.appcode.common.vo.RequestDetailVo;
+import fa.appcode.common.vo.RequestVo;
 import fa.appcode.entities.Request;
 
 import java.util.List;
 
 public interface RequestService {
-    List<Request> findAll();
+    List<RequestVo> findAll();
 
-    Request findById(Integer id);
-    List<Request> findOpenedRequest();
+    RequestDetailVo findById(Integer id);
+    List<RequestVo> findOpenedRequest();
 }

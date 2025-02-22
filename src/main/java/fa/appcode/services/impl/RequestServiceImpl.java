@@ -1,5 +1,7 @@
 package fa.appcode.services.impl;
 
+import fa.appcode.common.vo.RequestDetailVo;
+import fa.appcode.common.vo.RequestVo;
 import fa.appcode.entities.Request;
 import fa.appcode.repositories.RequestRepository;
 import fa.appcode.services.RequestService;
@@ -16,17 +18,17 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Override
-    public List<Request> findAll() {
-        return (List<Request>)requestRepository.findAll();
+    public List<RequestVo> findAll() {
+        return (List<RequestVo>)requestRepository.listAllRequest();
     }
 
     @Override
-    public Request findById(Integer id) {
+    public RequestDetailVo findById(Integer id) {
         return requestRepository.findRequestsById(id);
     }
 
     @Override
-    public List<Request> findOpenedRequest() {
-        return (List<Request>)requestRepository.findOpenedRequest();
+    public List<RequestVo> findOpenedRequest() {
+        return (List<RequestVo>)requestRepository.findOpenedRequest();
     }
 }
