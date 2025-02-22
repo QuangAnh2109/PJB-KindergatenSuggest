@@ -171,6 +171,7 @@
                             <div class="mb-3 row">
                                 <label class="col-md-4 col-form-label fw-bold text-end">Address</label>
                                 <div class="col-md-7">
+                                    <input type="text" class="form-control" th:field="*{address}" readonly>
                                 </div>
                             </div>
 
@@ -184,10 +185,12 @@
                             <div class="mb-3 row">
                                 <label class="col-md-4 col-form-label fw-bold text-end">Inquires</label>
                                 <div class="col-md-7">
+                                    <textarea class="form-control" th:field="*{inquires}" readonly rows="4"></textarea>
+
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-end">
+                            <div class="d-flex justify-content-end" th:if="${requestDetail.requestMasterName!='Closed'}">
                                 <button type="button" class="btn btn-primary" data-toggle="modal"
                                         data-target="#exampleModal">
                                     Mark it resolved
