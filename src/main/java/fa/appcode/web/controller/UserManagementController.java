@@ -29,7 +29,7 @@ public class UserManagementController {
                               @RequestParam(defaultValue = "0") int currentPage,
                               Model model) {
 
-        Pageable pageable = PageRequest.of(currentPage, 3);
+        Pageable pageable = PageRequest.of(currentPage, 10);
 
         Page<AccountVo> accounts = accountService.getAllAccounts(search, pageable);
         List<AccountVo> listAccount = accounts.getContent();
@@ -42,17 +42,17 @@ public class UserManagementController {
     }
 
 
-    @GetMapping("/admin/adduser")
+    @GetMapping("adduser")
     public String admin_addUser() {
         return "admin_side/AddUser";
     }
 
-    @GetMapping("/admin/edituser")
+    @GetMapping("edituser")
     public String admin_editUser() {
         return "admin_side/EditUser";
     }
 
-    @GetMapping("/admin/userdetail")
+    @GetMapping("userdetail")
     public String admin_userDetail() {
         return "admin_side/UserDetails";
     }

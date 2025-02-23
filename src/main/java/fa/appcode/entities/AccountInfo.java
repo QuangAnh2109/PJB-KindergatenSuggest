@@ -29,10 +29,13 @@ public class AccountInfo {
     @Column(name = "dob")
     private LocalDate dob;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "address")
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)

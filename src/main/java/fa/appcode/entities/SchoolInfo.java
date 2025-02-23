@@ -18,6 +18,10 @@ public class SchoolInfo {
     @Column(name = "school_id", nullable = false)
     private Integer id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "account_id", nullable = false)
+    private AccountInfo accountInfo;
+
     @Column(name = "school_name", nullable = false)
     private String schoolName;
 

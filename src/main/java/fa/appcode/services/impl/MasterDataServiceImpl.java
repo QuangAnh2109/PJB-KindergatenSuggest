@@ -11,8 +11,13 @@ public class MasterDataServiceImpl implements MasterDataService {
     @Autowired
     private MasterDataRepository masterDataRepository;
 
+//    @Override
+//    public String getMasterByTypeNameAndTypeKey(String typeName, Integer typeKey) {
+//       return masterDataRepository.getMasterByTypeNameAndTypeKey(typeName, typeKey);
+//    }
+
     @Override
-    public String getMasterByTypeNameAndTypeKey(String typeName, Integer typeKey) {
-       return masterDataRepository.getMasterByTypeNameAndTypeKey(typeName, typeKey);
+    public String getMasterById(Integer id) {
+        return masterDataRepository.getMasterById(id);
     }
 }

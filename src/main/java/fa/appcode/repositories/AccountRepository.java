@@ -15,13 +15,12 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
 
     @Query("""
     SELECT ai FROM AccountInfo ai
-    JOIN FETCH ai.ward w
-    JOIN FETCH ai.district d
-    JOIN FETCH ai.city c
+    LEFT JOIN FETCH ai.ward w
+    LEFT JOIN FETCH ai.district d
+    LEFT JOIN FETCH ai.city c
     WHERE ai.deleteFlg = false
     AND (:search IS NULL OR ai.fullName LIKE %:search% OR ai.email LIKE %:search% OR ai.phone LIKE %:search%)
 """)
     Page<AccountInfo> findAllWithFullAddress(@Param("search") String search, Pageable pageable);
-
 
 }
