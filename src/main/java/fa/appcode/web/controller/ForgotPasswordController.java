@@ -21,6 +21,8 @@
         @Autowired
         private AccountService accountService;
         private static final String RESET_PASSWORD_URL = "http://localhost:8080/reset-password?token=";
+        private static final String passWordFormURL ="user_side/forgot_password";
+
         @GetMapping("/forgot-password")
         public String showForgotPasswordForm() {
             return "user_side/forgot-password";
@@ -30,7 +32,7 @@
             AccountInfo account = accountService.findByEmail(email);
             if (account == null) {
                 model.addAttribute("userNotExist", "User not found");
-                return "user_side/forgot-password";
+                return passWordFormURL;
             }
 
             String token = jwtUtil.generateToken(email);
@@ -39,7 +41,7 @@
             emailService.sendEmail(email, "Reset Your Password",
                     "Click this link to reset your password: " + resetLink);
             model.addAttribute("message", "A password reset link has been sent to your email.");
-            return "user_side/forgot-password";
+            return passWordFormURL;
         }
 
     }

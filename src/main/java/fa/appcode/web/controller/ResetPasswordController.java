@@ -21,7 +21,6 @@ public class ResetPasswordController {
         if (!jwtUtil.validateToken(token)) {
             return "redirect:/reset-password-error";
         }
-
         model.addAttribute("token", token);
         return "user_side/reset-password";
     }

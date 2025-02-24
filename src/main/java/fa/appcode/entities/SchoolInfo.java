@@ -7,16 +7,19 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDate;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "school_info")
+@Table(name = "school_info", schema = "instance_kintergarden_db")
 public class SchoolInfo {
     @Id
     @Column(name = "school_id", nullable = false)
     private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "account_id", nullable = false)
+    private AccountInfo account;
 
     @Column(name = "school_name", nullable = false)
     private String schoolName;
@@ -24,10 +27,10 @@ public class SchoolInfo {
     @Column(name = "school_email", nullable = false)
     private String schoolEmail;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "school_phone", nullable = false, length = 12)
+    @Column(name = "school_phone", nullable = false, columnDefinition = "CHAR(12)")
     private String schoolPhone;
 
     @Column(name = "fee_from", nullable = false, precision = 15, scale = 5)
@@ -52,11 +55,11 @@ public class SchoolInfo {
     private City city;
 
     @Lob
-    @Column(name = "school_introduction")
+    @Column(name = "school_introduction", columnDefinition = "TEXT")
     private String schoolIntroduction;
 
     @Column(name = "posted_date")
-    private LocalDate postedDate;
+    private Instant postedDate;
 
     @Column(name = "child_receiving_age_id", nullable = false)
     private Integer childReceivingAgeId;

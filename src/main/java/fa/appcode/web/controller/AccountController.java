@@ -164,9 +164,7 @@ public class AccountController {
     private EmailService emailService;
     @Autowired
     private VerificationService verificationService;
-
     private final Map<String, AccountVo> pendingAccounts = new HashMap<>();
-
     @GetMapping
     public String register(Model model) {
         model.addAttribute("accountVo", new AccountVo());
@@ -200,12 +198,12 @@ public class AccountController {
                             Model model) {
 
         if (!verificationService.validateOtp(email, otp)) {
-            model.addAttribute("error", "Your OTP is expired or incorrect!");
+            model.addAttribute("errorOTP", "Your OTP is expired or incorrect!");
             return VERIFY_PAGE;
         }
         AccountVo accountVo = pendingAccounts.remove(email);
         if (accountVo == null) {
-            model.addAttribute("error", "Register session is expired. Please try again!");
+            model.addAttribute("errorOTP", "Register session is expired. Please try again!");
             return REGISTER_PAGE;
         }
         AccountInfo accountInfo = new AccountInfo();
@@ -231,8 +229,8 @@ public class AccountController {
             return "redirect:/register";
         }
         String newOtp = verificationService.generateOtp(email);
-        emailService.sendEmail(email, "OTP CODE SENDER", "Mã OTP mới của bạn là: " + newOtp);
-        redirectAttributes.addFlashAttribute("message", "Mã OTP mới đã được gửi!");
+        emailService.sendEmail(email, "OTP CODE SENDER", "Your New OTP Code: " + newOtp);
+        redirectAttributes.addFlashAttribute("message", "New Otp code is sent!");
         return "redirect:/register/verify?email=" + email;
     }
 }

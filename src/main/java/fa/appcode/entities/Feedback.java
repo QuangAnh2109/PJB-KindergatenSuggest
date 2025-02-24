@@ -10,7 +10,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "feedback")
+@Table(name = "feedback", schema = "instance_kintergarden_db")
 public class Feedback {
     @EmbeddedId
     private FeedbackId id;
@@ -36,7 +36,7 @@ public class Feedback {
     private Float hygieneNutrition;
 
     @Lob
-    @Column(name = "feedback_message", nullable = false)
+    @Column(name = "feedback_message", nullable = false, columnDefinition = "TEXT")
     private String feedbackMessage;
 
     @ColumnDefault("(1)")

@@ -63,7 +63,7 @@
         </div>
         <button type="submit" class="btn-verify mt-3">Verify</button>
     </form>
-    <p class="text-danger mt-2" th:if="${error}" th:text="${error}"></p>
+    <p class="text-danger mt-2" th:if="${errorOTP}" th:text="${errorOTP}"></p>
     <div class="mt-2">Didn't receive the code? <a href="/register/resend" class="text-primary">Resend Code</a></div>
 </div>
 <script>

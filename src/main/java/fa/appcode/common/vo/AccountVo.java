@@ -17,6 +17,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AccountVo {
+    private Integer id;
+    private String dob;
+    private String imageUrl;
+    private String fullAddress;
+    private String role;
+    private String status;
     @NotNull
     @NotEmpty(message = "")
     private String fullName;
@@ -39,4 +45,3 @@ public class AccountVo {
 
 
 }
-

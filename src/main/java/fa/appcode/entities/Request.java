@@ -10,7 +10,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "request")
+@Table(name = "request", schema = "instance_kintergarden_db")
 public class Request {
     @Id
     @Column(name = "request_id", nullable = false)
@@ -30,11 +30,11 @@ public class Request {
     @Column(name = "request_email", nullable = false)
     private String requestEmail;
 
-    @Column(name = "request_phone", nullable = false, length = 12)
+    @Column(name = "request_phone", nullable = false, columnDefinition = "CHAR(12)")
     private String requestPhone;
 
     @Lob
-    @Column(name = "inquiries")
+    @Column(name = "inquiries", columnDefinition = "TEXT")
     private String inquiries;
 
     @Column(name = "request_master_id", nullable = false)
