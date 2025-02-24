@@ -1,9 +1,13 @@
 package fa.appcode.services.impl;
 
+import fa.appcode.common.vo.RequestDetailVo;
+import fa.appcode.common.vo.RequestVo;
 import fa.appcode.entities.Request;
 import fa.appcode.repositories.RequestRepository;
 import fa.appcode.services.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,17 +20,17 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Override
-    public List<Request> findAll() {
-        return (List<Request>)requestRepository.findAll();
+    public Page<RequestVo> findAll(Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.listAllRequest(pageable);
     }
 
     @Override
-    public Request findById(Integer id) {
+    public RequestDetailVo findById(Integer id) {
         return requestRepository.findRequestsById(id);
     }
 
     @Override
-    public List<Request> findOpenedRequest() {
-        return (List<Request>)requestRepository.findOpenedRequest();
+    public Page<RequestVo> findOpenedRequest(Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.findOpenedRequest(pageable);
     }
 }
