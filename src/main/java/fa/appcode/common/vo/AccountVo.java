@@ -1,41 +1,42 @@
 package fa.appcode.common.vo;
 
+import fa.appcode.common.constant.Constant;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
-    @NoArgsConstructor
-    @Data
-    @Setter
-    @Getter
-    @AllArgsConstructor
-    @ToString
-    public class AccountVo {
+@NoArgsConstructor
+@Data
+@AllArgsConstructor
+@Getter
+@Setter
+public class AccountVo {
+    @NotNull
+    @NotEmpty(message = "")
+    private String fullName;
 
-        private String fullName;
+    @NotEmpty(message = "This field is required.")
+    @Email(message = "Email khong hop le")
+    private String email;
 
-        @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
-                flags = Pattern.Flag.CASE_INSENSITIVE,
-                message = "Must be a well-formed email address.Ex: example@gmail.com.")
-        private String email;
-        @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{12,25}$",
-                message = "Password must be at least 12 and max 25 length containing at least 1 uppercase, 1 lowercase, 1 special character and 1 digit.")
-        private String password;
+    @NotEmpty(message = "This field is required.")
+    @NotEmpty(message = "This field is required.")
+    @Pattern(regexp = Constant.PHONE_REGEX, message = "Số điện thoại không hợp lệ!")
+    private String phone;
 
-        @NotBlank(message = "Display name cannot be empty.")
-        private String displayName;
+    @NotEmpty(message = "This field is required.")
+    @Pattern(regexp = Constant.PASSWORD_REGEX, message = "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 số và 1 ký tự đặc biệt, tối thiểu 12 ký tự!")
+    private String password;
+    @NotEmpty(message = "This field is required.")
+    private String confirmPassword;
 
-        @Pattern(regexp = "(^$|[0-9]{10})", message = "Phone number must be 10 digits.")
-        @NotBlank(message = "Phone number cannot be empty.")
-        private String phoneNumber;
-        private Boolean isActive = true;
 
-    }
 
+}
 

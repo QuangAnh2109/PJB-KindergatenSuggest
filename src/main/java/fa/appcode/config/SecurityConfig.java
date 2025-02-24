@@ -30,7 +30,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(configurer->
                         configurer
                                 .requestMatchers("/", "/home","/register","/forgot-password",
-                                        "/reset-password", "/about", "/contact","/user_side/**").permitAll()
+                                        "/reset-password", "/about", "/contact","/user_side/**","register/verify").permitAll()
                                 .requestMatchers("/parent/**").hasAuthority("Parent")
                                 .requestMatchers("/school-owner/**").hasAnyAuthority("School owner", "Admin")
                                 .requestMatchers("/admin/**").hasAuthority("Admin")

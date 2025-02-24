@@ -36,8 +36,6 @@
 
                                 <div th:if="${param.error}" class="alert alert-danger text-center"
                                      th:text="'Invalid email or password. Please try again.'"></div>
-                                <!--                                <div th:if="${emailError}" class="alert alert-warning text-center" th:text="${emailError}"></div>-->
-<!--                                <div th:if="${missingError}" class="alert alert-warning text-center" th:text="${missingError}"></div>-->
                                 <form action="#" th:action="@{/authenticateTheUser}" method="post">
                                     <div class="field-set">
                                         <label>Email address</label>
