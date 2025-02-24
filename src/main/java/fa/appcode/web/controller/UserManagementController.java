@@ -1,7 +1,9 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.common.vo.AccountVo;
+import fa.appcode.entities.MasterDatum;
 import fa.appcode.services.AccountService;
+import fa.appcode.services.impl.MasterDataServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,9 +22,11 @@ import java.util.List;
 public class UserManagementController {
     @Autowired
     AccountService accountService;
+    @Autowired
+    private MasterDataServiceImpl masterDataService;
 
     @GetMapping("userlist")
-    public String getUserList(@RequestParam(defaultValue ="") String search,
+    public String getUserList(@RequestParam(defaultValue = "") String search,
                               @RequestParam(defaultValue = "0") int currentPage,
                               Model model) {
 
@@ -60,6 +64,38 @@ public class UserManagementController {
             redirectAttributes.addFlashAttribute("error", "User not found.");
         }
         return "redirect:/admin/userdetail/" + id;
+    }
+
+    // Hiển thị trang Edit User
+    @GetMapping("edituser/{id}")
+    public String showEditUserPage(@PathVariable("id") Integer id, Model model) {
+        try {
+            AccountVo user = accountService.getAccountById(id);
+            List<MasterDatum> roles = masterDataService.getListByTypeName("ROLE");
+            // Lấy danh sách roles từ service
+            model.addAttribute("user", user);
+            model.addAttribute("roles", roles);
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", "User not found.");
+        }
+        return "admin_side/EditUser";
+    }
+
+    // Xử lý cập nhật thông tin user
+    @PostMapping("edituser/{id}")
+    public String updateUser(@PathVariable("id") Integer id,
+                             @RequestParam String fullName,
+                             @RequestParam String phone,
+                             @RequestParam String dob,
+                             @RequestParam Integer roleId,
+                             RedirectAttributes redirectAttributes) {
+        try {
+            accountService.updateUser(id, fullName, phone, dob, roleId);
+            redirectAttributes.addFlashAttribute("message", "User updated successfully.");
+        } catch (EntityNotFoundException e) {
+            redirectAttributes.addFlashAttribute("error", "User not found.");
+        }
+        return "redirect:/admin/edituser/" + id;
     }
 
 }

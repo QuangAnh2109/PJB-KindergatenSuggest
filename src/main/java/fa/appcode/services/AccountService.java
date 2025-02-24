@@ -19,6 +19,7 @@ public interface AccountService {
     Page<AccountVo> getAllAccounts(String search, Pageable pageable);
     AccountVo getAccountById(Integer id);
     void toggleUserStatus(Integer id);
+    void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId);
 
     Page<AccountInfo> findAll(Pageable pageable);
     List<AccountInfo> findAllRoles();

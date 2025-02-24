@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -46,6 +48,7 @@ public class AccountServiceImpl implements AccountService {
         accountVo.setPhone(accountInfo.getPhone());
         accountVo.setDob(accountInfo.getDob() != null ? accountInfo.getDob().toString() : null);
         accountVo.setImageUrl(accountInfo.getImageUrl());
+        accountVo.setRoleId(accountInfo.getRoleId());
 
         // Build full address
         if (accountInfo.getAddress() == null && accountInfo.getWard() == null &&
@@ -87,15 +90,28 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(user);
     }
 
+    @Override
+    public void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId) {
+        AccountInfo user = accountRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        // Cập nhật các trường được phép chỉnh sửa
+        user.setFullName(fullName);
+        user.setPhone(phone);
+        user.setDob(LocalDate.parse(dob)); // Chuyển đổi String sang LocalDate
+        user.setRoleId(roleId);
+
+        accountRepository.save(user);
+    }
+
 
     @Override
-    public Page<AccountInfo> findAll(Pageable pageable)
-            {
+    public Page<AccountInfo> findAll(Pageable pageable) {
         return accountRepository.findAll(pageable);
     }
 
     @Override
-    public List<AccountInfo> findAllRoles(){
+    public List<AccountInfo> findAllRoles() {
         return accountRepository.findAllRole();
     }
 
@@ -111,7 +127,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id,Pageable pageable) {
-        return accountRepository.findParentEnrolledSchoolBy(id,pageable);
+    public Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id, Pageable pageable) {
+        return accountRepository.findParentEnrolledSchoolBy(id, pageable);
     }
 }
