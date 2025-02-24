@@ -2,6 +2,7 @@ package fa.appcode.services.impl;
 
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
+import fa.appcode.common.vo.RoleVo;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.AccountService;
@@ -18,20 +19,8 @@ public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
 
     @Override
-    public Page<AccountInfo> findAll(Pageable pageable)
-            {
-        return accountRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<AccountInfo> findAllRoles(){
-        return accountRepository.findAllRole();
-    }
-
-
-    @Override
-    public Page<ParentVo> findAllParent(Pageable pageable) {
-        return accountRepository.findAllParent(pageable);
+    public Page<ParentVo> findAllParent(String search,Pageable pageable) {
+        return accountRepository.findAllParent(search,pageable);
     }
 
     @Override
@@ -40,7 +29,20 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id,Pageable pageable) {
-        return accountRepository.findParentEnrolledSchoolBy(id,pageable);
+    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id,Pageable pageable) {
+        return accountRepository.findParentEnrolledSchoolByParentId(id,pageable);
+    }
+
+    @Override
+    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId, Pageable pageable) {
+        return accountRepository.findParentEnrolledSchoolByParentIdAndSchoolOwner(parentId,schoolOwnerId,pageable);
+    }
+
+    @Override
+    public RoleVo findByEmail(String email) {return accountRepository.findByEmail(email);}
+
+    @Override
+    public AccountInfo getAccountInfoById(int id) {
+        return accountRepository.getAccountInfoById( id);
     }
 }

@@ -23,13 +23,16 @@ public class AccountInfo {
     @Column(name = "full_name", nullable = false, length = 100)
     private String fullName;
 
-    @Column(name = "phone", length = 12)
+    @Column(name = "phone", columnDefinition = "CHAR(12)")
     private String phone;
 
     @Column(name = "dob")
     private LocalDate dob;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "image_url", nullable = false)
+    private String imageUrl;
+
+    @Column(name = "password", nullable = false, columnDefinition = "CHAR(255)")
     private String password;
 
     @Column(name = "address", nullable = false)

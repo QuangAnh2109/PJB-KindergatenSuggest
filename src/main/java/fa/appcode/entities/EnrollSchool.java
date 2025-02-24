@@ -54,4 +54,10 @@ public class EnrollSchool {
     @Column(name = "delete_flg", nullable = false)
     private Boolean deleteFlg = false;
 
+    @PrePersist
+    public void setDefaults() {
+        if (this.recordNo == null) {
+            this.recordNo = 1;
+        }
+    }
 }
