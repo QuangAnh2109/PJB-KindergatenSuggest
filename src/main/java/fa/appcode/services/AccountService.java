@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface AccountService {
     Page<AccountVo> getAllAccounts(String search, Pageable pageable);
+    AccountVo getAccountById(Integer id);
 }

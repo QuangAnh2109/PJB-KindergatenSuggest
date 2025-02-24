@@ -302,7 +302,7 @@
                         <div>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a th:href="@{/admin/adduser}">User Management</a></li>
+                                    <li class="breadcrumb-item"><a th:href="@{#}">User Management</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">User List</li>
                                 </ol>
                             </nav>
@@ -345,7 +345,9 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="account : ${listAccounts}">
-                                    <td th:text="${account.fullName}"></td>
+                                    <td>
+                                        <a th:href="@{/admin/userdetail/{id}(id=${account.id})}" th:text="${account.fullName}" class="text-primary"></a>
+                                    </td>
                                     <td th:text="${account.email}"></td>
                                     <td th:text="${account.phone}"></td>
                                     <td th:text="${account.dob}"></td>

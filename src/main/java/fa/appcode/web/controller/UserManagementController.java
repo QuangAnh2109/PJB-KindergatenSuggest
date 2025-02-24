@@ -9,10 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,13 +44,11 @@ public class UserManagementController {
         return "admin_side/AddUser";
     }
 
-    @GetMapping("edituser")
-    public String admin_editUser() {
-        return "admin_side/EditUser";
-    }
-
-    @GetMapping("userdetail")
-    public String admin_userDetail() {
+    @GetMapping("userdetail/{id}")
+    public String userDetail(@PathVariable("id") Integer id, Model model) {
+        AccountVo user = accountService.getAccountById(id);
+        model.addAttribute("user", user);
         return "admin_side/UserDetails";
     }
+
 }
