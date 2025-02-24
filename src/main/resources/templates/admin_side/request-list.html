@@ -119,11 +119,11 @@
     <div class="left-side-menu">
         <div id="sidebar-menu">
             <ul class="metismenu" id="side-menu">
-                <li><a href="index.html"><i class="ti-home"></i> <span> School Management </span></a></li>
-                <li><a href="index.html"><i class="fa-regular fa-user"></i> <span> User Management </span></a></li>
-                <li><a href="index.html"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a></li>
-                <li><a href="index.html"><i class="fa-solid fa-user-tie"></i> <span> Parent Management </span></a></li>
-                <li><a href="index.html"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a></li>
+                <li><a th:href="@{/school-owner/request-list}"><i class="ti-home"></i> <span> School Management </span></a></li>
+                <li><a th:href="@{/school-owner/request-list}"><i class="fa-regular fa-user"></i> <span> User Management </span></a></li>
+                <li><a th:href="@{/school-owner/request-reminder}"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a></li>
+                <li><a th:href="@{/school-owner/request-list}"><i class="fa-solid fa-user-tie"></i> <span> Parent Management </span></a></li>
+                <li><a th:href="@{/school-owner/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a></li>
             </ul>
         </div>
     </div>
@@ -181,13 +181,25 @@
                 </div>
 
                 <!-- Pagination -->
-                <nav class="pagination-container">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-end">
+                        <!-- Previous Button -->
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:if="${currentPage > 0}" th:href="@{'?currentPage=' + ${currentPage - 1}}">Previous</a>
+                        </li>
+
+
+                        <!-- Page Numbers -->
+                        <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, numberPage - 1)}"
+                            th:classappend="${pageNum == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{'?currentPage=' + ${pageNum}}" th:text="${pageNum + 1}"></a>
+                        </li>
+
+                        <!-- Next Button -->
+                        <li class="page-item" th:classappend="${currentPage == numberPage - 1} ? 'disabled'">
+                            <a class="page-link" th:if="${currentPage < numberPage - 1}" th:href="@{'?currentPage=' + ${currentPage + 1}}">Next</a>
+                        </li>
+
                     </ul>
                 </nav>
 
@@ -210,7 +222,7 @@
 <script th:src="@{/admin_side/js/app.min.js}"></script>
 <script>
     function redirectToDetail(id) {
-        window.location.href = "/admin/request-list-detail?id="+id;
+        window.location.href = "/school-owner/request-list-detail?id="+id;
     }
 </script>
 </body>

@@ -1,11 +1,16 @@
 package fa.appcode.services;
 
+import fa.appcode.common.vo.RequestDetailVo;
+import fa.appcode.common.vo.RequestVo;
 import fa.appcode.entities.Request;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface RequestService {
-    List<Request> findAll();
+    Page<RequestVo> findAll(Pageable pageable);
 
-    Request findById(Integer id);
+    RequestDetailVo findById(Integer id);
+    Page<RequestVo> findOpenedRequest(Pageable pageable);
 }
