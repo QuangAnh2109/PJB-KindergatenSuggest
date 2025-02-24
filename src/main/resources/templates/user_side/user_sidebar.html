@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="icon" href="images/icon.png" type="image/gif" sizes="16x16">
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/mdb.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/plugins.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/coloring.css}" rel="stylesheet" type="text/css">
+    <link id="colors" th:href="@{/css/colors/scheme-01.css}" rel="stylesheet" type="text/css">
+
+    <style>
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn {
+            transition: background-color 0.3s;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="col-lg-3 mb30">
+    <div class="card padding30 rounded-5">
+        <!-- <div class="profile_avatar">
+            <div class="profile_img" style="margin: 0">
+                <img th:if="${#strings.isEmpty(session.userdto.avatarUrl)}" style="width: 150px; height: 150px !important; margin-left: 25px"
+                    src="images/dfa.png" class="img-fluid" alt="Avatar">
+                <img th:unless="${#strings.isEmpty(session.userdto.avatarUrl)}" style="width: 150px; height: 150px !important; margin-left: 25px"
+                    th:src="${session.userdto.avatarUrl}" class="img-fluid" alt="Avatar">
+                <form action="changeavatar" method="post" enctype="multipart/form-data" id="avatar-form">
+                    <label class="change-avatar" for="file-input">Change avatar</label>
+                    <input name="image" type="file" accept="image/*" id="file-input" class="file-input">
+                </form>
+            </div>
+            <div class="profile_name">
+                <h4 style="margin: 0 auto">
+                    <span th:text="${session.userdto.displayName}"></span>
+                    <span class="profile_username text-gray" th:text="${session.userdto.email}"></span>
+                </h4>
+            </div>
+        </div> -->
+        <div class="spacer-20"></div>
+        <ul class="menu-col">
+            <li><a th:href="@{/}"><i class="fa fa-home"></i> Dashboard</a></li>
+            <li><a th:href="@{/}"><i class="fa fa-user"></i> My Profile</a></li>
+            <li><a th:href="@{/}"><i class="fa fa-key"></i> Change password</a></li>
+            <li><a th:href="@{/}"><i class="fa fa-shopping-bag"></i> My Booking</a></li>
+            <li><a th:href="@{/}"><i class="fa fa-sign-out"></i> Sign Out</a></li>
+        </ul>
+    </div>
+</div>
+
+<script th:src="@{/js/plugins.js}"></script>
+<script th:src="@{/js/designesia.js}"></script>
+</body>
+
+</html>
