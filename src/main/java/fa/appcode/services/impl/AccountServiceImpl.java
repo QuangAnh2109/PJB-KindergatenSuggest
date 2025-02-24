@@ -43,4 +43,9 @@ public class AccountServiceImpl implements AccountService {
     public Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id,Pageable pageable) {
         return accountRepository.findParentEnrolledSchoolBy(id,pageable);
     }
+
+    @Override
+    public AccountInfo findByEmail(String email) {
+        return accountRepository.findAccountByEmail(email);
+    }
 }

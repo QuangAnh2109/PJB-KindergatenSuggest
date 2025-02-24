@@ -11,6 +11,8 @@
 
   <!-- App favicon -->
   <link rel="shortcut icon" th:href="@{/admin_side/images/favicon.ico}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- App css -->
   <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
@@ -134,10 +136,10 @@
         <!-- Search Box -->
         <div class="row">
           <div class="col-12">
-            <form class="app-search">
+            <form class="app-search" th:action="@{/school-owner/searchRequestReminder}" method="get">
               <div class="app-search-box">
                 <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Search...">
+                  <input type="text" class="form-control" placeholder="Search for request...." name="keyword">
                   <div class="input-group-append">
                     <button class="btn" type="submit">
                       <i class="fas fa-search"></i>
@@ -172,7 +174,12 @@
                   <th th:text="${request.requestEmail}"/>
                   <th th:text="${request.requestPhone}"/>
                   <td><button class="btn btn-closed" th:text="${request.requestMasterName}"/></td>
-                  <td><a style="text-decoration: underline" th:href="@{/school-owner/request-list-detail(id=${request.id})}">Go to review</a></td>
+                  <td>
+                    <a style="text-decoration: underline"
+                       th:href="@{/school-owner/request-list-detail(id=${request.id}, page='Detail')}">
+                      Go to review
+                    </a>
+                  </td>
                 </tr>
                 </tbody>
               </table>
@@ -181,28 +188,40 @@
         </div>
 
         <!-- Pagination -->
-        <nav aria-label="Page navigation">
-          <ul class="pagination justify-content-end">
-            <!-- Previous Button -->
-            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-              <a class="page-link" th:if="${currentPage > 0}" th:href="@{'?currentPage=' + ${currentPage - 1}}">Previous</a>
-            </li>
+        <th:block th:if="${numberPage > 0}">
+          <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-end">
+              <!-- Previous Button -->
+              <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:if="${currentPage > 0}" th:href="@{'?currentPage=' + ${currentPage - 1}}">Previous</a>
+              </li>
 
+              <!-- Page Numbers -->
+              <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, numberPage - 1)}"
+                  th:classappend="${pageNum == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{'?currentPage=' + ${pageNum}}" th:text="${pageNum + 1}"></a>
+              </li>
 
-            <!-- Page Numbers -->
-            <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, numberPage - 1)}"
-                th:classappend="${pageNum == currentPage} ? 'active'">
-              <a class="page-link" th:href="@{'?currentPage=' + ${pageNum}}" th:text="${pageNum + 1}"></a>
-            </li>
-
-            <!-- Next Button -->
-            <li class="page-item" th:classappend="${currentPage == numberPage - 1} ? 'disabled'">
-              <a class="page-link" th:if="${currentPage < numberPage - 1}" th:href="@{'?currentPage=' + ${currentPage + 1}}">Next</a>
-            </li>
-
-          </ul>
-        </nav>
-
+              <!-- Next Button -->
+              <li class="page-item" th:classappend="${currentPage == numberPage - 1} ? 'disabled'">
+                <a class="page-link" th:if="${currentPage < numberPage - 1}" th:href="@{'?currentPage=' + ${currentPage + 1}}">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </th:block>
+        <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+          <div id="myToast" class="toast" style="position: absolute; top: 0; right: 0;" data-delay="5000" th:if="${message}">
+            <div class="toast-header">
+              <strong class="mr-auto">Notification</strong>
+              <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="toast-body" th:text="${message}">
+              Default message
+            </div>
+          </div>
+        </div>
         <!-- Footer -->
         <footer class="footer">
           <div class="container-fluid">
@@ -220,6 +239,20 @@
 <!-- Vendor js -->
 <script th:src="@{/admin_side/js/vendor.min.js}"></script>
 <script th:src="@{/admin_side/js/app.min.js}"></script>
+<script th:inline="javascript">
+  document.addEventListener('DOMContentLoaded', function () {
+    /*<![CDATA[*/
+    var message = /*[[${message != null ? message : ''}]]*/ '';
+    if (message.trim() !== '') {
+      var toastElement = document.getElementById('myToast');
+      if (toastElement) {
+        var toast = new bootstrap.Toast(toastElement);
+        toast.show();
+      }
+    }
+    /*]]>*/
+  });
+</script>
 
 </body>
 </html>

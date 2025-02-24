@@ -213,7 +213,10 @@
                                             <button type="button" class="btn btn-light text-primary fw-bold"
                                                     data-dismiss="modal">No. Take me back!
                                             </button>
-                                            <button type="button" class="btn btn-primary px-4">Yes</button>
+                                            <button type="button" class="btn btn-primary px-4"
+                                                    th:onclick="|window.location.href='@{/school-owner/updateRequest(id=${requestDetail.id}, page=${page})}'|">
+                                                Yes
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

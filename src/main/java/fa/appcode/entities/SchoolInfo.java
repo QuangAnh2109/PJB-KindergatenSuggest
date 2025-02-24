@@ -30,7 +30,7 @@ public class SchoolInfo {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "school_phone", nullable = false, length = 12)
+    @Column(name = "school_phone", nullable = false, columnDefinition = "CHAR(12)")
     private String schoolPhone;
 
     @Column(name = "fee_from", nullable = false, precision = 15, scale = 5)
@@ -55,7 +55,7 @@ public class SchoolInfo {
     private City city;
 
     @Lob
-    @Column(name = "school_introduction")
+    @Column(name = "school_introduction", columnDefinition = "TEXT")
     private String schoolIntroduction;
 
     @Column(name = "posted_date")

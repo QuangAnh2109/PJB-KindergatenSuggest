@@ -6,9 +6,12 @@ import fa.appcode.entities.Request;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Repository
@@ -28,4 +31,24 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
     @Query("Select new fa.appcode.common.vo.RequestVo(r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)"
             + "From Request r Join MasterDatum m  ON m.id = r.requestMasterId")
     Page<RequestVo> listAllRequest(Pageable pageable);
+
+    @Query("Select new fa.appcode.common.vo.RequestVo(r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)"
+            + "From  Request r Join MasterDatum m ON m.id = r.requestMasterId "
+            + "where r.fullName Like %?1% Or r.requestEmail Like %?1% "
+            + "Or r.requestPhone Like %?1% Or m.typeValue Like %?1%")
+    Page<RequestVo> searchRequest(String keyword,Pageable pageable);
+
+    @Query("Select new fa.appcode.common.vo.RequestVo(r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)"
+            + "From  Request r Join MasterDatum m ON m.id = r.requestMasterId "
+            + "where (r.fullName Like %?1% Or r.requestEmail Like %?1% "
+            + "Or r.requestPhone Like %?1% Or m.typeValue Like %?1%) "
+            + "And r.requestMasterId !=44")
+    Page<RequestVo> searchRequestReminder(String keyword,Pageable pageable);
+
+
+    @Modifying
+    @Transactional
+    @Query("Update Request r Set r.requestMasterId = 44, r.updateId = ?1,r.updateTime= ?3"+
+           " Where r.id = ?2")
+    void updateRequestStatus(String update_id, int id, Instant updateTime);
 }

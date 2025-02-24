@@ -13,4 +13,7 @@ public interface RequestService {
 
     RequestDetailVo findById(Integer id);
     Page<RequestVo> findOpenedRequest(Pageable pageable);
+    Page<RequestVo> searchRequest(String keyword, Pageable pageable);
+    Page<RequestVo> searchRequestReminder(String keyword, Pageable pageable);
+    void updateRequest(String update_id,int id);
 }

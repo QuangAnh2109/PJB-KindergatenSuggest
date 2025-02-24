@@ -1,5 +1,6 @@
 package fa.appcode.repositories;
 
+import com.cloudinary.provisioning.Account;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.entities.AccountInfo;
@@ -57,4 +58,5 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
             "WHERE ma.typeName='ROLE' AND ma.typeKey=3 " +
             "GROUP BY m.id, m.fullName, m.email, m.phone")
     Page<ParentVo> findAllParent(Pageable pageable);
+    AccountInfo findAccountByEmail(String email);
 }

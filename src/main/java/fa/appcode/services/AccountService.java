@@ -14,4 +14,5 @@ public interface AccountService {
     Page<ParentVo> findAllParent(Pageable pageable);
     ParentVo findParentById(int id);
     Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id,Pageable pageable);
+    AccountInfo findByEmail(String email);
 }
