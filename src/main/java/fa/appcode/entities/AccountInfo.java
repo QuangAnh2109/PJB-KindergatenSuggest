@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "account_info")
+@Table(name = "account_info", schema = "instance_kintergarden_db")
 public class AccountInfo {
     @Id
     @Column(name = "account_id", nullable = false)
@@ -29,10 +29,13 @@ public class AccountInfo {
     @Column(name = "dob")
     private LocalDate dob;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "address")
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)

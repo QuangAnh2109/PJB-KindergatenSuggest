@@ -3,7 +3,6 @@ package fa.appcode.web.controller;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.config.GlobalConfig;
-import fa.appcode.entities.AccountInfo;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;

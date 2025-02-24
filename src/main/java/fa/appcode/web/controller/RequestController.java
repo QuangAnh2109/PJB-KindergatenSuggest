@@ -1,7 +1,6 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.common.vo.RequestVo;
-import fa.appcode.entities.MasterDatum;
 import fa.appcode.entities.Request;
 import fa.appcode.services.MasterDatumService;
 import fa.appcode.services.RequestService;
