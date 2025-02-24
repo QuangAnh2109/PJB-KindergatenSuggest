@@ -1,5 +1,11 @@
 package fa.appcode.services;
 
+import fa.appcode.common.vo.AccountVo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.entities.AccountInfo;
@@ -9,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface AccountService {
+    Page<AccountVo> getAllAccounts(String search, Pageable pageable);
+    AccountVo getAccountById(Integer id);
     Page<AccountInfo> findAll(Pageable pageable);
     List<AccountInfo> findAllRoles();
     Page<ParentVo> findAllParent(Pageable pageable);

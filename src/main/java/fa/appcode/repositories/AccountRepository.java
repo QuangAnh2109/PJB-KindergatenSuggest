@@ -3,11 +3,14 @@ package fa.appcode.repositories;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.entities.AccountInfo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,6 +18,17 @@ import java.util.List;
 @Repository("accountRepository")
 @Transactional
 public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
+
+    @Query("""
+    SELECT ai FROM AccountInfo ai
+    LEFT JOIN FETCH ai.ward w
+    LEFT JOIN FETCH ai.district d
+    LEFT JOIN FETCH ai.city c
+    WHERE ai.deleteFlg = false
+    AND (:search IS NULL OR ai.fullName LIKE %:search% OR ai.email LIKE %:search% OR ai.phone LIKE %:search%)
+""")
+    Page<AccountInfo> findAllWithFullAddress(@Param("search") String search, Pageable pageable);
+
     /**
      * @param pageable
      * @return
