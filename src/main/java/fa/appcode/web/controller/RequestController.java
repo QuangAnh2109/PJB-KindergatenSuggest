@@ -41,12 +41,24 @@ public class RequestController {
         AccountInfo account = accountService.findByEmail(user);
         return account.getRoleId() == 1 ?"Admin":"School owner";
     }
+    public int getUserID(Principal principal) {
+        String user = principal.getName();
+        AccountInfo account = accountService.findByEmail(user);
+        return account.getId();
+    }
     @GetMapping("/school-owner/request-list")
     public String showRequestList(@RequestParam(name = "currentPage"
-            ,defaultValue = "0") int currentPage, Model model,
+            ,defaultValue = "0") int currentPage, Model model,Principal principal,
             @RequestParam(name = "message", defaultValue = "") String message                     ) {
         Pageable pageable = PageRequest.of(currentPage, 5, Sort.by("id").ascending());
-        Page<RequestVo> requestList = requestService.findAll(pageable);
+        String role = getUserName(principal);
+        Page<RequestVo> requestList ;
+        if(role.equalsIgnoreCase("Admin")) {
+            requestList = requestService.findAll(pageable);
+        }else {
+            int accountID = getUserID(principal);
+            requestList = requestService.listAllRequestWithSchoolOwner(accountID,pageable);
+        }
         model.addAttribute("requestList", requestList);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", requestList.getTotalPages());
@@ -56,9 +68,16 @@ public class RequestController {
     @GetMapping("/school-owner/request-reminder")
     public String showRequestReminder(@RequestParam(name = "currentPage"
                                               ,defaultValue = "0") int currentPage, Model model,
-        @RequestParam(name = "message", defaultValue = "")String message) {
+        @RequestParam(name = "message", defaultValue = "")String message,Principal principal) {
         Pageable pageable = PageRequest.of(currentPage, 5, Sort.by("id").ascending());
-        Page<RequestVo> requestList = requestService.findOpenedRequest(pageable);
+        String role = getUserName(principal);
+        Page<RequestVo> requestList ;
+        if(role.equalsIgnoreCase("Admin")) {
+            requestList = requestService.findOpenedRequest(pageable);
+        }else{
+            int accountID = getUserID(principal);
+            requestList = requestService.findOpenedRequestWithSchoolOwner(accountID,pageable);
+        }
         model.addAttribute("requestList", requestList);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", requestList.getTotalPages());
@@ -92,9 +111,16 @@ public class RequestController {
     public String searchRequestList(@RequestParam(name = "currentPage"
             ,defaultValue = "0") int currentPage,
             @RequestParam(name = "keyword", required = false) String keyword,
-            Model model) {
+            Model model,Principal principal) {
         Pageable pageable = PageRequest.of(currentPage, 5, Sort.by("id").ascending());
-        Page<RequestVo> requestList = requestService.searchRequest(keyword,pageable);
+        String role = getUserName(principal);
+        Page<RequestVo> requestList ;
+        if(role.equalsIgnoreCase("Admin")) {
+            requestList = requestService.searchRequest(keyword,pageable);
+        }else{
+            int accountID = getUserID(principal);
+            requestList = requestService.searchRequestWithSchoolOwner(keyword,accountID,pageable);
+        }
         model.addAttribute("requestList", requestList);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", requestList.getTotalPages());
@@ -104,9 +130,16 @@ public class RequestController {
     public String searchRequestReminder(@RequestParam(name = "currentPage"
                                             ,defaultValue = "0") int currentPage,
                                     @RequestParam(name = "keyword", required = false) String keyword,
-                                    Model model) {
+                                    Model model,Principal principal) {
         Pageable pageable = PageRequest.of(currentPage, 5, Sort.by("id").ascending());
-        Page<RequestVo> requestList = requestService.searchRequestReminder(keyword,pageable);
+        String role = getUserName(principal);
+        Page<RequestVo> requestList ;
+        if(role.equalsIgnoreCase("Admin")) {
+            requestList = requestService.searchRequestReminder(keyword,pageable);
+        }else{
+            int accountID = getUserID(principal);
+            requestList = requestService.searchRequestReminderWithSchoolOwner(keyword,accountID,pageable);
+        }
         model.addAttribute("requestList", requestList);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", requestList.getTotalPages());

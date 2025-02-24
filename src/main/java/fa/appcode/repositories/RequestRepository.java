@@ -28,15 +28,45 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             + "where r.requestMasterId !=44")
     Page<RequestVo> findOpenedRequest(Pageable pageable);
 
+    @Query("Select new fa.appcode.common.vo.RequestVo(r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue) "
+            + "From Request r Join MasterDatum m ON m.id = r.requestMasterId "
+            + "Join SchoolInfo s On r.school.id=s.id "
+            + "Join AccountInfo a On a.id=s.account.id "
+            + "where r.requestMasterId !=44 And a.id = ?1")
+    Page<RequestVo> findOpenedRequestWithSchoolOwner(Integer accountID,Pageable pageable);
+
     @Query("Select new fa.appcode.common.vo.RequestVo(r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)"
             + "From Request r Join MasterDatum m  ON m.id = r.requestMasterId")
     Page<RequestVo> listAllRequest(Pageable pageable);
+
+    @Query("Select new fa.appcode.common.vo.RequestVo(r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)"
+            + "From Request r Join MasterDatum m ON m.id = r.requestMasterId "
+            + "Join SchoolInfo s On r.school.id=s.id "
+            + "Join AccountInfo a On a.id=s.account.id "
+            + "where a.id = ?1")
+    Page<RequestVo>  listAllRequestWithSchoolOwner(Integer accountID,Pageable pageable);
 
     @Query("Select new fa.appcode.common.vo.RequestVo(r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)"
             + "From  Request r Join MasterDatum m ON m.id = r.requestMasterId "
             + "where r.fullName Like %?1% Or r.requestEmail Like %?1% "
             + "Or r.requestPhone Like %?1% Or m.typeValue Like %?1%")
     Page<RequestVo> searchRequest(String keyword,Pageable pageable);
+
+    @Query("Select new fa.appcode.common.vo.RequestVo(r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)"
+            + "From  Request r Join MasterDatum m ON m.id = r.requestMasterId "
+            + "Join SchoolInfo s On r.school.id=s.id "
+            + "Join AccountInfo a On a.id=s.account.id "
+            + "where (r.fullName Like %?1% Or r.requestEmail Like %?1% "
+            + "Or r.requestPhone Like %?1% Or m.typeValue Like %?1%) And a.id = ?2")
+    Page<RequestVo> searchRequestWithSchoolOwner(String keyword,Integer accountID,Pageable pageable);
+
+    @Query("Select new fa.appcode.common.vo.RequestVo(r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)"
+            + "From  Request r Join MasterDatum m ON m.id = r.requestMasterId "
+            + "Join SchoolInfo s On r.school.id=s.id "
+            + "Join AccountInfo a On a.id=s.account.id "
+            + "where (r.fullName Like %?1% Or r.requestEmail Like %?1% "
+            + "Or r.requestPhone Like %?1% Or m.typeValue Like %?1%) And a.id = ?2 And r.requestMasterId!=44")
+    Page<RequestVo> searchRequestReminderWithSchoolOwner(String keyword,Integer accountID,Pageable pageable);
 
     @Query("Select new fa.appcode.common.vo.RequestVo(r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)"
             + "From  Request r Join MasterDatum m ON m.id = r.requestMasterId "

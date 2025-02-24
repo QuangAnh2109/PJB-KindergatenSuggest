@@ -28,6 +28,11 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    public Page<RequestVo> listAllRequestWithSchoolOwner(Integer accountID, Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.listAllRequestWithSchoolOwner(accountID,pageable);
+    }
+
+    @Override
     public RequestDetailVo findById(Integer id) {
         return requestRepository.findRequestsById(id);
     }
@@ -38,13 +43,28 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    public Page<RequestVo> findOpenedRequestWithSchoolOwner(Integer accountID, Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.findOpenedRequestWithSchoolOwner(accountID,pageable);
+    }
+
+    @Override
     public Page<RequestVo> searchRequest(String keyword, Pageable pageable) {
         return (Page<RequestVo>)requestRepository.searchRequest(keyword,pageable);
     }
 
     @Override
+    public Page<RequestVo> searchRequestWithSchoolOwner(String keyword,Integer accountID, Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.searchRequestWithSchoolOwner(keyword,accountID,pageable);
+    }
+
+    @Override
     public Page<RequestVo> searchRequestReminder(String keyword, Pageable pageable) {
         return (Page<RequestVo>)requestRepository.searchRequestReminder(keyword,pageable);
+    }
+
+    @Override
+    public Page<RequestVo> searchRequestReminderWithSchoolOwner(String keyword, Integer accountID, Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.searchRequestReminderWithSchoolOwner(keyword,accountID,pageable);
     }
 
     @Override
