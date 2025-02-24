@@ -36,7 +36,7 @@ public class Feedback {
     private Float hygieneNutrition;
 
     @Lob
-    @Column(name = "feedback_message", nullable = false)
+    @Column(name = "feedback_message", nullable = false, columnDefinition = "TEXT")
     private String feedbackMessage;
 
     @ColumnDefault("(1)")
