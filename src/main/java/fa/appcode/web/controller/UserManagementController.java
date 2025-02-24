@@ -2,18 +2,18 @@ package fa.appcode.web.controller;
 
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.services.AccountService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 @Controller
 @RequestMapping("/admin/")
@@ -49,6 +49,17 @@ public class UserManagementController {
         AccountVo user = accountService.getAccountById(id);
         model.addAttribute("user", user);
         return "admin_side/UserDetails";
+    }
+
+    @PostMapping("userdetail/{id}/toggleStatus")
+    public String toggleUserStatus(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            accountService.toggleUserStatus(id);
+            redirectAttributes.addFlashAttribute("message", "User status updated successfully.");
+        } catch (EntityNotFoundException e) {
+            redirectAttributes.addFlashAttribute("error", "User not found.");
+        }
+        return "redirect:/admin/userdetail/" + id;
     }
 
 }

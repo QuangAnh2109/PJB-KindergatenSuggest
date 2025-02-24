@@ -4,7 +4,6 @@ import fa.appcode.common.vo.AccountVo;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
-import fa.appcode.entities.AccountInfo;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.MasterDataService;
@@ -72,6 +71,22 @@ public class AccountServiceImpl implements AccountService {
 
         return accountVo;
     }
+
+    @Override
+    public void toggleUserStatus(Integer id) {
+        AccountInfo user = accountRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        // Giả sử statusId = 1 là Active, statusId = 2 là Inactive
+        if (user.getStatusId() == 41) {
+            user.setStatusId(42); // Deactivate
+        } else {
+            user.setStatusId(41); // Activate
+        }
+
+        accountRepository.save(user);
+    }
+
 
     @Override
     public Page<AccountInfo> findAll(Pageable pageable)

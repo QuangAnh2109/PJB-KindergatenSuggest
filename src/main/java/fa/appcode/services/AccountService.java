@@ -15,8 +15,11 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface AccountService {
+    //tuanpa79
     Page<AccountVo> getAllAccounts(String search, Pageable pageable);
     AccountVo getAccountById(Integer id);
+    void toggleUserStatus(Integer id);
+
     Page<AccountInfo> findAll(Pageable pageable);
     List<AccountInfo> findAllRoles();
     Page<ParentVo> findAllParent(Pageable pageable);

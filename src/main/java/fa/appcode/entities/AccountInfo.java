@@ -32,7 +32,7 @@ public class AccountInfo {
     @Column(name = "password", nullable = false, columnDefinition = "CHAR(255)")
     private String password;
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "address")
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
