@@ -11,9 +11,9 @@ public class HomeController {
     public String home() {
         return "user_side/index";
     }
-    @GetMapping("/admin/home")
+    @GetMapping("/school-owner/request-list")
     public String admin_home() {
-        return "admin_side/index";
+        return "admin_side/request-list";
     }
 
 }

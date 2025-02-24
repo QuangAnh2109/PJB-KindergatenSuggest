@@ -21,7 +21,8 @@ import java.util.List;
 
 @Service
 public class AccountServiceImpl implements AccountService {
-
+    @Autowired
+    private MasterDataService masterDataService;
     @Autowired
     private AccountRepository accountRepository;
     private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordController.class);
@@ -70,9 +71,6 @@ public class AccountServiceImpl implements AccountService {
 
 
 
-    @Autowired
-    private MasterDataService masterDataService;
-
     @Override
     public Page<AccountVo> getAllAccounts(String search, Pageable pageable) {
         Page<AccountInfo> accountPage = accountRepository.findAllWithFullAddress(search, pageable);
@@ -115,11 +113,9 @@ public class AccountServiceImpl implements AccountService {
             }
             accountVo.setFullAddress(fullAddress.toString().trim());
         }
-
         // Resolve role and status names
         accountVo.setRole(masterDataService.getMasterById(accountInfo.getRoleId()));
         accountVo.setStatus(masterDataService.getMasterById(accountInfo.getStatusId()));
-
         return accountVo;
     }
 
@@ -148,5 +144,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id,Pageable pageable) {
         return accountRepository.findParentEnrolledSchoolBy(id,pageable);
+    }
+
+    @Override
+    public AccountVo findAccountByPhone(String phone) {
+        return accountRepository.findByPhone(phone);
     }
 }

@@ -1,14 +1,15 @@
 package fa.appcode.services.impl;
 
 import fa.appcode.services.EmailService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Async;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 @Service
 public class EmailServiceImpl implements EmailService {
     @Autowired
@@ -17,8 +18,13 @@ public class EmailServiceImpl implements EmailService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
+    private static final Logger log = LoggerFactory.getLogger(EmailServiceImpl.class);
+
+    @Async
     @Override
     public void sendEmail(String toEmail, String subject, String text) {
+        log.info("Sending email to {} on thread: {}", toEmail, Thread.currentThread().getName());
+
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
@@ -26,10 +32,12 @@ public class EmailServiceImpl implements EmailService {
             message.setSubject(subject);
             message.setText(text);
             javaMailSender.send(message);
-            log.info("Email sent successfully to {}", toEmail);
+            log.info(" Email sent successfully to {}", toEmail);
         } catch (Exception e) {
-            log.error("Failed to send email to {}: {}", toEmail, e.getMessage());
+            log.error("Failed to send email: {}", e.getMessage());
         }
     }
+
+
 
 }

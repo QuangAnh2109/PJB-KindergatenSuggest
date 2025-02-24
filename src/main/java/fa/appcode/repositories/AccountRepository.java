@@ -1,5 +1,6 @@
 package fa.appcode.repositories;
 
+import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.entities.AccountInfo;
@@ -19,7 +20,8 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
     @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1")
     AccountInfo findByEmail(String email);
-
+    @Query("Select c from AccountInfo c where c.phone=?1")
+    AccountVo findByPhone(String phone);
     @Modifying
     @Transactional
     @Query("UPDATE AccountInfo a SET a.password = ?1 WHERE a.email = ?2")

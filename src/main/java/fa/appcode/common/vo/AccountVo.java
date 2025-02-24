@@ -24,24 +24,18 @@ public class AccountVo {
     private String role;
     private String status;
     @NotNull
-    @NotEmpty(message = "")
+    @NotEmpty(message = "This field is required.")
     private String fullName;
-
     @NotEmpty(message = "This field is required.")
-    @Email(message = "Email khong hop le")
+    @Email(message = "Invalid email format.")
     private String email;
-
-    @NotEmpty(message = "This field is required.")
-    @NotEmpty(message = "This field is required.")
-    @Pattern(regexp = Constant.PHONE_REGEX, message = "Số điện thoại không hợp lệ!")
+    @NotEmpty(message = "PzThis field is required.")
+    @Pattern(regexp = Constant.PHONE_REGEX, message = "Invalid phone number format.")
     private String phone;
-
     @NotEmpty(message = "This field is required.")
-    @Pattern(regexp = Constant.PASSWORD_REGEX, message = "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 số và 1 ký tự đặc biệt, tối thiểu 12 ký tự!")
+    @Pattern(regexp = Constant.PASSWORD_REGEX, message = "Password must contain at least one uppercase letter, one number, one special character, and be at least 12 characters long.")
     private String password;
     @NotEmpty(message = "This field is required.")
     private String confirmPassword;
-
-
 
 }
