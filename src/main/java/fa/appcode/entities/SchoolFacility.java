@@ -10,7 +10,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "school_facilities")
+@Table(name = "school_facilities", schema = "instance_kintergarden_db")
 public class SchoolFacility {
     @EmbeddedId
     private SchoolFacilityId id;
