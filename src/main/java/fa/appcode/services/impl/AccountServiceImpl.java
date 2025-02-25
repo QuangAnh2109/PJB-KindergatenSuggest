@@ -112,7 +112,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public RoleVo findByEmail(String email) {return accountRepository.findByEmail(email);}
+    public String findAccountRoleString(String email) {return accountRepository.findAccountRoleString(email);}
 
     @Override
     public AccountInfo getAccountInfoById(int id) {

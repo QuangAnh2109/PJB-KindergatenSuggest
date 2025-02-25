@@ -4,11 +4,8 @@ import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.config.GlobalConfig;
-import fa.appcode.entities.AccountInfo;
 import fa.appcode.entities.EnrollSchool;
 import fa.appcode.entities.SchoolInfo;
-import fa.appcode.repositories.AccountRepository;
-import fa.appcode.repositories.SchoolInfoRepository;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.EnrollSchoolService;
 import fa.appcode.services.SchoolInfoService;
@@ -18,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -58,7 +54,7 @@ public class ParentController {
          */
         Page<ParentVo> list = accountService.findAllParent(search,pageable);
         List<ParentVo> accounts = list.getContent();
-        String role = accountService.findByEmail(principal.getName()).getAccountRole().replaceAll(" ","-").toLowerCase();
+        String role = accountService.findAccountRoleString(principal.getName()).replaceAll(" ","-").toLowerCase();
         /*
          * Put data into Model
          */
@@ -92,7 +88,7 @@ public class ParentController {
         ParentVo accountInfo = accountService.findParentById(id);
         Page<EnrolledSchoolVo> listParentEnroll = accountService.findParentEnrolledSchoolByParentId(id,pageable);
         List<EnrolledSchoolVo> enrolledSchools = listParentEnroll.getContent();
-        String role = accountService.findByEmail(principal.getName()).getAccountRole().replaceAll(" ","-").toLowerCase();
+        String role = accountService.findAccountRoleString(principal.getName()).replaceAll(" ","-").toLowerCase();
 
         /*
          * Get Schools from Service
@@ -135,10 +131,13 @@ public class ParentController {
          * Get Schools from Service
          */
         List<SchoolInfo> schoolInfoList = schoolInfoService.findSchoolInfoByAccountId(principal.getName());
-        String role = accountService.findByEmail(principal.getName()).getAccountRole().replaceAll(" ","-").toLowerCase();
+        String role = accountService.findAccountRoleString(principal.getName()).replaceAll(" ","-").toLowerCase();
         /*
          * Put data into Model
          */
+        if (accountInfo == null) {
+            throw new IllegalArgumentException("Parent not found for ID: " + id);
+        }
         model.addAttribute("role", role);
         model.addAttribute("schoolInfoList", schoolInfoList);
         model.addAttribute("enrolledSchools", enrolledSchools);
@@ -156,13 +155,12 @@ public class ParentController {
     }
 
 
-    @Transactional
     @PostMapping({"school-owner/parent-list/parent-details/{id}", "admin/parent-list/parent-details/{id}"})
     public String enrollParentToSchool(@PathVariable("id") int id, Model model, @RequestParam("school") int schoolId, RedirectAttributes redirectAttributes, Principal principal) {
         /*
          * Enroll Parent to School
          */
-        String role = accountService.findByEmail(principal.getName()).getAccountRole().replaceAll(" ","-").toLowerCase();
+        String role = accountService.findAccountRoleString(principal.getName()).replaceAll(" ","-").toLowerCase();
         try {
             // Enroll Parent to School
             EnrollSchool schoolEnroll = new EnrollSchool();

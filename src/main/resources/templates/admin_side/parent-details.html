@@ -164,7 +164,7 @@
                 </div>
                 <!-- end row -->
                 <div class="row" style="justify-content: center;">
-                    <div class="col-lg-12">
+                    <div class="col-lg-12" th:if="${accountInfo!=null}">
                         <!-- loop here -->
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label">Full Name</label>
@@ -254,94 +254,101 @@
                                 </li>
                             </ul>
                         </nav>
-
-                    </div>
-                    <button type="button" class="btn btn-primary waves-effect waves-light justify-content-end" data-toggle="modal" data-target="#enrollModel">Enroll parent to school</button>
-                    <form class="form-horizontal mt-4 mt-lg-0" action="/admin/parent-list/parent-details/1" method="get">
-                        <div id="unenrollModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="myModalLabel2">Unenroll?</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <form class="form-horizontal mt-4 mt-lg-0" action="/admin/parent-list/parent-details/1" method="get">
+                            <div id="unenrollModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myModalLabel2">Unenroll?</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h6>Are you sure to Unenroll this to <span id="schoolNameText"></span></h6>
+                                            <input type="hidden" id="unenrollSchoolName" name="school">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">No, Take me back</button>
+                                            <button type="submit" class="btn btn-primary waves-effect waves-light">Yes</button>
+                                        </div>
                                     </div>
-                                    <div class="modal-body">
-                                        <h6>Are you sure to Unenroll this to <span id="schoolNameText"></span></h6>
-                                        <input type="hidden" id="unenrollSchoolName" name="school">
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">No, Take me back</button>
-                                        <button type="submit" class="btn btn-primary waves-effect waves-light">Yes</button>
-                                    </div>
+                                    <!-- /.modal-content -->
                                 </div>
-                                <!-- /.modal-content -->
+                                <!-- /.modal-dialog -->
                             </div>
-                            <!-- /.modal-dialog -->
-                        </div>
-                    </form>
-                    <form class="form-horizontal mt-4 mt-lg-0" th:action="@{/{role}/parent-list/parent-details/{id}(role=${role},id=${accountInfo.parentId})}" method="post" onsubmit="return checkSchoolSelection()">
-                        <div id="enrollModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="myModalLabel">Choose enroll school</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="form-group row">
-                                            <div class="col-md-10">
-                                                <div class="form-group row">
-                                                    <label class="col-md-2 col-form-label">Full Name</label>
-                                                    <div class="col-md-10">
-                                                        <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentName}">
+                        </form>
+                        <form class="form-horizontal mt-4 mt-lg-0" th:action="@{/{role}/parent-list/parent-details/{id}(role=${role},id=${accountInfo.parentId})}" method="post" onsubmit="return checkSchoolSelection()">
+                            <div id="enrollModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myModalLabel">Choose enroll school</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group row">
+                                                <div class="col-md-10">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Full Name</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentName}">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-md-2 col-form-label">Email</label>
-                                                    <div class="col-md-10">
-                                                        <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentEmail}">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Email</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentEmail}">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-md-2 col-form-label">Date Of Birth</label>
-                                                    <div class="col-md-10">
-                                                        <input type="date" class="form-control" readonly="" th:value="${accountInfo.DOB}">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Date Of Birth</label>
+                                                        <div class="col-md-10">
+                                                            <input type="date" class="form-control" readonly="" th:value="${accountInfo.DOB}">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-md-2 col-form-label">Phone No.</label>
-                                                    <div class="col-md-10">
-                                                        <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentPhone}">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Phone No.</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentPhone}">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-md-2 col-form-label">Address</label>
-                                                    <div class="col-md-10">
-                                                        <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentAddress}">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Address</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentAddress}">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-md-2 col-form-label">Enroll School</label>
-                                                    <label class="col-md-10">
-                                                        <select class="form-control" name="school">
-                                                            <option value="">No School</option>
-                                                            <option th:each="school : ${schoolInfoList}" th:value="${school.id}" th:text="${school.schoolName}"></option>
-                                                        </select>
-                                                    </label>
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Enroll School</label>
+                                                        <label class="col-md-10">
+                                                            <select class="form-control" name="school">
+                                                                <option value="">No School</option>
+                                                                <option th:each="school : ${schoolInfoList}" th:value="${school.id}" th:text="${school.schoolName}"></option>
+                                                            </select>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary waves-effect waves-light">Enroll</button>
+                                        </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary waves-effect waves-light">Enroll</button>
-                                    </div>
+                                    <!-- /.modal-content -->
                                 </div>
-                                <!-- /.modal-content -->
+                                <!-- /.modal-dialog -->
                             </div>
-                            <!-- /.modal-dialog -->
+                        </form>
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#enrollModel">
+                                Enroll parent to school
+                            </button>
                         </div>
-                    </form>
+                    </div>
+                    <div th:unless="${accountInfo}">
+                        <h1>Invalid Parent ID</h1>
+                    </div>
+
                 </div>
                 <!-- Alert Modal -->
                 <!-- end row -->
