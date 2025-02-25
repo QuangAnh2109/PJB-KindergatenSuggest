@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @Table(name = "enroll_school", schema = "instance_kintergarden_db")
 public class EnrollSchool {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "enroll_id", nullable = false)
     private Integer id;
 

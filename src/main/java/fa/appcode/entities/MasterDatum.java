@@ -13,7 +13,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "master_data")
+@Table(name = "master_data", schema = "instance_kintergarden_db")
 public class MasterDatum {
     @Id
     @Column(name = "master_id", nullable = false)

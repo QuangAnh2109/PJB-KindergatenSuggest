@@ -29,9 +29,6 @@ public class AccountInfo {
     @Column(name = "dob")
     private LocalDate dob;
 
-    @Column(name = "image_url", nullable = false)
-    private String imageUrl;
-
     @Column(name = "password", nullable = false, columnDefinition = "CHAR(255)")
     private String password;
 
@@ -75,4 +72,6 @@ public class AccountInfo {
     @Column(name = "delete_flg", nullable = false)
     private Boolean deleteFlg = false;
 
+    @Column(name = "image_url", nullable = false)
+    private String imageUrl;
 }

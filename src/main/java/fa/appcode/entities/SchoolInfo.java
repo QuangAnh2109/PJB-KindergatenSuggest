@@ -7,12 +7,11 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDate;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "school_info")
+@Table(name = "school_info", schema = "instance_kintergarden_db")
 public class SchoolInfo {
     @Id
     @Column(name = "school_id", nullable = false)
@@ -28,7 +27,7 @@ public class SchoolInfo {
     @Column(name = "school_email", nullable = false)
     private String schoolEmail;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url")
     private String imageUrl;
 
     @Column(name = "school_phone", nullable = false, columnDefinition = "CHAR(12)")
