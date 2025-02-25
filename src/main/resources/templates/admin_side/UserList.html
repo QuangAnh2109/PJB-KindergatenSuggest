@@ -360,12 +360,16 @@
                                         <span th:if="${account.status == 'Active'}" class="badge badge-success">Activated</span>
                                         <span th:if="${account.status != 'Active'}" class="badge badge-danger">Deactivated</span>
                                     </td>
-                                    <td>
-                                        <a th:href="@{/admin/edituser/{id}(id=${account.id})}" class="btn btn-sm btn-light">
+                                    <td style="white-space: nowrap;">
+                                        <a th:href="@{/admin/edituser/{id}(id=${account.id})}" class="btn btn-sm btn-light" style="display: inline-block;">
                                             <i class="ti-pencil"></i>
                                         </a>
-                                        <a th:href="@{/admin/deleteuser}" class="btn btn-sm btn-danger"><i
-                                                class="ti-trash"></i></a>
+                                        <form th:action="@{/admin/deleteuser/{id}(id=${account.id})}" method="post" onsubmit="return confirm('Are you sure?');" style="display: inline-block;">
+                                            <input type="hidden" name="_method" value="DELETE"/>
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="ti-trash"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                                 </tbody>

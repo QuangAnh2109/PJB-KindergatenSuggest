@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -100,6 +101,12 @@ public class AccountServiceImpl implements AccountService {
         user.setRoleId(roleId);
 
         accountRepository.save(user);
+    }
+    public void deleteAccount(Integer id) {
+        AccountInfo account = accountRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        account.setDeleteFlg(true);
+        accountRepository.save(account);
     }
 
 

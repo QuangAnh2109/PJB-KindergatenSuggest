@@ -20,6 +20,7 @@ public interface AccountService {
     AccountVo getAccountById(Integer id);
     void toggleUserStatus(Integer id);
     void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId);
+    void deleteAccount(Integer id);
 
     Page<AccountInfo> findAll(Pageable pageable);
     List<AccountInfo> findAllRoles();

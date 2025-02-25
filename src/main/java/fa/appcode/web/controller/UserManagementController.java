@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -97,5 +99,19 @@ public class UserManagementController {
         }
         return "redirect:/admin/edituser/" + id;
     }
+
+    @PostMapping("deleteuser/{id}")
+    public String deleteUser(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            accountService.deleteAccount(id);
+            redirectAttributes.addFlashAttribute("message", "User deleted successfully.");
+        } catch (EntityNotFoundException e) {
+            redirectAttributes.addFlashAttribute("error", "User not found.");
+        }
+        return "redirect:/admin/userlist";
+    }
+
+
+
 
 }
