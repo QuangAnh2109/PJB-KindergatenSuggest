@@ -3,9 +3,9 @@
 <head>
   <title>Register</title>
   <link rel="icon" th:href="@{/user_side/images/icon.png}" type="image/gif" sizes="16x16">
-  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <meta content="Rentaly - Multipurpose Vehicle Car Rental Website Template" name="description">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Rentaly - Multipurpose Vehicle Car Rental Website Template">
   <link th:href="@{/user_side/css/bootstrap.min.css}" rel="stylesheet">
   <link th:href="@{/user_side/css/mdb.min.css}" rel="stylesheet">
   <link th:href="@{/user_side/css/plugins.css}" rel="stylesheet">
@@ -16,126 +16,56 @@
 <body>
 <div id="wrapper">
   <div id="de-preloader"></div>
-  <!-- header begin -->
-  <header class="transparent scroll-light has-topbar">
-    <div id="topbar" class="topbar-dark text-light">
-      <div class="container">
-        <div class="topbar-left xs-hide">
-          <div class="topbar-widget">
-            <div class="topbar-widget"><a href="#"><i class="fa fa-phone"></i>+208 333 9296</a></div>
-            <div class="topbar-widget"><a href="#"><i class="fa fa-envelope"></i>contact@rentaly.com</a></div>
-            <div class="topbar-widget"><a href="#"><i class="fa fa-clock-o"></i>Mon - Fri 08.00 - 18.00</a></div>
-          </div>
-        </div>
+  <div th:replace="user_side/header :: header"></div>
 
-        <div class="topbar-right">
-          <div class="social-icons">
-            <a href="#"><i class="fa fa-facebook fa-lg"></i></a>
-            <a href="#"><i class="fa fa-twitter fa-lg"></i></a>
-            <a href="#"><i class="fa fa-youtube fa-lg"></i></a>
-            <a href="#"><i class="fa fa-pinterest fa-lg"></i></a>
-            <a href="#"><i class="fa fa-instagram fa-lg"></i></a>
-          </div>
-        </div>
-        <div class="clearfix"></div>
-      </div>
-    </div>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="de-flex sm-pt10">
-            <div class="de-flex-col">
-              <div class="de-flex-col">
-                <!-- logo begin -->
-                <div id="logo">
-                  <a th:href="@{/home}">
-                    <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
-                    <img class="logo-2" src="/user_side/images/logo1.png" alt="">
-                  </a>
-                </div>
-                <!-- logo close -->
-              </div>
-            </div>
-            <div class="de-flex-col header-col-mid">
-              <ul id="mainmenu">
-                <li><a class="menu-item" href="index.html">School Search</a>
-                </li>
-                <li><a class="menu-item" href="index.html">Community</a>
-                </li>
-                <li><a class="menu-item" href="index.html">About Us</a>
-                </li>
-              </ul>
-            </div>
-            <div class="de-flex-col">
-              <div class="menu_side_area" >
-                <a th:href="@{/showMyLoginPage}" class="btn-main"> Login</a>
-                <span class="menu-btn"></span>
-              </div>
-              <div class="menu_side_area">
-                <a th:href="@{/register}" class="btn-main">Sign Up</a>
-                <span class="menu-btn"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
-  <section id="subheader" class="jarallax text-light">
-    <img th:src="@{user_side/images/background/subheader.jpg}" class="jarallax-img" alt="">
-    <div class="center-y relative text-center">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12 text-center">
-            <h1>Register</h1>
-          </div>
-        </div>
-      </div>
+  <section id="subheader" class="jarallax text-light text-center">
+    <img th:src="@{/user_side/images/background/subheader.jpg}" class="jarallax-img" alt="">
+    <div class="center-y relative">
+      <h1>Register</h1>
     </div>
   </section>
-  <section aria-label="section">
+
+  <section class="py-5">
     <div class="container">
-      <div class="row">
-        <div class="col-md-8 offset-md-2">
-          <h3>Create a new user</h3>
-          <form th:action="@{/register}" method="post">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="field-set">
-                  <label>Full Name:</label>
-                  <input type="text"  class="form-control" placeholder="Enter your full name">
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="field-set">
-                  <label>Email Address:</label>
-                  <input type="email"  class="form-control" placeholder="info@xyz.com">
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="field-set">
-                  <label>Mobile No.:</label>
-                  <input type="text"  class="form-control" placeholder="099999999">
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="field-set">
-                  <label>Password:</label>
-                  <input type="password"  class="form-control" placeholder="xxxxxxxxxxxx">
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="field-set">
-                  <label>Confirm Password:</label>
-                  <input type="password" name="repassword" class="form-control" placeholder="xxxxxxxxxxxx">
-                </div>
-              </div>
-              <div class="col-md-12 d-flex justify-content-center">
-                <div class="col-md-4 mb60 d-flex gap-4 justify-content-center">
-                  <input type="reset" value="Cancel" class="btn-main">
-                  <input type="submit" value="Sign Up" class="btn-main">
-                </div>
-              </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <h3 class="text-center mb-4">Create a new account</h3>
+          <form th:action="@{/register}" th:object="${accountVo}" method="post" class="p-4 shadow rounded bg-white">
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" th:field="*{fullName}" class="form-control" placeholder="Enter your full name">
+              <span th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Email Address</label>
+              <input type="email" th:field="*{email}" class="form-control" placeholder="info@xyz.com">
+              <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></span>
+              <span th:if="${emailError}" th:text="${emailError}" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Mobile No.</label>
+              <input type="text" th:field="*{phone}" class="form-control" placeholder="099999999">
+              <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" th:field="*{password}" class="form-control" placeholder="xxxxxxxxxxxx">
+              <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Confirm Password</label>
+              <input type="password" th:field="*{confirmPassword}" class="form-control" placeholder="xxxxxxxxxxxx">
+              <span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="text-danger"></span>
+              <span th:if="${confirmPasswordError}" th:text="${confirmPasswordError}" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <input type="reset" value="Cancel" class="btn btn-outline-secondary w-45">
+              <input type="submit" value="Sign Up" class="btn btn-primary w-45">
             </div>
           </form>
         </div>
@@ -143,6 +73,7 @@
     </div>
   </section>
 </div>
+
 <script th:src="@{/user_side/js/plugins.js}"></script>
 <script th:src="@{/user_side/js/designesia.js}"></script>
 </body>

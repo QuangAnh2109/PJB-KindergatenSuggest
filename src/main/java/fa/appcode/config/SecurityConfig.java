@@ -7,7 +7,6 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import javax.sql.DataSource;
-
 @Configuration
 public class SecurityConfig {
         private final CustomAuthenticationSuccessHandler successHandler;
@@ -30,8 +29,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer->
                         configurer
-                                .requestMatchers("/", "/home","/register","/forgot-password","/reset-p[assword",
-                                          "/about", "/contact","/user_side/**").permitAll()
+                                .requestMatchers("/", "/home","/register","/forgot-password",
+                                        "/reset-password", "/about", "/contact","/user_side/**","register/verify").permitAll()
                                 .requestMatchers("/parent/**").hasAuthority("Parent")
                                 .requestMatchers("/school-owner/**").hasAnyAuthority("School owner", "Admin")
                                 .requestMatchers("/admin/**").hasAuthority("Admin")
@@ -42,7 +41,6 @@ public class SecurityConfig {
                                 .loginPage("/showMyLoginPage")
                                 .loginProcessingUrl("/authenticateTheUser")
                                 .successHandler(successHandler)
-
                         .permitAll())
                 .logout(logout->logout.permitAll()
                 )

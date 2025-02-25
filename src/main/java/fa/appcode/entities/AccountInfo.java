@@ -72,4 +72,6 @@ public class AccountInfo {
     @Column(name = "delete_flg", nullable = false)
     private Boolean deleteFlg = false;
 
+    @Column(name = "image_url", nullable = false)
+    private String imageUrl;
 }

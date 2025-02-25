@@ -18,11 +18,12 @@
     <link th:href="@{/user_side/css/coloring.css}" rel="stylesheet">
     <link id="colors" th:href="@{/user_side/css/colors/scheme-01.css}" rel="stylesheet">
 </head>
-
 <body>
 <div id="wrapper">
+    <div id="de-preloader"></div>
     <div class="no-bottom no-top" id="content">
         <div id="top"></div>
+        <div th:replace="user_side/header :: header"></div>
         <section id="section-hero" aria-label="section" class="jarallax">
             <img th:src="@{/user_side/images/background/2.jpg}" class="jarallax-img" alt="">
             <div class="v-center">
@@ -35,8 +36,6 @@
 
                                 <div th:if="${param.error}" class="alert alert-danger text-center"
                                      th:text="'Invalid email or password. Please try again.'"></div>
-                                <!--                                <div th:if="${emailError}" class="alert alert-warning text-center" th:text="${emailError}"></div>-->
-<!--                                <div th:if="${missingError}" class="alert alert-warning text-center" th:text="${missingError}"></div>-->
                                 <form action="#" th:action="@{/authenticateTheUser}" method="post">
                                     <div class="field-set">
                                         <label>Email address</label>
