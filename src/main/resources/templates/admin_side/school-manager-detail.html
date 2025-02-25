@@ -19,6 +19,11 @@
     <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css" id="app-stylesheet" />
     <!-- Include stylesheet -->
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+    <style>
+        .school-form tr{
+            height: 60px;
+        }
+    </style>
 </head>
 
 <body>
@@ -434,57 +439,43 @@
                     </div>
                 </div>
                 <!-- end row -->
-                <form action="" method="post" enctype="multipart/form-data">
-                    <table class="col-12">
+                <form th:action="@{/admin/school-form}" method="post" enctype="multipart/form-data" th:object="${sc}">
+                    <table class="col-12 school-form">
                         <tr>
                             <td>School Name</td>
-                            <td><input type="text" class="form-control" placeholder="Enter School Name Here..." maxlength="255" required></td>
+                            <td><input type="text" name="name" class="form-control" placeholder="Enter School Name Here..." maxlength="255" required></td>
                         </tr>
                         <tr>
                             <td>School Type</td>
                             <td>
-                                <select class="form-control" required>
-                                    <option value="" disabled selected>Select a schoole type</option>
-                                    <option value="1">demo 1</option>
-                                    <option value="2">demo 2</option>
-                                    <option value="3">demo 3</option>
-                                    <option value="4">demo 4</option>
+                                <select name="type" class="form-control" required>
+                                    <option value="" disabled selected>Select a school type</option>
+                                    <option th:each="schoolType:${schoolTypes}" th:value="${schoolType.id}" th:text="${schoolType.typeValue}">
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <td>Address</td>
                             <td>
-                                <select class="form-control" required>
+                                <select onchange="loadDistrict(this.value)" name="city" class="form-control" required>
                                     <option value="" disabled selected>Province/City</option>
-                                    <option value="1">demo 1</option>
-                                    <option value="2">demo 2</option>
-                                    <option value="3">demo 3</option>
-                                    <option value="4">demo 4</option>
+                                    <option th:each="city:${citys}" th:value="${city.id}" th:text="${city.cityName}">
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <td></td>
                             <td>
-                                <select class="form-control" required>
+                                <select onchange="loadWard(this.value)" name="district" id="district" class="form-control" required disabled>
                                     <option value="" disabled selected>District</option>
-                                    <option value="1">demo 1</option>
-                                    <option value="2">demo 2</option>
-                                    <option value="3">demo 3</option>
-                                    <option value="4">demo 4</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <td></td>
                             <td>
-                                <select class="form-control" required>
+                                <select onchange="enableParam('address')" name="ward" id="ward" class="form-control" required disabled>
                                     <option value="" disabled selected>Ward</option>
-                                    <option value="1">demo 1</option>
-                                    <option value="2">demo 2</option>
-                                    <option value="3">demo 3</option>
-                                    <option value="4">demo 4</option>
                                 </select>
                             </td>
                         </tr>
@@ -492,25 +483,22 @@
                             <td>
 
                             </td>
-                            <td><input type="text" class="form-control" placeholder="Enter School Address Here..." maxlength="255" required></td>
+                            <td><input type="text" name="address" id="address" class="form-control" placeholder="Enter School Address Here..." maxlength="255" required disabled></td>
                         </tr>
                         <tr>
                             <td>Email</td>
-                            <td><input type="email" class="form-control" placeholder="Enter School Email Here..." pattern="\w[\w0-9]*@gmail.com" required></td>
+                            <td><input type="email" name="email" class="form-control" placeholder="Enter School Email Here..." th:pattern="${emailRegex}" required></td>
                         </tr>
                         <tr>
                             <td>Phone No.</td>
-                            <td><input type="text" class="form-control" placeholder="Enter Phone Number Here..." pattern="/(84[3|5|7|8|9])+([0-9]{8})\b/g" required></td>
+                            <td><input type="text" name="phone" class="form-control" placeholder="Enter Phone Number Here..." th:pattern="${phoneRegex}" required></td>
                         </tr>
                         <tr>
                             <td>Child-receiving age</td>
                             <td>
                                 <select class="form-control" required>
                                     <option value="" disabled selected>Select Child-Receiving Age</option>
-                                    <option value="1">demo 1</option>
-                                    <option value="2">demo 2</option>
-                                    <option value="3">demo 3</option>
-                                    <option value="4">demo 4</option>
+                                    <option th:each="age:${childReceivingAges}" th:value="${age.id}" th:text="${age.typeValue}">
                                 </select>
                             </td>
                         </tr>
@@ -519,10 +507,7 @@
                             <td>
                                 <select class="form-control" required>
                                     <option value="" disabled selected>Select Education Method</option>
-                                    <option value="1">demo 1</option>
-                                    <option value="2">demo 2</option>
-                                    <option value="3">demo 3</option>
-                                    <option value="4">demo 4</option>
+                                    <option th:each="method:${educationMethods}" th:value="${method.id}" th:text="${method.typeValue}">
                                 </select>
                             </td>
                         </tr>
@@ -538,88 +523,9 @@
                         <tr>
                             <td>Facilities</td>
                             <td class="row" style="margin-left: 0px;">
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="facilities-checkbox1" type="checkbox">
-                                    <label for="facilities-checkbox1">
-                                        demo 1
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="facilities-checkbox2" type="checkbox">
-                                    <label for="facilities-checkbox2">
-                                        demo 2
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="facilities-checkbox3" type="checkbox">
-                                    <label for="facilities-checkbox3">
-                                        demo 3
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="facilities-checkbox4" type="checkbox">
-                                    <label for="facilities-checkbox4">
-                                        demo 4
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="facilities-checkbox5" type="checkbox">
-                                    <label for="facilities-checkbox5">
-                                        demo 5
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="facilities-checkbox6" type="checkbox">
-                                    <label for="facilities-checkbox6">
-                                        demo 6
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="facilities-checkbox7" type="checkbox">
-                                    <label for="facilities-checkbox7">
-                                        demo 7
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="facilities-checkbox8" type="checkbox">
-                                    <label for="facilities-checkbox8">
-                                        demo 8
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="facilities-checkbox9" type="checkbox">
-                                    <label for="facilities-checkbox9">
-                                        demo 9
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="facilities-checkbox10" type="checkbox">
-                                    <label for="facilities-checkbox10">
-                                        demo 10
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="facilities-checkbox11" type="checkbox">
-                                    <label for="facilities-checkbox11">
-                                        demo 11
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="facilities-checkbox12" type="checkbox">
-                                    <label for="facilities-checkbox12">
-                                        demo 12
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="facilities-checkbox13" type="checkbox">
-                                    <label for="facilities-checkbox13">
-                                        demo 13
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="facilities-checkbox14" type="checkbox">
-                                    <label for="facilities-checkbox14">
-                                        demo 14
+                                <div th:each="facility:${facilities}" class="checkbox checkbox-success" style="margin-left: 12px;">
+                                    <input th:id="'facilities-checkbox' + ${facility.id}" th:value="${facility.id}" type="checkbox">
+                                    <label th:for="'facilities-checkbox' + ${facility.id}" th:text="${facility.typeValue}">
                                     </label>
                                 </div>
                             </td>
@@ -627,88 +533,9 @@
                         <tr>
                             <td>Utilites</td>
                             <td class="row" style="margin-left: 0px;">
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="utilites-checkbox1" type="checkbox">
-                                    <label for="utilites-checkbox1">
-                                        demo 1
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="utilites-checkbox2" type="checkbox">
-                                    <label for="utilites-checkbox2">
-                                        demo 2
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="utilites-checkbox3" type="checkbox">
-                                    <label for="utilites-checkbox3">
-                                        demo 3
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="utilites-checkbox4" type="checkbox">
-                                    <label for="utilites-checkbox4">
-                                        demo 4
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="utilites-checkbox5" type="checkbox">
-                                    <label for="utilites-checkbox5">
-                                        demo 5
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="utilites-checkbox6" type="checkbox">
-                                    <label for="utilites-checkbox6">
-                                        demo 6
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="utilites-checkbox7" type="checkbox">
-                                    <label for="utilites-checkbox7">
-                                        demo 7
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="utilites-checkbox8" type="checkbox">
-                                    <label for="utilites-checkbox8">
-                                        demo 8
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="utilites-checkbox9" type="checkbox">
-                                    <label for="utilites-checkbox9">
-                                        demo 9
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="utilites-checkbox10" type="checkbox">
-                                    <label for="utilites-checkbox10">
-                                        demo 10
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="utilites-checkbox11" type="checkbox">
-                                    <label for="utilites-checkbox11">
-                                        demo 11
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="utilites-checkbox12" type="checkbox">
-                                    <label for="utilites-checkbox12">
-                                        demo 12
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="utilites-checkbox13" type="checkbox">
-                                    <label for="utilites-checkbox13">
-                                        demo 13
-                                    </label>
-                                </div>
-                                <div class="checkbox checkbox-success" style="margin-left: 12px;">
-                                    <input id="utilites-checkbox14" type="checkbox">
-                                    <label for="utilites-checkbox14">
-                                        demo 14
+                                <div th:each="utility:${utilities}" class="checkbox checkbox-success" style="margin-left: 12px;">
+                                    <input th:id="'facilities-checkbox' + ${utility.id}" th:value="${utility.id}" type="checkbox">
+                                    <label th:for="'facilities-checkbox' + ${utility.id}" th:text="${utility.typeValue}">
                                     </label>
                                 </div>
                             </td>
@@ -716,6 +543,7 @@
                         <tr>
                             <td>School Introduction</td>
                             <td>
+                                <input id="introduction" type="text" hidden>
                                 <div id="editor">
                                     <div th:utext="${schoolIntroduction}"></div>
                                 </div>
@@ -727,15 +555,16 @@
                                        accept="image/gif, image/jpeg, image/png" /></td>
                         </tr>
                     </table>
-                    <input type="submit" class="btn btn-primary" style="background-color: white;color: #458bc4;" value="Cancel"></button>
-                    <input type="submit" class="btn btn-primary" value="Save draft"></button>
-                    <input type="submit" class="btn btn-primary" value="Submit"></button>
-                    <input type="submit" class="btn btn-primary" style="background-color: red;" value="Delete"></button>
-                    <input type="submit" class="btn btn-primary" value="Edit"></button>
-                    <input type="submit" class="btn btn-primary" style="background-color: red;" value="Reject"></button>
-                    <input type="submit" class="btn btn-primary" value="Approve"></button>
-                    <input type="submit" class="btn btn-primary" value="Publish"></button>
-                    <input type="submit" class="btn btn-primary" style="background-color: white;color: #458bc4;" value="Unpublish"></button>
+                    <button id="cancel" class="btn btn-primary" style="background-color: white;color: #458bc4;">Cancel</button>
+                    <input type="submit" class="btn btn-primary" value="Save draft">
+                    <input type="submit" class="btn btn-primary" value="Submit">
+                    <input type="submit" class="btn btn-danger" value="Delete">
+                    <input type="submit" class="btn btn-primary" value="Edit">
+                    <button id="edit" class="btn btn-primary">Edit</button>
+                    <input type="submit" class="btn btn-danger" value="Reject">
+                    <input type="submit" class="btn btn-primary" value="Approve">
+                    <input type="submit" class="btn btn-primary" value="Publish">
+                    <input type="submit" class="btn btn-primary" style="background-color: white;color: #458bc4;" value="Unpublish">
                 </form>
 
                 <!-- end row -->
@@ -831,7 +660,14 @@
         const quill = new Quill('#editor', {
             theme: 'snow'
         });
+        document.querySelector("form").onsubmit = function() {
+            document.getElementById("introduction").value = quill.root.value;
+        };
     </script>
+
+    <!-- Jquery js -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/admin_side/js/address-load.js"></script>
 </body>
 
 

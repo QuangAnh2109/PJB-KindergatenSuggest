@@ -1,12 +1,13 @@
 package fa.appcode.common.vo;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import java.io.Serializable;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
-public class CityVo implements Serializable {
+public class CityVo {
     private Integer id;
     private String cityName;
 }

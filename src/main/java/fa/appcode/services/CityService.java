@@ -5,5 +5,5 @@ import fa.appcode.common.vo.CityVo;
 import java.util.List;
 
 public interface CityService {
-    List<CityVo> getAllCities();
+    List<CityVo> findAllByNoDelete();
 }

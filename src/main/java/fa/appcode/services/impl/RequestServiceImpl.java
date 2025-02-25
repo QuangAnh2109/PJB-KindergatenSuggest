@@ -10,6 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -25,6 +28,11 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    public Page<RequestVo> listAllRequestWithSchoolOwner(Integer accountID, Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.listAllRequestWithSchoolOwner(accountID,pageable);
+    }
+
+    @Override
     public RequestDetailVo findById(Integer id) {
         return requestRepository.findRequestsById(id);
     }
@@ -32,5 +40,36 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public Page<RequestVo> findOpenedRequest(Pageable pageable) {
         return (Page<RequestVo>)requestRepository.findOpenedRequest(pageable);
+    }
+
+    @Override
+    public Page<RequestVo> findOpenedRequestWithSchoolOwner(Integer accountID, Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.findOpenedRequestWithSchoolOwner(accountID,pageable);
+    }
+
+    @Override
+    public Page<RequestVo> searchRequest(String keyword, Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.searchRequest(keyword,pageable);
+    }
+
+    @Override
+    public Page<RequestVo> searchRequestWithSchoolOwner(String keyword,Integer accountID, Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.searchRequestWithSchoolOwner(keyword,accountID,pageable);
+    }
+
+    @Override
+    public Page<RequestVo> searchRequestReminder(String keyword, Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.searchRequestReminder(keyword,pageable);
+    }
+
+    @Override
+    public Page<RequestVo> searchRequestReminderWithSchoolOwner(String keyword, Integer accountID, Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.searchRequestReminderWithSchoolOwner(keyword,accountID,pageable);
+    }
+
+    @Override
+    public void updateRequest(String update_id,int id) {
+        Instant vietnamTime = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toInstant();
+        requestRepository.updateRequestStatus(update_id,id, vietnamTime);
     }
 }

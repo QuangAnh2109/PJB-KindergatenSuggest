@@ -91,5 +91,4 @@ public class SchoolInfo {
 
     @Column(name = "delete_flg", nullable = false)
     private Boolean deleteFlg = false;
-
 }
