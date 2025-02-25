@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository("masterDataRepository")
 public interface MasterDataRepository extends JpaRepository<MasterDatum,Integer> {
 
@@ -23,4 +25,13 @@ public interface MasterDataRepository extends JpaRepository<MasterDatum,Integer>
         WHERE md.id = :id  AND md.deleteFlg = false
     """)
     String getMasterById(Integer id);
+
+    @Query("""
+    SELECT md
+    FROM MasterDatum md 
+    WHERE md.typeName = :typeName AND md.deleteFlg = false
+""")
+    List<MasterDatum> getMasterByTypeName(String typeName);
+
+
 }

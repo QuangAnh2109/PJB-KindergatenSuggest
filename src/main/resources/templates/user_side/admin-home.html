@@ -75,6 +75,7 @@
       background: #aaa;
     }
   </style>
+
   <script>
     function showPopup() {
       document.getElementById("logoutPopup").style.display = "block";
@@ -90,20 +91,16 @@
   </script>
 </head>
 <body>
+
 <div class="logout-container">
-  <h1>Welcome, Admin!</h1>
-  <p>This is the admin dashboard.</p>
-  <p>
-    User: <span sec:authentication="principal.username"></span><br>
-    Role: <span sec:authentication="principal.authorities"></span>
-  </p>
+
   <button class="btn btn-yes" onclick="showPopup()">Logout</button>
 </div>
 
 <div id="logoutPopup" class="overlay">
   <div class="popup">
-    <h2>Confirm Logout</h2>
-    <p>Are you sure you want to logout?</p>
+    <h2>Are you leaving?</h2>
+    <p>Are you sure you want to logout? All your unsaved data will be lost.</p>
     <div class="button-container">
       <button class="btn btn-yes" onclick="confirmLogout()">Yes</button>
       <button class="btn btn-cancel" onclick="hidePopup()">Cancel</button>
@@ -111,6 +108,7 @@
   </div>
 </div>
 
-<form id="logoutForm" th:action="@{/logout}" action="#" method="post"></form>
+<form id="logoutForm" th:action="@{/logout}" method="post"></form>
+
 </body>
 </html>

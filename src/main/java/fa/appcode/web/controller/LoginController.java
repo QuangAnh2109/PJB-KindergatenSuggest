@@ -10,10 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LoginController {
     @GetMapping("/showMyLoginPage")
     public String showMyLoginPage(){
-//            @RequestParam(value = "error", required = false) String error,
-//            @RequestParam(value = "email", required = false) String email,
-//            @RequestParam(value = "missing", required = false) String missing,
-//            Model model) {
         return "user_side/login";
     }
     @GetMapping("parent/change-password")

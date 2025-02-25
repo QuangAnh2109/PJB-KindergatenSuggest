@@ -1,6 +1,7 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.common.constant.JwtUtils;
+import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,14 +9,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+
 @Controller
 public class ResetPasswordController {
-
+    @Autowired
+    private GlobalConfig globalConfig;
     @Autowired
     private JwtUtils jwtUtil;
 
     @Autowired
     private AccountService accountService;
+
     @GetMapping("/reset-password")
     public String showResetPasswordForm(@RequestParam String token, Model model) {
         if (!jwtUtil.validateToken(token)) {
@@ -25,16 +29,31 @@ public class ResetPasswordController {
         return "user_side/reset-password";
     }
     @PostMapping("/reset-password")
-    public String resetPassword(@RequestParam String token, @RequestParam String newPassword) {
+    public String resetPassword(@RequestParam String token,
+                                @RequestParam String newPassword,
+                                @RequestParam String confirmPassword,
+                                Model model) {
+
         if (!jwtUtil.validateToken(token)) {
-            return "redirect:/reset-password?error=invalid_token";
+            model.addAttribute("error", globalConfig.getExpiredLink());
+            return "user_side/reset-password";
         }
         String email = jwtUtil.extractEmail(token);
         AccountInfo account = accountService.findByEmail(email);
         if (account == null) {
-            return "redirect:/reset-password?error=user_not_found";
+            model.addAttribute("error", globalConfig.getEmailNotExist());
+            return "user_side/reset-password"   ;
+        }
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("error", globalConfig.getPasswordNotMatch());
+            return "user_side/reset-password";
+        }
+        if (!newPassword.matches("^(?=.*[0-9])(?=.*[a-zA-Z]).{12,}$")) {
+            model.addAttribute("error", globalConfig.getValidatePassword());
+            return "user_side/reset-password";
         }
         accountService.updatePassword(email, newPassword);
-        return "redirect:/showMyLoginPage";
+        model.addAttribute("passwordReset", "Your password has been reset.");
+        return "user_side/reset-password";
     }
 }

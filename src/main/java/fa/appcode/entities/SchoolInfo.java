@@ -39,7 +39,7 @@ public class SchoolInfo {
     @Column(name = "fee_to", nullable = false, precision = 15, scale = 5)
     private BigDecimal feeTo;
 
-    @Column(name = "school_address", nullable = false)
+    @Column(name = "school_address")
     private String schoolAddress;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -91,5 +91,4 @@ public class SchoolInfo {
 
     @Column(name = "delete_flg", nullable = false)
     private Boolean deleteFlg = false;
-
 }

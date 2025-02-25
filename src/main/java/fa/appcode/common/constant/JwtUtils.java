@@ -1,54 +1,57 @@
 package fa.appcode.common.constant;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-
-import java.util.Date;
-
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
-
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtUtils {
-    @Value("jwt.secret")
+    @Value("${jwt.secret}")
     private String secret;
 
-    private static final String SECRET_KEY ="00cf5cda3e007166811630233ba9c428aeccc5fff63daf246f6e63213bb37e7d" ; // Đổi thành khóa bí mật
-
-    // Tạo JWT Token
+    private SecretKey key() {
+        return Keys.hmacShaKeyFor(secret.getBytes());
+    }
+    Map<String, Object> claims = new HashMap<>();
     public String generateToken(String email) {
-        long expirationTime = 15 * 60 * 1000; // 15 phút
-
+        long expirationTime = 15 * 60 * 1000;
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // Giải mã token
     public Claims extractClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
+        return Jwts.parserBuilder()
+                .setSigningKey(key())
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    // Lấy email từ token
     public String extractEmail(String token) {
         return extractClaims(token).getSubject();
     }
 
-    // Kiểm tra token còn hợp lệ không
     public boolean validateToken(String token) {
+        if (token == null || token.trim().isEmpty()) {
+            System.out.println("Token is invalid: Token is null or empty.");
+            return false;
+        }
         try {
             return extractClaims(token).getExpiration().after(new Date());
+        } catch (ExpiredJwtException e) {
+            System.out.println("Token is expired: " + e.getMessage());
+            return false;
         } catch (Exception e) {
+            System.out.println("Token is invalid: " + e.getMessage());
             return false;
         }
     }
