@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 
 @Controller
 public class ResetPasswordController {
@@ -20,6 +19,7 @@ public class ResetPasswordController {
 
     @Autowired
     private AccountService accountService;
+
     @GetMapping("/reset-password")
     public String showResetPasswordForm(@RequestParam String token, Model model) {
         if (!jwtUtil.validateToken(token)) {
@@ -38,19 +38,16 @@ public class ResetPasswordController {
             model.addAttribute("error", globalConfig.getExpiredLink());
             return "user_side/reset-password";
         }
-
         String email = jwtUtil.extractEmail(token);
         AccountInfo account = accountService.findByEmail(email);
         if (account == null) {
             model.addAttribute("error", globalConfig.getEmailNotExist());
-            return "user_side/reset-password";
+            return "user_side/reset-password"   ;
         }
-
         if (!newPassword.equals(confirmPassword)) {
             model.addAttribute("error", globalConfig.getPasswordNotMatch());
             return "user_side/reset-password";
         }
-
         if (!newPassword.matches("^(?=.*[0-9])(?=.*[a-zA-Z]).{12,}$")) {
             model.addAttribute("error", globalConfig.getValidatePassword());
             return "user_side/reset-password";

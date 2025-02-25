@@ -23,8 +23,6 @@ public class EmailServiceImpl implements EmailService {
     @Async
     @Override
     public void sendEmail(String toEmail, String subject, String text) {
-        log.info("Sending email to {} on thread: {}", toEmail, Thread.currentThread().getName());
-
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
