@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Code</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f6f9;
+        }
+        .verification-container {
+            max-width: 400px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .verification-input {
+            width: 45px;
+            height: 50px;
+            margin: 5px;
+            font-size: 22px;
+            text-align: center;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            outline: none;
+        }
+        .btn-verify {
+            width: 100%;
+            background-color: #007bff;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+        .btn-verify:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="verification-container">
+    <h3>Enter Verification Code</h3>
+    <p>A verification code has been sent to your email: <strong th:text="${email}"></strong></p>
+    <form id="otpForm" th:action="@{/register/verify}" method="post">
+        <input type="hidden" id="email" name="email" th:value="${email}">
+        <input type="hidden" name="otp" id="hiddenOtp">
+        <div class="d-flex justify-content-center">
+            <input id="otp1" type="text" class="form-control verification-input" maxlength="1">
+            <input id="otp2" type="text" class="form-control verification-input" maxlength="1">
+            <input id="otp3" type="text" class="form-control verification-input" maxlength="1">
+            <input id="otp4" type="text" class="form-control verification-input" maxlength="1">
+            <input id="otp5" type="text" class="form-control verification-input" maxlength="1">
+            <input id="otp6" type="text" class="form-control verification-input" maxlength="1">
+        </div>
+        <button type="submit" class="btn-verify mt-3">Verify</button>
+    </form>
+    <p class="alert-danger danger mt-2" th:if="${errorOTP}" th:text="${errorOTP}"></p>
+    <p id="timerText">You can resend OTP in <span id="timer">5:00</span> minutes.</p>
+    <form th:action="@{/register/resend}" method="post">
+        <input type="hidden" name="email" th:value="${email}">
+        <button type="submit" id="resendBtn" class="btn btn-link" disabled>Resend</button>
+    </form>
+
+    </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let inputs = document.querySelectorAll(".verification-input");
+
+        inputs.forEach((input, index) => {
+            input.addEventListener("input", function () {
+                if (this.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener("keydown", function (event) {
+                if (event.key === "Backspace" && this.value === "" && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+
+        document.getElementById("otpForm").addEventListener("submit", function (event) {
+            let otpCode = "";
+            inputs.forEach(input => otpCode += input.value.trim() || " ");
+
+            let hiddenOtp = document.getElementById("hiddenOtp");
+            if (hiddenOtp) {
+                hiddenOtp.value = otpCode;
+            }
+
+            let emailField = document.getElementById("email");
+            let email = emailField ? emailField.value : "";
+
+            if (!email) {
+                alert("Error: Email is missing!");
+                event.preventDefault();
+                return;
+            }
+            if (!/^\d{6}$/.test(otpCode)) {
+                alert("OTP must be a 6-digit number.");
+                event.preventDefault();
+                return;
+            }
+        });
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        let timerElement = document.getElementById("timer");
+        let resendButton = document.getElementById("resendBtn");
+
+        let totalTime = 300;
+        let expireTime = localStorage.getItem("otpExpireTime");
+
+        if (!expireTime) {
+            expireTime = Date.now() + totalTime * 1000;
+            localStorage.setItem("otpExpireTime", expireTime);
+        } else {
+            expireTime = parseInt(expireTime);
+        }
+
+        function updateTimer() {
+            let timeLeft = Math.floor((expireTime - Date.now()) / 1000);
+
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                resendButton.disabled = false;
+                localStorage.removeItem("otpExpireTime");
+                document.getElementById("timerText").textContent = "Didn't receive the code? You can resend now.";
+            } else {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            }
+        }
+
+        let countdown = setInterval(updateTimer, 1000);
+        updateTimer();
+    });
+</script>
+</body>
+</html>

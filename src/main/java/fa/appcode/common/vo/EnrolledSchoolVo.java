@@ -9,8 +9,20 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class EnrolledSchoolVo {
+    private Integer enrollId;
     private String enrolledName;
     private Float latestRate;
     private String latestFeedback;
+
+    @Override
+    public String toString() {
+        return "EnrolledSchoolVo{" +
+                "enrollId=" + enrollId +
+                ", enrolledName='" + enrolledName + '\'' +
+                ", latestRate=" + latestRate +
+                ", latestFeedback='" + latestFeedback + '\'' +
+                '}';
+    }
 }
