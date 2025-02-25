@@ -14,7 +14,7 @@ public class CityServiceImpl implements CityService {
     private CityRepository cityRepository;
 
     @Override
-    public List<CityVo> findAllByDeleteFlg(Boolean deleteFlg){
-        return cityRepository.findAllByDeleteFlg(deleteFlg);
+    public List<CityVo> findAllByNoDelete(){
+        return cityRepository.findAllByDeleteFlg(false);
     }
 }

@@ -27,7 +27,7 @@ public class SchoolFormController {
         model.addAttribute("utilities",masterDatumServiceImpl.findAllByTypeNameNoDelete("UTILITIES"));
         model.addAttribute("emailRegex", EMAIL_REGEX_HTML);
         model.addAttribute("phoneRegex", PHONE_REGEX_HTML);
-        model.addAttribute("citys",cityServiceImpl.findAllByDeleteFlg(false));
+        model.addAttribute("citys",cityServiceImpl.findAllByNoDelete());
         return "admin_side/school-manager-detail";
     }
 
