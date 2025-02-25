@@ -24,9 +24,14 @@ public interface AccountService {
     public boolean updatePassword(String email, String newPassword);
 
     Page<ParentVo> findAllParent(String search ,Pageable pageable);
+    //tuanpa79
     Page<AccountVo> getAllAccounts(String search, Pageable pageable);
 
     AccountVo getAccountById(Integer id);
+    void toggleUserStatus(Integer id);
+    void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId);
+    void deleteAccount(Integer id);
+
 
     Page<AccountInfo> findAll(Pageable pageable);
 

@@ -33,14 +33,20 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
 
 
     @Query("""
-    SELECT ai FROM AccountInfo ai
-    LEFT JOIN FETCH ai.ward w
-    LEFT JOIN FETCH ai.district d
-    LEFT JOIN FETCH ai.city c
-    WHERE ai.deleteFlg = false
-    AND (:search IS NULL OR ai.fullName LIKE %:search% OR ai.email LIKE %:search% OR ai.phone LIKE %:search%)
-""")
-    Page<AccountInfo> findAllWithFullAddress(@Param("search") String search, Pageable pageable);
+                SELECT new fa.appcode.common.vo.AccountVo(
+                    ai.id, ai.fullName, ai.email, ai.phone, ai.dob, 
+                    CONCAT(ai.address, ', ', w.wardName, ', ', d.districtName, ', ', c.cityName), 
+                    ma.typeValue, ms.typeValue)
+                FROM AccountInfo ai
+                LEFT JOIN ai.ward w
+                LEFT JOIN ai.district d
+                LEFT JOIN ai.city c
+                LEFT JOIN MasterDatum ma ON ai.roleId = ma.id
+                LEFT JOIN MasterDatum ms ON ai.statusId = ms.id
+                WHERE ai.deleteFlg = false
+                AND (:search IS NULL OR ai.fullName LIKE %:search% OR ai.email LIKE %:search% OR ai.phone LIKE %:search%)
+                """)
+    Page<AccountVo> findAllWithFullAddress(@Param("search") String search, Pageable pageable);
 
     /**
      * @param pageable
