@@ -22,14 +22,14 @@ public class UserHomeController {
     private final DistrictService districtService;
     @GetMapping("/home")
     public String parentHome(Model model) {
-        List<CityVo> listCity1 = cityService.getAllCities();
+        List<CityVo> listCity1 = cityService.findAllByNoDelete();
         model.addAttribute("listCity", listCity1);
         return "user_side/index";
     }
 
     @GetMapping("/get-districts")
     public String getDistricts(@RequestParam("cityId") Integer cityId, Model model) {
-        List<DistrictVo> districts = districtService.getAllDistrictsByCityId(cityId);
+        List<DistrictVo> districts = districtService.findAllByCityIdAndNoDelete(cityId);
         model.addAttribute("districts", districts);
         return "fragments/district-options";
     }
@@ -37,7 +37,7 @@ public class UserHomeController {
 
     @GetMapping("/search")
     public String searchSchool(Model model) {
-        List<CityVo> listCity1 = cityService.getAllCities();
+        List<CityVo> listCity1 = cityService.findAllByNoDelete();
         model.addAttribute("listCity", listCity1);
         return "user_side/search-school";
     }
