@@ -2,7 +2,7 @@ package fa.appcode.services.impl;
 
 import fa.appcode.repositories.CityRepository;
 import fa.appcode.services.CityService;
-import fa.appcode.vo.CityVo;
+import fa.appcode.common.vo.CityVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

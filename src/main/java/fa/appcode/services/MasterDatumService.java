@@ -1,7 +1,6 @@
 package fa.appcode.services;
 
-import fa.appcode.entities.MasterDatum;
-import fa.appcode.vo.MasterDataVo;
+import fa.appcode.common.vo.MasterDataVo;
 
 import java.util.List;
 

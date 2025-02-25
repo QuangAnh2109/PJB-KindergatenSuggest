@@ -1,7 +1,7 @@
 package fa.appcode.repositories;
 
 import fa.appcode.entities.Ward;
-import fa.appcode.vo.WardVo;
+import fa.appcode.common.vo.WardVo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

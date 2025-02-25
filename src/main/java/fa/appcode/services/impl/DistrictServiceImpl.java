@@ -2,7 +2,7 @@ package fa.appcode.services.impl;
 
 import fa.appcode.repositories.DistrictRepository;
 import fa.appcode.services.DistrictService;
-import fa.appcode.vo.DistrictVo;
+import fa.appcode.common.vo.DistrictVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

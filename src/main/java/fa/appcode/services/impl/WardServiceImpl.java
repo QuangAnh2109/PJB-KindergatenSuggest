@@ -2,7 +2,7 @@ package fa.appcode.services.impl;
 
 import fa.appcode.repositories.WardRepository;
 import fa.appcode.services.WardService;
-import fa.appcode.vo.WardVo;
+import fa.appcode.common.vo.WardVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

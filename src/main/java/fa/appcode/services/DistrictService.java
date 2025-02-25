@@ -1,6 +1,6 @@
 package fa.appcode.services;
 
-import fa.appcode.vo.DistrictVo;
+import fa.appcode.common.vo.DistrictVo;
 
 import java.util.List;
 

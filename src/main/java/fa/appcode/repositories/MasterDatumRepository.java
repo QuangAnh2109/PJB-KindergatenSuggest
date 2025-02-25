@@ -1,9 +1,8 @@
 package fa.appcode.repositories;
 
 import fa.appcode.entities.MasterDatum;
-import fa.appcode.vo.MasterDataVo;
+import fa.appcode.common.vo.MasterDataVo;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

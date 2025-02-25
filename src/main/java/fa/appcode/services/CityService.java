@@ -1,6 +1,6 @@
 package fa.appcode.services;
 
-import fa.appcode.vo.CityVo;
+import fa.appcode.common.vo.CityVo;
 
 import java.util.List;
 

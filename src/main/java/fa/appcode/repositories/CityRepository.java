@@ -1,7 +1,7 @@
 package fa.appcode.repositories;
 
 import fa.appcode.entities.City;
-import fa.appcode.vo.CityVo;
+import fa.appcode.common.vo.CityVo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

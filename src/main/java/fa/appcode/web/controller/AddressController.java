@@ -1,17 +1,13 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.services.impl.DistrictServiceImpl;
-import fa.appcode.services.impl.MasterDatumServiceImpl;
 import fa.appcode.services.impl.WardServiceImpl;
-import fa.appcode.vo.DistrictVo;
-import fa.appcode.vo.WardVo;
-import jakarta.servlet.http.HttpServletRequest;
+import fa.appcode.common.vo.DistrictVo;
+import fa.appcode.common.vo.WardVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/")

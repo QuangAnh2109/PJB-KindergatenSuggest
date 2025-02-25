@@ -1,9 +1,8 @@
 package fa.appcode.services.impl;
 
-import fa.appcode.entities.MasterDatum;
 import fa.appcode.repositories.MasterDatumRepository;
 import fa.appcode.services.MasterDatumService;
-import fa.appcode.vo.MasterDataVo;
+import fa.appcode.common.vo.MasterDataVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

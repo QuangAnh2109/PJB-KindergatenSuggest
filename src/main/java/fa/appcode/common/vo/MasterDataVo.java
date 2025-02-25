@@ -1,6 +1,5 @@
-package fa.appcode.vo;
+package fa.appcode.common.vo;
 
-import fa.appcode.entities.District;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class WardVo {
+public class MasterDataVo {
     private Integer id;
-    private String wardName;
+    private String typeValue;
 }

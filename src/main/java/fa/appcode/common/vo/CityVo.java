@@ -1,4 +1,4 @@
-package fa.appcode.vo;
+package fa.appcode.common.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
