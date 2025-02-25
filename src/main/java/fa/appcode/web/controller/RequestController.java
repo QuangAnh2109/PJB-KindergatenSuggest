@@ -1,12 +1,16 @@
 package fa.appcode.web.controller;
 
+import fa.appcode.common.vo.RequestDetailVo;
 import fa.appcode.common.vo.RequestVo;
-import fa.appcode.entities.MasterDatum;
 import fa.appcode.entities.Request;
 import fa.appcode.services.MasterDatumService;
 import fa.appcode.services.RequestService;
 import fa.appcode.services.SchoolInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,26 +38,30 @@ public class RequestController {
         return new RequestVo(id, fullName, email, phone, requestMasterName);
     }
     
-    @GetMapping("/admin/request-list")
-    public String showRequestList(Model model) {
-        List<Request> listRequest = requestService.findAll();
-        List<RequestVo> requestList = new ArrayList<>();
-        for (Request request : listRequest) {
-            RequestVo requestVo = getRequestVo(request);
-            requestList.add(requestVo);
-        }
+    @GetMapping("/school-owner/request-list")
+    public String showRequestList(@RequestParam(name = "currentPage"
+            ,defaultValue = "0") int currentPage, Model model) {
+        Pageable pageable = PageRequest.of(currentPage, 5, Sort.by("id").ascending());
+        Page<RequestVo> requestList = requestService.findAll(pageable);
         model.addAttribute("requestList", requestList);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("numberPage", requestList.getTotalPages());
         return "admin_side/request-list";
     }
-    @GetMapping("/admin/request-list-detail")
+    @GetMapping("/school-owner/request-list-detail")
     public String request_list_detail(@RequestParam Integer id, Model model) {
-        Request request = requestService.findById(id);
-
-        RequestVo requestVo = getRequestVo(request);
-
-        model.addAttribute("request", request);
-        model.addAttribute("requestVo", requestVo);
+        RequestDetailVo requestDetail = requestService.findById(id);
+        model.addAttribute("requestDetail", requestDetail);
         return "admin_side/request-list-detail";
     }
-
+    @GetMapping("/school-owner/request-reminder")
+    public String showRequestReminder(@RequestParam(name = "currentPage"
+            ,defaultValue = "0") int currentPage, Model model) {
+        Pageable pageable = PageRequest.of(currentPage, 5, Sort.by("id").ascending());
+        Page<RequestVo> requestList = requestService.findOpenedRequest(pageable);
+        model.addAttribute("requestList", requestList);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("numberPage", requestList.getTotalPages());
+        return "admin_side/request-reminder";
+    }
 }

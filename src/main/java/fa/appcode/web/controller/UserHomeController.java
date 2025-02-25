@@ -1,57 +1,46 @@
 package fa.appcode.web.controller;
 
+import fa.appcode.common.vo.CityVo;
+import fa.appcode.common.vo.DistrictVo;
 import fa.appcode.config.GlobalConfig;
+import fa.appcode.entities.City;
+import fa.appcode.services.CityService;
+import fa.appcode.services.DistrictService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+import java.util.List;
+@AllArgsConstructor
 @Controller
 public class UserHomeController {
-
-    private final GlobalConfig globalConfig;
-
-    public UserHomeController(GlobalConfig globalConfig) {
-        this.globalConfig = globalConfig;
-    }
-
-    @GetMapping("/admin/home")
-    public String adminHome() {
-        return "user_side/admin-home";
-    }
-
-    @GetMapping("/school-owner/home")
-    public String schoolOwnerHome() {
-        return "user_side/school-owner";
-    }
-
+    private final CityService cityService;
+    private final DistrictService districtService;
     @GetMapping("/home")
     public String parentHome(Model model) {
+        List<CityVo> listCity1 = cityService.getAllCities();
+        model.addAttribute("listCity", listCity1);
         return "user_side/index";
     }
 
-    @GetMapping("/homeless")
-    public String defaultHome1() {
-        return "user_side/admin-home";
+    @GetMapping("/get-districts")
+    public String getDistricts(@RequestParam("cityId") Integer cityId, Model model) {
+        List<DistrictVo> districts = districtService.getAllDistrictsByCityId(cityId);
+        model.addAttribute("districts", districts);
+        return "fragments/district-options";
     }
 
-    @GetMapping("/access-denied")
-    public String accessDenied() {
-        return "user_side/access-denied";
 
-    }
-
-    @GetMapping("/forgot-password")
-    public String forgotPassword() {
-        return "user_side/forgot-password";
+    @GetMapping("/search")
+    public String searchSchool(Model model) {
+        List<CityVo> listCity1 = cityService.getAllCities();
+        model.addAttribute("listCity", listCity1);
+        return "user_side/search-school";
     }
 
-    @GetMapping("/register")
-    public String register() {
-        System.out.println("User accessed: /register");
-        return "user_side/register";
-    }
-    @GetMapping("/reset-password")
-    public String resetPassword() {
-        return "user_side/reset-password";
-    }
+
 }

@@ -11,11 +11,15 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "school_info")
+@Table(name = "school_info", schema = "instance_kintergarden_db")
 public class SchoolInfo {
     @Id
     @Column(name = "school_id", nullable = false)
     private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "account_id", nullable = false)
+    private AccountInfo account;
 
     @Column(name = "school_name", nullable = false)
     private String schoolName;
@@ -23,7 +27,7 @@ public class SchoolInfo {
     @Column(name = "school_email", nullable = false)
     private String schoolEmail;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url")
     private String imageUrl;
 
     @Column(name = "school_phone", nullable = false, columnDefinition = "CHAR(12)")
@@ -35,7 +39,7 @@ public class SchoolInfo {
     @Column(name = "fee_to", nullable = false, precision = 15, scale = 5)
     private BigDecimal feeTo;
 
-    @Column(name = "school_address", nullable = false)
+    @Column(name = "school_address")
     private String schoolAddress;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

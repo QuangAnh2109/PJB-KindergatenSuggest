@@ -10,7 +10,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "district")
+@Table(name = "district", schema = "instance_kintergarden_db")
 public class District {
     @Id
     @Column(name = "district_id", nullable = false)
