@@ -13,6 +13,8 @@ function loadDistrict(cityId) {
             document.getElementById("district").innerHTML = response;
             document.getElementById("district").removeAttribute("disabled");
             document.getElementById("ward").disabled = true;
+            document.getElementById("ward").value = "";
+            document.getElementById("address").value = "";
             document.getElementById("address").disabled = true;
         },
         error: function (xhr){
