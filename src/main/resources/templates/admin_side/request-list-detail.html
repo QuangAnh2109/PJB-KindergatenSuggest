@@ -107,36 +107,11 @@
     <div class="left-side-menu">
         <div id="sidebar-menu">
             <ul class="metismenu" id="side-menu">
-                <li>
-                    <a href="index.html">
-                        <i class="ti-home"></i>
-                        <span> School Managment </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.html">
-                        <i class="fa-regular fa-user"></i>
-                        <span> User Management </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.html">
-                        <i class="fa-regular fa-bell"></i>
-                        <span> Reminder </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.html">
-                        <i class="fa-solid fa-user-tie"></i>
-                        <span> Parent Management </span>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.html">
-                        <i class="fa-regular fa-clipboard"></i>
-                        <span> Request Managment </span>
-                    </a>
-                </li>
+                <li><a th:href="@{/school-owner/request-list}"><i class="ti-home"></i> <span> School Management </span></a></li>
+                <li><a th:href="@{/school-owner/request-list}"><i class="fa-regular fa-user"></i> <span> User Management </span></a></li>
+                <li><a th:href="@{/school-owner/request-reminder}"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a></li>
+                <li><a th:href="@{/school-owner/request-list}"><i class="fa-solid fa-user-tie"></i> <span> Parent Management </span></a></li>
+                <li><a th:href="@{/school-owner/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a></li>
             </ul>
         </div>
         <!-- End Sidebar -->
@@ -162,7 +137,7 @@
                     <div class="col-12">
                         <div style="display: flex">
                             <h3 style="color: buttontext;">Request details</h3>
-                            <button class="btn btn-closed" style="margin-left: 20px; margin-top: 10px" th:text="${requestVo.requestMasterName}"/>
+                            <button class="btn btn-closed" style="margin-left: 20px; margin-top: 10px" th:text="${requestDetail.requestMasterName}"/>
                         </div>
                     </div>
                 </div>
@@ -170,7 +145,7 @@
 
                 <div class="row justify-content-center">
                     <div class="col-lg-8"> <!-- Tăng kích thước cột để input dài hơn -->
-                        <form class="form-horizontal" style="margin-top: 50px" th:object="${request}" method="POST">
+                        <form class="form-horizontal" style="margin-top: 50px" th:object="${requestDetail}" method="POST">
                             <div class="mb-3 row">
                                 <label class="col-md-4 col-form-label fw-bold text-end">Full Name</label>
                                 <div class="col-md-7">
@@ -196,28 +171,28 @@
                             <div class="mb-3 row">
                                 <label class="col-md-4 col-form-label fw-bold text-end">Address</label>
                                 <div class="col-md-7">
-                                    <input type="text" class="form-control" th:field="*{account.address}" readonly>
+                                    <input type="text" class="form-control" th:field="*{address}" readonly>
                                 </div>
                             </div>
 
                             <div class="mb-3 row">
                                 <label class="col-md-4 col-form-label fw-bold text-end">Requested school</label>
                                 <div class="col-md-7">
-                                    <input type="text" class="form-control" th:field="*{school.schoolName}" readonly>
+                                    <input type="text" class="form-control" th:field="*{requestSchoolName}" readonly>
                                 </div>
                             </div>
 
                             <div class="mb-3 row">
                                 <label class="col-md-4 col-form-label fw-bold text-end">Inquires</label>
                                 <div class="col-md-7">
-                                    <textarea class="form-control" rows="3" readonly th:field="*{inquiries}"/>
+                                    <textarea class="form-control" th:field="*{inquires}" readonly rows="4"></textarea>
+
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-end">
+                            <div class="d-flex justify-content-end" th:if="${requestDetail.requestMasterName!='Closed'}">
                                 <button type="button" class="btn btn-primary" data-toggle="modal"
-                                        data-target="#exampleModal"
-                                        th:if="*{requestMasterId != 44}">
+                                        data-target="#exampleModal">
                                     Mark it resolved
                                 </button>
                             </div>
