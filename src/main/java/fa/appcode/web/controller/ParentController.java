@@ -147,7 +147,6 @@ public class ParentController {
         /*
          * Return view name
          */
-        System.out.println(Instant.now());
         if ("XMLHttpRequest".equals(requestedWith)) {
             return "admin_side/parent-details:: main-content";
         }
@@ -186,7 +185,7 @@ public class ParentController {
             redirectAttributes.addFlashAttribute("alertType", "success");
         } catch (Exception e) {
             // Error message
-            redirectAttributes.addFlashAttribute("message", "Failed to enroll parent!");
+            redirectAttributes.addFlashAttribute("message", e);
             redirectAttributes.addFlashAttribute("alertType", "danger");
         }
         /*

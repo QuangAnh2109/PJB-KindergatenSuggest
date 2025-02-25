@@ -169,6 +169,7 @@
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label">Full Name</label>
                                 <div class="col-md-10">
+                                    <input type="hidden" id="parentId" th:value="${accountInfo.parentId}" />
                                     <input type="hidden" id="userRole" th:value="${role}" />
                                     <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentName}">
                                 </div>
@@ -236,7 +237,7 @@
                             <ul class="pagination justify-content-end">
                                 <!-- Previous Button -->
                                 <li class="page-item parent-page-item disabled" th:if ="${currentPage==0}"> <a class="page-link" type="button">Previous</a></li>
-                                <li th:unless="${currentPage==0}" class="page-item parent-page-item" th:data-page="${currentPage - 1}" th:classappend="${currentPage == 0} ? 'disabled':'active'">
+                                <li th:unless="${currentPage==0}" class="page-item parent-page-item" th:data-page="${currentPage - 1}" th:classappend="${currentPage == 0} ? 'disabled'">
                                     <a class="page-link" type="button"  th:aria-disabled="${currentPage == 0}">Previous</a>
                                 </li>
 

@@ -90,7 +90,7 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
     Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner (int parentId,String schoolOwnerId,Pageable pageable);
 
     //find account role by email
-    @Query("SELECT new fa.appcode.common.vo.RoleVo(m.typeValue) FROM AccountInfo ai JOIN MasterDatum m ON ai.roleId=m.typeKey AND m.typeName='ROLE' AND ai.email=?1")
+    @Query("SELECT m.typeValue FROM AccountInfo ai JOIN MasterDatum m ON ai.roleId=m.typeKey AND m.typeName='ROLE' AND ai.email=?1")
     String findAccountRoleString(String email);
 
     AccountInfo getAccountInfoById(int id);
