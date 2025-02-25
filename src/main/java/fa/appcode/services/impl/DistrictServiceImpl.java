@@ -14,7 +14,7 @@ public class DistrictServiceImpl implements DistrictService {
     private DistrictRepository districtRepository;
 
     @Override
-    public List<DistrictVo> findAllByCityIdAndDeleteFlg(Integer cityId, Boolean deleteFlg) {
-        return districtRepository.findAllByCityIdAndDeleteFlg(cityId, deleteFlg);
+    public List<DistrictVo> findAllByCityIdAndNoDelete(Integer cityId) {
+        return districtRepository.findAllByCityIdAndDeleteFlg(cityId, false);
     }
 }

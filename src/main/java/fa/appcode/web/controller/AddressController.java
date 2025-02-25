@@ -24,10 +24,10 @@ public class AddressController {
 
     @GetMapping("/admin/school-form/district")
     List<DistrictVo> getDistrictByCity(@RequestParam(name = "cityId") Integer cityId){
-        return districtServiceImpl.findAllByCityIdAndDeleteFlg(cityId, false);
+        return districtServiceImpl.findAllByCityIdAndNoDelete(cityId);
     }
     @GetMapping("/admin/school-form/ward")
     List<WardVo> getWardByDistrict(@RequestParam(name = "districtId") Integer districtId){
-        return wardServiceImpl.findAllByDistrictIdAndDeleteFlg(districtId, false);
+        return wardServiceImpl.findAllByDistrictIdAndNoDelete(districtId);
     }
 }

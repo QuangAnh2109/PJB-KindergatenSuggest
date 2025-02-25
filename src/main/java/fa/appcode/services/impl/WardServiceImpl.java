@@ -14,7 +14,7 @@ public class WardServiceImpl implements WardService {
     private WardRepository wardRepository;
 
     @Override
-    public List<WardVo> findAllByDistrictIdAndDeleteFlg(Integer districtId, Boolean deleteFlg) {
-        return wardRepository.findAllByDistrictIdAndDeleteFlg(districtId, deleteFlg);
+    public List<WardVo> findAllByDistrictIdAndNoDelete(Integer districtId) {
+        return wardRepository.findAllByDistrictIdAndDeleteFlg(districtId, false);
     }
 }
