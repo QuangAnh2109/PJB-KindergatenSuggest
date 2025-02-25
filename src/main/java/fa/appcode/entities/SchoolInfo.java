@@ -92,4 +92,7 @@ public class SchoolInfo {
     @Column(name = "delete_flg", nullable = false)
     private Boolean deleteFlg = false;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "account_id", nullable = false)
+    private AccountInfo account;
 }

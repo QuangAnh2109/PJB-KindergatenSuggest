@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class DistrictVo {
+public class MasterDataVo {
     private Integer id;
-    private String districtName;
+    private String typeValue;
 }
