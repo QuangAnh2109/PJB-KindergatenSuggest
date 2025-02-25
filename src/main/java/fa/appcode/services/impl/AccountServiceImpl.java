@@ -26,10 +26,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Page<AccountVo> getAllAccounts(String search, Pageable pageable) {
-        Page<AccountInfo> accountPage = accountRepository.findAllWithFullAddress(search, pageable);
-        return accountPage.map(this::convertToAccountVo);
+        return accountRepository.findAllWithFullAddress(search, pageable);
     }
-
     @Override
     public AccountVo getAccountById(Integer id) {
         AccountInfo user = accountRepository.findById(id)
