@@ -8,6 +8,7 @@ import java.util.List;
 
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
+import fa.appcode.common.vo.RoleVo;
 import fa.appcode.entities.AccountInfo;
 
 
@@ -22,6 +23,7 @@ public interface AccountService {
 
     public boolean updatePassword(String email, String newPassword);
 
+    Page<ParentVo> findAllParent(String search ,Pageable pageable);
     Page<AccountVo> getAllAccounts(String search, Pageable pageable);
 
     AccountVo getAccountById(Integer id);
@@ -33,6 +35,10 @@ public interface AccountService {
     Page<ParentVo> findAllParent(Pageable pageable);
 
     ParentVo findParentById(int id);
+    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id,Pageable pageable);
+    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId,String schoolOwnerId,Pageable pageable);
+    RoleVo findAccountVo(String email);
+    AccountInfo getAccountInfoById(int id);
 
     Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id, Pageable pageable);
     AccountVo findAccountByPhone(String phone);

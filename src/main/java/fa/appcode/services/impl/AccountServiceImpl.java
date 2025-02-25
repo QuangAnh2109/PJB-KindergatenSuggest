@@ -4,6 +4,8 @@ import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
+import fa.appcode.common.vo.RoleVo;
+import fa.appcode.entities.AccountInfo;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.AccountService;
 import fa.appcode.web.controller.ForgotPasswordController;
@@ -83,6 +85,23 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         return convertToAccountVo(user);
     }
+    // ========================================================
+    @Override
+    public Page<AccountInfo> findAll(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<AccountInfo> findAllRoles() {
+        return List.of();
+    }
+
+    @Override
+    public Page<ParentVo> findAllParent(Pageable pageable) {
+        return null;
+    }
+
+    //=========================================================
 
     /**
      * Chuyển đổi AccountInfo thành AccountVo
@@ -120,20 +139,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Page<AccountInfo> findAll(Pageable pageable)
-            {
-        return accountRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<AccountInfo> findAllRoles(){
-        return accountRepository.findAllRole();
-    }
-
-
-    @Override
-    public Page<ParentVo> findAllParent(Pageable pageable) {
-        return accountRepository.findAllParent(pageable);
+    public Page<ParentVo> findAllParent(String search,Pageable pageable) {
+        return accountRepository.findAllParent(search,pageable);
     }
 
     @Override
@@ -142,9 +149,30 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id,Pageable pageable) {
-        return accountRepository.findParentEnrolledSchoolBy(id,pageable);
+    public Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id, Pageable pageable) {
+        return null;
     }
+
+    @Override
+    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id,Pageable pageable) {
+        return accountRepository.findParentEnrolledSchoolByParentId(id,pageable);
+    }
+
+    @Override
+    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId, Pageable pageable) {
+        return accountRepository.findParentEnrolledSchoolByParentIdAndSchoolOwner(parentId,schoolOwnerId,pageable);
+    }
+
+    @Override
+    public RoleVo findAccountVo(String email) {return accountRepository.findAccountVo(email);}
+
+    @Override
+    public AccountInfo getAccountInfoById(int id) {
+        return accountRepository.getAccountInfoById( id);
+    }
+
+
+
 
     @Override
     public AccountVo findAccountByPhone(String phone) {
