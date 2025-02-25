@@ -1,15 +1,16 @@
 package fa.appcode.repositories;
 
+import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.common.vo.RoleVo;
 import fa.appcode.entities.AccountInfo;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,15 +22,31 @@ import java.util.List;
 @Transactional
 public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
 
+    @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1")
+    AccountInfo findByEmail(String email);
+    @Query("Select c from AccountInfo c where c.phone=?1")
+    AccountVo findByPhone(String phone);
+    @Modifying
+    @Transactional
+    @Query("UPDATE AccountInfo a SET a.password = ?1 WHERE a.email = ?2")
+    int updatePassword(String newPassword, String email);
+
+
     @Query("""
-    SELECT ai FROM AccountInfo ai
-    LEFT JOIN FETCH ai.ward w
-    LEFT JOIN FETCH ai.district d
-    LEFT JOIN FETCH ai.city c
-    WHERE ai.deleteFlg = false
-    AND (:search IS NULL OR ai.fullName LIKE %:search% OR ai.email LIKE %:search% OR ai.phone LIKE %:search%)
-""")
-    Page<AccountInfo> findAllWithFullAddress(@Param("search") String search, Pageable pageable);
+                SELECT new fa.appcode.common.vo.AccountVo(
+                    ai.id, ai.fullName, ai.email, ai.phone, ai.dob, 
+                    CONCAT(ai.address, ', ', w.wardName, ', ', d.districtName, ', ', c.cityName), 
+                    ma.typeValue, ms.typeValue)
+                FROM AccountInfo ai
+                LEFT JOIN ai.ward w
+                LEFT JOIN ai.district d
+                LEFT JOIN ai.city c
+                LEFT JOIN MasterDatum ma ON ai.roleId = ma.id
+                LEFT JOIN MasterDatum ms ON ai.statusId = ms.id
+                WHERE ai.deleteFlg = false
+                AND (:search IS NULL OR ai.fullName LIKE %:search% OR ai.email LIKE %:search% OR ai.phone LIKE %:search%)
+                """)
+    Page<AccountVo> findAllWithFullAddress(@Param("search") String search, Pageable pageable);
 
     /**
      * @param pageable

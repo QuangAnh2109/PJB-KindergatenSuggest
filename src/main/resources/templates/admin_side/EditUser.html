@@ -299,82 +299,87 @@
 
     <div class="content-page">
         <div class="content">
-
-            <!-- Start container-fluid -->
             <div class="container-fluid">
+                <!-- Breadcrumb -->
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"> <a th:href="@{/admin/userlist}">User Management</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/admin/userlist}">User Management</a></li>
                         <li class="breadcrumb-item">UserList</li>
-                        <li class="breadcrumb-item active" aria-current="page">User Details</li>
+                        <li class="breadcrumb-item active" aria-current="page">Edit user</li>
                     </ol>
                 </nav>
-                <!-- start  -->
-                <div>
-                    <div>
-                        <div class="mt-5">
-                            <h4 class="header-title mb-3">User Details</h4>
-                            <div class="">
-                                <form action="#" class="form-validation">
-                                    <div class="form-group">
-                                        <label for="fullName">Full Name</label>
-                                        <input type="text" name="fullName" parsley-trigger="change" required
-                                               class="form-control" id="fullName">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" name="email" parsley-trigger="change" required
-                                               class="form-control" id="email">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="dob">DOB</label>
-                                        <input id="dob" type="date" required
-                                               class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="phone">Phone No.</label>
-                                        <input  type="tel" required
-                                                class="form-control" id="phone">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="role">Role</label>
-                                        <input  type="text" required
-                                                class="form-control" id="role">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="status">Status</label>
-                                        <input  type="text" required
-                                                class="form-control" id="status">
-                                    </div>
 
-                                    <div class="form-group text-right mb-0">
-                                        <a th:href="@{/admin/userlist}" type="reset" class="btn btn-danger waves-effect">
-                                            Cancel
-                                        </a>
-                                        <button class="btn btn-primary waves-effect waves-light mr-1" type="submit">
-                                            Save
-                                        </button>
-
-                                    </div>
-
-                                </form>
-                            </div>
-                        </div>
-
-                    </div>
+                <!-- Hiển thị thông báo -->
+                <div th:if="${message}" class="alert alert-success" role="alert">
+                    <span th:text="${message}"></span>
+                </div>
+                <div th:if="${error}" class="alert alert-danger" role="alert">
+                    <span th:text="${error}"></span>
                 </div>
 
-                <!--end row-->
+                <!-- Form chỉnh sửa thông tin user -->
+                <div>
+                    <div class="mt-5">
+                        <h4 class="header-title mb-3">Edit User</h4>
+                        <div>
+                            <form th:action="@{/admin/edituser/{id}(id=${user.id})}" method="post" class="form-validation">
+                                <!-- Full Name -->
+                                <div class="form-group">
+                                    <label for="fullName">Full Name</label>
+                                    <input type="text" name="fullName" class="form-control" id="fullName"
+                                           th:value="${user.fullName}" required>
+                                </div>
 
+                                <!-- Email (readonly) -->
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" name="email" class="form-control" id="email"
+                                           th:value="${user.email}" readonly>
+                                </div>
+
+                                <!-- DOB -->
+                                <div class="form-group">
+                                    <label for="dob">DOB</label>
+                                    <input type="date" name="dob" class="form-control" id="dob"
+                                           th:value="${user.dob}" required>
+                                </div>
+
+                                <!-- Phone -->
+                                <div class="form-group">
+                                    <label for="phone">Phone No.</label>
+                                    <input type="tel" name="phone" class="form-control" id="phone"
+                                           th:value="${user.phone}" required>
+                                </div>
+
+                                <!-- Role -->
+                                <div class="form-group">
+                                    <label for="role">Role</label>
+                                    <select name="roleId" class="form-control" id="role" required>
+                                        <option th:each="role : ${roles}" th:value="${role.id}"
+                                                th:text="${role.typeValue}" th:selected="${role.id == user.roleId}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Status (readonly) -->
+                                <div class="form-group">
+                                    <label for="status">Status</label>
+                                    <input type="text" name="status" class="form-control" id="status"
+                                           th:value="${user.status}" readonly>
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="form-group text-right mb-0">
+                                    <a th:href="@{/admin/userlist}" class="btn btn-danger waves-effect">Cancel</a>
+                                    <button type="submit" class="btn btn-primary waves-effect waves-light mr-1">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- end container-fluid -->
-
         </div>
-        <!-- end content -->
-
     </div>
-    <!-- END content-page -->
-
 </div>
 <!-- END wrapper -->
 

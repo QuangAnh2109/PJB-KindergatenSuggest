@@ -1,9 +1,12 @@
 package fa.appcode.services.impl;
 
+import fa.appcode.entities.MasterDatum;
 import fa.appcode.repositories.MasterDataRepository;
 import fa.appcode.services.MasterDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class MasterDataServiceImpl implements MasterDataService {
@@ -19,5 +22,10 @@ public class MasterDataServiceImpl implements MasterDataService {
     @Override
     public String getMasterById(Integer id) {
         return masterDataRepository.getMasterById(id);
+    }
+
+    @Override
+    public List<MasterDatum> getListByTypeName(String typeName) {
+        return masterDataRepository.getMasterByTypeName(typeName);
     }
 }

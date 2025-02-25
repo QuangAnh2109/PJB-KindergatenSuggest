@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Table(name = "account_info")
 public class AccountInfo {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id", nullable = false)
     private Integer id;
 
@@ -32,7 +33,7 @@ public class AccountInfo {
     @Column(name = "password", nullable = false, columnDefinition = "CHAR(255)")
     private String password;
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "address")
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -72,6 +73,6 @@ public class AccountInfo {
     @Column(name = "delete_flg", nullable = false)
     private Boolean deleteFlg = false;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url")
     private String imageUrl;
 }

@@ -21,7 +21,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             if (role.equals("Admin")) {
                 redirectUrl = "/school-owner/request-list";
                 break;
-            }else if (role.equals("School owner")) {
+            }
+            else if(role.equals("School owner")) {
                 redirectUrl = "/school-owner/request-list";
                 break;
             }
