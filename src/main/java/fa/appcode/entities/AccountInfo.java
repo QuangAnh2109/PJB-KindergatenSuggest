@@ -30,6 +30,9 @@ public class AccountInfo {
     @Column(name = "dob")
     private LocalDate dob;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(name = "password", nullable = false, columnDefinition = "CHAR(255)")
     private String password;
 
@@ -54,6 +57,9 @@ public class AccountInfo {
     @Column(name = "status_id", nullable = false)
     private Integer statusId;
 
+    @Column(name = "datetime_change_pass")
+    private Instant datetimeChangePass;
+
     @ColumnDefault("(1)")
     @Column(name = "record_no", nullable = false)
     private Integer recordNo;
@@ -72,7 +78,4 @@ public class AccountInfo {
 
     @Column(name = "delete_flg", nullable = false)
     private Boolean deleteFlg = false;
-
-    @Column(name = "image_url", nullable = false)
-    private String imageUrl;
 }

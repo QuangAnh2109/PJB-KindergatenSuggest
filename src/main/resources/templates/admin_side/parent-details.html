@@ -19,6 +19,8 @@
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script th:src="@{/admin_side/js/parent-detail.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
+
     <style>
         .btn-closed {
             background-color: #E6FAE6;
@@ -122,15 +124,15 @@
     <div class="left-side-menu">
         <div id="sidebar-menu">
             <ul class="metismenu" id="side-menu">
-                <li><a href="index.html"><i class="ti-home"></i> <span> School Management </span></a></li>
-                <li><a href="index.html"><i class="fa-regular fa-user"></i> <span> User Management </span></a></li>
-                <li><a href="index.html"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a></li>
+                <li><a th:href="@{/{role}/request-list(role=${role})}"><i class="ti-home"></i> <span> School Management </span></a></li>
+                <li><a th:href="@{/{role}/request-list(role=${role})}"><i class="fa-regular fa-user"></i> <span> User Management </span></a></li>
+                <li><a th:href="@{/{role}/request-reminder(role=${role})}"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a></li>
                 <li><a th:href="@{/{role}/parent-list(role=${role})}"><i class="fa-solid fa-user-tie"></i> <span> Parent Management </span></a></li>
-                <li><a href="index.html"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a></li>
+                <li><a th:href="@{/{role}/request-list(role=${role})}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a></li>
             </ul>
         </div>
     </div>
-    <!-- Left Sidebar End -->
+    <!-- End Sidebar -->
 
     <!-- ============================================================== -->
     <!-- Start Page Content here -->
