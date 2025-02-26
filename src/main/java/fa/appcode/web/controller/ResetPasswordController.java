@@ -1,6 +1,6 @@
 package fa.appcode.web.controller;
 
-import fa.appcode.common.constant.JwtUtils;
+import fa.appcode.common.utils.JwtUtils;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.services.AccountService;
@@ -20,7 +20,7 @@ public class ResetPasswordController {
     @Autowired
     private AccountService accountService;
 
-    @GetMapping("/reset-password")
+    @GetMapping("public/reset-password")
     public String showResetPasswordForm(@RequestParam String token, Model model) {
         if (!jwtUtil.validateToken(token)) {
             return "redirect:/reset-password-error";
@@ -28,7 +28,7 @@ public class ResetPasswordController {
         model.addAttribute("token", token);
         return "user_side/reset-password";
     }
-    @PostMapping("/reset-password")
+    @PostMapping("public/reset-password")
     public String resetPassword(@RequestParam String token,
                                 @RequestParam String newPassword,
                                 @RequestParam String confirmPassword,

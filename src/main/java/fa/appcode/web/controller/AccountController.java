@@ -39,7 +39,6 @@
             model.addAttribute("citys",cityServiceImpl.findAllByNoDelete());
             return "user_side/view-account";
         }
-
         @PostMapping("/auth/update-account")
         public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo,Model model, RedirectAttributes redirectAttributes) {
             AccountInfo existingAccount = accountService.findByEmail(accountInfo.getEmail());

@@ -1,6 +1,6 @@
 package fa.appcode.web.controller;
 
-import fa.appcode.common.constant.JwtUtils;
+import fa.appcode.common.utils.JwtUtils;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.services.AccountService;
@@ -22,16 +22,16 @@ public class ForgotPasswordController {
     @Autowired
     private AccountService accountService;
 
-    private static final String RESET_PASSWORD_URL = "http://localhost:8080/reset-password?token=";
+    private static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
     private static final String PASSWORD_FORM_URL = "user_side/forgot-password";
 
-    @GetMapping("/forgot-password")
+    @GetMapping("/public/forgot-password")
     public String showForgotPasswordForm() {
         return PASSWORD_FORM_URL;
     }
 
     private static final Logger log = LoggerFactory.getLogger(ForgotPasswordController.class);
-    @PostMapping("/forgot-password")
+    @PostMapping("/public/forgot-password")
     public String forgotPassword(@RequestParam String email, Model model) {
         AccountInfo account = accountService.findByEmail(email);
         if (account == null) {

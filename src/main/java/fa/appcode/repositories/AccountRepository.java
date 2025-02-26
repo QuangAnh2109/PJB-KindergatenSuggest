@@ -43,7 +43,7 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
                 FROM AccountInfo ai
                 LEFT JOIN ai.ward w
                 LEFT JOIN ai.district d
-                LEFT JOIN ai.city c
+                LEFT JOIN ai.city c     
                 LEFT JOIN MasterDatum ma ON ai.roleId = ma.id
                 LEFT JOIN MasterDatum ms ON ai.statusId = ms.id
                 WHERE ai.deleteFlg = false

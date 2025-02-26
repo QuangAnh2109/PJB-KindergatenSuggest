@@ -61,8 +61,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">D.O.B</label>
-                            <input type="date" class="form-control"
-                                   th:value="${#temporals.format(accountInfo.dob, 'yyyy-MM-dd')}" th:field="*{dob}"/>
+                            <input type="date" class="form-control" th:field="*{dob}"/>
                         </div>
                             <div class="mb-3">
                                 <label class="form-label required-label">Mobile No. </label>
@@ -73,20 +72,18 @@
                             </div>
                             <h5>Address</h5>
                             <div class="mb-3">
-                                <select onchange="loadDistrict(this.value)" name="city" class="form-control">
+                                <select onchange="loadDistrict(this.value)" name="city" class="form-control" required>
                                     <option value="" disabled selected>Province/City</option>
                                     <option th:each="city:${citys}" th:value="${city.id}" th:text="${city.cityName}">
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <select onchange="loadWard(this.value)" name="district" id="district"
-                                        class="form-control" required disabled>
+                                <select onchange="loadWard(this.value)" name="district" id="district" class="form-control" required disabled>
                                     <option value="" disabled selected>District</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <select onchange="enableParam('address')" name="ward" id="ward" class="form-control"
-                                        required disabled>
+                                <select onchange="enableParam('address')" name="ward" id="ward" class="form-control" required disabled>
                                     <option value="" disabled selected>Ward</option>
                                 </select>
                             </div>
@@ -113,7 +110,8 @@
 </div>
 <script th:src="@{/user_side/js/plugins.js}"></script>
 <script th:src="@{/user_side/js/designesia.js}"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js">
+</script>
 <script th:src="@{/admin_side/js/address-load.js}"></script>
 <script>
     setTimeout(function () {
