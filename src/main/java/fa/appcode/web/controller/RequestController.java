@@ -47,7 +47,7 @@ public class RequestController {
         AccountInfo account = accountService.findByEmail(user);
         return account.getId();
     }
-    @GetMapping("/school-owner/request-list")
+    @GetMapping("/manager/request-list")
     public String showRequestList(@RequestParam(name = "currentPage"
             ,defaultValue = "0") int currentPage, Model model,Principal principal,
             @RequestParam(name = "message", defaultValue = "") String message                     ) {
@@ -64,9 +64,10 @@ public class RequestController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", requestList.getTotalPages());
         model.addAttribute("message", message);
+        model.addAttribute("role", role);
         return "admin_side/request-list";
     }
-    @GetMapping("/school-owner/request-reminder")
+    @GetMapping("/manager/request-reminder")
     public String showRequestReminder(@RequestParam(name = "currentPage"
                                               ,defaultValue = "0") int currentPage, Model model,
         @RequestParam(name = "message", defaultValue = "")String message,Principal principal) {
@@ -83,16 +84,20 @@ public class RequestController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", requestList.getTotalPages());
         model.addAttribute("message", message);
+        model.addAttribute("role", role);
         return "admin_side/request-reminder";
     }
-    @GetMapping("/school-owner/request-list-detail")
-    public String requestListDetail(@RequestParam Integer id,@RequestParam(name = "page", required = false) String page, Model model) {
+    @GetMapping("/manager/request-list-detail")
+    public String requestListDetail(@RequestParam Integer id,@RequestParam(name = "page", required = false) String page, Model model,
+                                    Principal principal) {
         RequestDetailVo requestDetail = requestService.findById(id);
+        String role = getUserName(principal);
         model.addAttribute("requestDetail", requestDetail);
         model.addAttribute("page", page);
+        model.addAttribute("role", role);
         return "admin_side/request-list-detail";
     }
-    @GetMapping("/school-owner/updateRequest")
+    @GetMapping("/manager/updateRequest")
     public String updateRequest(@RequestParam Integer id,@RequestParam String page, Model model,Principal principal,
              RedirectAttributes redirectAttributes) {
         String role = getUserName(principal);
@@ -103,12 +108,13 @@ public class RequestController {
         }
         RequestDetailVo requestDetail = requestService.findById(id);
         model.addAttribute("requestDetail", requestDetail);
+        model.addAttribute("role", role);
         redirectAttributes.addAttribute("message", "Update successfully!");
-        if(page.equals("Detail")) return "redirect:/school-owner/request-reminder";
-        return "redirect:/school-owner/request-list";
+        if(page.equals("Detail")) return "redirect:/manager/request-reminder";
+        return "redirect:/manager/request-list";
     }
 
-    @GetMapping("/school-owner/searchRequestList")
+    @GetMapping("/manager/searchRequestList")
     public String searchRequestList(@RequestParam(name = "currentPage"
             ,defaultValue = "0") int currentPage,
             @RequestParam(name = "keyword", required = false) String keyword,
@@ -125,9 +131,10 @@ public class RequestController {
         model.addAttribute("requestList", requestList);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", requestList.getTotalPages());
+        model.addAttribute("role", role);
         return "admin_side/request-list";
     }
-    @GetMapping("/school-owner/searchRequestReminder")
+    @GetMapping("/manager/searchRequestReminder")
     public String searchRequestReminder(@RequestParam(name = "currentPage"
                                             ,defaultValue = "0") int currentPage,
                                     @RequestParam(name = "keyword", required = false) String keyword,
@@ -144,6 +151,7 @@ public class RequestController {
         model.addAttribute("requestList", requestList);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", requestList.getTotalPages());
+        model.addAttribute("role", role);
         return "admin_side/request-reminder";
     }
 }

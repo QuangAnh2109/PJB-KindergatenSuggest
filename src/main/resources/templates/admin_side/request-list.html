@@ -121,24 +121,45 @@
     <div class="left-side-menu">
         <div id="sidebar-menu">
             <ul class="metismenu" id="side-menu">
-                <li><a th:href="@{/school-owner/request-list}"><i class="ti-home"></i> <span> School Management </span></a></li>
-                <li><a th:href="@{/school-owner/request-list}"><i class="fa-regular fa-user"></i> <span> User Management </span></a></li>
-                <li><a th:href="@{/school-owner/request-reminder}"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a></li>
-                <li><a th:href="@{/school-owner/request-list}"><i class="fa-solid fa-user-tie"></i> <span> Parent Management </span></a></li>
-                <li><a th:href="@{/school-owner/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a></li>
+                <li><a th:href="@{/manager/request-list}"><i class="ti-home"></i>
+                    <span> School Management </span></a>
+                </li>
+                <li th:if="${#strings.equalsIgnoreCase(role, 'Admin')}">
+                    <a th:href="@{/admin/userlist}">
+                        <i class="fa-regular fa-user"></i>
+                        <span> User Management </span>
+                    </a>
+                </li>
+                <li><a th:href="@{/manager/parent-list}"><i class="fa-solid fa-user-tie"></i>
+                    <span> Parent Management </span></a>
+                </li>
+                <li><a th:href="@{/manager/request-reminder}"><i class="fa-regular fa-bell"></i>
+                    <span> Reminder </span></a></li>
+                <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a>
+                </li>
             </ul>
         </div>
     </div>
     <!-- End Sidebar -->
 
-    5<div class="content-page">
+
+
+
+    <div class="content-page">
         <div class="content">
             <div class="container-fluid">
-
+                <div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/manager/request-list}">Request Management</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Request List</li>
+                        </ol>
+                    </nav>
+                </div>
                 <!-- Search Box -->
                 <div class="row">
                     <div class="col-12">
-                        <form class="app-search" th:action="@{/school-owner/searchRequestList}" method="get">
+                        <form class="app-search" th:action="@{/manager/searchRequestList}" method="get">
                             <div class="app-search-box">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="keyword" placeholder="Search for request ....">
@@ -237,7 +258,7 @@
 <script th:src="@{/admin_side/js/app.min.js}"></script>
 <script>
     function redirectToDetail(id) {
-        window.location.href = "/school-owner/request-list-detail?id="+id;
+        window.location.href = "/manager/request-list-detail?id="+id;
     }
 </script>
 <script th:inline="javascript">

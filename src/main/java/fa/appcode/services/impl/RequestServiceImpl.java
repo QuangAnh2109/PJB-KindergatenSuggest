@@ -84,7 +84,7 @@ public class RequestServiceImpl implements RequestService {
     public void emailRequestReminder() {
         List<EmailContentVo> listSending = requestRepository.findAccountForEmail();
         for(EmailContentVo emailContentVo : listSending){
-            emailService.sendEmail(emailContentVo.getEmail(),"Request Reminder",
+            emailService.sendEmail(emailContentVo.getEmail(),"Kindergarten",
                     "You have "+emailContentVo.getNumberOfRequest()+" unresolved requests");
         }
     }
