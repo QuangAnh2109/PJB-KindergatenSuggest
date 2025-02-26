@@ -8,11 +8,10 @@ $(document).ready(function (){
         }
     })
 
-    var role = $("#userRole").val().trim();
     var parentId =$("#parentId").val();
     function findAll(currentPage) {
         $.get({
-            url: "/" + role + "/parent-list/parent-details/" + parentId,
+            url: "/manager/parent-list/parent-details/" + parentId,
             data: {
 
                 currentPage: currentPage,

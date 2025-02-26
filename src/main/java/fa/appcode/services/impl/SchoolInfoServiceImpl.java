@@ -14,13 +14,10 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     @Autowired
     private SchoolInfoRepository schoolInfoRepository;
 
-    @Override
-    public List<SchoolInfo> findSchoolInfoByAccountId(int id) {
-        return schoolInfoRepository.findSchoolInfoByAccountId(id);
-    }
+
     @Override
     public List<SchoolInfo> findSchoolInfoByAccountId(String id) {
-        return schoolInfoRepository.findSchoolInfoByAccountId(id);
+        return schoolInfoRepository.findSchoolInfoByAccountEmail(id);
     }
     @Override
     public List<SchoolInfo> findAll() {
@@ -30,5 +27,10 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     @Override
     public SchoolInfo getSchoolInfoById(int id) {
         return schoolInfoRepository.findSchoolInfoById(id);
+    }
+
+    @Override
+    public List<Integer> getAllSchoolIdsByAccountEmail(String id) {
+        return schoolInfoRepository.getAllSchoolIdsByAccountEmail(id);
     }
 }

@@ -9,13 +9,17 @@ import java.util.List;
 
 @Repository("schoolInfoRepository")
 public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer> {
-    @Query("SELECT s FROM SchoolInfo s JOIN AccountInfo ai ON s.account.id = ai.id WHERE s.deleteFlg=false")
-    List<SchoolInfo> findSchoolInfoByAccountId(int id);
 
+
+    //find all schools by account email
     @Query("SELECT s FROM SchoolInfo s JOIN AccountInfo ai ON s.account.id = ai.id AND ai.email=?1 WHERE s.deleteFlg=false")
-    List<SchoolInfo> findSchoolInfoByAccountId(String id);
+    List<SchoolInfo> findSchoolInfoByAccountEmail(String id);
 
-    List<SchoolInfo> findAll();
-
+    //find schoolInfo by school Id
     SchoolInfo findSchoolInfoById(int id);
+
+    //find all schools by account email, get schoolID only
+    @Query("SELECT s.id FROM SchoolInfo s JOIN AccountInfo ai ON s.account.id = ai.id AND ai.email=?1 WHERE s.deleteFlg=false")
+    List<Integer> getAllSchoolIdsByAccountEmail(String id);
+
 }
