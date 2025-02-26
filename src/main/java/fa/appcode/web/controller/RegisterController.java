@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/register")
+@RequestMapping("public/register")
 public class RegisterController {
 
     private final String REGISTER_PAGE = "user_side/register";
@@ -74,7 +74,7 @@ public class RegisterController {
         return VERIFY_PAGE;
     }
 
-    @PostMapping("/verify")
+    @PostMapping("/public/verify")
     public String verifyOtp(@RequestParam String email,
                             @RequestParam String otp,
                             Model model, HttpSession session) {
@@ -114,9 +114,9 @@ public class RegisterController {
         accountInfo.setAddress("null");
 
         accountService.save(accountInfo);
-        return "redirect:/showMyLoginPage";
+        return "redirect:/public/showMyLoginPage";
     }
-    @PostMapping("/resend")
+    @PostMapping("public/resend")
     public String resendOtp(@RequestParam("email") String email,
                             RedirectAttributes redirectAttributes,
                             HttpSession session) {
@@ -125,24 +125,24 @@ public class RegisterController {
 
         if (pendingAccounts == null) {
             redirectAttributes.addFlashAttribute("error", "Your registration session has expired. Please register again.");
-            return "redirect:/register";
+            return "redirect:/public/register";
         }
 
         if (!pendingAccounts.containsKey(email)) {
             redirectAttributes.addFlashAttribute("error", "Email is not in the pending list.");
-            return "redirect:/register";
+            return "redirect:/public/register";
         }
 
         if (verificationService.isOtpValid(email)) {
             redirectAttributes.addFlashAttribute("message", "Your OTP is still valid. Please check your email!");
-            return "redirect:/register/verify?email=" + email;
+            return "redirect:/public/register/verify?email=" + email;
         }
 
         String newOtp = verificationService.generateOtp(email);
         emailService.sendEmail(email, "OTP CODE SENDER", "Your New OTP Code: " + newOtp);
 
         redirectAttributes.addFlashAttribute("message", "A new OTP has been sent to your email.");
-        return "redirect:/register/verify?email=" + email;
+        return "redirect:/public/register/verify?email=" + email;
     }
 
 }

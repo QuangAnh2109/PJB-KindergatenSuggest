@@ -27,7 +27,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 break;
             }
             else if (role.equals("Parent")) {
-                redirectUrl = "/home";
+                redirectUrl = "public/home";
                 break;
             }
         }
