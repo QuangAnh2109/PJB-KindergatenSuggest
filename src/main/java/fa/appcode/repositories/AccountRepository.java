@@ -79,20 +79,6 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
             "GROUP BY ai.id, ai.fullName, ai.email, ai.phone ")
     Page<ParentVo> findAllParent(String search, Pageable pageable);
 
-    //    Find All enrolled School for admin
-    @Query("SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName,CAST(ceiling(((f.extracurricularActivities + f.facilitiesUtilities + f.hygieneNutrition + f.learningProgram + f.teacherStaff) / 5) * 2) / 2 AS FLOAT),f.feedbackMessage)" +
-            "FROM AccountInfo ai " +
-            "JOIN MasterDatum ma ON ai.roleId=ma.id " +
-            "JOIN  EnrollSchool e ON e.account.id=ai.id " +
-            "JOIN SchoolInfo s ON s.id=e.school.id " +
-            "LEFT JOIN Feedback f on f.id.schoolId=s.id AND f.id.accountId=ai.id AND " +
-            "f.id.feedbackTime = ( " +
-            "          SELECT MAX(f2.id.feedbackTime)" +
-            "          FROM Feedback f2 " +
-            "          WHERE f2.id.schoolId = s.id " +
-            "         AND f2.id.accountId = ai.id AND f2.deleteFlg=false) " +
-            "WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=41")
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId (int id,Pageable pageable);
     @Query("SELECT new fa.appcode.common.vo.ParentVo(m.id,m.fullName,m.email,m.phone,(CASE WHEN EXISTS (SELECT e FROM EnrollSchool e WHERE e.account.id = m.id AND e.status != false) THEN true ELSE false END))" +
             "FROM AccountInfo m " +
             "JOIN MasterDatum ma ON m.roleId=ma.typeKey " +

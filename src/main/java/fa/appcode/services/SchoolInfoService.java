@@ -5,9 +5,9 @@ import fa.appcode.entities.SchoolInfo;
 import java.util.List;
 
 public interface SchoolInfoService {
-    List<SchoolInfo> findSchoolInfoByAccountId(int id);
-    List<SchoolInfo> findSchoolInfoByAccountId(String id);
-
-    List<SchoolInfo> findAll();
+    List<SchoolInfo> findSchoolInfoListByAccountEmail(String email);
+    List<SchoolInfo> findAllSchoolPublished();
     SchoolInfo getSchoolInfoById(int id);
+    List<Integer> getAllSchoolIdsByAccountEmail(String email);
+    List<Integer> getAllSchoolIdsForUnenrollParentByAccountEmail(String email);
 }
