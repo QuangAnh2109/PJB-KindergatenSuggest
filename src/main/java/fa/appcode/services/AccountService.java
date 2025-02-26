@@ -43,8 +43,7 @@ public interface AccountService {
     Page<ParentVo> findAllParent(Pageable pageable);
 
     ParentVo findParentById(int id);
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id,Pageable pageable);
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId,String schoolOwnerId,Pageable pageable);
+
     String findAccountRoleString(String email);
     AccountInfo getAccountInfoById(int id);
 

@@ -203,15 +203,6 @@ public class AccountServiceImpl implements AccountService {
         return null;
     }
 
-    @Override
-    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable) {
-        return accountRepository.findParentEnrolledSchoolByParentId(id, pageable);
-    }
-
-    @Override
-    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId, Pageable pageable) {
-        return accountRepository.findParentEnrolledSchoolByParentIdAndSchoolOwner(parentId, schoolOwnerId, pageable);
-    }
 
     @Override
     public String findAccountRoleString(String email) {return accountRepository.findAccountRoleString(email);}

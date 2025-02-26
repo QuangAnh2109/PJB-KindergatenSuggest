@@ -14,21 +14,28 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     @Autowired
     private SchoolInfoRepository schoolInfoRepository;
 
+
     @Override
-    public List<SchoolInfo> findSchoolInfoByAccountId(int id) {
-        return schoolInfoRepository.findSchoolInfoByAccountId(id);
+    public List<SchoolInfo> findSchoolInfoListByAccountEmail(String email) {
+        return schoolInfoRepository.findSchoolInfoByAccountEmail(email);
     }
     @Override
-    public List<SchoolInfo> findSchoolInfoByAccountId(String id) {
-        return schoolInfoRepository.findSchoolInfoByAccountId(id);
-    }
-    @Override
-    public List<SchoolInfo> findAll() {
-        return schoolInfoRepository.findAll();
+    public List<SchoolInfo> findAllSchoolPublished() {
+        return schoolInfoRepository.findAllSchoolPublished();
     }
 
     @Override
-    public SchoolInfo getSchoolInfoById(int id) {
-        return schoolInfoRepository.findSchoolInfoById(id);
+    public SchoolInfo getSchoolInfoById(int email) {
+        return schoolInfoRepository.findSchoolInfoById(email);
+    }
+
+    @Override
+    public List<Integer> getAllSchoolIdsByAccountEmail(String email) {
+        return schoolInfoRepository.getAllSchoolIdsByAccountEmail(email);
+    }
+
+    @Override
+    public List<Integer> getAllSchoolIdsForUnenrollParentByAccountEmail(String email) {
+        return schoolInfoRepository.getAllSchoolIdsForUnenrollParentByAccountEmail(email);
     }
 }

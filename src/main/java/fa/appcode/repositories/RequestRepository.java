@@ -1,5 +1,6 @@
 package fa.appcode.repositories;
 
+import fa.appcode.common.vo.EmailContentVo;
 import fa.appcode.common.vo.RequestDetailVo;
 import fa.appcode.common.vo.RequestVo;
 import fa.appcode.entities.Request;
@@ -81,4 +82,12 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
     @Query("Update Request r Set r.requestMasterId = 44, r.updateId = ?1,r.updateTime= ?3"+
            " Where r.id = ?2")
     void updateRequestStatus(String update_id, int id, Instant updateTime);
+
+    @Query("Select  new fa.appcode.common.vo.EmailContentVo(a.id,a.email,count(a.id))"
+            + "From  Request r "
+            + "Join SchoolInfo s On r.school.id=s.id "
+            + "Join AccountInfo a On a.id=s.account.id "
+            + "Where r.requestMasterId!=44"
+            + "Group By a.id,a.email")
+    List<EmailContentVo> findAccountForEmail();
 }
