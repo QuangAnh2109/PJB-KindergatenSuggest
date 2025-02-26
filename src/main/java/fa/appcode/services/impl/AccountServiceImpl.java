@@ -214,9 +214,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public RoleVo findAccountVo(String email) {
-        return accountRepository.findAccountVo(email);
-    }
+    public String findAccountRoleString(String email) {return accountRepository.findAccountRoleString(email);}
 
     @Override
     public AccountInfo getAccountInfoById(int id) {

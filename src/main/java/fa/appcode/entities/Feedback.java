@@ -20,7 +20,7 @@ public class Feedback {
     @JoinColumn(name = "school_id", nullable = false)
     private SchoolInfo school;
 
-    @Column(name = "`learning program`", nullable = false)
+    @Column(name = "learning_program", nullable = false)
     private Float learningProgram;
 
     @Column(name = "facilities_utilities", nullable = false)
