@@ -69,9 +69,23 @@ public class RegisterController {
 
         pendingAccounts.put(accountVo.getEmail(), accountVo);
         session.setAttribute("pendingAccounts", pendingAccounts);
-
-        model.addAttribute("email", accountVo.getEmail());
-        return VERIFY_PAGE;
+        AccountInfo accountInfo = new AccountInfo();
+        accountInfo.setFullName(accountVo.getFullName());
+        accountInfo.setEmail(accountVo.getEmail());
+        accountInfo.setPhone(accountVo.getPhone());
+        accountInfo.setPassword("{bcrypt}" + accountService.encodePassword(accountVo.getPassword()));
+        accountInfo.setStatusId(41);
+        accountInfo.setRoleId(3);
+        accountInfo.setRecordNo(1);
+        accountInfo.setCreateId("web_system");
+        accountInfo.setUpdateId("web_system");
+        accountInfo.setCreateTime(Instant.now());
+        accountInfo.setUpdateTime(Instant.now());
+        accountInfo.setAddress("null");
+        accountService.save(accountInfo);
+        return "redirect:/public/showMyLoginPage";
+//        model.addAttribute("email", accountVo.getEmail());
+//        return VERIFY_PAGE;
     }
 
     @PostMapping("/public/verify")

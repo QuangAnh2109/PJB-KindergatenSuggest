@@ -15,7 +15,6 @@ public class KindergartenG3Application {
 	public static void main(String[] args) {
 		var context = SpringApplication.run(KindergartenG3Application.class, args);
 		KindergartenG3Application app = context.getBean(KindergartenG3Application.class);
-//		app.sendEmailtoMe();
 	}
 
 //	public void sendEmailtoMe() {
