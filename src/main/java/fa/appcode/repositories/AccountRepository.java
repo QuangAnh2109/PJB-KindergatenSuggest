@@ -26,11 +26,14 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
     AccountInfo findByEmail(String email);
     @Query("Select c from AccountInfo c where c.phone=?1")
     AccountVo findByPhone(String phone);
+    @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1")
+    AccountVo findAccountByEmail(String email);
+    @Query("SELECT c FROM AccountInfo c WHERE c.phone = ?1")
+    AccountInfo findAccountByPhone(String email);
     @Modifying
     @Transactional
     @Query("UPDATE AccountInfo a SET a.password = ?1 WHERE a.email = ?2")
     int updatePassword(String newPassword, String email);
-
 
     @Query("""
                 SELECT new fa.appcode.common.vo.AccountVo(
@@ -98,7 +101,6 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
             "WHERE ma.typeName='ROLE' AND ma.typeKey=3 " +
             "GROUP BY m.id, m.fullName, m.email, m.phone")
     Page<ParentVo> findAllParent(Pageable pageable);
-    AccountInfo findAccountByEmail(String email);
     //    Find All enrolled School for specific School Owner
     @Query("SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName,CAST(ceiling(((f.extracurricularActivities + f.facilitiesUtilities + f.hygieneNutrition + f.learningProgram + f.teacherStaff) / 5) * 2) / 2 AS FLOAT),f.feedbackMessage)" +
             "FROM AccountInfo ai " +

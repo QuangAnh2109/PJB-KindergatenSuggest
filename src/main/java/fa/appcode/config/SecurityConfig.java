@@ -67,6 +67,7 @@ public class SecurityConfig {
                         configurer
                                 .requestMatchers("/", "/home", "/register", "/forgot-password",
                                         "/reset-password", "/about", "/contact", "/user_side/**", "register/**").permitAll()
+                                .requestMatchers("auth/view-account").hasAnyAuthority("Parent","School owner","Admin")
                                 .requestMatchers("/parent/**").hasAuthority("Parent")
                                 .requestMatchers("/school-owner/**").hasAnyAuthority("School owner", "Admin")
                                 .requestMatchers("/admin/**").hasAuthority("Admin")
