@@ -26,11 +26,14 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
     AccountInfo findByEmail(String email);
     @Query("Select c from AccountInfo c where c.phone=?1")
     AccountVo findByPhone(String phone);
+    @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1")
+    AccountVo findAccountByEmail(String email);
+    @Query("SELECT c FROM AccountInfo c WHERE c.phone = ?1")
+    AccountInfo findAccountByPhone(String email);
     @Modifying
     @Transactional
     @Query("UPDATE AccountInfo a SET a.password = ?1 WHERE a.email = ?2")
     int updatePassword(String newPassword, String email);
-
 
     @Query("""
                 SELECT new fa.appcode.common.vo.AccountVo(
@@ -40,7 +43,7 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
                 FROM AccountInfo ai
                 LEFT JOIN ai.ward w
                 LEFT JOIN ai.district d
-                LEFT JOIN ai.city c
+                LEFT JOIN ai.city c     
                 LEFT JOIN MasterDatum ma ON ai.roleId = ma.id
                 LEFT JOIN MasterDatum ms ON ai.statusId = ms.id
                 WHERE ai.deleteFlg = false
@@ -84,7 +87,20 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
             "WHERE ma.typeName='ROLE' AND ma.typeKey=3 " +
             "GROUP BY m.id, m.fullName, m.email, m.phone")
     Page<ParentVo> findAllParent(Pageable pageable);
-    AccountInfo findAccountByEmail(String email);
+    //    Find All enrolled School for specific School Owner
+    @Query("SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName,CAST(ceiling(((f.extracurricularActivities + f.facilitiesUtilities + f.hygieneNutrition + f.learningProgram + f.teacherStaff) / 5) * 2) / 2 AS FLOAT),f.feedbackMessage)" +
+            "FROM AccountInfo ai " +
+            "JOIN MasterDatum ma ON ai.roleId=ma.id " +
+            "JOIN  EnrollSchool e ON e.account.id=ai.id " +
+            "JOIN SchoolInfo s ON s.id=e.school.id " +
+            "LEFT JOIN Feedback f on f.id.schoolId=s.id AND f.id.accountId=ai.id AND " +
+            "f.id.feedbackTime = ( " +
+            "          SELECT MAX(f2.id.feedbackTime)" +
+            "          FROM Feedback f2 " +
+            "          WHERE f2.id.schoolId = s.id " +
+            "         AND f2.id.accountId = ai.id AND f2.deleteFlg=false) " +
+            "WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=41 AND s.account.email=?2 ")
+    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner (int parentId,String schoolOwnerId,Pageable pageable);
 
     //find account role by email
     @Query("SELECT m.typeValue FROM AccountInfo ai JOIN MasterDatum m ON ai.roleId=m.typeKey AND m.typeName='ROLE' AND ai.email=?1")

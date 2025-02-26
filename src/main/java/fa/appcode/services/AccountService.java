@@ -1,9 +1,11 @@
 package fa.appcode.services;
 
 import fa.appcode.common.vo.AccountVo;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import fa.appcode.common.vo.EnrolledSchoolVo;
@@ -19,8 +21,10 @@ public interface AccountService {
 
     void save(AccountInfo accountInfo);
 
+    AccountVo findAccountByEmail(String email);
     AccountInfo findByEmail(String email);
-
+    public void updateAccountInfo(AccountInfo accountInfo) ;
+    AccountInfo findAccountInfoByPhone(String phone);
     public boolean updatePassword(String email, String newPassword);
 
     Page<ParentVo> findAllParent(String search ,Pageable pageable);
@@ -31,7 +35,6 @@ public interface AccountService {
     void toggleUserStatus(Integer id);
     void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId);
     void deleteAccount(Integer id);
-
 
     Page<AccountInfo> findAll(Pageable pageable);
 

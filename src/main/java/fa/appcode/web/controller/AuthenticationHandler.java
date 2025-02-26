@@ -34,6 +34,6 @@
                 error = "Invalid email or password.";
             }
             String encodedError = URLEncoder.encode(error, StandardCharsets.UTF_8);
-            response.sendRedirect("/showMyLoginPage?error=" + encodedError);
+            response.sendRedirect("public/showMyLoginPage?error=" + encodedError);
         }
     }

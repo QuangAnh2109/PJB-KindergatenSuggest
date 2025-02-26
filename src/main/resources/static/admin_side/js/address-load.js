@@ -18,7 +18,7 @@ function loadDistrict(cityId) {
             document.getElementById("address").disabled = true;
         },
         error: function (xhr){
-            console.log("load district faild" + xhr);
+            console.log("load district failed" + xhr);
         },
     });
 }
@@ -39,7 +39,7 @@ function loadWard(districtId) {
             document.getElementById("address").disabled = true;
         },
         error: function (xhr){
-            console.log("load ward faild" + xhr);
+            console.log("load ward failed" + xhr);
         },
     });
 }
