@@ -34,6 +34,10 @@ public class AccountServiceImpl implements AccountService {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    public AccountInfo getAccountById(int id) {
+        return accountRepository.getAccountInfoById(id);
+    }
+
     @Override
     public boolean existsByEmail(String email) {
         return accountRepository.findByEmail(email) != null;

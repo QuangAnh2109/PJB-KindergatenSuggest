@@ -1,6 +1,8 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.common.utils.JwtUtils;
+import fa.appcode.common.utils.TokenUtils;
+import fa.appcode.common.vo.AccountVo;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.services.AccountService;
@@ -21,7 +23,8 @@ public class ForgotPasswordController {
     private EmailService emailService;
     @Autowired
     private AccountService accountService;
-
+    @Autowired
+    private TokenUtils tokenUtils;
     private static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
     private static final String PASSWORD_FORM_URL = "user_side/forgot-password";
 
@@ -31,26 +34,44 @@ public class ForgotPasswordController {
     }
 
     private static final Logger log = LoggerFactory.getLogger(ForgotPasswordController.class);
-    @PostMapping("/public/forgot-password")
-    public String forgotPassword(@RequestParam String email, Model model) {
-        AccountInfo account = accountService.findByEmail(email);
-        if (account == null) {
-            model.addAttribute("userNotExist", globalConfig.getEmailNotExist());
-            return PASSWORD_FORM_URL;
-        }
-
-        String token = jwtUtil.generateToken(email);
-        String resetLink = RESET_PASSWORD_URL + token;
-
-        try {
-            emailService.sendEmail(email, "Reset Your Password",
-                    "Click this link to reset your password: " + resetLink);
-            model.addAttribute("message", "A password reset link has been sent to your email.");
-        } catch (Exception e) {
-            model.addAttribute("emailError", "Failed to send email. Please try again later.");
-            log.error("Email sending failed: {}", e.getMessage());
-        }
+//    @PostMapping("/public/forgot-password")
+//    public String forgotPassword(@RequestParam String email, Model model) {
+//        AccountInfo account = accountService.findByEmail(email);
+//        if (account == null) {
+//            model.addAttribute("userNotExist", globalConfig.getEmailNotExist());
+//            return PASSWORD_FORM_URL;
+//        }
+//
+//        String token = jwtUtil.generateToken(email);
+//        String resetLink = RESET_PASSWORD_URL + token;
+//
+//        try {
+//            emailService.sendEmail(email, "Reset Your Password",
+//                    "Click this link to reset your password: " + resetLink);
+//            model.addAttribute("message", "A password reset link has been sent to your email.");
+//        } catch (Exception e) {
+//            model.addAttribute("emailError", "Failed to send email. Please try again later.");
+//            log.error("Email sending failed: {}", e.getMessage());
+//        }
+//        return PASSWORD_FORM_URL;
+//    }
+@PostMapping("/public/forgot-password")
+public String forgotPassword(@RequestParam String email, Model model) {
+    AccountInfo account = accountService.findByEmail(email);
+    if (account == null) {
+        model.addAttribute("userNotExist", globalConfig.getEmailNotExist());
         return PASSWORD_FORM_URL;
     }
-
+    String token = tokenUtils.generateToken(email);
+    String resetLink = RESET_PASSWORD_URL + token;
+    try {
+        emailService.sendEmail(email, "Reset Your Password",
+                "Click this link to reset your password: " + resetLink);
+        model.addAttribute("message", "A password reset link has been sent to your email.");
+    } catch (Exception e) {
+        model.addAttribute("emailError", "Failed to send email. Please try again later.");
+        log.error("Email sending failed: {}", e.getMessage());
+    }
+    return PASSWORD_FORM_URL;
+}
 }

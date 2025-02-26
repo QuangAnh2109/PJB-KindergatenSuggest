@@ -15,6 +15,7 @@ import fa.appcode.entities.AccountInfo;
 
 
 public interface AccountService {
+    public AccountInfo getAccountById(int id);
     boolean existsByEmail(String email);
 
     String encodePassword(String password);
