@@ -36,6 +36,7 @@ public class RequestController {
     @Autowired
     private SchoolInfoService schoolInfoService;
 
+
     public String getUserName(Principal principal) {
         String user = principal.getName();
         AccountInfo account = accountService.findByEmail(user);
