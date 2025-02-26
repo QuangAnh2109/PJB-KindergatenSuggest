@@ -104,12 +104,12 @@ public class ParentController {
         if("Admin".equals(role)){
 
             listParentEnroll = enrollSchoolService.findParentEnrolledSchoolByParentId(id,pageable);
-            schoolInfoList=  schoolInfoService.findAll();
+            schoolInfoList=  schoolInfoService.findAllSchoolPublished();
 
         } else if("School owner".equals(role)){
 
             listParentEnroll = enrollSchoolService.findParentEnrolledSchoolByParentIdAndSchoolOwner(id, principal.getName(), pageable);
-            schoolInfoList = schoolInfoService.findSchoolInfoByAccountId(principal.getName());
+            schoolInfoList = schoolInfoService.findSchoolInfoListByAccountEmail(principal.getName());
 
         }
 
@@ -262,7 +262,7 @@ public class ParentController {
                         enrollSchool.setUpdateId("ADMIN");
                     }
                     if(role.equals("School owner")) {
-                        List<Integer> schoolIdList = schoolInfoService.getAllSchoolIdsByAccountEmail(principal.getName());
+                        List<Integer> schoolIdList = schoolInfoService.getAllSchoolIdsForUnenrollParentByAccountEmail(principal.getName());
                         if(!schoolIdList.contains(enrollSchool.getSchool().getId())) {
                             throw new Exception();
                         }
