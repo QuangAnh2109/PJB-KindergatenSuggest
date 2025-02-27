@@ -7,6 +7,7 @@ import fa.appcode.common.vo.ParentVo;
 import fa.appcode.common.vo.RoleVo;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.AccountService;
+import fa.appcode.services.MasterDatumService;
 import fa.appcode.web.controller.ForgotPasswordController;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import fa.appcode.services.MasterDataService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
@@ -26,16 +28,30 @@ import java.util.List;
 @Service
 public class AccountServiceImpl implements AccountService {
     @Autowired
-    private MasterDataService masterDataService;
+    private MasterDatumService masterDatumService;
     @Autowired
     private AccountRepository accountRepository;
     private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordController.class);
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    public AccountInfo getAccountById(int id) {
+        return accountRepository.getAccountInfoById(id);
+    }
+
     @Override
     public boolean existsByEmail(String email) {
         return accountRepository.findByEmail(email) != null;
+    }
+    @Transactional
+    @Modifying
+    public void updateAccountInfo(AccountInfo accountInfo) {
+        accountRepository.save(accountInfo);
+    }
+
+    @Override
+    public AccountInfo findAccountInfoByPhone(String phone) {
+        return accountRepository.findAccountByPhone(phone);
     }
 
     @Override
@@ -50,36 +66,38 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public AccountVo findAccountByEmail(String email) {
+        return accountRepository.findAccountByEmail(email);
+    }
+
+    @Override
     public AccountInfo findByEmail(String email) {
         return accountRepository.findByEmail(email);
     }
 
+
+
     @Transactional
     @Override
     public boolean updatePassword(String email, String newPassword) {
-        logger.info("Bắt đầu cập nhật mật khẩu cho email: {}", email);
 
         AccountInfo account = accountRepository.findByEmail(email);
         if (account == null) {
-            logger.warn("Email không tồn tại: {}", email);
             return false;
         }
-
         String encodedPassword = "{bcrypt}" + passwordEncoder.encode(newPassword);
-        logger.info("Mật khẩu mới đã được mã hóa: {}", encodedPassword);
-
         int numberOfRows = accountRepository.updatePassword(encodedPassword, email);
-        logger.info("Số dòng bị ảnh hưởng bởi câu lệnh UPDATE: {}", numberOfRows);
-
         return numberOfRows > 0;
     }
 
 
+    // Get list of user account
     @Override
     public Page<AccountVo> getAllAccounts(String search, Pageable pageable) {
         return accountRepository.findAllWithFullAddress(search, pageable);
     }
 
+    // Find account by Id
     @Override
     public AccountVo getAccountById(Integer id) {
         AccountInfo user = accountRepository.findById(id)
@@ -136,11 +154,13 @@ public class AccountServiceImpl implements AccountService {
             accountVo.setFullAddress(fullAddress.toString().trim());
         }
         // Resolve role and status names
-        accountVo.setRole(masterDataService.getMasterById(accountInfo.getRoleId()));
-        accountVo.setStatus(masterDataService.getMasterById(accountInfo.getStatusId()));
+        accountVo.setRole(masterDatumService.getMasterById(accountInfo.getRoleId()));
+        accountVo.setStatus(masterDatumService.getMasterById(accountInfo.getStatusId()));
         return accountVo;
     }
 
+
+    // Change status from active to inactive (and vice versa)
     @Override
     public void toggleUserStatus(Integer id) {
         AccountInfo user = accountRepository.findById(id)
@@ -156,6 +176,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(user);
     }
 
+    // Update user account by information get from form
     @Override
     public void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId) {
         AccountInfo user = accountRepository.findById(id)
@@ -170,6 +191,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(user);
     }
 
+    // Delete logic user account
     public void deleteAccount(Integer id) {
         AccountInfo account = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -192,19 +214,10 @@ public class AccountServiceImpl implements AccountService {
         return null;
     }
 
-    @Override
-    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable) {
-        return accountRepository.findParentEnrolledSchoolByParentId(id, pageable);
-    }
 
     @Override
-    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId, Pageable pageable) {
-        return accountRepository.findParentEnrolledSchoolByParentIdAndSchoolOwner(parentId, schoolOwnerId, pageable);
-    }
-
-    @Override
-    public RoleVo findAccountVo(String email) {
-        return accountRepository.findAccountVo(email);
+    public String findAccountRoleString(String email) {
+        return accountRepository.findAccountRoleString(email);
     }
 
     @Override
@@ -216,6 +229,11 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountVo findAccountByPhone(String phone) {
         return accountRepository.findByPhone(phone);
+    }
+
+    @Override
+    public Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email, String search, Pageable pageable) {
+        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email,search,pageable);
     }
 
 

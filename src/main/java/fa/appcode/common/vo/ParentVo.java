@@ -40,4 +40,8 @@ public class ParentVo {
         this.DOB = DOB;
         this.parentAddress = parentAddress;
     }
+
+    public String getParentAddress() {
+        return this.parentAddress.replace("   "," - ");
+    }
 }

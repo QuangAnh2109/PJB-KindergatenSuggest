@@ -2,7 +2,6 @@
 <html lang="en">
 
 
-<!-- Mirrored from coderthemes.com/simple/layouts/vertical/forms-general.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 28 Aug 2024 07:26:06 GMT -->
 <head>
     <meta charset="utf-8" />
     <title>Form Elements | Simple - Responsive Bootstrap 4 Admin Dashboard</title>
@@ -19,6 +18,8 @@
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script th:src="@{/admin_side/js/parent-detail.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
+
     <style>
         .btn-closed {
             background-color: #E6FAE6;
@@ -122,15 +123,15 @@
     <div class="left-side-menu">
         <div id="sidebar-menu">
             <ul class="metismenu" id="side-menu">
-                <li><a href="index.html"><i class="ti-home"></i> <span> School Management </span></a></li>
-                <li><a href="index.html"><i class="fa-regular fa-user"></i> <span> User Management </span></a></li>
-                <li><a href="index.html"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a></li>
-                <li><a th:href="@{/{role}/parent-list(role=${role})}"><i class="fa-solid fa-user-tie"></i> <span> Parent Management </span></a></li>
-                <li><a href="index.html"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a></li>
+                <li><a th:href="@{/manager/request-list}"><i class="ti-home"></i> <span> School Management </span></a></li>
+                <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-user"></i> <span> User Management </span></a></li>
+                <li><a th:href="@{/manager/request-reminder}"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a></li>
+                <li><a th:href="@{/manager/parent-list}"><i class="fa-solid fa-user-tie"></i> <span> Parent Management </span></a></li>
+                <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a></li>
             </ul>
         </div>
     </div>
-    <!-- Left Sidebar End -->
+    <!-- End Sidebar -->
 
     <!-- ============================================================== -->
     <!-- Start Page Content here -->
@@ -146,7 +147,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div>
-                            <h4 class="header-title mb-3"><a th:href="@{/{role}/parent-list(role=${role})}">Parent List</a> > <a href="#">Parent Details</a></h4>
+                            <h4 class="header-title mb-3"><a th:href="@{/manager/parent-list}">Parent List</a> > <a href="#">Parent Details</a></h4>
                         </div>
                     </div>
                 </div>
@@ -164,12 +165,12 @@
                 </div>
                 <!-- end row -->
                 <div class="row" style="justify-content: center;">
-                    <div class="col-lg-12">
+                    <div class="col-lg-12" th:if="${accountInfo!=null}">
                         <!-- loop here -->
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label">Full Name</label>
                                 <div class="col-md-10">
-                                    <input type="hidden" id="userRole" th:value="${role}" />
+                                    <input type="hidden" id="parentId" th:value="${accountInfo.parentId}" />
                                     <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentName}">
                                 </div>
                             </div>
@@ -236,7 +237,7 @@
                             <ul class="pagination justify-content-end">
                                 <!-- Previous Button -->
                                 <li class="page-item parent-page-item disabled" th:if ="${currentPage==0}"> <a class="page-link" type="button">Previous</a></li>
-                                <li th:unless="${currentPage==0}" class="page-item parent-page-item" th:data-page="${currentPage - 1}" th:classappend="${currentPage == 0} ? 'disabled':'active'">
+                                <li th:unless="${currentPage==0}" class="page-item parent-page-item" th:data-page="${currentPage - 1}" th:classappend="${currentPage == 0} ? 'disabled'">
                                     <a class="page-link" type="button"  th:aria-disabled="${currentPage == 0}">Previous</a>
                                 </li>
 
@@ -254,94 +255,103 @@
                                 </li>
                             </ul>
                         </nav>
-
-                    </div>
-                    <button type="button" class="btn btn-primary waves-effect waves-light justify-content-end" data-toggle="modal" data-target="#enrollModel">Enroll parent to school</button>
-                    <form class="form-horizontal mt-4 mt-lg-0" action="/admin/parent-list/parent-details/1" method="get">
-                        <div id="unenrollModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="myModalLabel2">Unenroll?</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <form class="form-horizontal mt-4 mt-lg-0" th:action="@{/manager/parent-list/parent-details/{id}(id=${accountInfo.parentId})}" method="post">
+                            <div id="unenrollModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myModalLabel2">Unenroll?</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h6>Are you sure to unenroll parent from this School?</h6>
+                                            <input type="hidden" id="unenrollSchoolName" name="enroll">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input type="hidden" name="actionType" value="unenroll">
+                                            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">No, Take me back</button>
+                                            <button type="submit" class="btn btn-primary waves-effect waves-light">Yes</button>
+                                        </div>
                                     </div>
-                                    <div class="modal-body">
-                                        <h6>Are you sure to Unenroll this to <span id="schoolNameText"></span></h6>
-                                        <input type="hidden" id="unenrollSchoolName" name="school">
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">No, Take me back</button>
-                                        <button type="submit" class="btn btn-primary waves-effect waves-light">Yes</button>
-                                    </div>
+                                    <!-- /.modal-content -->
                                 </div>
-                                <!-- /.modal-content -->
+                                <!-- /.modal-dialog -->
                             </div>
-                            <!-- /.modal-dialog -->
-                        </div>
-                    </form>
-                    <form class="form-horizontal mt-4 mt-lg-0" th:action="@{/{role}/parent-list/parent-details/{id}(role=${role},id=${accountInfo.parentId})}" method="post" onsubmit="return checkSchoolSelection()">
-                        <div id="enrollModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="myModalLabel">Choose enroll school</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="form-group row">
-                                            <div class="col-md-10">
-                                                <div class="form-group row">
-                                                    <label class="col-md-2 col-form-label">Full Name</label>
-                                                    <div class="col-md-10">
-                                                        <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentName}">
+                        </form>
+                        <form class="form-horizontal mt-4 mt-lg-0" th:action="@{/manager/parent-list/parent-details/{id}(id=${accountInfo.parentId})}" method="post" onsubmit="return checkSchoolSelection()">
+                            <div id="enrollModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myModalLabel">Choose enroll school</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group row">
+                                                <div class="col-md-10">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Full Name</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentName}">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-md-2 col-form-label">Email</label>
-                                                    <div class="col-md-10">
-                                                        <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentEmail}">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Email</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentEmail}">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-md-2 col-form-label">Date Of Birth</label>
-                                                    <div class="col-md-10">
-                                                        <input type="date" class="form-control" readonly="" th:value="${accountInfo.DOB}">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Date Of Birth</label>
+                                                        <div class="col-md-10">
+                                                            <input type="date" class="form-control" readonly="" th:value="${accountInfo.DOB}">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-md-2 col-form-label">Phone No.</label>
-                                                    <div class="col-md-10">
-                                                        <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentPhone}">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Phone No.</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentPhone}">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-md-2 col-form-label">Address</label>
-                                                    <div class="col-md-10">
-                                                        <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentAddress}">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Address</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentAddress}">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-md-2 col-form-label">Enroll School</label>
-                                                    <label class="col-md-10">
-                                                        <select class="form-control" name="school">
-                                                            <option value="">No School</option>
-                                                            <option th:each="school : ${schoolInfoList}" th:value="${school.id}" th:text="${school.schoolName}"></option>
-                                                        </select>
-                                                    </label>
+                                                    <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label">Enroll School</label>
+                                                        <label class="col-md-10">
+                                                            <select class="form-control" name="school">
+                                                                <option value="">No School</option>
+                                                                <option th:each="school : ${schoolInfoList}" th:value="${school.id}" th:text="${school.schoolName}"></option>
+                                                            </select>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="modal-footer">
+                                            <input type="hidden" name="actionType" value="enroll">
+                                            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary waves-effect waves-light">Enroll</button>
+                                        </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary waves-effect waves-light">Enroll</button>
-                                    </div>
+                                    <!-- /.modal-content -->
                                 </div>
-                                <!-- /.modal-content -->
+                                <!-- /.modal-dialog -->
                             </div>
-                            <!-- /.modal-dialog -->
+                        </form>
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#enrollModel">
+                                Enroll parent to school
+                            </button>
                         </div>
-                    </form>
+                    </div>
+                    <div th:unless="${accountInfo}">
+                        <h1>Invalid Parent ID</h1>
+                    </div>
+
                 </div>
                 <!-- Alert Modal -->
                 <!-- end row -->
@@ -450,5 +460,4 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Mirrored from coderthemes.com/simple/layouts/vertical/forms-general.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 28 Aug 2024 07:26:06 GMT -->
 </html>

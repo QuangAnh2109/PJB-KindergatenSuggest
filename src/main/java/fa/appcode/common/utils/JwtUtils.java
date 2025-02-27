@@ -1,4 +1,4 @@
-package fa.appcode.common.constant;
+package fa.appcode.common.utils;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

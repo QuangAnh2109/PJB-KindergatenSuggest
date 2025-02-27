@@ -1,9 +1,11 @@
 package fa.appcode.services;
 
 import fa.appcode.common.vo.AccountVo;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import fa.appcode.common.vo.EnrolledSchoolVo;
@@ -13,15 +15,18 @@ import fa.appcode.entities.AccountInfo;
 
 
 public interface AccountService {
+     AccountInfo getAccountById(int id);
     boolean existsByEmail(String email);
 
     String encodePassword(String password);
 
     void save(AccountInfo accountInfo);
 
+    AccountVo findAccountByEmail(String email);
     AccountInfo findByEmail(String email);
-
-    public boolean updatePassword(String email, String newPassword);
+     void updateAccountInfo(AccountInfo accountInfo) ;
+    AccountInfo findAccountInfoByPhone(String phone);
+     boolean updatePassword(String email, String newPassword);
 
     Page<ParentVo> findAllParent(String search ,Pageable pageable);
     //tuanpa79
@@ -32,7 +37,6 @@ public interface AccountService {
     void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId);
     void deleteAccount(Integer id);
 
-
     Page<AccountInfo> findAll(Pageable pageable);
 
     List<AccountInfo> findAllRoles();
@@ -40,11 +44,12 @@ public interface AccountService {
     Page<ParentVo> findAllParent(Pageable pageable);
 
     ParentVo findParentById(int id);
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id,Pageable pageable);
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId,String schoolOwnerId,Pageable pageable);
-    RoleVo findAccountVo(String email);
+
+    String findAccountRoleString(String email);
     AccountInfo getAccountInfoById(int id);
 
     Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id, Pageable pageable);
     AccountVo findAccountByPhone(String phone);
+
+    Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email,String search, Pageable pageable);
 }

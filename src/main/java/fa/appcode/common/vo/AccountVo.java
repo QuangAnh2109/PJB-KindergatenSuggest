@@ -29,6 +29,8 @@ public class AccountVo {
     private String role;
     private Integer roleId;
     private String status;
+    private String recordNo;
+    private String datetimeChangePass;
     @NotNull
     @NotEmpty(message = "This field is required.")
     private String fullName;

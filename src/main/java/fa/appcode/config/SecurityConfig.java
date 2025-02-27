@@ -65,16 +65,18 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer ->
                         configurer
-                                .requestMatchers("/", "/home", "/register", "/forgot-password",
-                                        "/reset-password", "/about", "/contact", "/user_side/**", "register/**").permitAll()
+                                .requestMatchers("/", "/user_side/**","/public/**").permitAll()
+                                .requestMatchers("/user/**").not().hasAnyAuthority("School owner", "Admin")
+                                .requestMatchers("/auth/**").hasAnyAuthority("Parent","School owner","Admin")
                                 .requestMatchers("/parent/**").hasAuthority("Parent")
-                                .requestMatchers("/school-owner/**").hasAnyAuthority("School owner", "Admin")
+                                .requestMatchers("/school-owner/**").hasAuthority("School owner")
+                                .requestMatchers("/manager/**").hasAnyAuthority("School owner", "Admin")
                                 .requestMatchers("/admin/**").hasAuthority("Admin")
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form ->
                         form
-                                .loginPage("/showMyLoginPage")
+                                .loginPage("/public/showMyLoginPage")
                                 .loginProcessingUrl("/authenticateTheUser")
                                 .successHandler(successHandler)
                                 .failureHandler(authenticationHandler)
