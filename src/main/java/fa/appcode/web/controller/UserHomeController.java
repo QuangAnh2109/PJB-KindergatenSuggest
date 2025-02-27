@@ -2,11 +2,11 @@ package fa.appcode.web.controller;
 
 import fa.appcode.common.vo.CityVo;
 import fa.appcode.common.vo.DistrictVo;
-import fa.appcode.config.GlobalConfig;
-import fa.appcode.entities.City;
-import fa.appcode.services.CityService;
-import fa.appcode.services.DistrictService;
+import fa.appcode.common.vo.MasterDataVo;
+import fa.appcode.services.*;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +15,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @AllArgsConstructor
 @Controller
 public class UserHomeController {
+
     private final CityService cityService;
     private final DistrictService districtService;
+    private final MasterDatumService masterDatumService;
+    private final SchoolInfoService schoolInfoService;
+
     @GetMapping("/public/home")
     public String parentHome(Model model) {
         List<CityVo> listCity1 = cityService.findAllByNoDelete();
@@ -27,18 +32,31 @@ public class UserHomeController {
         return "user_side/index";
     }
 
-    @GetMapping("/get-districts")
-    public String getDistricts(@RequestParam("cityId") Integer cityId, Model model) {
-        List<DistrictVo> districts = districtService.findAllByCityIdAndNoDelete(cityId);
-        model.addAttribute("districts", districts);
-        return "fragments/district-options";
+    @GetMapping("/public/districts")
+    public ResponseEntity<?> getDistrictByCity(@RequestParam(name = "cityId") Integer cityId) {
+        try {
+            List<DistrictVo> districts = districtService.findAllByCityIdAndNoDelete(cityId);
+            return ResponseEntity.ok(districts);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to fetch districts: " + e.getMessage());
+        }
     }
 
 
-    @GetMapping("/search")
+    @GetMapping("/public/search")
     public String searchSchool(Model model) {
         List<CityVo> listCity1 = cityService.findAllByNoDelete();
-        model.addAttribute("listCity", listCity1);
+        List<MasterDataVo> listFacilities = masterDatumService.findAllByTypeNameNoDelete("FACILITIES");
+        List<MasterDataVo> listTypeSchool = masterDatumService.findAllByTypeNameNoDelete("SCHOOL TYPE");
+        List<MasterDataVo> listDataAge = masterDatumService.findAllByTypeNameNoDelete("CHILD RECEIVING AGE");
+        List<MasterDataVo> listUtilities = masterDatumService.findAllByTypeNameNoDelete("UTILITIES");
+        
+        //===========================================================
+        model.addAttribute("facilities", listFacilities);
+        model.addAttribute("type_school", listTypeSchool);
+        model.addAttribute("data_age", listDataAge);
+        model.addAttribute("utilities", listUtilities);
         return "user_side/search-school";
     }
 
