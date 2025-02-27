@@ -1,9 +1,11 @@
 package fa.appcode.services;
 
 import fa.appcode.common.vo.AccountVo;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import fa.appcode.common.vo.EnrolledSchoolVo;
@@ -13,14 +15,17 @@ import fa.appcode.entities.AccountInfo;
 
 
 public interface AccountService {
+    public AccountInfo getAccountById(int id);
     boolean existsByEmail(String email);
 
     String encodePassword(String password);
 
     void save(AccountInfo accountInfo);
 
+    AccountVo findAccountByEmail(String email);
     AccountInfo findByEmail(String email);
-
+    public void updateAccountInfo(AccountInfo accountInfo) ;
+    AccountInfo findAccountInfoByPhone(String phone);
     public boolean updatePassword(String email, String newPassword);
 
     Page<ParentVo> findAllParent(String search ,Pageable pageable);
@@ -32,7 +37,6 @@ public interface AccountService {
     void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId);
     void deleteAccount(Integer id);
 
-
     Page<AccountInfo> findAll(Pageable pageable);
 
     List<AccountInfo> findAllRoles();
@@ -40,8 +44,7 @@ public interface AccountService {
     Page<ParentVo> findAllParent(Pageable pageable);
 
     ParentVo findParentById(int id);
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id,Pageable pageable);
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId,String schoolOwnerId,Pageable pageable);
+
     String findAccountRoleString(String email);
     AccountInfo getAccountInfoById(int id);
 

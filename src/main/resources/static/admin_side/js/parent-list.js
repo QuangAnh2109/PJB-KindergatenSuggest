@@ -16,10 +16,9 @@ $(document).ready(function (){
             findAll($("#parentSearchField").val(),$(this).data("page"));
         }
     })
-    var role = $("#userRole").val();
     function findAll(search,currentPage) {
         $.get({
-            url: "/" + role + "/parent-list",
+            url: "/manager/parent-list",
             data: {
                 search: search,
                 currentPage: currentPage,

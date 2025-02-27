@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import fa.appcode.services.MasterDataService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
@@ -33,9 +34,23 @@ public class AccountServiceImpl implements AccountService {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    public AccountInfo getAccountById(int id) {
+        return accountRepository.getAccountInfoById(id);
+    }
+
     @Override
     public boolean existsByEmail(String email) {
         return accountRepository.findByEmail(email) != null;
+    }
+    @Transactional
+    @Modifying
+    public void updateAccountInfo(AccountInfo accountInfo) {
+        accountRepository.save(accountInfo);
+    }
+
+    @Override
+    public AccountInfo findAccountInfoByPhone(String phone) {
+        return accountRepository.findAccountByPhone(phone);
     }
 
     @Override
@@ -50,27 +65,27 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public AccountVo findAccountByEmail(String email) {
+        return accountRepository.findAccountByEmail(email);
+    }
+
+    @Override
     public AccountInfo findByEmail(String email) {
         return accountRepository.findByEmail(email);
     }
 
+
+
     @Transactional
     @Override
     public boolean updatePassword(String email, String newPassword) {
-        logger.info("Bắt đầu cập nhật mật khẩu cho email: {}", email);
 
         AccountInfo account = accountRepository.findByEmail(email);
         if (account == null) {
-            logger.warn("Email không tồn tại: {}", email);
             return false;
         }
-
         String encodedPassword = "{bcrypt}" + passwordEncoder.encode(newPassword);
-        logger.info("Mật khẩu mới đã được mã hóa: {}", encodedPassword);
-
         int numberOfRows = accountRepository.updatePassword(encodedPassword, email);
-        logger.info("Số dòng bị ảnh hưởng bởi câu lệnh UPDATE: {}", numberOfRows);
-
         return numberOfRows > 0;
     }
 
@@ -198,15 +213,6 @@ public class AccountServiceImpl implements AccountService {
         return null;
     }
 
-    @Override
-    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable) {
-        return accountRepository.findParentEnrolledSchoolByParentId(id, pageable);
-    }
-
-    @Override
-    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId, Pageable pageable) {
-        return accountRepository.findParentEnrolledSchoolByParentIdAndSchoolOwner(parentId, schoolOwnerId, pageable);
-    }
 
     @Override
     public String findAccountRoleString(String email) {

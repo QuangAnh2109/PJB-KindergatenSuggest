@@ -20,7 +20,7 @@ import java.util.List;
 public class UserHomeController {
     private final CityService cityService;
     private final DistrictService districtService;
-    @GetMapping("/home")
+    @GetMapping("/public/home")
     public String parentHome(Model model) {
         List<CityVo> listCity1 = cityService.findAllByNoDelete();
         model.addAttribute("listCity", listCity1);

@@ -124,11 +124,11 @@
     <div class="left-side-menu">
         <div id="sidebar-menu">
             <ul class="metismenu" id="side-menu">
-                <li><a th:href="@{/{role}/request-list(role=${role})}"><i class="ti-home"></i> <span> School Management </span></a></li>
-                <li><a th:href="@{/{role}/request-list(role=${role})}"><i class="fa-regular fa-user"></i> <span> User Management </span></a></li>
-                <li><a th:href="@{/{role}/request-reminder(role=${role})}"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a></li>
-                <li><a th:href="@{/{role}/parent-list(role=${role})}"><i class="fa-solid fa-user-tie"></i> <span> Parent Management </span></a></li>
-                <li><a th:href="@{/{role}/request-list(role=${role})}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a></li>
+                <li><a th:href="@{/manager/request-list}"><i class="ti-home"></i> <span> School Management </span></a></li>
+                <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-user"></i> <span> User Management </span></a></li>
+                <li><a th:href="@{/manager/request-reminder}"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a></li>
+                <li><a th:href="@{/manager/parent-list}"><i class="fa-solid fa-user-tie"></i> <span> Parent Management </span></a></li>
+                <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a></li>
             </ul>
         </div>
     </div>
@@ -148,7 +148,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div>
-                            <h4 class="header-title mb-3"><a th:href="@{/{role}/parent-list(role=${role})}">Parent List</a> > <a href="#">Parent Details</a></h4>
+                            <h4 class="header-title mb-3"><a th:href="@{/manager/parent-list}">Parent List</a> > <a href="#">Parent Details</a></h4>
                         </div>
                     </div>
                 </div>
@@ -172,7 +172,6 @@
                                 <label class="col-md-2 col-form-label">Full Name</label>
                                 <div class="col-md-10">
                                     <input type="hidden" id="parentId" th:value="${accountInfo.parentId}" />
-                                    <input type="hidden" id="userRole" th:value="${role}" />
                                     <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentName}">
                                 </div>
                             </div>
@@ -257,7 +256,7 @@
                                 </li>
                             </ul>
                         </nav>
-                        <form class="form-horizontal mt-4 mt-lg-0" action="/admin/parent-list/parent-details/1" method="get">
+                        <form class="form-horizontal mt-4 mt-lg-0" th:action="@{/manager/parent-list/parent-details/{id}(id=${accountInfo.parentId})}" method="post">
                             <div id="unenrollModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -266,10 +265,11 @@
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                         </div>
                                         <div class="modal-body">
-                                            <h6>Are you sure to Unenroll this to <span id="schoolNameText"></span></h6>
-                                            <input type="hidden" id="unenrollSchoolName" name="school">
+                                            <h6>Are you sure to unenroll parent from this School?</h6>
+                                            <input type="hidden" id="unenrollSchoolName" name="enroll">
                                         </div>
                                         <div class="modal-footer">
+                                            <input type="hidden" name="actionType" value="unenroll">
                                             <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">No, Take me back</button>
                                             <button type="submit" class="btn btn-primary waves-effect waves-light">Yes</button>
                                         </div>
@@ -279,7 +279,7 @@
                                 <!-- /.modal-dialog -->
                             </div>
                         </form>
-                        <form class="form-horizontal mt-4 mt-lg-0" th:action="@{/{role}/parent-list/parent-details/{id}(role=${role},id=${accountInfo.parentId})}" method="post" onsubmit="return checkSchoolSelection()">
+                        <form class="form-horizontal mt-4 mt-lg-0" th:action="@{/manager/parent-list/parent-details/{id}(id=${accountInfo.parentId})}" method="post" onsubmit="return checkSchoolSelection()">
                             <div id="enrollModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -333,6 +333,7 @@
                                             </div>
                                         </div>
                                         <div class="modal-footer">
+                                            <input type="hidden" name="actionType" value="enroll">
                                             <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
                                             <button type="submit" class="btn btn-primary waves-effect waves-light">Enroll</button>
                                         </div>

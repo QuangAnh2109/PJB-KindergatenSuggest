@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:selected="http://www.w3.org/1999/xhtml">
 <head>
     <title>User Profile</title>
     <meta charset="UTF-8">
@@ -19,74 +19,109 @@
             color: red;
             font-weight: bold;
         }
-        .btn-primary { background-color: green !important; border-color: green !important; }
+        .btn-primary {
+            background-color: green !important;
+            border-color: green !important;
+        }
     </style>
 </head>
 <body>
-<div id="de-preloader"></div>
-<section id="subheader" class="jarallax text-light">
-    <img th:src="@{user_side/images/background/subheader.jpg}" class="jarallax-img" alt="">
-    <div class="center-y relative text-center">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <h1>My Profile</h1>
+<div id="wrapper">
+    <div id="de-preloader"></div>
+    <div th:replace="user_side/header::header"></div>
+    <section id="subheader" class="jarallax text-light">
+        <img th:src="@{user_side/images/background/subheader.jpg}" class="jarallax-img" alt="">
+        <div class="center-y relative text-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h1>My Profile</h1>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-6">
-            <div class="card shadow p-4 rounded-5">
-                <h3 class="text-center mb-4">User Profile</h3>
-                <form>
-                    <div class="mb-3">
-                        <label class="form-label required-label">Full Name </label>
-                        <input type="text" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label required-label">Email Address </label>
-                        <input type="email" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">D.O.B</label>
-                        <input type="date" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label required-label">Mobile No. </label>
-                        <input type="text" class="form-control" required>
-                    </div>
-                    <h5>Address</h5>
-                    <div class="mb-3">
-                        <select class="form-select" required>
-                            <option selected>City/Province</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <select class="form-select" required>
-                            <option selected>District</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <select class="form-select" required>
-                            <option selected>Ward</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="House Number, Street" required>
-                    </div>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-primary">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </div>
-                </form>
+    </section>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow p-4 rounded-5">
+                    <h3 class="text-center mb-4">User Profile</h3>
+                    <form action="#" th:action="@{/auth/update-account}" method="post" th:object="${accountInfo}">
+
+                        <input type="hidden" th:field="*{email}">
+                        <div class="mb-3">
+                            <label class="form-label required-label">Full Name </label>
+                            <input type="text" class="form-control" required th:field="*{fullName}">
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label required-label">Email Address </label>
+                            <input type="email" class="form-control" th:field="*{email}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">D.O.B</label>
+                            <input type="date" class="form-control" th:field="*{dob}"/>
+                        </div>
+                            <div class="mb-3">
+                                <label class="form-label required-label">Mobile No. </label>
+                                <input type="text" class="form-control" required th:field="*{phone}">
+                                <div th:if="${phoneFail}" th:text="${phoneFail}" class="text-danger danger">
+                                </div>
+
+                            </div>
+                            <h5>Address</h5>
+                            <div class="mb-3">
+                                <select onchange="loadDistrict(this.value)" name="city" class="form-control" required>
+                                    <option value="" disabled selected>Province/City</option>
+                                    <option th:each="city:${citys}" th:value="${city.id}" th:text="${city.cityName}">
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <select onchange="loadWard(this.value)" name="district" id="district" class="form-control" required disabled>
+                                    <option value="" disabled selected>District</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <select onchange="enableParam('address')" name="ward" id="ward" class="form-control" required disabled>
+                                    <option value="" disabled selected>Ward</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" name="address" id="address" class="form-control"
+                                       placeholder="Enter School Address Here..." maxlength="255" required disabled>
+                            </div>
+                            <div th:if="${successMessage}" id="success-alert"
+                                 class="alert alert-success alert-dismissible fade show mt-3"
+                                 role="alert">
+                                <strong>Success!</strong> <span th:text="${successMessage}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="text-center">
+                                <button type="reset" class="btn btn-primary">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <script th:src="@{/user_side/js/plugins.js}"></script>
 <script th:src="@{/user_side/js/designesia.js}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js">
+</script>
+<script th:src="@{/admin_side/js/address-load.js}"></script>
+<script>
+    setTimeout(function () {
+        let alert = document.getElementById("success-alert");
+        if (alert) {
+            alert.classList.add("fade");
+            setTimeout(() => alert.remove(), 500);
+        }
+    }, 3000);
+</script>
+
 </body>
 </html>
