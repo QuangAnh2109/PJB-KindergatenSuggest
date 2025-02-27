@@ -75,11 +75,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
+    // Get list of user account
     @Override
     public Page<AccountVo> getAllAccounts(String search, Pageable pageable) {
         return accountRepository.findAllWithFullAddress(search, pageable);
     }
 
+    // Find account by Id
     @Override
     public AccountVo getAccountById(Integer id) {
         AccountInfo user = accountRepository.findById(id)
@@ -141,6 +143,8 @@ public class AccountServiceImpl implements AccountService {
         return accountVo;
     }
 
+
+    // Change status from active to inactive (and vice versa)
     @Override
     public void toggleUserStatus(Integer id) {
         AccountInfo user = accountRepository.findById(id)
@@ -156,6 +160,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(user);
     }
 
+    // Update user account by information get from form
     @Override
     public void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId) {
         AccountInfo user = accountRepository.findById(id)
@@ -170,6 +175,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(user);
     }
 
+    // Delete logic user account
     public void deleteAccount(Integer id) {
         AccountInfo account = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -203,7 +209,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String findAccountRoleString(String email) {return accountRepository.findAccountRoleString(email);}
+    public String findAccountRoleString(String email) {
+        return accountRepository.findAccountRoleString(email);
+    }
 
     @Override
     public AccountInfo getAccountInfoById(int id) {

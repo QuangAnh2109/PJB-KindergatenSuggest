@@ -1,4 +1,38 @@
 $(document).ready(function() {
+
+    $("body").on("click", "a.edit-user-btn", function (event) {
+        event.preventDefault();
+        var userId = $(this).data("userid");
+        window.location.href = "/admin/edituser/" + userId;
+    });
+
+    $("body").on("click", "a.delete-user-btn", function(event) {
+        event.preventDefault(); // Ngăn chặn hành động mặc định của thẻ <a>
+
+        // Lấy userId từ thuộc tính data-userid của nút xóa
+        var userId = $(this).data("userid");
+
+        // Xác nhận trước khi xóa
+        if (confirm("Are you sure you want to delete this user?")) {
+            // Gửi yêu cầu DELETE đến server
+            $.get({
+                url: "/admin/api/user/" + userId, // URL endpoint
+                success: function(responseData) {
+                    // Hiển thị thông báo thành công
+                    alert(responseData);
+                    // Tải lại danh sách người dùng hoặc xóa hàng khỏi bảng
+                    location.reload(); // Tải lại trang để cập nhật danh sách
+                },
+                error: function(responseData) {
+                    // Hiển thị thông báo lỗi
+                    alert("Failed to delete user: " + responseData.responseText);
+                }
+            });
+        }
+    });
+
+
+
     var timeout = null;
     var num = $('#userSearchField').val();
 
@@ -38,5 +72,7 @@ $(document).ready(function() {
             }
         });
     }
+
+
 
 });

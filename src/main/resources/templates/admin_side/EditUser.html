@@ -15,8 +15,10 @@
     <link th:href="@{/admin_side/libs/switchery/switchery.min.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{/admin_side/libs/select2/select2.min.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{/admin_side/libs/clockpicker/bootstrap-clockpicker.min.css}" rel="stylesheet">
-    <link th:href="@{/admin_side/libs/bootstrap-timepicker/bootstrap-timepicker.min.css}" rel="stylesheet" type="text/css"/>
-    <link th:href="@{/admin_side/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/admin_side/libs/bootstrap-timepicker/bootstrap-timepicker.min.css}" rel="stylesheet"
+          type="text/css"/>
+    <link th:href="@{/admin_side/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.css}" rel="stylesheet"
+          type="text/css"/>
     <link th:href="@{/admin_side/libs/bootstrap-datepicker/bootstrap-datepicker.css}" rel="stylesheet">
     <link th:href="@{/admin_side/libs/bootstrap-daterangepicker/daterangepicker.css}" rel="stylesheet">
     <!-- Summernote css -->
@@ -322,12 +324,14 @@
                     <div class="mt-5">
                         <h4 class="header-title mb-3">Edit User</h4>
                         <div>
-                            <form th:action="@{/admin/edituser/{id}(id=${user.id})}" method="post" class="form-validation">
+                            <form id="editUserForm" method="post" th:action="@{/admin/edituser/{id}(id=${user.id})}" class="form-validation">
+                                <input type="hidden" id="userID" name="userID" th:value="${user.id}" />
                                 <!-- Full Name -->
                                 <div class="form-group">
-                                    <label for="fullName">Full Name</label>
+                                    <label for="fullName">Full Name<span class="text-danger">*</span></label>
                                     <input type="text" name="fullName" class="form-control" id="fullName"
                                            th:value="${user.fullName}" required>
+                                    <span id="errorFullName" class="text-danger"></span>
                                 </div>
 
                                 <!-- Email (readonly) -->
@@ -335,30 +339,34 @@
                                     <label for="email">Email</label>
                                     <input type="email" name="email" class="form-control" id="email"
                                            th:value="${user.email}" readonly>
+                                    <span id="errorEmail" class="text-danger"></span>
                                 </div>
 
                                 <!-- DOB -->
                                 <div class="form-group">
-                                    <label for="dob">DOB</label>
-                                    <input type="date" name="dob" class="form-control" id="dob"
-                                           th:value="${user.dob}" required>
+                                    <label for="dob">DOB<span class="text-danger">*</span></label>
+                                    <input type="date" name="dob" class="form-control" id="dob" th:value="${user.dob}"
+                                           required>
+                                    <span id="errorDob" class="text-danger"></span>
                                 </div>
 
                                 <!-- Phone -->
                                 <div class="form-group">
-                                    <label for="phone">Phone No.</label>
+                                    <label for="phone">Phone No.<span class="text-danger">*</span></label>
                                     <input type="tel" name="phone" class="form-control" id="phone"
                                            th:value="${user.phone}" required>
+                                    <span id="errorPhone" class="text-danger"></span>
                                 </div>
 
                                 <!-- Role -->
                                 <div class="form-group">
-                                    <label for="role">Role</label>
+                                    <label for="role">Role<span class="text-danger">*</span></label>
                                     <select name="roleId" class="form-control" id="role" required>
                                         <option th:each="role : ${roles}" th:value="${role.id}"
-                                                th:text="${role.typeValue}" th:selected="${role.id == user.roleId}">
-                                        </option>
+                                                th:text="${role.typeValue}"
+                                                th:selected="${role.id == user.roleId}"></option>
                                     </select>
+                                    <span id="errorRole" class="text-danger"></span>
                                 </div>
 
                                 <!-- Status (readonly) -->
@@ -366,12 +374,13 @@
                                     <label for="status">Status</label>
                                     <input type="text" name="status" class="form-control" id="status"
                                            th:value="${user.status}" readonly>
+                                    <span id="errorStatus" class="text-danger"></span>
                                 </div>
 
                                 <!-- Buttons -->
                                 <div class="form-group text-right mb-0">
                                     <a th:href="@{/admin/userlist}" class="btn btn-danger waves-effect">Cancel</a>
-                                    <button type="submit" class="btn btn-primary waves-effect waves-light mr-1">Save</button>
+                                    <button type="submit" id="save-user" class="btn btn-primary waves-effect waves-light mr-1">Save</button>
                                 </div>
                             </form>
                         </div>
@@ -411,7 +420,8 @@
             </div>
             <div class="custom-control custom-switch mb-3">
                 <input type="checkbox" class="custom-control-input theme-choice" id="dark-mode-switch"
-                       data-bsStyle="/admin_side/css/bootstrap-dark.min.css" data-appStyle="/admin_side/css/app-dark.min.css"/>
+                       data-bsStyle="/admin_side/css/bootstrap-dark.min.css"
+                       data-appStyle="/admin_side/css/app-dark.min.css"/>
                 <label class="custom-control-label" for="dark-mode-switch">Dark Mode</label>
             </div>
 
@@ -457,7 +467,7 @@
 
 <!-- App js -->
 <script src="/admin_side/js/app.min.js"></script>
-
+<script src="/admin_side/js/EditUser.js"></script>
 </body>
 
 

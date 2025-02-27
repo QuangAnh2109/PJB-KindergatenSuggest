@@ -361,15 +361,12 @@
                                         <span th:if="${account.status != 'Active'}" class="badge badge-danger">Deactivated</span>
                                     </td>
                                     <td style="white-space: nowrap;">
-                                        <a th:href="@{/admin/edituser/{id}(id=${account.id})}" class="btn btn-sm btn-light" style="display: inline-block;">
+                                        <a href="#" class="btn btn-sm btn-light edit-user-btn" th:data-userid="${account.id}">
                                             <i class="ti-pencil"></i>
                                         </a>
-                                        <form th:action="@{/admin/deleteuser/{id}(id=${account.id})}" method="post" onsubmit="return confirm('Are you sure?');" style="display: inline-block;">
-                                            <input type="hidden" name="_method" value="DELETE"/>
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="ti-trash"></i>
-                                            </button>
-                                        </form>
+                                        <a href="#" class="btn btn-sm btn-danger delete-user-btn" th:data-userid="${account.id}">
+                                            <i class="ti-trash"></i>
+                                        </a>
                                     </td>
                                 </tr>
                                 </tbody>
