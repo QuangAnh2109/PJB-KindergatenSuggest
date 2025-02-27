@@ -7,6 +7,7 @@ import fa.appcode.common.vo.ParentVo;
 import fa.appcode.common.vo.RoleVo;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.AccountService;
+import fa.appcode.services.MasterDatumService;
 import fa.appcode.web.controller.ForgotPasswordController;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ import java.util.List;
 @Service
 public class AccountServiceImpl implements AccountService {
     @Autowired
-    private MasterDataService masterDataService;
+    private MasterDatumService masterDatumService;
     @Autowired
     private AccountRepository accountRepository;
     private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordController.class);
@@ -90,11 +91,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
+    // Get list of user account
     @Override
     public Page<AccountVo> getAllAccounts(String search, Pageable pageable) {
         return accountRepository.findAllWithFullAddress(search, pageable);
     }
 
+    // Find account by Id
     @Override
     public AccountVo getAccountById(Integer id) {
         AccountInfo user = accountRepository.findById(id)
@@ -151,11 +154,13 @@ public class AccountServiceImpl implements AccountService {
             accountVo.setFullAddress(fullAddress.toString().trim());
         }
         // Resolve role and status names
-        accountVo.setRole(masterDataService.getMasterById(accountInfo.getRoleId()));
-        accountVo.setStatus(masterDataService.getMasterById(accountInfo.getStatusId()));
+        accountVo.setRole(masterDatumService.getMasterById(accountInfo.getRoleId()));
+        accountVo.setStatus(masterDatumService.getMasterById(accountInfo.getStatusId()));
         return accountVo;
     }
 
+
+    // Change status from active to inactive (and vice versa)
     @Override
     public void toggleUserStatus(Integer id) {
         AccountInfo user = accountRepository.findById(id)
@@ -171,6 +176,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(user);
     }
 
+    // Update user account by information get from form
     @Override
     public void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId) {
         AccountInfo user = accountRepository.findById(id)
@@ -185,6 +191,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(user);
     }
 
+    // Delete logic user account
     public void deleteAccount(Integer id) {
         AccountInfo account = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -209,7 +216,9 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
-    public String findAccountRoleString(String email) {return accountRepository.findAccountRoleString(email);}
+    public String findAccountRoleString(String email) {
+        return accountRepository.findAccountRoleString(email);
+    }
 
     @Override
     public AccountInfo getAccountInfoById(int id) {
