@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<!-- Mirrored from coderthemes.com/simple/layouts/vertical/tables-advanced.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 28 Aug 2024 07:26:12 GMT -->
 <head>
     <meta charset="utf-8" />
     <title>Tables Advanced | Simple - Responsive Bootstrap 4 Admin Dashboard</title>
@@ -196,7 +195,7 @@
                                 <ul class="pagination justify-content-end">
                                     <!-- Previous Button -->
                                     <li class="page-item parent-page-item disabled" th:if ="${currentPage==0}"> <a class="page-link" type="button">Previous</a></li>
-                                    <li th:unless="${currentPage==0}" class="page-item parent-page-item" th:data-page="${currentPage - 1}" th:classappend="${currentPage == 0} ? 'disabled':'active'">
+                                    <li th:unless="${currentPage==0}" class="page-item parent-page-item" th:data-page="${currentPage - 1}" th:classappend="${currentPage == 0} ? 'disabled'">
                                         <a class="page-link" type="button"  th:aria-disabled="${currentPage == 0}">Previous</a>
                                     </li>
 
@@ -269,6 +268,4 @@
 </style>
 </body>
 
-
-<!-- Mirrored from coderthemes.com/simple/layouts/vertical/tables-advanced.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 28 Aug 2024 07:26:18 GMT -->
 </html>
