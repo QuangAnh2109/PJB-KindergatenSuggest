@@ -15,7 +15,7 @@ import fa.appcode.entities.AccountInfo;
 
 
 public interface AccountService {
-    public AccountInfo getAccountById(int id);
+     AccountInfo getAccountById(int id);
     boolean existsByEmail(String email);
 
     String encodePassword(String password);
@@ -24,9 +24,9 @@ public interface AccountService {
 
     AccountVo findAccountByEmail(String email);
     AccountInfo findByEmail(String email);
-    public void updateAccountInfo(AccountInfo accountInfo) ;
+     void updateAccountInfo(AccountInfo accountInfo) ;
     AccountInfo findAccountInfoByPhone(String phone);
-    public boolean updatePassword(String email, String newPassword);
+     boolean updatePassword(String email, String newPassword);
 
     Page<ParentVo> findAllParent(String search ,Pageable pageable);
     //tuanpa79
