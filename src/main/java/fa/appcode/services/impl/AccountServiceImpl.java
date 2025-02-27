@@ -7,6 +7,7 @@ import fa.appcode.common.vo.ParentVo;
 import fa.appcode.common.vo.RoleVo;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.AccountService;
+import fa.appcode.services.MasterDatumService;
 import fa.appcode.web.controller.ForgotPasswordController;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ import java.util.List;
 @Service
 public class AccountServiceImpl implements AccountService {
     @Autowired
-    private MasterDataService masterDataService;
+    private MasterDatumService masterDatumService;
     @Autowired
     private AccountRepository accountRepository;
     private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordController.class);
@@ -153,8 +154,8 @@ public class AccountServiceImpl implements AccountService {
             accountVo.setFullAddress(fullAddress.toString().trim());
         }
         // Resolve role and status names
-        accountVo.setRole(masterDataService.getMasterById(accountInfo.getRoleId()));
-        accountVo.setStatus(masterDataService.getMasterById(accountInfo.getStatusId()));
+        accountVo.setRole(masterDatumService.getMasterById(accountInfo.getRoleId()));
+        accountVo.setStatus(masterDatumService.getMasterById(accountInfo.getStatusId()));
         return accountVo;
     }
 

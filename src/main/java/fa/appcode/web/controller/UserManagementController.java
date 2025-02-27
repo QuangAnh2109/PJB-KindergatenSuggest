@@ -3,14 +3,12 @@ package fa.appcode.web.controller;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.entities.MasterDatum;
 import fa.appcode.services.AccountService;
-import fa.appcode.services.impl.MasterDataServiceImpl;
+import fa.appcode.services.impl.MasterDatumServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +23,7 @@ public class UserManagementController {
     @Autowired
     AccountService accountService;
     @Autowired
-    private MasterDataServiceImpl masterDataService;
+    private MasterDatumServiceImpl masterDatumService;
 
     // Display list of user account
     @GetMapping("userlist")
@@ -78,7 +76,7 @@ public class UserManagementController {
     public String showEditUserPage(@PathVariable("id") Integer id, Model model) {
         try {
             AccountVo user = accountService.getAccountById(id);
-            List<MasterDatum> roles = masterDataService.getListByTypeName("ROLE");
+            List<MasterDatum> roles = masterDatumService.getListByTypeName("ROLE");
             // Lấy danh sách roles từ service
             model.addAttribute("user", user);
             model.addAttribute("roles", roles);
