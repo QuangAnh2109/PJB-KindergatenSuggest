@@ -13,7 +13,7 @@ import static fa.appcode.common.utils.Constant.EMAIL_REGEX_HTML;
 import static fa.appcode.common.utils.Constant.PHONE_REGEX_HTML;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/admin")
 public class SchoolFormController {
     @Autowired
     private MasterDatumService masterDatumService;
@@ -21,7 +21,7 @@ public class SchoolFormController {
     @Autowired
     private CityService cityService;
 
-    @GetMapping("/admin/school-form")
+    @GetMapping("/school-form")
     public String schoolForm(Model model) {
         model.addAttribute("schoolTypes",masterDatumService.findAllByTypeNameNoDelete("SCHOOL TYPE"));
         model.addAttribute("childReceivingAges",masterDatumService.findAllByTypeNameNoDelete("CHILD RECEIVING AGE"));
@@ -34,17 +34,17 @@ public class SchoolFormController {
         return "admin_side/school-manager-detail";
     }
 
-    @PostMapping("/admin/school-form/submit")
+    @PostMapping("/school-form/submit")
     public String schoolSubmit(Model model) {
         return "admin_side/school-manager-detail";
     }
 
-    @PostMapping("/admin/school-form/save-draft")
+    @PostMapping("/school-form/save-draft")
     public String schoolSaveDraft(Model model) {
         return "admin_side/school-manager-detail";
     }
 
-    @GetMapping("admin/school-form/{id}")
+    @GetMapping("/school-form/{id}")
     public String schoolDetail(@PathVariable("id") int id){
         return "admin_side/school-manager-detail";
     }
