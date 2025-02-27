@@ -1,7 +1,7 @@
 package fa.appcode.web.controller;
 
-import fa.appcode.services.impl.DistrictServiceImpl;
-import fa.appcode.services.impl.WardServiceImpl;
+import fa.appcode.services.WardService;
+import fa.appcode.services.DistrictService;
 import fa.appcode.common.vo.DistrictVo;
 import fa.appcode.common.vo.WardVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,20 +10,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/public")
 public class AddressController {
     @Autowired
-    private DistrictServiceImpl districtServiceImpl;
+    private DistrictService districtService;
 
     @Autowired
-    private WardServiceImpl wardServiceImpl;
+    private WardService wardService;
 
-    @GetMapping("/admin/school-form/district")
+    @GetMapping("/district")
     List<DistrictVo> getDistrictByCity(@RequestParam(name = "cityId") Integer cityId){
-        return districtServiceImpl.findAllByCityIdAndNoDelete(cityId);
+        return districtService.findAllByCityIdAndNoDelete(cityId);
     }
-    @GetMapping("/admin/school-form/ward")
+    @GetMapping("/ward")
     List<WardVo> getWardByDistrict(@RequestParam(name = "districtId") Integer districtId){
-        return wardServiceImpl.findAllByDistrictIdAndNoDelete(districtId);
+        return wardService.findAllByDistrictIdAndNoDelete(districtId);
     }
 }
