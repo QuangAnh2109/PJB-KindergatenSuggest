@@ -1,5 +1,5 @@
 package fa.appcode.repositories;
-
+import com.cloudinary.provisioning.Account;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
@@ -90,7 +90,15 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
             "         AND f2.id.accountId = ai.id AND f2.deleteFlg=false) " +
             "WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=41")
     Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId (int id,Pageable pageable);
-
+    @Query("SELECT new fa.appcode.common.vo.ParentVo(m.id,m.fullName,m.email,m.phone,(CASE WHEN EXISTS (SELECT e FROM EnrollSchool e WHERE e.account.id = m.id AND e.status != false) THEN true ELSE false END))" +
+            "FROM AccountInfo m " +
+            "JOIN MasterDatum ma ON m.roleId=ma.typeKey " +
+            "LEFT JOIN  EnrollSchool e ON e.account.id=m.id " +
+            "LEFT JOIN SchoolInfo s ON s.id=e.school.id " +
+            "WHERE ma.typeName='ROLE' AND ma.typeKey=3 " +
+            "GROUP BY m.id, m.fullName, m.email, m.phone")
+    Page<ParentVo> findAllParent(Pageable pageable);
+    AccountInfo findAccountByEmail(String email);
     //    Find All enrolled School for specific School Owner
     @Query("SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName,CAST(ceiling(((f.extracurricularActivities + f.facilitiesUtilities + f.hygieneNutrition + f.learningProgram + f.teacherStaff) / 5) * 2) / 2 AS FLOAT),f.feedbackMessage)" +
             "FROM AccountInfo ai " +
@@ -109,6 +117,5 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
     //find account
     @Query("SELECT new fa.appcode.common.vo.RoleVo(m.typeValue) FROM AccountInfo ai JOIN MasterDatum m ON ai.roleId=m.typeKey AND m.typeName='ROLE' AND ai.email=?1")
     RoleVo findAccountVo(String email);
-
     AccountInfo getAccountInfoById(int id);
 }

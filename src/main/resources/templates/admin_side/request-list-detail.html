@@ -91,7 +91,7 @@
         <div class="logo-box">
             <a href="index.html" class="logo text-center logo-dark">
                         <span class="logo-lg">
-                            <img th:src="@{/admin_side/images/logo-dark.png}" alt="" height="26">
+                            <img th:src="@{/user_side/images/logo1.png}" alt="Logo" width="100" height="100">
                             <!-- <span class="logo-lg-text-dark">Simple</span> -->
                         </span>
             </a>
@@ -213,7 +213,10 @@
                                             <button type="button" class="btn btn-light text-primary fw-bold"
                                                     data-dismiss="modal">No. Take me back!
                                             </button>
-                                            <button type="button" class="btn btn-primary px-4">Yes</button>
+                                            <button type="button" class="btn btn-primary px-4"
+                                                    th:onclick="|window.location.href='@{/school-owner/updateRequest(id=${requestDetail.id}, page=${page})}'|">
+                                                Yes
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
