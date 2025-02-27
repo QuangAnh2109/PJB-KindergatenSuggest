@@ -1,5 +1,7 @@
 package fa.appcode.web.controller;
 
+import fa.appcode.services.CityService;
+import fa.appcode.services.MasterDatumService;
 import fa.appcode.services.impl.CityServiceImpl;
 import fa.appcode.services.impl.MasterDatumServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +16,21 @@ import static fa.appcode.common.utils.Constant.PHONE_REGEX_HTML;
 @RequestMapping("/")
 public class SchoolFormController {
     @Autowired
-    private MasterDatumServiceImpl masterDatumServiceImpl;
+    private MasterDatumService masterDatumService;
 
     @Autowired
-    private CityServiceImpl cityServiceImpl;
+    private CityService cityService;
 
     @GetMapping("/admin/school-form")
     public String schoolForm(Model model) {
-        model.addAttribute("schoolTypes",masterDatumServiceImpl.findAllByTypeNameNoDelete("SCHOOL TYPE"));
-        model.addAttribute("childReceivingAges",masterDatumServiceImpl.findAllByTypeNameNoDelete("CHILD RECEIVING AGE"));
-        model.addAttribute("educationMethods",masterDatumServiceImpl.findAllByTypeNameNoDelete("EDUCATION METHOD"));
-        model.addAttribute("facilities",masterDatumServiceImpl.findAllByTypeNameNoDelete("FACILITIES"));
-        model.addAttribute("utilities",masterDatumServiceImpl.findAllByTypeNameNoDelete("UTILITIES"));
+        model.addAttribute("schoolTypes",masterDatumService.findAllByTypeNameNoDelete("SCHOOL TYPE"));
+        model.addAttribute("childReceivingAges",masterDatumService.findAllByTypeNameNoDelete("CHILD RECEIVING AGE"));
+        model.addAttribute("educationMethods",masterDatumService.findAllByTypeNameNoDelete("EDUCATION METHOD"));
+        model.addAttribute("facilities",masterDatumService.findAllByTypeNameNoDelete("FACILITIES"));
+        model.addAttribute("utilities",masterDatumService.findAllByTypeNameNoDelete("UTILITIES"));
         model.addAttribute("emailRegex", EMAIL_REGEX_HTML);
         model.addAttribute("phoneRegex", PHONE_REGEX_HTML);
-        model.addAttribute("citys",cityServiceImpl.findAllByNoDelete());
+        model.addAttribute("citys",cityService.findAllByNoDelete());
         return "admin_side/school-manager-detail";
     }
 
