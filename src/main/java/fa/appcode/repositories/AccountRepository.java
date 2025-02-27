@@ -63,7 +63,7 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
     List<AccountInfo> findAllRole();
 
     // Find Parent data by parent Id
-    @Query("SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone,ai.dob,CONCAT(ai.address, ' - ', CONCAT(w.wardName, ' - ', CONCAT(d.districtName, ' - ', c.cityName))))" +
+    @Query("SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone,ai.dob,TRIM(BOTH ' ' FROM CONCAT(COALESCE(ai.address, ''), '   ', COALESCE(w.wardName, ''), '   ', COALESCE(d.districtName, ''), '   ', COALESCE(c.cityName, ''))))" +
             "FROM AccountInfo ai " +
             "JOIN MasterDatum ma ON ai.roleId=ma.id " +
             "LEFT JOIN Ward w ON w.id=ai.ward.id " +
@@ -75,7 +75,7 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
     @Query("SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone,(CASE WHEN EXISTS (SELECT e FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status != false) THEN true ELSE false END))" +
             "FROM AccountInfo ai " +
             "JOIN MasterDatum ma ON ai.roleId=ma.typeKey " +
-            "WHERE ma.typeName='ROLE' AND ma.typeKey=3 AND (ai.fullName LIKE %?1% OR ai.email LIKE%?1% OR ai.phone LIKE %?1% ) AND ai.deleteFlg=false AND ai.statusId=41 " +
+            "WHERE ma.id=3 AND (ai.fullName LIKE %?1% OR ai.email LIKE%?1% OR ai.phone LIKE %?1% ) AND ai.deleteFlg=false AND ai.statusId=41 " +
             "GROUP BY ai.id, ai.fullName, ai.email, ai.phone ")
     Page<ParentVo> findAllParent(String search, Pageable pageable);
 
@@ -84,7 +84,7 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
             "JOIN MasterDatum ma ON m.roleId=ma.typeKey " +
             "LEFT JOIN  EnrollSchool e ON e.account.id=m.id " +
             "LEFT JOIN SchoolInfo s ON s.id=e.school.id " +
-            "WHERE ma.typeName='ROLE' AND ma.typeKey=3 " +
+            "WHERE ma.id=3 " +
             "GROUP BY m.id, m.fullName, m.email, m.phone")
     Page<ParentVo> findAllParent(Pageable pageable);
     //    Find All enrolled School for specific School Owner
@@ -103,8 +103,16 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
     Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner (int parentId,String schoolOwnerId,Pageable pageable);
 
     //find account role by email
-    @Query("SELECT m.typeValue FROM AccountInfo ai JOIN MasterDatum m ON ai.roleId=m.typeKey AND m.typeName='ROLE' AND ai.email=?1")
+    @Query("SELECT m.typeValue FROM AccountInfo ai JOIN MasterDatum m ON ai.roleId=m.id AND ai.email=?1")
     String findAccountRoleString(String email);
 
     AccountInfo getAccountInfoById(int id);
+    //find all parent for School Owner List
+    @Query("SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone,(CASE WHEN EXISTS (SELECT e FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status != false AND e.school.account.email=:email) THEN true ELSE false END))" +
+            "FROM AccountInfo ai " +
+            "JOIN MasterDatum ma ON ai.roleId=ma.typeKey " +
+            "WHERE ma.id=3 AND (ai.fullName LIKE %:search% OR ai.email LIKE%:search% OR ai.phone LIKE %:search% ) AND ai.deleteFlg=false AND ai.statusId=41 " +
+            "GROUP BY ai.id, ai.fullName, ai.email, ai.phone ")
+    Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(@Param("email") String email,@Param("search") String search, Pageable pageable);
+
 }

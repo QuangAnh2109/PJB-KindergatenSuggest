@@ -1,12 +1,12 @@
 package fa.appcode.web.controller;
 
+import fa.appcode.common.utils.TokenUtils;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.EmailService;
 import fa.appcode.services.impl.VerificationService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,9 +23,9 @@ import java.util.Map;
 @RequestMapping("public/register")
 public class RegisterController {
 
-    private final String REGISTER_PAGE = "user_side/register";
-    private final String VERIFY_PAGE = "user_side/verify-email";
-    private final String errorOTP = "errorOTP";
+    private static final String REGISTER_PAGE = "user_side/register";
+    private static final String REGISTER_URL = "http://localhost:8080/public/register/verify?token=";
+
     @Autowired
     private GlobalConfig globalConfig;
 
@@ -36,113 +36,82 @@ public class RegisterController {
     private EmailService emailService;
 
     @Autowired
-    private VerificationService verificationService;
+    private TokenUtils tokenUtils;
 
-    private final Map<String, AccountVo> pendingAccounts = new HashMap<>();
 
+    private static final Map<String, AccountVo> pendingAccounts = new HashMap<>();
+    private static final Map<String, String> tokenToEmail = new HashMap<>();
     @GetMapping
-    public String register(Model model, HttpSession session) {
+    public String register(Model model) {
         model.addAttribute("accountVo", new AccountVo());
-        session.setAttribute("pendingAccounts", pendingAccounts);
         return REGISTER_PAGE;
     }
 
     @PostMapping
     public String processRegister(@ModelAttribute("accountVo") @Valid AccountVo accountVo,
                                   BindingResult bindingResult,
-                                  Model model, HttpSession session) {
-
+                                  Model model,
+                                  RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return REGISTER_PAGE;
-        }
-        if (accountService.existsByEmail(accountVo.getEmail())) {
+        } else if (accountService.existsByEmail(accountVo.getEmail())) {
             model.addAttribute("emailError", globalConfig.getEmailExist());
             return REGISTER_PAGE;
-        }
-        if (!accountVo.getPassword().equals(accountVo.getConfirmPassword())) {
+        } else if (!accountVo.getPassword().equals(accountVo.getConfirmPassword())) {
             model.addAttribute("confirmPasswordError", globalConfig.getPasswordNotMatch());
             return REGISTER_PAGE;
         }
 
-        String otpCode = verificationService.generateOtp(accountVo.getEmail());
-        emailService.sendEmail(accountVo.getEmail(), "Email Authentication", "Your OTP Code is: " + otpCode);
+        String token = tokenUtils.generateTokenRegister(accountVo.getEmail());
+        String registerLink = REGISTER_URL + token;
 
-        pendingAccounts.put(accountVo.getEmail(), accountVo);
-        session.setAttribute("pendingAccounts", pendingAccounts);
+        pendingAccounts.put(token, accountVo);
+        tokenToEmail.put(token, accountVo.getEmail());
 
-        model.addAttribute("email", accountVo.getEmail());
-        return VERIFY_PAGE;
+        try {
+            emailService.sendEmail(accountVo.getEmail(), "Verify Your Account",
+                    "Click this link to verify your account: " + registerLink);
+        } catch (Exception e) {
+            model.addAttribute("emailError", "Failed to send email. Please try again later.");
+            return REGISTER_PAGE;
+        }
+
+        redirectAttributes.addFlashAttribute("message", "A verification link has been sent to your email. It will expire in 10 minutes.");
+        return "redirect:/public/register";
     }
 
-    @PostMapping("/public/verify")
-    public String verifyOtp(@RequestParam String email,
-                            @RequestParam String otp,
-                            Model model, HttpSession session) {
-
-        System.out.println("Validating OTP for email: " + email);
-
-        if (email == null || email.isEmpty()) {
-            model.addAttribute(errorOTP, "Email is missing!");
-            return VERIFY_PAGE;
+    @GetMapping("/verify")
+    public String verifyAccount(@RequestParam String token, Model model) {
+        if (tokenUtils.isTokenExpired(token)) {
+            model.addAttribute("expired", true);
+            return "user_side/token_invalid";
         }
-
-        if (!verificationService.validateOtp(email, otp)) {
-            model.addAttribute(errorOTP, "Your OTP is expired or incorrect!");
-            model.addAttribute("email", email);
-            return VERIFY_PAGE;
+        String email = tokenToEmail.get(token);
+        if (email == null) {
+            model.addAttribute("error", "Invalid or expired token.");
+            return "user_side/token_invalid";
         }
-        Map<String, AccountVo> pendingAccounts = (Map<String, AccountVo>) session.getAttribute("pendingAccounts");
-        AccountVo accountVo = pendingAccounts != null ? pendingAccounts.remove(email) : null;
-
+        AccountVo accountVo = pendingAccounts.remove(token);
+        tokenToEmail.remove(token);
         if (accountVo == null) {
-            model.addAttribute(errorOTP, "Register session is expired. Please try again!");
-            model.addAttribute("email", email);
-            return VERIFY_PAGE;
+            model.addAttribute("error", "Account not found or already verified.");
+            return "user_side/token_invalid";
         }
         AccountInfo accountInfo = new AccountInfo();
         accountInfo.setFullName(accountVo.getFullName());
         accountInfo.setEmail(accountVo.getEmail());
-        accountInfo.setPhone(accountVo.getPhone());
         accountInfo.setPassword("{bcrypt}" + accountService.encodePassword(accountVo.getPassword()));
-        accountInfo.setStatusId(1);
+        accountInfo.setPhone(accountVo.getPhone());
+        accountInfo.setStatusId(41);
         accountInfo.setRoleId(3);
+        accountInfo.setImageUrl("null");
         accountInfo.setRecordNo(1);
-        accountInfo.setCreateId("web_system");
-        accountInfo.setUpdateId("web_system");
+        accountInfo.setCreateId("WEB_SYSTEM");
+        accountInfo.setUpdateId("WEB_SYSTEM");
         accountInfo.setCreateTime(Instant.now());
         accountInfo.setUpdateTime(Instant.now());
-        accountInfo.setAddress("null");
-
         accountService.save(accountInfo);
-        return "redirect:/public/showMyLoginPage";
+        model.addAttribute("message", "Your account has been successfully created. You can now log in.");
+        return "user_side/verifyAccount";
     }
-    @PostMapping("public/resend")
-    public String resendOtp(@RequestParam("email") String email,
-                            RedirectAttributes redirectAttributes,
-                            HttpSession session) {
-
-        Map<String, AccountVo> pendingAccounts = (Map<String, AccountVo>) session.getAttribute("pendingAccounts");
-
-        if (pendingAccounts == null) {
-            redirectAttributes.addFlashAttribute("error", "Your registration session has expired. Please register again.");
-            return "redirect:/public/register";
-        }
-
-        if (!pendingAccounts.containsKey(email)) {
-            redirectAttributes.addFlashAttribute("error", "Email is not in the pending list.");
-            return "redirect:/public/register";
-        }
-
-        if (verificationService.isOtpValid(email)) {
-            redirectAttributes.addFlashAttribute("message", "Your OTP is still valid. Please check your email!");
-            return "redirect:/public/register/verify?email=" + email;
-        }
-
-        String newOtp = verificationService.generateOtp(email);
-        emailService.sendEmail(email, "OTP CODE SENDER", "Your New OTP Code: " + newOtp);
-
-        redirectAttributes.addFlashAttribute("message", "A new OTP has been sent to your email.");
-        return "redirect:/public/register/verify?email=" + email;
-    }
-
 }
