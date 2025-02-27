@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -37,6 +38,22 @@ public class EmailServiceImpl implements EmailService {
     private String managerMail;
 
     private static final Logger log = LoggerFactory.getLogger(EmailServiceImpl.class);
+
+    @Async
+    @Override
+    public void sendEmail(String toEmail, String subject, String text) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(systemMail);
+            message.setTo(toEmail);
+            message.setSubject(subject);
+            message.setText(text);
+            javaMailSender.send(message);
+            log.info(" Email sent successfully to {}", toEmail);
+        } catch (Exception e) {
+            log.error("Failed to send email: {}", e.getMessage());
+        }
+    }
 
     @Async
     @Override
