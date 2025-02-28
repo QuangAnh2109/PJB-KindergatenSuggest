@@ -35,7 +35,7 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         //Enroll Date
         schoolEnroll.setEnrollDate(enrollDate);
         //Start of Enroll is Always true
-        schoolEnroll.setStatus(true);
+        schoolEnroll.setStatus(2);
         //change with LocalDate time zone
 //                schoolEnroll.setCreateTime(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
 //                schoolEnroll.setUpdateTime(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -74,7 +74,7 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         //set Update Time
         enrollSchool.setUpdateTime(Instant.now());
         //Unenroll Parent
-        enrollSchool.setStatus(false);
+        enrollSchool.setStatus(3);
         //set Record data +1
         enrollSchool.setRecordNo(enrollSchool.getRecordNo() + 1);
         enrollSchoolRepository.save(enrollSchool);
