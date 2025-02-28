@@ -95,6 +95,12 @@
             min-width: 70px; /* Đặt chiều rộng tối thiểu */
             text-align: center;
         }
+
+
+        .table-container {
+            max-height: 500px; /* Điều chỉnh chiều cao theo nhu cầu */
+            overflow-y: auto;
+        }
     </style>
 
 </head>
@@ -226,7 +232,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="userListContent">
+                        <div id="userListContent" class="table-container">
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
@@ -268,13 +274,15 @@
                                 </tr>
                                 </tbody>
 
-                                <div id="noResultsMessage" th:if="${listAccounts.size() == 0}" class="alert alert-warning" role="alert">
-                                    <span th:text="#{ME_012}">No results found.</span>
-                                </div>
-
                             </table>
 
+                            <div id="noResultsMessage" th:if="${listAccounts.size() == 0}" class="alert alert-warning"
+                                 role="alert">
+                                <span th:text="#{ME_012}">No results found.</span>
+                            </div>
+
                         </div>
+
                         <div class="row">
                             <div class="col-9"></div>
                             <div class="col-3">
@@ -311,6 +319,17 @@
                 </div>
                 <!-- end row -->
 
+
+                <!-- Footer -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">2017 - 2020 &copy; Simple theme by <a href="#">Coderthemes</a></div>
+                        </div>
+                    </div>
+                </footer>
+
+
             </div>
             <!-- end container-fluid -->
 
@@ -318,6 +337,7 @@
         <!-- end content -->
 
     </div>
+    l
     <!-- END content-page -->
 
 
