@@ -44,8 +44,8 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
                 LEFT JOIN ai.ward w
                 LEFT JOIN ai.district d
                 LEFT JOIN ai.city c     
-                LEFT JOIN MasterDatum ma ON ai.roleId = ma.id
-                LEFT JOIN MasterDatum ms ON ai.statusId = ms.id
+                LEFT JOIN MasterDatum ma ON ai.roleId = ma.typeKey AND ma.typeName = "ROLE"
+                LEFT JOIN MasterDatum ms ON ai.statusId = ms.typeKey AND ms.typeName="ACCOUNT STATUS"
                 WHERE ai.deleteFlg = false
                 AND (:search IS NULL OR ai.fullName LIKE %:search% OR ai.email LIKE %:search% OR ai.phone LIKE %:search%)
                 """)

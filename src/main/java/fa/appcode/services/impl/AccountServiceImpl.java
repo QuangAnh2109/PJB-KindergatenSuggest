@@ -1,10 +1,10 @@
 package fa.appcode.services.impl;
 
+import fa.appcode.common.enums.UserStatus;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
-import fa.appcode.common.vo.RoleVo;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.MasterDatumService;
@@ -12,7 +12,6 @@ import fa.appcode.web.controller.ForgotPasswordController;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import fa.appcode.services.MasterDataService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
@@ -20,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -135,7 +133,6 @@ public class AccountServiceImpl implements AccountService {
         accountVo.setPhone(accountInfo.getPhone());
         accountVo.setDob(accountInfo.getDob() != null ? accountInfo.getDob().toString() : null);
         accountVo.setImageUrl(accountInfo.getImageUrl());
-        accountVo.setRoleId(accountInfo.getRoleId());
 
         // Build full address
         if (accountInfo.getAddress() == null && accountInfo.getWard() == null &&
@@ -155,8 +152,8 @@ public class AccountServiceImpl implements AccountService {
             accountVo.setFullAddress(fullAddress.toString().trim());
         }
         // Resolve role and status names
-        accountVo.setRole(masterDatumService.getMasterById(accountInfo.getRoleId()));
-        accountVo.setStatus(masterDatumService.getMasterById(accountInfo.getStatusId()));
+        accountVo.setRole(masterDatumService.getMasterByTypeNameAndTypeKey("ROLE",accountInfo.getRoleId()));
+        accountVo.setStatus(masterDatumService.getMasterByTypeNameAndTypeKey("ACCOUNT STATUS",accountInfo.getStatusId()));
         return accountVo;
     }
 
@@ -167,11 +164,10 @@ public class AccountServiceImpl implements AccountService {
         AccountInfo user = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        // Giả sử statusId = 1 là Active, statusId = 2 là Inactive
-        if (user.getStatusId() == 41) {
-            user.setStatusId(42); // Deactivate
+        if (user.getStatusId() == UserStatus.ACTIVE.getStatusId()) {
+            user.setStatusId(UserStatus.INACTIVE.getStatusId()); // Deactivate
         } else {
-            user.setStatusId(41); // Activate
+            user.setStatusId(UserStatus.ACTIVE.getStatusId()); // Activate
         }
 
         accountRepository.save(user);

@@ -9,8 +9,7 @@ public interface MasterDatumService {
     String findNameById(int id);
     List<MasterDataVo> findAllByTypeNameNoDelete(String typeName);
 
-    // String getMasterByTypeNameAndTypeKey(String typeName, Integer typeKey);
-    String getMasterById(Integer id);
-    List<MasterDatum> getListByTypeName(String type);
-
+     String getMasterByTypeNameAndTypeKey(String typeName, Integer typeKey);
+     List<MasterDatum> getListByTypeName(String type);
+     Integer getMasterKeyByTypeNameAndTypeValue(String typeName, String typeValue);
 }

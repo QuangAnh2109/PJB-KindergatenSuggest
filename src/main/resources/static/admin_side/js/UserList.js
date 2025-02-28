@@ -3,7 +3,7 @@ $(document).ready(function () {
     $("body").on("click", "a.edit-user-btn", function (event) {
         event.preventDefault();
         var userId = $(this).data("userid");
-        window.location.href = "/admin/edituser/" + userId;
+        window.location.href = "/admin/edit-user/" + userId;
     });
 
     $("body").on("click", "a.delete-user-btn", function (event) {
@@ -61,7 +61,7 @@ $(document).ready(function () {
 
     function findAll(keySearch, currentPage) {
         $.get({
-            url: "/admin/userlist",
+            url: "/admin/user_list",
             data: {
                 search: keySearch,
                 currentPage: currentPage,

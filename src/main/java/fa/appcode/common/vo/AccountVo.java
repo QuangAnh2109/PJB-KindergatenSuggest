@@ -27,7 +27,6 @@ public class AccountVo {
     private String dob;
     private String fullAddress;
     private String role;
-    private Integer roleId;
     private String status;
     private String recordNo;
     private String datetimeChangePass;
