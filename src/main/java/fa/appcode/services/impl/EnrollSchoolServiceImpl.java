@@ -9,22 +9,31 @@ import fa.appcode.repositories.AccountRepository;
 import fa.appcode.repositories.EnrollSchoolRepository;
 import fa.appcode.repositories.SchoolInfoRepository;
 import fa.appcode.services.EnrollSchoolService;
+import fa.appcode.services.SchoolInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     @Autowired
+    private ApplicationContext applicationContext;
+    @Autowired
+    private SchoolInfoService schoolInfoService;
+
+    @Autowired
     private EnrollSchoolRepository enrollSchoolRepository;
 
     @Transactional
-    public void enrollSchool(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role) {
+    public void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role) {
 
         //create instant enroll School
         EnrollSchool schoolEnroll = new EnrollSchool();
@@ -55,6 +64,7 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     public EnrollSchool findEnrollSchoolById(Integer id) {
         return enrollSchoolRepository.findEnrollSchoolById(id);
     }
+
     @Override
     public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable) {
         return enrollSchoolRepository.findParentEnrolledSchoolByParentId(id, pageable);
@@ -78,5 +88,38 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         //set Record data +1
         enrollSchool.setRecordNo(enrollSchool.getRecordNo() + 1);
         enrollSchoolRepository.save(enrollSchool);
+    }
+
+    @Transactional
+    public void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status) {
+        //set enroll Date
+        enrollSchool.setEnrollDate(approvalEnrollDate);
+        //set Update ID
+        enrollSchool.setUpdateId(role);
+        //set Update Time
+        enrollSchool.setUpdateTime(Instant.now());
+        //Unenroll Parent
+        enrollSchool.setStatus(status);
+        //set Record data +1
+        enrollSchool.setRecordNo(enrollSchool.getRecordNo() + 1);
+        enrollSchoolRepository.save(enrollSchool);
+    }
+
+    public void execute(String action, EnrollSchool enrollSchool, LocalDate date, String role, Principal principal) throws Exception {
+        if (role.equals("SCHOOL_OWNER")) {
+            List<Integer> schoolIdList = schoolInfoService.getAllSchoolIdsForUnenrollParentByAccountEmail(principal.getName());
+            if (!schoolIdList.contains(enrollSchool.getSchool().getId())) {
+                throw new  IllegalAccessException("Unauthorized action for this school.");
+            }
+        }
+        EnrollSchoolService self = applicationContext.getBean(EnrollSchoolService.class);
+        switch (action) {
+            case "unenroll" ->
+                    self.evaluateParentEnroll(enrollSchool, date, role, 4); //execute unenroll parent
+            case "approve" ->
+                    self.evaluateParentEnroll(enrollSchool, date, role, 3); //execute approve enroll parent
+            case "reject" ->
+                    self.evaluateParentEnroll(enrollSchool, date, role, 2); //execute reject enroll parent
+        }
     }
 }

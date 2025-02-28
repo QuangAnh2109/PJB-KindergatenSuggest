@@ -41,7 +41,7 @@ public interface AccountService {
     Page<AccountInfo> findAll(Pageable pageable);
 
     List<AccountInfo> findAllRoles();
-
+    AccountInfo createAccount(AccountVo accountVo);
     Page<ParentVo> findAllParent(Pageable pageable);
 
     ParentVo findParentById(int id);

@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.security.Principal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,9 +31,8 @@ public class AccountServiceImpl implements AccountService {
     private MasterDatumService masterDatumService;
     @Autowired
     private AccountRepository accountRepository;
-    private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordController.class);
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public AccountInfo getAccountById(int id) {
         return accountRepository.getAccountInfoById(id);
@@ -88,7 +88,23 @@ public class AccountServiceImpl implements AccountService {
         int numberOfRows = accountRepository.updatePassword(encodedPassword, email);
         return numberOfRows > 0;
     }
-
+    @Override
+    public AccountInfo createAccount(AccountVo accountVo) {
+        AccountInfo accountInfo = new AccountInfo();
+        accountInfo.setFullName(accountVo.getFullName());
+        accountInfo.setEmail(accountVo.getEmail());
+        accountInfo.setPassword("{bcrypt}" + passwordEncoder.encode(accountVo.getPassword()));
+        accountInfo.setPhone(accountVo.getPhone());
+        accountInfo.setStatusId(0);
+        accountInfo.setRoleId(3);
+        accountInfo.setImageUrl("null");
+        accountInfo.setRecordNo(1);
+        accountInfo.setCreateId("WEB_SYSTEM");
+        accountInfo.setUpdateId("WEB_SYSTEM");
+        accountInfo.setCreateTime(Instant.now());
+        accountInfo.setUpdateTime(Instant.now());
+        return accountRepository.save(accountInfo); // Lưu vào DB
+    }
 
     // Get list of user account
     @Override
@@ -115,13 +131,14 @@ public class AccountServiceImpl implements AccountService {
         return List.of();
     }
 
+
+
     @Override
     public Page<ParentVo> findAllParent(Pageable pageable) {
         return null;
     }
 
     //=========================================================
-
     /**
      * Chuyển đổi AccountInfo thành AccountVo
      */
@@ -178,7 +195,6 @@ public class AccountServiceImpl implements AccountService {
     public void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId) {
         AccountInfo user = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
         // Cập nhật các trường được phép chỉnh sửa
         user.setFullName(fullName);
         user.setPhone(phone);
@@ -195,7 +211,6 @@ public class AccountServiceImpl implements AccountService {
         account.setDeleteFlg(true);
         accountRepository.save(account);
     }
-
 
     public Page<ParentVo> findAllParent(String search, Pageable pageable) {
         return accountRepository.findAllParent(search, pageable);

@@ -1,6 +1,6 @@
 package fa.appcode.common.vo;
 
-import fa.appcode.common.constant.Constant;
+import fa.appcode.common.utils.Constant;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

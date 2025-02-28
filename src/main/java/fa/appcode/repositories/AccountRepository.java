@@ -1,5 +1,5 @@
 package fa.appcode.repositories;
-import com.cloudinary.provisioning.Account;
+
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
@@ -20,16 +20,20 @@ import java.util.List;
 
 @Repository("accountRepository")
 @Transactional
-public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
+public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
     @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1")
     AccountInfo findByEmail(String email);
+
     @Query("Select c from AccountInfo c where c.phone=?1")
     AccountVo findByPhone(String phone);
+
     @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1")
     AccountVo findAccountByEmail(String email);
+
     @Query("SELECT c FROM AccountInfo c WHERE c.phone = ?1")
     AccountInfo findAccountByPhone(String email);
+
     @Modifying
     @Transactional
     @Query("UPDATE AccountInfo a SET a.password = ?1 WHERE a.email = ?2")
@@ -51,57 +55,54 @@ public interface AccountRepository extends JpaRepository <AccountInfo,Integer>{
                 """)
     Page<AccountVo> findAllWithFullAddress(@Param("search") String search, Pageable pageable);
 
-    /**
-     * @param pageable
-     * @return
-     */
-
-    @Query("select m from AccountInfo m join MasterDatum ma ON m.roleId=ma.typeKey WHERE ma.typeName='ROLE' and ma.typeKey=3")
-    Page<AccountInfo> findAll(Pageable pageable);
-
-    @Query("select m from AccountInfo m join MasterDatum ma ON m.roleId=ma.typeKey WHERE ma.typeName='ROLE' and ma.typeKey=3")
-    List<AccountInfo> findAllRole();
-
     // Find Parent data by parent Id
     @Query("SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone,ai.dob,TRIM(BOTH ' ' FROM CONCAT(COALESCE(ai.address, ''), '   ', COALESCE(w.wardName, ''), '   ', COALESCE(d.districtName, ''), '   ', COALESCE(c.cityName, ''))))" +
             "FROM AccountInfo ai " +
-            "JOIN MasterDatum ma ON ai.roleId=ma.id " +
+            "JOIN MasterDatum ma ON ai.roleId=ma.id AND ma.typeName='ROLE'" +
             "LEFT JOIN Ward w ON w.id=ai.ward.id " +
             "LEFT JOIN District d ON d.id = ai.district.id " +
             "LEFT JOIN City c ON c.id=ai.city.id " +
-            "WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=41")
-    ParentVo findParentById (int id);
-//    find all Parent List
-    @Query("SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone, false)" +
-//            "(CASE WHEN EXISTS (SELECT e FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status != false) THEN true ELSE false END))" +
+            "WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=1")
+    ParentVo findParentById(int id);
+
+    //    find all Parent List
+    @Query("SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone, " +
+            "CASE WHEN EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 1) THEN " +
+            "(SELECT md.typeValue FROM MasterDatum md WHERE md.typeKey = 1 AND md.typeName='ENROLL STATUS') " +
+            "WHEN EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 3) " +
+            "AND NOT EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 1) " +
+            "THEN (SELECT md.typeValue FROM MasterDatum md WHERE md.typeKey = 3 AND md.typeName='ENROLL STATUS')" +
+            "ELSE 'Not Enroll' END ) " +
             "FROM AccountInfo ai " +
-            "JOIN MasterDatum ma ON ai.roleId=ma.typeKey " +
-            "WHERE ma.id=3 AND (ai.fullName LIKE %?1% OR ai.email LIKE%?1% OR ai.phone LIKE %?1% ) AND ai.deleteFlg=false AND ai.statusId=41 " +
+            "JOIN MasterDatum ma ON ai.roleId=ma.typeKey AND ma.typeName='ROLE' " +
+            "LEFT JOIN EnrollSchool e ON ai.id = e.account.id " +
+            "LEFT JOIN SchoolInfo s ON e.school.id = s.id " +
+            "WHERE ma.id=3 AND (ai.fullName LIKE %?1% OR ai.email LIKE%?1% OR ai.phone LIKE %?1% ) AND ai.deleteFlg=false AND ai.statusId=1 " +
             "GROUP BY ai.id, ai.fullName, ai.email, ai.phone ")
     Page<ParentVo> findAllParent(String search, Pageable pageable);
 
-    @Query("SELECT new fa.appcode.common.vo.ParentVo(m.id,m.fullName,m.email,m.phone,false) " +
-//            "(CASE WHEN EXISTS (SELECT e FROM EnrollSchool e WHERE e.account.id = m.id AND e.status != false) THEN true ELSE false END))" +
-            "FROM AccountInfo m " +
-            "JOIN MasterDatum ma ON m.roleId=ma.typeKey " +
-            "LEFT JOIN  EnrollSchool e ON e.account.id=m.id " +
-            "LEFT JOIN SchoolInfo s ON s.id=e.school.id " +
-            "WHERE ma.id=3 " +
-            "GROUP BY m.id, m.fullName, m.email, m.phone")
-    Page<ParentVo> findAllParent(Pageable pageable);
 
     //find account role by email
     @Query("SELECT m.typeValue FROM AccountInfo ai JOIN MasterDatum m ON ai.roleId=m.id AND ai.email=?1")
     String findAccountRoleString(String email);
 
     AccountInfo getAccountInfoById(int id);
+
+
     //find all parent for School Owner List
-    @Query("SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone, false) " +
-//            "(CASE WHEN EXISTS (SELECT e FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status != false AND e.school.account.email=:email) THEN true ELSE false END))" +
+    @Query("SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone, " +
+            "CASE WHEN EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 1 AND s.account.email = :email) " +
+            "THEN (SELECT md.typeValue FROM MasterDatum md WHERE md.typeKey = 1 AND md.typeName='ENROLL STATUS') " +
+            "WHEN EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 3 AND s.account.email = :email) " +
+            "AND NOT EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 1 AND s.account.email = :email) " +
+            "THEN (SELECT md.typeValue FROM MasterDatum md WHERE md.typeKey = 3 AND md.typeName='ENROLL STATUS')" +
+            "ELSE 'Not Enroll' END ) " +
             "FROM AccountInfo ai " +
-            "JOIN MasterDatum ma ON ai.roleId=ma.typeKey " +
-            "WHERE ma.id=3 AND (ai.fullName LIKE %:search% OR ai.email LIKE%:search% OR ai.phone LIKE %:search% ) AND ai.deleteFlg=false AND ai.statusId=41 " +
-            "GROUP BY ai.id, ai.fullName, ai.email, ai.phone ")
-    Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(@Param("email") String email,@Param("search") String search, Pageable pageable);
+            "JOIN MasterDatum ma ON ai.roleId=ma.typeKey AND ma.typeName='ROLE' " +
+            "LEFT JOIN EnrollSchool e ON ai.id = e.account.id " +
+            "LEFT JOIN SchoolInfo s ON e.school.id = s.id AND s.account.email = :email " +
+            "WHERE ma.id=3 AND (ai.fullName LIKE %:search% OR ai.email LIKE%:search% OR ai.phone LIKE %:search% ) AND ai.deleteFlg=false AND ai.statusId=1 " +
+            "GROUP BY ai.id,ai.fullName,ai.email,ai.phone")
+    Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(@Param("email") String email, @Param("search") String search, Pageable pageable);
 
 }
