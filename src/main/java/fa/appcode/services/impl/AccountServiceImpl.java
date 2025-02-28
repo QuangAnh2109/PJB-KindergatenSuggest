@@ -97,7 +97,7 @@ public class AccountServiceImpl implements AccountService {
         accountInfo.setEmail(accountVo.getEmail());
         accountInfo.setPassword("{bcrypt}" + passwordEncoder.encode(accountVo.getPassword()));
         accountInfo.setPhone(accountVo.getPhone());
-        accountInfo.setStatusId(42);
+        accountInfo.setStatusId(0);
         accountInfo.setRoleId(3);
         accountInfo.setImageUrl("null");
         accountInfo.setRecordNo(1);
@@ -141,7 +141,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     //=========================================================
-
     /**
      * Chuyển đổi AccountInfo thành AccountVo
      */
@@ -200,7 +199,6 @@ public class AccountServiceImpl implements AccountService {
     public void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId) {
         AccountInfo user = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
         // Cập nhật các trường được phép chỉnh sửa
         user.setFullName(fullName);
         user.setPhone(phone);

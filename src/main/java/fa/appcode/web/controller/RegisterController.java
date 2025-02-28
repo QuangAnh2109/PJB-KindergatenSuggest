@@ -76,7 +76,7 @@ public class RegisterController {
                 model.addAttribute("error", "Account not found or already verified.");
                 return Constant.TOKEN_INVALID_PAGE;
             }
-            accountInfo.setStatusId(41);
+                accountInfo.setStatusId(1);
             accountService.save(accountInfo);
             model.addAttribute("message", "Your account has been successfully created. You can now log in.");
             return Constant.VERIFY_ACCOUNT_PAGE;
