@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -234,6 +235,13 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email, String search, Pageable pageable) {
         return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email,search,pageable);
+    }
+
+    @Override
+    public AccountInfo getAccountInfo(Principal principal) {
+        String user = principal.getName();
+        AccountInfo account = findByEmail(user);
+        return account;
     }
 
 

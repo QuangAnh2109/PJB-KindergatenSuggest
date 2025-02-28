@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -52,4 +53,6 @@ public interface AccountService {
     AccountVo findAccountByPhone(String phone);
 
     Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email,String search, Pageable pageable);
+
+    AccountInfo getAccountInfo(Principal principal);
 }
