@@ -24,7 +24,7 @@ function loadDistrict(cityId) {
 }
 function loadWard(districtId) {
     $.ajax({
-        url: "/admin/school-form/ward",
+            url: "/admin/school-form/ward",
         type: "get",
         data: {
             districtId: districtId,

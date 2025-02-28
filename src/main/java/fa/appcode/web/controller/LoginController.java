@@ -12,9 +12,8 @@ public class LoginController {
     public String showMyLoginPage(){
         return "user_side/login";
     }
-    @GetMapping("parent/change-password")
+    @GetMapping("auth/change-password")
     public String showChangePasswordPage(){
         return "user_side/change-password";
     }
-
 }
