@@ -7,12 +7,21 @@ import fa.appcode.entities.SchoolInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.security.Principal;
 import java.time.LocalDate;
 
 public interface EnrollSchoolService {
-    void enrollSchool(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role);
+    void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role);
+
     EnrollSchool findEnrollSchoolById(Integer id);
+
     Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable);
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId,String schoolOwnerId,Pageable pageable);
+
+    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId, Pageable pageable);
+
     void unenrollParentToSchool(EnrollSchool enrollSchool, LocalDate unenrollDate, String role);
+
+    void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status);
+
+    void execute(String action, EnrollSchool enrollSchool, LocalDate date, String role, Principal principal) throws Exception;
 }

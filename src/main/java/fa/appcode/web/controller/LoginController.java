@@ -9,13 +9,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class LoginController {
     @GetMapping("/public/showMyLoginPage")
-    public String showMyLoginPage() {
+    public String showMyLoginPage(){
         return "user_side/login";
     }
-
-    @GetMapping("parent/change-password")
-    public String showChangePasswordPage() {
+    @GetMapping("auth/change-password")
+    public String showChangePasswordPage(){
         return "user_side/change-password";
     }
-
 }
