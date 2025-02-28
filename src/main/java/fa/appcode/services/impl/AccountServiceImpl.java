@@ -231,5 +231,10 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findByPhone(phone);
     }
 
+    @Override
+    public Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email, String search, Pageable pageable) {
+        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email,search,pageable);
+    }
+
 
 }
