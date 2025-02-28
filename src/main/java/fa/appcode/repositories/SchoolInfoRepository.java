@@ -31,4 +31,5 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
     @Query("SELECT s.id FROM SchoolInfo s JOIN AccountInfo ai ON s.account.id = ai.id WHERE ai.email=?1 AND s.deleteFlg=false")
     List<Integer> getAllSchoolIdsForUnenrollParentByAccountEmail(String id);
 
+
 }
