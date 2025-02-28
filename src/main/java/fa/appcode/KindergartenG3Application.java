@@ -9,19 +9,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 public class KindergartenG3Application {
-	@Autowired
-	private EmailService emailService;
-
 	public static void main(String[] args) {
 		var context = SpringApplication.run(KindergartenG3Application.class, args);
 		KindergartenG3Application app = context.getBean(KindergartenG3Application.class);
 	}
 
-//	public void sendEmailtoMe() {
-//		String emailTo = "fapteam01@gmail.com";
-//		String subject = "Kindergarten";
-//		String text = "This is a simple email subject.";
-//		emailService.sendEmail(emailTo, subject, text);
-//	}
 }
 

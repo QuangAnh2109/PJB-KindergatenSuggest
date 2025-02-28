@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zxx">
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <title>Rentaly - Multipurpose Vehicle Car Rental Website Template</title>
@@ -14,7 +15,8 @@
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- CSS Files -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link th:href="@{/user_side/css/plugins.css}" rel="stylesheet" type="text/css">
     <link th:href="@{/user_side/css/style.css}" rel="stylesheet" type="text/css">
     <link th:href="@{/user_side/css/coloring.css}" rel="stylesheet" type="text/css">
@@ -22,7 +24,7 @@
     <link id="colors" th:href="@{/user_side/css/colors/scheme-01.css}" rel="stylesheet" type="text/css">
 
     <style>
-        #messages{
+        #messages {
             text-align: center;
             font-style: italic;
             padding: 0;
@@ -66,7 +68,7 @@
             position: absolute;
             background-color: #fff;
             min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
             z-index: 1;
             border-radius: 4px;
             margin-top: 2px;
@@ -141,6 +143,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             width: 300px;
         }
+
         .button-container {
             margin-top: 15px;
         }
@@ -164,671 +167,683 @@
 </head>
 
 <body>
-    <div id="wrapper">
-        
-        <!-- page preloader begin -->
-        <div id="de-preloader"></div>
-        <!-- page preloader close -->
+<div id="wrapper">
 
-        <!-- header begin -->
-        <header class="transparent scroll-light has-topbar">
+    <!-- page preloader begin -->
+    <div id="de-preloader"></div>
+    <!-- page preloader close -->
 
+    <!-- header begin -->
+    <header class="transparent scroll-light has-topbar">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="de-flex sm-pt10">
+                        <div class="de-flex-col">
+                            <div class="de-flex-col">
+                                <!-- logo begin -->
+                                <div id="logo">
+                                    <a th:href="@{/home}">
+                                        <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
+                                        <img class="logo-2" src="/user_side/images/logo1.png" alt="">
+                                    </a>
+                                </div>
+                                <!-- logo close -->
+                            </div>
+                        </div>
+                        <div class="de-flex-col header-col-mid">
+                            <ul id="mainmenu">
+                                <li><a class="menu-item" href="/search">School Search</a>
+                                </li>
+                                <li><a class="menu-item" href="#">Community</a>
+                                </li>
+                                <li><a class="menu-item" href="#">About Us</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="de-flex-col">
+                            <div class="menu_side_area" sec:authorize="!isAuthenticated()">
+                                <a th:href="@{/showMyLoginPage}" class="btn-main">Login</a>
+                                <span class="menu-btn"></span>
+                            </div>
+                            <div class="menu_side_area" sec:authorize="!isAuthenticated()">
+                                <a th:href="@{/register}" class="btn-main">Sign Up</a>
+                                <span class="menu-btn"></span>
+                            </div>
+                            <div class="logout-container" sec:authorize="isAuthenticated()">
+                                <div class="dropdown">
+                                    <button class="dropdown-toggle" onclick="toggleDropdown()">
+                                        <span><i class="fa fa-user-o" aria-hidden="true" style="margin-right: 5px"></i></span>
+                                        Welcome! <i class="arrow-down"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right" id="featuresDropdown">
+                                        <a href="/feature1"><span><i class="fa-solid fa-school"></i></span> My
+                                            School</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="/feature2"><span><i class="fas fa-clipboard-list"></i></span> My
+                                            Request</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="/feature3"><span><i class="fa-solid fa-user"></i></span> My Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" onclick="showPopup()"><span><i
+                                                class="fa-solid fa-right-from-bracket"></i></span> Logout</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- header close -->
+    <!-- content begin -->
+    <!-- content begin -->
+    <div class="no-bottom no-top zebra" id="content">
+        <div id="top"></div>
+
+        <!-- section begin -->
+        <section id="subheader" class="jarallax text-light">
+            <img src="/user_side/images/background/background_search.jpg" class="jarallax-img" alt="">
+            <div class="center-y relative text-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <h1>Search School</h1>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- section close -->
+        <section style="background-color: #495456">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="input-group" style="display: flex;align-items: center">
+                            <input type="text" class="form-control" placeholder="Enter a school name">
+                            <select id="citySelect" name="city" class="form-select" onchange="loadDistrict(this.value)"
+                                    style="width: 5%;">
+                                <option selected disabled value="">----Select City/Province-----</option>
+                                <option th:each="city : ${listCity}" th:value="${city.getId()}"
+                                        th:text="${city.getCityName()}"></option>
+                            </select>
+                            <select name="district" id="district" class="form-select">
+                                <option selected disabled value="">Select District</option>
+                            </select>
+                            <button class="btn btn-primary">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="messages" style="justify-content: center">
+            <div>There are 100 schools that match your search criteria</div>
+        </section>
+        <div style="justify-content: flex-end">
+
+        </div>
+        <section id="section-cars">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3" style="position: relative">
+                        <div class="item_filter_group">
+                            <h4>Refine your search</h4>
+                            <t>Type of school</t>
+                            <select name="district" class="form-select">
+                                <option selected disabled value="">Type of school</option>
+                                <option th:each="type_school : ${type_school}" th:value="${type_school.getId()}"
+                                        th:text="${type_school.getTypeValue()}"></option>
+                            </select>
+
+                            <t>Admission age (from)</t>
+                            <select name="district" class="form-select">
+                                <option selected disabled value="">Age</option>
+                                <option th:each="age : ${data_age}" th:value="${age.getId()}"
+                                        th:text="${age.getTypeValue()}"></option>
+                            </select>
+
+                            <t>Monthly fee(VND/month)</t>
+                            <div class="price-input">
+                                <div class="field">
+                                    <span>Min</span>
+                                    <input type="number" class="input-min" value="0">
+                                </div>
+                                <div class="field">
+                                    <span>Max</span>
+                                    <input type="number" class="input-max" value="2000">
+                                </div>
+                            </div>
+                            <div class="slider">
+                                <div class="progress"></div>
+                            </div>
+                            <div class="range-input">
+                                <input type="range" class="range-min" min="0" max="2000" value="0" step="1">
+                                <input type="range" class="range-max" min="0" max="2000" value="2000" step="1">
+                            </div>
+
+                            <t>Facilities</t>
+                            <div class="de_form">
+                                <div class="de_checkbox" th:each="facility, facilityStatus : ${facilities}">
+                                    <input name="facilities" type="checkbox"
+                                           th:id="${'facility_' + facilityStatus.index}"
+                                           th:value="${facility.getId()}">
+                                    <label th:for="${'facility_' + facilityStatus.index}">
+                                        <span th:text="${facility.getTypeValue()}"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <t>Utilities</t>
+                            <div class="de_form">
+                                <div class="de_checkbox" th:each="utility, utilityStatus : ${utilities}">
+                                    <input name="utilities" type="checkbox" th:id="${'utility_' + utilityStatus.index}"
+                                           th:value="${utility.getId()}">
+                                    <label th:for="${'utility_' + utilityStatus.index}">
+                                        <span th:text="${utility.getTypeValue()}"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-9">
+                        <div class="row">
+
+                            <div class="col-lg-12">
+                                <div class="de-item-list mb30">
+                                    <div class="d-img">
+                                        <img src="/user_side/images/cars/jeep-renegade.jpg" class="img-fluid" alt="">
+                                    </div>
+                                    <div class="d-info">
+                                        <div class="d-text">
+                                            <h4>School name 1</h4>
+                                            <div class="d-atr-group">
+                                                <ul class="d-atr">
+                                                    <li><span>Seats:</span>4</li>
+                                                    <li><span>Luggage:</span>2</li>
+                                                    <li><span>Doors:</span>4</li>
+                                                    <li><span>Fuel:</span>Petrol</li>
+                                                    <li><span>Horsepower:</span>500</li>
+                                                    <li><span>Engine:</span>3000</li>
+                                                    <li><span>Drive:</span>4x4</li>
+                                                    <li><span>Type:</span>Hatchback</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-price">
+                                        Daily rate from <span>$265</span>
+                                        <a class="btn-main" href="school-single.html">Rent Now</a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="de-item-list mb30">
+                                    <div class="d-img">
+                                        <img src="images/cars/bmw-m5.jpg" class="img-fluid" alt="">
+                                    </div>
+                                    <div class="d-info">
+                                        <div class="d-text">
+                                            <h4>Mini Cooper</h4>
+                                            <div class="d-atr-group">
+                                                <ul class="d-atr">
+                                                    <li><span>Seats:</span>4</li>
+                                                    <li><span>Luggage:</span>2</li>
+                                                    <li><span>Doors:</span>4</li>
+                                                    <li><span>Fuel:</span>Petrol</li>
+                                                    <li><span>Horsepower:</span>500</li>
+                                                    <li><span>Engine:</span>3000</li>
+                                                    <li><span>Drive:</span>4x4</li>
+                                                    <li><span>Type:</span>Hatchback</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-price">
+                                        Daily rate from <span>$244</span>
+                                        <a class="btn-main" href="school-single.html">Rent Now</a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="de-item-list mb30">
+                                    <div class="d-img">
+                                        <img src="images/cars/ferrari-enzo.jpg" class="img-fluid" alt="">
+                                    </div>
+                                    <div class="d-info">
+                                        <div class="d-text">
+                                            <h4>Ferarri Enzo</h4>
+                                            <div class="d-atr-group">
+                                                <ul class="d-atr">
+                                                    <li><span>Seats:</span>4</li>
+                                                    <li><span>Luggage:</span>2</li>
+                                                    <li><span>Doors:</span>4</li>
+                                                    <li><span>Fuel:</span>Petrol</li>
+                                                    <li><span>Horsepower:</span>500</li>
+                                                    <li><span>Engine:</span>3000</li>
+                                                    <li><span>Drive:</span>4x4</li>
+                                                    <li><span>Type:</span>Hatchback</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-price">
+                                        Daily rate from <span>$167</span>
+                                        <a class="btn-main" href="school-single.html">Rent Now</a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="de-item-list mb30">
+                                    <div class="d-img">
+                                        <img src="images/cars/ford-raptor.jpg" class="img-fluid" alt="">
+                                    </div>
+                                    <div class="d-info">
+                                        <div class="d-text">
+                                            <h4>Ford Raptor</h4>
+                                            <div class="d-atr-group">
+                                                <ul class="d-atr">
+                                                    <li><span>Seats:</span>4</li>
+                                                    <li><span>Luggage:</span>2</li>
+                                                    <li><span>Doors:</span>4</li>
+                                                    <li><span>Fuel:</span>Petrol</li>
+                                                    <li><span>Horsepower:</span>500</li>
+                                                    <li><span>Engine:</span>3000</li>
+                                                    <li><span>Drive:</span>4x4</li>
+                                                    <li><span>Type:</span>Hatchback</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-price">
+                                        Daily rate from <span>$147</span>
+                                        <a class="btn-main" href="school-single.html">Rent Now</a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="de-item-list mb30">
+                                    <div class="d-img">
+                                        <img src="images/cars/mini-cooper.jpg" class="img-fluid" alt="">
+                                    </div>
+                                    <div class="d-info">
+                                        <div class="d-text">
+                                            <h4>Mini Cooper</h4>
+                                            <div class="d-atr-group">
+                                                <ul class="d-atr">
+                                                    <li><span>Seats:</span>4</li>
+                                                    <li><span>Luggage:</span>2</li>
+                                                    <li><span>Doors:</span>4</li>
+                                                    <li><span>Fuel:</span>Petrol</li>
+                                                    <li><span>Horsepower:</span>500</li>
+                                                    <li><span>Engine:</span>3000</li>
+                                                    <li><span>Drive:</span>4x4</li>
+                                                    <li><span>Type:</span>Hatchback</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-price">
+                                        Daily rate from <span>$238</span>
+                                        <a class="btn-main" href="school-single.html">Rent Now</a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="de-item-list mb30">
+                                    <div class="d-img">
+                                        <img src="images/cars/vw-polo.jpg" class="img-fluid" alt="">
+                                    </div>
+                                    <div class="d-info">
+                                        <div class="d-text">
+                                            <h4>VW Polo</h4>
+                                            <div class="d-atr-group">
+                                                <ul class="d-atr">
+                                                    <li><span>Seats:</span>4</li>
+                                                    <li><span>Luggage:</span>2</li>
+                                                    <li><span>Doors:</span>4</li>
+                                                    <li><span>Fuel:</span>Petrol</li>
+                                                    <li><span>Horsepower:</span>500</li>
+                                                    <li><span>Engine:</span>3000</li>
+                                                    <li><span>Drive:</span>4x4</li>
+                                                    <li><span>Type:</span>Hatchback</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-price">
+                                        Daily rate from <span>$106</span>
+                                        <a class="btn-main" href="school-single.html">Rent Now</a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="de-item-list mb30">
+                                    <div class="d-img">
+                                        <img src="images/cars/chevrolet-camaro.jpg" class="img-fluid" alt="">
+                                    </div>
+                                    <div class="d-info">
+                                        <div class="d-text">
+                                            <h4>Chevrolet Camaro</h4>
+                                            <div class="d-atr-group">
+                                                <ul class="d-atr">
+                                                    <li><span>Seats:</span>4</li>
+                                                    <li><span>Luggage:</span>2</li>
+                                                    <li><span>Doors:</span>4</li>
+                                                    <li><span>Fuel:</span>Petrol</li>
+                                                    <li><span>Horsepower:</span>500</li>
+                                                    <li><span>Engine:</span>3000</li>
+                                                    <li><span>Drive:</span>4x4</li>
+                                                    <li><span>Type:</span>Hatchback</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-price">
+                                        Daily rate from <span>$245</span>
+                                        <a class="btn-main" href="school-single.html">Rent Now</a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="de-item-list mb30">
+                                    <div class="d-img">
+                                        <img src="images/cars/hyundai-staria.jpg" class="img-fluid" alt="">
+                                    </div>
+                                    <div class="d-info">
+                                        <div class="d-text">
+                                            <h4>Hyundai Staria</h4>
+                                            <div class="d-atr-group">
+                                                <ul class="d-atr">
+                                                    <li><span>Seats:</span>4</li>
+                                                    <li><span>Luggage:</span>2</li>
+                                                    <li><span>Doors:</span>4</li>
+                                                    <li><span>Fuel:</span>Petrol</li>
+                                                    <li><span>Horsepower:</span>500</li>
+                                                    <li><span>Engine:</span>3000</li>
+                                                    <li><span>Drive:</span>4x4</li>
+                                                    <li><span>Type:</span>Hatchback</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-price">
+                                        Daily rate from <span>$191</span>
+                                        <a class="btn-main" href="school-single.html">Rent Now</a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-12">
+                                <div class="de-item-list mb30">
+                                    <div class="d-img">
+                                        <img src="images/cars/toyota-rav.jpg" class="img-fluid" alt="">
+                                    </div>
+                                    <div class="d-info">
+                                        <div class="d-text">
+                                            <h4>Toyota Rav 4</h4>
+                                            <div class="d-atr-group">
+                                                <ul class="d-atr">
+                                                    <li><span>Seats:</span>4</li>
+                                                    <li><span>Luggage:</span>2</li>
+                                                    <li><span>Doors:</span>4</li>
+                                                    <li><span>Fuel:</span>Petrol</li>
+                                                    <li><span>Horsepower:</span>500</li>
+                                                    <li><span>Engine:</span>3000</li>
+                                                    <li><span>Drive:</span>4x4</li>
+                                                    <li><span>Type:</span>Hatchback</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-price">
+                                        <a class="btn-main" href="#">Request Counseling</a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="de-item-list mb30">
+                                    <div class="d-img">
+                                        <img src="images/cars/bentley.jpg" class="img-fluid" alt="">
+                                    </div>
+                                    <div class="d-info">
+                                        <div class="d-text">
+                                            <h4>Bentley</h4>
+                                            <div class="d-atr-group">
+                                                <ul class="d-atr">
+                                                    <li><span>Seats:</span>4</li>
+                                                    <li><span>Luggage:</span>2</li>
+                                                    <li><span>Doors:</span>4</li>
+                                                    <li><span>Fuel:</span>Petrol</li>
+                                                    <li><span>Horsepower:</span>500</li>
+                                                    <li><span>Engine:</span>3000</li>
+                                                    <li><span>Drive:</span>4x4</li>
+                                                    <li><span>Type:</span>Hatchback</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-price">
+                                        Daily rate from <span>$299</span>
+                                        <a class="btn-main" href="school-single.html">Rent Now</a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+
+                            <div class="pagination">
+                                <ul class="pagination">
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!--Log out-->
+    <div id="logoutPopup" class="overlay">
+        <div class="popup">
+            <h2>Are you leaving?</h2>
+            <p>Are you sure you want to logout? All your unsaved data will be lost.</p>
+            <div class="button-container">
+                <button class="btn btn-yes" onclick="confirmLogout()">Yes</button>
+                <button class="btn btn-cancel" onclick="hidePopup()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <form id="logoutForm" th:action="@{/logout}" method="post"></form>
+    <!-- content close -->
+
+    <a href="#" id="back-to-top"></a>
+
+    <!-- footer begin -->
+    <footer class="text-light">
+        <div class="container">
+            <div class="row g-custom-x">
+                <div class="col-lg-3">
+                    <div class="widget">
+                        <h5>About Rentaly</h5>
+                        <p>Where quality meets affordability. We understand the importance of a smooth and enjoyable
+                            journey without the burden of excessive costs. That's why we have meticulously crafted our
+                            offerings to provide you with top-notch vehicles at minimum expense.</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="widget">
+                        <h5>Contact Info</h5>
+                        <address class="s1">
+                            <span><i class="id-color fa fa-map-marker fa-lg"></i>08 W 36th St, New York, NY 10001</span>
+                            <span><i class="id-color fa fa-phone fa-lg"></i>+1 333 9296</span>
+                            <span><i class="id-color fa fa-envelope-o fa-lg"></i><a href="mailto:contact@example.com">contact@example.com</a></span>
+                            <span><i class="id-color fa fa-file-pdf-o fa-lg"></i><a
+                                    href="#">Download Brochure</a></span>
+                        </address>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <h5>Quick Links</h5>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="widget">
+                                <ul>
+                                    <li><a href="#">About</a></li>
+                                    <li><a href="#">Blog</a></li>
+                                    <li><a href="#">Careers</a></li>
+                                    <li><a href="#">News</a></li>
+                                    <li><a href="#">Partners</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="widget">
+                        <h5>Social Network</h5>
+                        <div class="social-icons">
+                            <a href="#"><i class="fa fa-facebook fa-lg"></i></a>
+                            <a href="#"><i class="fa fa-twitter fa-lg"></i></a>
+                            <a href="#"><i class="fa fa-linkedin fa-lg"></i></a>
+                            <a href="#"><i class="fa fa-pinterest fa-lg"></i></a>
+                            <a href="#"><i class="fa fa-rss fa-lg"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="subfooter">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="de-flex sm-pt10">
+                        <div class="de-flex">
                             <div class="de-flex-col">
-                                <div class="de-flex-col">
-                                    <!-- logo begin -->
-                                    <div id="logo">
-                                        <a th:href="@{/home}">
-                                            <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
-                                            <img class="logo-2" src="/user_side/images/logo1.png" alt="">
-                                        </a>
-                                    </div>
-                                    <!-- logo close -->
-                                </div>
+                                <a href="index.html">
+                                    Copyright 2024 - Rentaly by Designesia
+                                </a>
                             </div>
-                            <div class="de-flex-col header-col-mid">
-                                <ul id="mainmenu">
-                                    <li><a class="menu-item" href="/search">School Search</a>
-                                    </li>
-                                    <li><a class="menu-item" href="#">Community</a>
-                                    </li>
-                                    <li><a class="menu-item" href="#">About Us</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="de-flex-col">
-                                <div class="menu_side_area" sec:authorize="!isAuthenticated()">
-                                    <a th:href="@{/showMyLoginPage}" class="btn-main">Login</a>
-                                    <span class="menu-btn"></span>
-                                </div>
-                                <div class="menu_side_area" sec:authorize="!isAuthenticated()">
-                                    <a th:href="@{/register}" class="btn-main">Sign Up</a>
-                                    <span class="menu-btn"></span>
-                                </div>
-                                <div class="logout-container" sec:authorize="isAuthenticated()">
-                                    <div class="dropdown">
-                                        <button class="dropdown-toggle" onclick="toggleDropdown()">
-                                            <span><i class="fa fa-user-o" aria-hidden="true" style="margin-right: 5px"></i></span>
-                                            Welcome! <i class="arrow-down"></i>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right" id="featuresDropdown">
-                                            <a href="/feature1"><span><i class="fa-solid fa-school"></i></span> My School</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a href="/feature2"><span><i class="fas fa-clipboard-list"></i></span> My Request</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a href="/feature3"><span><i class="fa-solid fa-user"></i></span> My Profile</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a href="#" onclick="showPopup()"><span><i class="fa-solid fa-right-from-bracket"></i></span> Logout</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <ul class="menu-simple">
+                                <li><a href="#">Terms &amp; Conditions</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                            </ul>
                         </div>
                     </div>
-                </div>
-            </div>
-        </header>
-        <!-- header close -->
-        <!-- content begin -->
-        <!-- content begin -->
-        <div class="no-bottom no-top zebra" id="content">
-            <div id="top"></div>
-            
-            <!-- section begin -->
-            <section id="subheader" class="jarallax text-light">
-                <img src="/user_side/images/background/background_search.jpg" class="jarallax-img" alt="">
-                    <div class="center-y relative text-center">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-12 text-center">
-									<h1>Search School</h1>
-                                </div>
-                                <div class="clearfix"></div>
-                            </div>
-                        </div>
-                    </div>
-            </section>
-            <!-- section close -->
-            <section style="background-color: #495456">
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-md-8">
-                            <div class="input-group" style="display: flex;align-items: center">
-                                <input type="text" class="form-control" placeholder="Enter a school name">
-                                <select id="citySelect" name="city" class="form-select" onchange="loadDistrict(this.value)" style="width: 5%;">
-                                    <option selected disabled value="">----Select City/Province-----</option>
-                                    <option th:each="city : ${listCity}" th:value="${city.getId()}" th:text="${city.getCityName()}"></option>
-                                </select>
-                                <select name="district" id="district" class="form-select">
-                                    <option selected disabled value="">Select District</option>
-                                </select>
-                                <button class="btn btn-primary">Search</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section id="messages" style="justify-content: center">
-                <div>There are 100 schools that match your search criteria </div>
-            </section>
-            <div style="justify-content: flex-end">
-
-            </div>
-            <section id="section-cars">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-3" style="position: relative">
-                            <div class="item_filter_group">
-                                <h4>Refine your search</h4>
-                                <t>Type of school</t>
-                                <select name="district" class="form-select">
-                                    <option selected disabled value="">Type of school</option>
-                                    <option th:each="type_school : ${type_school}" th:value="${type_school.getId()}" th:text="${type_school.getTypeValue()}"></option>
-                                </select>
-
-                                <t>Admission age (from)</t>
-                                <select name="district" class="form-select">
-                                    <option selected disabled value="">Age</option>
-                                    <option th:each="age : ${data_age}" th:value="${age.getId()}" th:text="${age.getTypeValue()}"></option>
-                                </select>
-
-                                <t>Monthly fee(VND/month)</t>
-                                <div class="price-input">
-                                    <div class="field">
-                                        <span>Min</span>
-                                        <input type="number" class="input-min" value="0">
-                                    </div>
-                                    <div class="field">
-                                        <span>Max</span>
-                                        <input type="number" class="input-max" value="2000">
-                                    </div>
-                                </div>
-                                <div class="slider">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="range-input">
-                                    <input type="range" class="range-min" min="0" max="2000" value="0" step="1">
-                                    <input type="range" class="range-max" min="0" max="2000" value="2000" step="1">
-                                </div>
-
-                                <t>Facilities</t>
-                                <div class="de_form">
-                                    <div class="de_checkbox" th:each="facility, facilityStatus : ${facilities}">
-                                        <input name="facilities" type="checkbox" th:id="${'facility_' + facilityStatus.index}"
-                                               th:value="${facility.getId()}">
-                                        <label th:for="${'facility_' + facilityStatus.index}">
-                                            <span th:text="${facility.getTypeValue()}"></span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <t>Utilities</t>
-                                <div class="de_form">
-                                    <div class="de_checkbox" th:each="utility, utilityStatus : ${utilities}">
-                                        <input name="utilities" type="checkbox" th:id="${'utility_' + utilityStatus.index}"
-                                               th:value="${utility.getId()}">
-                                        <label th:for="${'utility_' + utilityStatus.index}">
-                                            <span th:text="${utility.getTypeValue()}"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-9">
-                            <div class="row">
-
-                                <div class="col-lg-12">
-                                    <div class="de-item-list mb30">
-                                        <div class="d-img">
-                                            <img src="/user_side/images/cars/jeep-renegade.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>School name 1</h4>
-                                                <div class="d-atr-group">
-                                                    <ul class="d-atr">
-                                                        <li><span>Seats:</span>4</li>
-                                                        <li><span>Luggage:</span>2</li>
-                                                        <li><span>Doors:</span>4</li>
-                                                        <li><span>Fuel:</span>Petrol</li>
-                                                        <li><span>Horsepower:</span>500</li>
-                                                        <li><span>Engine:</span>3000</li>
-                                                        <li><span>Drive:</span>4x4</li>
-                                                        <li><span>Type:</span>Hatchback</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-price">
-                                            Daily rate from <span>$265</span>
-                                            <a class="btn-main" href="school-single.html">Rent Now</a>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-12">
-                                    <div class="de-item-list mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/bmw-m5.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Mini Cooper</h4>
-                                                <div class="d-atr-group">
-                                                    <ul class="d-atr">
-                                                        <li><span>Seats:</span>4</li>
-                                                        <li><span>Luggage:</span>2</li>
-                                                        <li><span>Doors:</span>4</li>
-                                                        <li><span>Fuel:</span>Petrol</li>
-                                                        <li><span>Horsepower:</span>500</li>
-                                                        <li><span>Engine:</span>3000</li>
-                                                        <li><span>Drive:</span>4x4</li>
-                                                        <li><span>Type:</span>Hatchback</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-price">
-                                            Daily rate from <span>$244</span>
-                                            <a class="btn-main" href="school-single.html">Rent Now</a>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-12">
-                                    <div class="de-item-list mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/ferrari-enzo.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Ferarri Enzo</h4>
-                                                <div class="d-atr-group">
-                                                    <ul class="d-atr">
-                                                        <li><span>Seats:</span>4</li>
-                                                        <li><span>Luggage:</span>2</li>
-                                                        <li><span>Doors:</span>4</li>
-                                                        <li><span>Fuel:</span>Petrol</li>
-                                                        <li><span>Horsepower:</span>500</li>
-                                                        <li><span>Engine:</span>3000</li>
-                                                        <li><span>Drive:</span>4x4</li>
-                                                        <li><span>Type:</span>Hatchback</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-price">
-                                            Daily rate from <span>$167</span>
-                                            <a class="btn-main" href="school-single.html">Rent Now</a>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-12">
-                                    <div class="de-item-list mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/ford-raptor.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Ford Raptor</h4>
-                                                <div class="d-atr-group">
-                                                    <ul class="d-atr">
-                                                        <li><span>Seats:</span>4</li>
-                                                        <li><span>Luggage:</span>2</li>
-                                                        <li><span>Doors:</span>4</li>
-                                                        <li><span>Fuel:</span>Petrol</li>
-                                                        <li><span>Horsepower:</span>500</li>
-                                                        <li><span>Engine:</span>3000</li>
-                                                        <li><span>Drive:</span>4x4</li>
-                                                        <li><span>Type:</span>Hatchback</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-price">
-                                            Daily rate from <span>$147</span>
-                                            <a class="btn-main" href="school-single.html">Rent Now</a>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-12">
-                                    <div class="de-item-list mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/mini-cooper.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Mini Cooper</h4>
-                                                <div class="d-atr-group">
-                                                    <ul class="d-atr">
-                                                        <li><span>Seats:</span>4</li>
-                                                        <li><span>Luggage:</span>2</li>
-                                                        <li><span>Doors:</span>4</li>
-                                                        <li><span>Fuel:</span>Petrol</li>
-                                                        <li><span>Horsepower:</span>500</li>
-                                                        <li><span>Engine:</span>3000</li>
-                                                        <li><span>Drive:</span>4x4</li>
-                                                        <li><span>Type:</span>Hatchback</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-price">
-                                            Daily rate from <span>$238</span>
-                                            <a class="btn-main" href="school-single.html">Rent Now</a>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-12">
-                                    <div class="de-item-list mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/vw-polo.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>VW Polo</h4>
-                                                <div class="d-atr-group">
-                                                    <ul class="d-atr">
-                                                        <li><span>Seats:</span>4</li>
-                                                        <li><span>Luggage:</span>2</li>
-                                                        <li><span>Doors:</span>4</li>
-                                                        <li><span>Fuel:</span>Petrol</li>
-                                                        <li><span>Horsepower:</span>500</li>
-                                                        <li><span>Engine:</span>3000</li>
-                                                        <li><span>Drive:</span>4x4</li>
-                                                        <li><span>Type:</span>Hatchback</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-price">
-                                            Daily rate from <span>$106</span>
-                                            <a class="btn-main" href="school-single.html">Rent Now</a>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-12">
-                                    <div class="de-item-list mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/chevrolet-camaro.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Chevrolet Camaro</h4>
-                                                <div class="d-atr-group">
-                                                    <ul class="d-atr">
-                                                        <li><span>Seats:</span>4</li>
-                                                        <li><span>Luggage:</span>2</li>
-                                                        <li><span>Doors:</span>4</li>
-                                                        <li><span>Fuel:</span>Petrol</li>
-                                                        <li><span>Horsepower:</span>500</li>
-                                                        <li><span>Engine:</span>3000</li>
-                                                        <li><span>Drive:</span>4x4</li>
-                                                        <li><span>Type:</span>Hatchback</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-price">
-                                            Daily rate from <span>$245</span>
-                                            <a class="btn-main" href="school-single.html">Rent Now</a>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-12">
-                                    <div class="de-item-list mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/hyundai-staria.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Hyundai Staria</h4>
-                                                <div class="d-atr-group">
-                                                    <ul class="d-atr">
-                                                        <li><span>Seats:</span>4</li>
-                                                        <li><span>Luggage:</span>2</li>
-                                                        <li><span>Doors:</span>4</li>
-                                                        <li><span>Fuel:</span>Petrol</li>
-                                                        <li><span>Horsepower:</span>500</li>
-                                                        <li><span>Engine:</span>3000</li>
-                                                        <li><span>Drive:</span>4x4</li>
-                                                        <li><span>Type:</span>Hatchback</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-price">
-                                            Daily rate from <span>$191</span>
-                                            <a class="btn-main" href="school-single.html">Rent Now</a>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-                                
-
-                                <div class="col-lg-12">
-                                    <div class="de-item-list mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/toyota-rav.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Toyota Rav 4</h4>
-                                                <div class="d-atr-group">
-                                                    <ul class="d-atr">
-                                                        <li><span>Seats:</span>4</li>
-                                                        <li><span>Luggage:</span>2</li>
-                                                        <li><span>Doors:</span>4</li>
-                                                        <li><span>Fuel:</span>Petrol</li>
-                                                        <li><span>Horsepower:</span>500</li>
-                                                        <li><span>Engine:</span>3000</li>
-                                                        <li><span>Drive:</span>4x4</li>
-                                                        <li><span>Type:</span>Hatchback</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-price">
-                                            <a class="btn-main" href="#">Request Counseling</a>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-12">
-                                    <div class="de-item-list mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/bentley.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Bentley</h4>
-                                                <div class="d-atr-group">
-                                                    <ul class="d-atr">
-                                                        <li><span>Seats:</span>4</li>
-                                                        <li><span>Luggage:</span>2</li>
-                                                        <li><span>Doors:</span>4</li>
-                                                        <li><span>Fuel:</span>Petrol</li>
-                                                        <li><span>Horsepower:</span>500</li>
-                                                        <li><span>Engine:</span>3000</li>
-                                                        <li><span>Drive:</span>4x4</li>
-                                                        <li><span>Type:</span>Hatchback</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-price">
-                                            Daily rate from <span>$299</span>
-                                            <a class="btn-main" href="school-single.html">Rent Now</a>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-
-                              <div class="pagination">
-                                  <ul class="pagination">
-                                      <li class="page-item">
-                                          <a class="page-link" href="#" aria-label="Previous">
-                                              <span aria-hidden="true">&laquo;</span>
-                                              <span class="sr-only">Previous</span>
-                                          </a>
-                                      </li>
-                                      <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                      <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                      <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                      <li class="page-item">
-                                          <a class="page-link" href="#" aria-label="Next">
-                                              <span aria-hidden="true">&raquo;</span>
-                                              <span class="sr-only">Next</span>
-                                          </a>
-                                      </li>
-                                  </ul>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-        <!--Log out-->
-        <div id="logoutPopup" class="overlay">
-            <div class="popup">
-                <h2>Are you leaving?</h2>
-                <p>Are you sure you want to logout? All your unsaved data will be lost.</p>
-                <div class="button-container">
-                    <button class="btn btn-yes" onclick="confirmLogout()">Yes</button>
-                    <button class="btn btn-cancel" onclick="hidePopup()">Cancel</button>
                 </div>
             </div>
         </div>
+    </footer>
+    <!-- footer close -->
 
-        <form id="logoutForm" th:action="@{/logout}" method="post"></form>
-        <!-- content close -->
+</div>
 
-        <a href="#" id="back-to-top"></a>
-        
-        <!-- footer begin -->
-        <footer class="text-light">
-            <div class="container">
-                <div class="row g-custom-x">
-                    <div class="col-lg-3">
-                        <div class="widget">
-                            <h5>About Rentaly</h5>
-                            <p>Where quality meets affordability. We understand the importance of a smooth and enjoyable journey without the burden of excessive costs. That's why we have meticulously crafted our offerings to provide you with top-notch vehicles at minimum expense.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="col-lg-3">
-                        <div class="widget">
-                            <h5>Contact Info</h5>
-                            <address class="s1">
-                                <span><i class="id-color fa fa-map-marker fa-lg"></i>08 W 36th St, New York, NY 10001</span>
-                                <span><i class="id-color fa fa-phone fa-lg"></i>+1 333 9296</span>
-                                <span><i class="id-color fa fa-envelope-o fa-lg"></i><a href="mailto:contact@example.com">contact@example.com</a></span>
-                                <span><i class="id-color fa fa-file-pdf-o fa-lg"></i><a href="#">Download Brochure</a></span>
-                            </address>
-                        </div>
-                    </div>
+<script>
 
-                    <div class="col-lg-3">
-                        <h5>Quick Links</h5>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="widget">
-                                    <ul>
-                                        <li><a href="#">About</a></li>
-                                        <li><a href="#">Blog</a></li>
-                                        <li><a href="#">Careers</a></li>
-                                        <li><a href="#">News</a></li>
-                                        <li><a href="#">Partners</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    // Show pop-up logout
+    function showPopup() {
+        document.querySelector(".overlay").classList.add("active");
+    }
 
-                    <div class="col-lg-3">
-                        <div class="widget">
-                            <h5>Social Network</h5>
-                            <div class="social-icons">
-                                <a href="#"><i class="fa fa-facebook fa-lg"></i></a>
-                                <a href="#"><i class="fa fa-twitter fa-lg"></i></a>
-                                <a href="#"><i class="fa fa-linkedin fa-lg"></i></a>
-                                <a href="#"><i class="fa fa-pinterest fa-lg"></i></a>
-                                <a href="#"><i class="fa fa-rss fa-lg"></i></a>
-                            </div>
-                        </div>    
-                    </div>
-                </div>
-            </div>
-            <div class="subfooter">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="de-flex">
-                                <div class="de-flex-col">
-                                    <a href="index.html">
-                                        Copyright 2024 - Rentaly by Designesia
-                                    </a>
-                                </div>
-                                <ul class="menu-simple">
-                                    <li><a href="#">Terms &amp; Conditions</a></li>
-                                    <li><a href="#">Privacy Policy</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
-        <!-- footer close -->
-        
-    </div>
+    function hidePopup() {
+        document.querySelector(".overlay").classList.remove("active");
+    }
 
-    <script>
-
-        // Show pop-up logout
-        function showPopup() {
-            document.querySelector(".overlay").classList.add("active");
-        }
-
-        function hidePopup() {
-            document.querySelector(".overlay").classList.remove("active");
-        }
-
-        function confirmLogout() {
-            document.getElementById("logoutForm").submit();
-        }
+    function confirmLogout() {
+        document.getElementById("logoutForm").submit();
+    }
 
 
-        // Close the dropdown if clicked outside
-        window.onclick = function(event) {
-            if (!event.target.matches('.dropdown-toggle')) {
-                var dropdowns = document.getElementsByClassName("dropdown-menu");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
+    // Close the dropdown if clicked outside
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropdown-toggle')) {
+            var dropdowns = document.getElementsByClassName("dropdown-menu");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
                 }
             }
         }
+    }
 
-        function toggleDropdown() {
-            document.getElementById("featuresDropdown").classList.toggle("show");
-        }
+    function toggleDropdown() {
+        document.getElementById("featuresDropdown").classList.toggle("show");
+    }
 
+    //End dropdown
 
-        //load district by city id
-        function loadDistrict(cityId) {
-            $.ajax({
-                url: "/public/districts",
-                type: "get",
-                data: {
-                    cityId: cityId,
-                },
-                success: function (json){
-                    //change response data to html
-                    response = '<option value="" disabled selected>District</option>';
-                    json.forEach(item => {
-                        response += '<option value="'+item.id+'">'+item.districtName+'</option>';
-                    });
-                    //add html to district form
-                    document.getElementById("district").innerHTML = response;
-                    document.getElementById("district").removeAttribute("disabled");
-                    //disable ward form and address form
-                    document.getElementById("ward").disabled = true;
-                    document.getElementById("ward").value = "";
-                    document.getElementById("address").disabled = true;
-                    document.getElementById("address").value = "";
-                },
-                error: function (xhr){
-                    console.log("load district faild" + xhr);
-                },
-            });
-        }
-    </script>
-    <!-- Javascript Files
-    ================================================== -->
-    <script src="/user_side/js/plugins.js"></script>
-    <script src="/user_side/js/designesia.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    //load district by city id
+    function loadDistrict(cityId) {
+        $.ajax({
+            url: "/public/districts",
+            type: "get",
+            data: {
+                cityId: cityId,
+            },
+            success: function (json) {
+                //change response data to html
+                response = '<option value="" disabled selected>District</option>';
+                json.forEach(item => {
+                    response += '<option value="' + item.id + '">' + item.districtName + '</option>';
+                });
+                //add html to district form
+                document.getElementById("district").innerHTML = response;
+                document.getElementById("district").removeAttribute("disabled");
+                //disable ward form and address form
+                document.getElementById("ward").disabled = true;
+                document.getElementById("ward").value = "";
+                document.getElementById("address").disabled = true;
+                document.getElementById("address").value = "";
+            },
+            error: function (xhr) {
+                console.log("load district faild" + xhr);
+            },
+        });
+    }
+</script>
+<!-- Javascript Files
+================================================== -->
+<script src="/user_side/js/plugins.js"></script>
+<script src="/user_side/js/designesia.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

@@ -43,6 +43,7 @@ public class AccountServiceImpl implements AccountService {
     public boolean existsByEmail(String email) {
         return accountRepository.findByEmail(email) != null;
     }
+
     @Transactional
     @Modifying
     public void updateAccountInfo(AccountInfo accountInfo) {
@@ -74,7 +75,6 @@ public class AccountServiceImpl implements AccountService {
     public AccountInfo findByEmail(String email) {
         return accountRepository.findByEmail(email);
     }
-
 
 
     @Transactional
@@ -233,7 +233,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email, String search, Pageable pageable) {
-        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email,search,pageable);
+        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email, search, pageable);
     }
 
 
