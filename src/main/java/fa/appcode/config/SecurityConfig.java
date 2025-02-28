@@ -23,7 +23,7 @@ public class SecurityConfig {
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
         //define query to retrieve a user by username
         jdbcUserDetailsManager.setUsersByUsernameQuery(
-                "SELECT email, password, CASE WHEN status_id = 41 THEN true ELSE false END as enabled FROM account_info WHERE email=?");
+                "SELECT email, password, CASE WHEN status_id = 1 THEN true ELSE false END as enabled FROM account_info WHERE email=?");
         //defne query to the authorities/roles by username
         jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("select a.email, m.type_value from account_info a join master_data m on a.role_id = m.type_key\n" +
                 "where type_name='ROLE' and a.email=?");

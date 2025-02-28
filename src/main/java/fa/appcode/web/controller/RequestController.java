@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -115,9 +116,9 @@ public class RequestController {
     }
 
     @GetMapping("/manager/searchRequestList")
-    public String searchRequestList(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
-                                    @RequestParam(name = "keyword", required = false) String keyword,
-                                    Model model, Principal principal) {
+    public ResponseEntity<Page<RequestVo>> searchRequestList(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
+                                                             @RequestParam(name = "keyword", required = false) String keyword,
+                                                             Model model, Principal principal) {
         Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         Page<RequestVo> requestList;
@@ -131,7 +132,7 @@ public class RequestController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", requestList.getTotalPages());
         model.addAttribute("role", role);
-        return "admin_side/request-list";
+        return ResponseEntity.ok(requestList);
     }
 
     @GetMapping("/manager/searchRequestReminder")
