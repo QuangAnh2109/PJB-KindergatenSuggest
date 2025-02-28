@@ -28,7 +28,7 @@ public interface AccountService {
     AccountInfo findAccountInfoByPhone(String phone);
      boolean updatePassword(String email, String newPassword);
 
-//    Page<ParentVo> findAllParent(String search ,Pageable pageable);
+    Page<ParentVo> findAllParent(String search ,Pageable pageable);
     //tuanpa79
     Page<AccountVo> getAllAccounts(String search, Pageable pageable);
 
@@ -41,7 +41,7 @@ public interface AccountService {
 
     List<AccountInfo> findAllRoles();
     AccountInfo createAccount(AccountVo accountVo);
-//    Page<ParentVo> findAllParent(Pageable pageable);
+    Page<ParentVo> findAllParent(Pageable pageable);
 
     ParentVo findParentById(int id);
     Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id,Pageable pageable);

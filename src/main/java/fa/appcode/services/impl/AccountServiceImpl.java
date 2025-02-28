@@ -134,10 +134,10 @@ public class AccountServiceImpl implements AccountService {
 
 
 
-//    @Override
-//    public Page<ParentVo> findAllParent(Pageable pageable) {
-//        return null;
-//    }
+    @Override
+    public Page<ParentVo> findAllParent(Pageable pageable) {
+        return null;
+    }
 
     //=========================================================
 
@@ -213,10 +213,9 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
     }
 
-
-//    public Page<ParentVo> findAllParent(String search, Pageable pageable) {
-//        return accountRepository.findAllParent(search, pageable);
-//    }
+    public Page<ParentVo> findAllParent(String search, Pageable pageable) {
+        return accountRepository.findAllParent(search, pageable);
+    }
 
     @Override
     public ParentVo findParentById(int id) {
