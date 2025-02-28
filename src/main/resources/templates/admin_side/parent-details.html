@@ -3,18 +3,18 @@
 
 
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <title>Form Elements | Simple - Responsive Bootstrap 4 Admin Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Responsive bootstrap 4 admin template" name="description" />
-    <meta content="Coderthemes" name="author" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta content="Responsive bootstrap 4 admin template" name="description"/>
+    <meta content="Coderthemes" name="author"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <!-- App favicon -->
     <link rel="shortcut icon" th:href="@{/admin_side/images/favicon.ico}">
     <!-- App css -->
-    <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css" id="bootstrap-stylesheet" />
-    <link th:href="@{/admin_side/css/icons.min.css}" rel="stylesheet" type="text/css" />
-    <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css" id="app-stylesheet" />
+    <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css" id="bootstrap-stylesheet"/>
+    <link th:href="@{/admin_side/css/icons.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css" id="app-stylesheet"/>
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script th:src="@{/admin_side/js/parent-detail.js}"></script>
@@ -85,6 +85,7 @@
             font-size: 22px;
             color: #333;
         }
+
         .btn-closed {
             font-size: 12px; /* Giảm kích thước chữ */
             padding: 3px 10px; /* Giảm padding */
@@ -123,11 +124,16 @@
     <div class="left-side-menu">
         <div id="sidebar-menu">
             <ul class="metismenu" id="side-menu">
-                <li><a th:href="@{/manager/request-list}"><i class="ti-home"></i> <span> School Management </span></a></li>
-                <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-user"></i> <span> User Management </span></a></li>
-                <li><a th:href="@{/manager/request-reminder}"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a></li>
-                <li><a th:href="@{/manager/parent-list}"><i class="fa-solid fa-user-tie"></i> <span> Parent Management </span></a></li>
-                <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a></li>
+                <li><a th:href="@{/manager/request-list}"><i class="ti-home"></i> <span> School Management </span></a>
+                </li>
+                <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-user"></i>
+                    <span> User Management </span></a></li>
+                <li><a th:href="@{/manager/request-reminder}"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a>
+                </li>
+                <li><a th:href="@{/manager/parent-list}"><i class="fa-solid fa-user-tie"></i>
+                    <span> Parent Management </span></a></li>
+                <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a>
+                </li>
             </ul>
         </div>
     </div>
@@ -137,7 +143,7 @@
     <!-- Start Page Content here -->
     <!-- ============================================================== -->
 
-    <div class="content-page" >
+    <div class="content-page">
         <div class="content" id="main-content" th:fragment="main-content">
 
             <!-- Start container-fluid -->
@@ -147,17 +153,20 @@
                 <div class="row">
                     <div class="col-12">
                         <div>
-                            <h4 class="header-title mb-3"><a th:href="@{/manager/parent-list}">Parent List</a> > <a href="#">Parent Details</a></h4>
+                            <h4 class="header-title mb-3"><a th:href="@{/manager/parent-list}">Parent List</a> > <a
+                                    href="#">Parent Details</a></h4>
                         </div>
                     </div>
                 </div>
-                <div th:if="${message != null and alertType eq 'success'}" class="alert alert-success text-success alert-dismissible fade show" role="alert">
+                <div th:if="${message != null and alertType eq 'success'}"
+                     class="alert alert-success text-success alert-dismissible fade show" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <strong>Parent enrolled successfully! </strong><span th:text="${message}"></span>
                 </div>
-                <div th:if="${message != null and alertType eq 'danger'}" class="alert alert-danger text-danger alert-dismissible fade show" role="alert">
+                <div th:unless="${message != null and alertType eq 'success'}"
+                     class="alert alert-danger text-danger alert-dismissible fade show" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -167,101 +176,127 @@
                 <div class="row" style="justify-content: center;">
                     <div class="col-lg-12" th:if="${accountInfo!=null}">
                         <!-- loop here -->
-                            <div class="form-group row">
-                                <label class="col-md-2 col-form-label">Full Name</label>
-                                <div class="col-md-10">
-                                    <input type="hidden" id="parentId" th:value="${accountInfo.parentId}" />
-                                    <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentName}">
-                                </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label">Full Name</label>
+                            <div class="col-md-10">
+                                <input type="hidden" id="parentId" th:value="${accountInfo.parentId}"/>
+                                <input type="text" class="form-control" readonly=""
+                                       th:value="${accountInfo.parentName}">
                             </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-form-label">Email</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentEmail}">
-                                </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label">Email</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" readonly=""
+                                       th:value="${accountInfo.parentEmail}">
                             </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-form-label">Date Of Birth</label>
-                                <div class="col-md-10">
-                                    <input type="date" class="form-control" readonly="" th:value="${accountInfo.DOB}">
-                                </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label">Date Of Birth</label>
+                            <div class="col-md-10">
+                                <input type="date" class="form-control" readonly="" th:value="${accountInfo.DOB}">
                             </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-form-label">Phone No.</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentPhone}">
-                                </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label">Phone No.</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" readonly=""
+                                       th:value="${accountInfo.parentPhone}">
                             </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-form-label">Address</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentAddress}">
-                                </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label">Address</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" readonly=""
+                                       th:value="${accountInfo.parentAddress}">
                             </div>
-                            <table id="" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                <colgroup>
-                                    <col style="width: 20%;">
-                                    <col style="width: 20%;">
-                                    <col style="width: 50%;">
-                                    <col style="width: 10%;">
-                                </colgroup>
-                                <thead>
-                                <tr>
-                                    <th>Enrolled School</th>
-                                    <th>Provided Rating</th>
-                                    <th>Feedback</th>
-                                    <th>Action</th>
-                                </tr>
-                                </thead>
+                        </div>
+                        <table id="" class="table table-striped table-bordered dt-responsive nowrap"
+                               style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <colgroup>
+                                <col style="width: 20%;">
+                                <col style="width: 20%;">
+                                <col style="width: 50%;">
+                                <col style="width: 10%;">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>Enrolled School</th>
+                                <th>Provided Rating</th>
+                                <th>Feedback</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
 
-                                <tbody th:if="${enrolledSchools != null}">
-                                <tr th:each="school : ${enrolledSchools}">
-                                    <td th:text="${school.enrolledName}"></td>
-<!--                                    <td th:text="${role.latestRate}"></td>-->
-                                    <td th:if="${school.latestRate != null}">
-                                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-                                            <i th:if="${i <= school.latestRate}" class="fa fa-star star-orange fa-2x" style="color: orangered"></i>
-                                            <i th:if="${i - 0.5 == school.latestRate}" class="fa fa-star-half-o star-orange fa-2x" style="color: orangered"></i>
-                                            <i th:if="${i > school.latestRate and i - 0.5 != school.latestRate}" class="fa fa-star-o star-orange fa-2x" style="color: orangered"></i>
-                                        </th:block>
-                                    </td>
-                                    <td th:unless="${school.latestRate != null}">Not Provided</td>
-                                    <td th:text="${school.latestFeedback}"></td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary waves-effect waves-light justify-content-end" data-toggle="modal" data-target="#unenrollModel"  th:onclick="|document.getElementById('unenrollSchoolName').value=${school.enrollId}|">Unenroll</button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <tbody th:if="${enrolledSchools != null}">
+                            <tr th:each="school : ${enrolledSchools}">
+                                <td th:text="${school.enrolledName}"></td>
+                                <!--                                    <td th:text="${role.latestRate}"></td>-->
+                                <td th:if="${school.latestRate != null}">
+                                    <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                        <i th:if="${i <= school.latestRate}" class="fa fa-star star-orange fa-2x"
+                                           style="color: orangered"></i>
+                                        <i th:if="${i - 0.5 == school.latestRate}"
+                                           class="fa fa-star-half-o star-orange fa-2x" style="color: orangered"></i>
+                                        <i th:if="${i > school.latestRate and i - 0.5 != school.latestRate}"
+                                           class="fa fa-star-o star-orange fa-2x" style="color: orangered"></i>
+                                    </th:block>
+                                </td>
+                                <td th:unless="${school.latestRate != null}">Not Provided</td>
+                                <td th:text="${school.latestFeedback}"></td>
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-primary waves-effect waves-light justify-content-end"
+                                            data-toggle="modal" data-target="#unenrollModel"
+                                            th:onclick="|document.getElementById('unenrollSchoolName').value=${school.enrollId}|">
+                                        Unenroll
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                         <nav aria-label="Page navigation">
                             <ul class="pagination justify-content-end">
                                 <!-- Previous Button -->
-                                <li class="page-item parent-page-item disabled" th:if ="${currentPage==0}"> <a class="page-link" type="button">Previous</a></li>
-                                <li th:unless="${currentPage==0}" class="page-item parent-page-item" th:data-page="${currentPage - 1}" th:classappend="${currentPage == 0} ? 'disabled'">
-                                    <a class="page-link" type="button"  th:aria-disabled="${currentPage == 0}">Previous</a>
+                                <li class="page-item parent-page-item disabled" th:if="${currentPage==0}"><a
+                                        class="page-link" type="button">Previous</a></li>
+                                <li th:unless="${currentPage==0}" class="page-item parent-page-item"
+                                    th:data-page="${currentPage - 1}" th:classappend="${currentPage == 0} ? 'disabled'">
+                                    <a class="page-link" type="button"
+                                       th:aria-disabled="${currentPage == 0}">Previous</a>
                                 </li>
 
                                 <!-- Page Numbers -->
                                 <li class="page-item parent-page-item"
                                     th:each="pageNum : ${numberPage > 0 ? #numbers.sequence(0, numberPage - 1) : #numbers.sequence(0, 0)}"
                                     th:classappend="${pageNum == currentPage} ? 'active'" th:data-page="${pageNum}">
-                                    <a class="page-link" type="button"  th:text="${pageNum + 1}"></a>
+                                    <a class="page-link" type="button" th:text="${pageNum + 1}"></a>
                                 </li>
 
                                 <!-- Next Button -->
-                                <li class="page-item parent-page-item disabled" th:if ="${currentPage == numberPage - 1}"> <a class="page-link" type="button">Next</a></li>
-                                <li th:unless= "${currentPage == numberPage - 1}" class="page-item parent-page-item" th:data-page="${currentPage + 1}" th:classappend="${currentPage == numberPage - 1} ? 'disabled'">
-                                    <a class="page-link"  type="button" th:aria-disabled="${currentPage == numberPage - 1}">Next</a>
+                                <li class="page-item parent-page-item disabled"
+                                    th:if="${currentPage == numberPage - 1}"><a class="page-link" type="button">Next</a>
+                                </li>
+                                <li th:unless="${currentPage == numberPage - 1}" class="page-item parent-page-item"
+                                    th:data-page="${currentPage + 1}"
+                                    th:classappend="${currentPage == numberPage - 1} ? 'disabled'">
+                                    <a class="page-link" type="button"
+                                       th:aria-disabled="${currentPage == numberPage - 1}">Next</a>
                                 </li>
                             </ul>
                         </nav>
-                        <form class="form-horizontal mt-4 mt-lg-0" th:action="@{/manager/parent-list/parent-details/{id}(id=${accountInfo.parentId})}" method="post">
-                            <div id="unenrollModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <form class="form-horizontal mt-4 mt-lg-0"
+                              th:action="@{/manager/parent-list/parent-details/{id}(id=${accountInfo.parentId})}"
+                              method="post">
+                            <div id="unenrollModel" class="modal fade" tabindex="-1" role="dialog"
+                                 aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="myModalLabel2">Unenroll?</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                ×
+                                            </button>
                                         </div>
                                         <div class="modal-body">
                                             <h6>Are you sure to unenroll parent from this School?</h6>
@@ -269,8 +304,11 @@
                                         </div>
                                         <div class="modal-footer">
                                             <input type="hidden" name="actionType" value="unenroll">
-                                            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">No, Take me back</button>
-                                            <button type="submit" class="btn btn-primary waves-effect waves-light">Yes</button>
+                                            <button type="button" class="btn btn-secondary waves-effect"
+                                                    data-dismiss="modal">No, Take me back
+                                            </button>
+                                            <button type="submit" class="btn btn-primary waves-effect waves-light">Yes
+                                            </button>
                                         </div>
                                     </div>
                                     <!-- /.modal-content -->
@@ -278,13 +316,18 @@
                                 <!-- /.modal-dialog -->
                             </div>
                         </form>
-                        <form class="form-horizontal mt-4 mt-lg-0" th:action="@{/manager/parent-list/parent-details/{id}(id=${accountInfo.parentId})}" method="post" onsubmit="return checkSchoolSelection()">
-                            <div id="enrollModel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <form class="form-horizontal mt-4 mt-lg-0"
+                              th:action="@{/manager/parent-list/parent-details/{id}(id=${accountInfo.parentId})}"
+                              method="post" onsubmit="return checkSchoolSelection()">
+                            <div id="enrollModel" class="modal fade" tabindex="-1" role="dialog"
+                                 aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="myModalLabel">Choose enroll school</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                ×
+                                            </button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="form-group row">
@@ -292,31 +335,36 @@
                                                     <div class="form-group row">
                                                         <label class="col-md-2 col-form-label">Full Name</label>
                                                         <div class="col-md-10">
-                                                            <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentName}">
+                                                            <input type="text" class="form-control" readonly=""
+                                                                   th:value="${accountInfo.parentName}">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label class="col-md-2 col-form-label">Email</label>
                                                         <div class="col-md-10">
-                                                            <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentEmail}">
+                                                            <input type="text" class="form-control" readonly=""
+                                                                   th:value="${accountInfo.parentEmail}">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label class="col-md-2 col-form-label">Date Of Birth</label>
                                                         <div class="col-md-10">
-                                                            <input type="date" class="form-control" readonly="" th:value="${accountInfo.DOB}">
+                                                            <input type="date" class="form-control" readonly=""
+                                                                   th:value="${accountInfo.DOB}">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label class="col-md-2 col-form-label">Phone No.</label>
                                                         <div class="col-md-10">
-                                                            <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentPhone}">
+                                                            <input type="text" class="form-control" readonly=""
+                                                                   th:value="${accountInfo.parentPhone}">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <label class="col-md-2 col-form-label">Address</label>
                                                         <div class="col-md-10">
-                                                            <input type="text" class="form-control" readonly="" th:value="${accountInfo.parentAddress}">
+                                                            <input type="text" class="form-control" readonly=""
+                                                                   th:value="${accountInfo.parentAddress}">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -324,7 +372,9 @@
                                                         <label class="col-md-10">
                                                             <select class="form-control" name="school">
                                                                 <option value="">No School</option>
-                                                                <option th:each="school : ${schoolInfoList}" th:value="${school.id}" th:text="${school.schoolName}"></option>
+                                                                <option th:each="school : ${schoolInfoList}"
+                                                                        th:value="${school.id}"
+                                                                        th:text="${school.schoolName}"></option>
                                                             </select>
                                                         </label>
                                                     </div>
@@ -333,8 +383,90 @@
                                         </div>
                                         <div class="modal-footer">
                                             <input type="hidden" name="actionType" value="enroll">
-                                            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary waves-effect waves-light">Enroll</button>
+                                            <button type="button" class="btn btn-secondary waves-effect"
+                                                    data-dismiss="modal">Close
+                                            </button>
+                                            <button type="submit" class="btn btn-primary waves-effect waves-light">
+                                                Enroll
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- /.modal-content -->
+                                </div>
+                                <!-- /.modal-dialog -->
+                            </div>
+                        </form>
+                        <form class="form-horizontal mt-4 mt-lg-0"
+                              th:action="@{/manager/parent-list/parent-details/{id}(id=${accountInfo.parentId})}"
+                              method="post">
+                            <div id="approveModel" class="modal fade" tabindex="-1" role="dialog"
+                                 aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myModalLabel3">Approve </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                ×
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table table-striped table-bordered dt-responsive nowrap"
+                                                   style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                                <colgroup>
+                                                    <col style="width: 20%;">
+                                                    <col style="width: 20%;">
+                                                    <col style="width: 50%;">
+                                                    <col style="width: 10%;">
+                                                </colgroup>
+                                                <thead>
+                                                <tr>
+                                                    <th>School ID</th>
+                                                    <th>School Name</th>
+                                                    <th>School Email</th>
+                                                    <th>School Introduction</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                                </thead>
+
+                                                <tbody th:if="${enrolledSchools != null}">
+                                                <tr th:each="school : ${enrolledSchools}">
+                                                    <td th:text="${school.enrolledName}"></td>
+                                                    <!--                                    <td th:text="${role.latestRate}"></td>-->
+                                                    <td th:if="${school.latestRate != null}">
+                                                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                                            <i th:if="${i <= school.latestRate}"
+                                                               class="fa fa-star star-orange fa-2x"
+                                                               style="color: orangered"></i>
+                                                            <i th:if="${i - 0.5 == school.latestRate}"
+                                                               class="fa fa-star-half-o star-orange fa-2x"
+                                                               style="color: orangered"></i>
+                                                            <i th:if="${i > school.latestRate and i - 0.5 != school.latestRate}"
+                                                               class="fa fa-star-o star-orange fa-2x"
+                                                               style="color: orangered"></i>
+                                                        </th:block>
+                                                    </td>
+                                                    <td th:unless="${school.latestRate != null}">Not Provided</td>
+                                                    <td th:text="${school.latestFeedback}"></td>
+                                                    <td th:text="${school.latestFeedback}"></td>
+                                                    <td>
+                                                        <button type="submit" name="actionType" value="approve"
+                                                                class="btn btn-primary waves-effect waves-light justify-content-end">
+                                                            Approve
+                                                        </button>
+                                                        <button type="submit" name="actionType" value="reject"
+                                                                class="btn btn-primary waves-effect waves-light justify-content-end">
+                                                            Approve
+                                                        </button>
+
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary waves-effect waves-light"
+                                                    data-dismiss="modal">Close
+                                            </button>
                                         </div>
                                     </div>
                                     <!-- /.modal-content -->
@@ -343,8 +475,13 @@
                             </div>
                         </form>
                         <div class="d-flex justify-content-center">
-                            <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#enrollModel">
+                            <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal"
+                                    data-target="#enrollModel">
                                 Enroll parent to school
+                            </button>
+                            <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal"
+                                    data-target="#approveModel">
+                                Parent Enroll School List
                             </button>
                         </div>
                     </div>
@@ -399,7 +536,7 @@
                 <img src="/admin_side/images/layouts/light.png" class="img-fluid img-thumbnail" alt="">
             </div>
             <div class="custom-control custom-switch mb-3">
-                <input type="checkbox" class="custom-control-input theme-choice" id="light-mode-switch" checked />
+                <input type="checkbox" class="custom-control-input theme-choice" id="light-mode-switch" checked/>
                 <label class="custom-control-label" for="light-mode-switch">Light Mode</label>
             </div>
 
@@ -407,8 +544,9 @@
                 <img src="/admin_side/images/layouts/dark.png" class="img-fluid img-thumbnail" alt="">
             </div>
             <div class="custom-control custom-switch mb-3">
-                <input type="checkbox" class="custom-control-input theme-choice" id="dark-mode-switch" data-bsStyle="/admin_side/css/bootstrap-dark.min.css"
-                       data-appStyle="/admin_side/css/app-dark.min.css" />
+                <input type="checkbox" class="custom-control-input theme-choice" id="dark-mode-switch"
+                       data-bsStyle="/admin_side/css/bootstrap-dark.min.css"
+                       data-appStyle="/admin_side/css/app-dark.min.css"/>
                 <label class="custom-control-label" for="dark-mode-switch">Dark Mode</label>
             </div>
 
@@ -416,11 +554,13 @@
                 <img src="/admin_side/images/layouts/rtl.png" class="img-fluid img-thumbnail" alt="">
             </div>
             <div class="custom-control custom-switch mb-5">
-                <input type="checkbox" class="custom-control-input theme-choice" id="rtl-mode-switch" data-appStyle="/admin_side/css/app-rtl.min.css" />
+                <input type="checkbox" class="custom-control-input theme-choice" id="rtl-mode-switch"
+                       data-appStyle="/admin_side/css/app-rtl.min.css"/>
                 <label class="custom-control-label" for="rtl-mode-switch">RTL Mode</label>
             </div>
 
-            <a href="https://1.envato.market/EK71X" class="btn btn-danger btn-block mt-3" target="_blank"><i class="mdi mdi-download mr-1"></i> Download Now</a>
+            <a href="https://1.envato.market/EK71X" class="btn btn-danger btn-block mt-3" target="_blank"><i
+                    class="mdi mdi-download mr-1"></i> Download Now</a>
         </div>
     </div> <!-- end slimscroll-menu-->
 </div>
