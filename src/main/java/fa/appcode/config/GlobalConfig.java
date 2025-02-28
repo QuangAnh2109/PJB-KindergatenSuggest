@@ -46,6 +46,8 @@ public class GlobalConfig {
     private String enrollSuccess;
     @Value("${ME_014}")
     private String emailExist;
+    @Value("${ME_015}")
+    private String passwordResetSuccess;
     @Value("${page.size}")
     private Integer sizeOfPage;
 }

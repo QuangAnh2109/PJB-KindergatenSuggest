@@ -7,138 +7,81 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class TokenUtils {
     @Autowired
-    AccountService accountService;
-    public static final String key = "BAINAYKHOQUA";
-    private static final Map<String, String> tokenStore = new HashMap<>();
-    private static final Map<String, Long> tokenExpireTime = new HashMap<>();
-    long expirationTime = 10 * 60;
+    private AccountService accountService;
+    private static final String KEY = "gugugu";
+    private static final long EXPIRATION_TIME = 10 * 60;
 
-//    public String generateToken(String email) {
-//        AccountInfo account = accountService.findByEmail(email);
-//        if (account != null) {
-//            long expireAt = Instant.now().getEpochSecond() + expirationTime;
-//            String token = key + "|" + account.getId() + "|" + expireAt + "|" + account.getPassword() + "|" + account.getDatetimeChangePass();
-//            System.out.println(token);
-//            return Base64.getEncoder().encodeToString(token.getBytes());
-//        }
-//        return "no generate token";
-//    }
-
-    public String generateTokenRegister(String email) {
-        long expireAt = Instant.now().getEpochSecond() + expirationTime;
-        String token = key + "|" + email + "|" + expireAt;
-        System.out.println("token in generateTokenRegister: " + token);
-        return Base64.getEncoder().encodeToString(token.getBytes());
-    }
-//public String getEmailFromToken(String token) {
-//        try{
-//            String decodedToken = decodeToken(token);
-//            String[] parts = decodedToken.split("\\|");
-//            return parts[1];
-//        }
-//        catch(Exception e){
-//            e.printStackTrace();
-//        }
-//        return "can not generate token";
-//}
-
-    public String decodeToken(String token) {
-        try {
-            byte[] decodedBytes = Base64.getDecoder().decode(token);
-            return new String(decodedBytes);
-        } catch (Exception e) {
-            return "Invalid token";
-        }
-    }
-
-    public boolean isTokenExpired(String token) {
-        String decodedToken = decodeToken(token);
-        String[] parts = decodedToken.split("\\|");
-        if (parts.length < 3) {
-            return true;
-        }
-        for (String a : parts) {
-            System.out.println(a);
-        }
-        long expireAt = Long.parseLong(parts[2]);
-        return Instant.now().getEpochSecond() > expireAt;
-    }
-
-    public int checkIdUserToken(String token) {
-        String decodedToken = decodeToken(token);
-        String[] parts = decodedToken.split("\\|");
-        return Integer.parseInt(parts[1]);
-    }
-
-    public boolean isTokenValid(String token, String email) {
+    public String generateToken(String email) throws Exception {
         AccountInfo account = accountService.findByEmail(email);
         if (account == null) {
-            return false;
+            throw new Exception("Account not found for email: " + email);
         }
-        String decodedToken = decodeToken(token);
-        String[] parts = decodedToken.split("\\|");
-        if (parts.length < 5) {
-            return false;
+        long expireAt = Instant.now().getEpochSecond() + EXPIRATION_TIME;
+        String token = String.join("|", KEY, email, String.valueOf(expireAt), account.getPassword(),
+                String.valueOf(account.getDatetimeChangePass()));
+        return Base64.getEncoder().encodeToString(token.getBytes());
+    }
+
+    public String generateTokenRegister(String email) throws Exception {
+        String token = String.join("|", KEY, email);
+        return Base64.getEncoder().encodeToString(token.getBytes());
+    }
+
+    public String decodeToken(String token) throws Exception {
+        try {
+            return new String(Base64.getDecoder().decode(token));
+        } catch (IllegalArgumentException e) {
+            throw new Exception("Invalid token format", e);
         }
-        long createdTime = Long.parseLong(parts[2]) - expirationTime;
-        long expiredTime = Long.parseLong(parts[2]);
+    }
+
+    public String getEmailFromToken(String token) throws Exception {
+        String[] parts = decodeToken(token).split("\\|");
+        if (parts.length < 2) {
+            throw new Exception("Invalid token structure");
+        }
+        return parts[1];
+    }
+
+    public long getExpiredTime(String token) throws Exception {
+        String[] parts = decodeToken(token).split("\\|");
+        if (parts.length < 3) {
+            throw new Exception("Invalid token structure");
+        }
+        return Long.parseLong(parts[2]);
+    }
+
+    public long getCreateTime(String token) throws Exception {
+        return getExpiredTime(token) - EXPIRATION_TIME;
+    }
+    public boolean isTokenValid(String token, AccountInfo account) throws Exception {
+        long expiredTime = getExpiredTime(token);
+        if (Instant.now().getEpochSecond() > expiredTime) {
+            return false; // Token expired
+        }
+        return !isTokenUsed(account, expiredTime);
+    }
+
+    public boolean isTokenUsed(AccountInfo account, long expiredTime) throws Exception {
         Instant passwordChangeTime = account.getDatetimeChangePass();
-
-        if (passwordChangeTime != null &&
-                passwordChangeTime.getEpochSecond() >= createdTime &&
-                passwordChangeTime.getEpochSecond() <= expiredTime) {
-            return false;
-        }
-        return Instant.now().getEpochSecond() <= expiredTime;
+        long createdTime = expiredTime - EXPIRATION_TIME;
+        return passwordChangeTime != null && passwordChangeTime.getEpochSecond() >= createdTime;
+    }
+    public boolean isTokenExpired(String token) throws Exception {
+        return Instant.now().getEpochSecond() > getExpiredTime(token);
     }
 
-    //    public boolean isTokenValid1(String token, String email) {
-//        AccountInfo account = accountService.findByEmail(email);
-//        if (account == null) {
-//            return false;
-//        }
-//        String decodedToken = decodeToken(token);
-//        if (decodedToken != null) {
-//            String[] parts = decodedToken.split("\\|");
-//            if (parts.length >= 5) {
-//                long expireAt = Long.parseLong(parts[2]);
-//                String tokenPassword = parts[3];
-//                String tokenPasswordChangeTime = parts[4];
-//                if (Instant.now().toEpochMilli() <= expireAt) {
-//                    return account.getPassword().equals(tokenPassword) &&
-//                            account.getDatetimeChangePass().toString().equals(tokenPasswordChangeTime);
-//                }
-//            }
-//        }
-//        return false;
+//    public boolean isTokenUsed(String token, AccountInfo account) throws Exception {
+//        Instant passwordChangeTime = account.getDatetimeChangePass();
+//        long createdTime = getCreateTime(token);
+//        long expiredTime = getExpiredTime(token);
+//
+//        return passwordChangeTime != null &&
+//                passwordChangeTime.getEpochSecond() >= createdTime &&
+//                passwordChangeTime.getEpochSecond() <= expiredTime;
 //    }
-    public String generateTokenReset(String email) {
-        AccountInfo account = accountService.findByEmail(email);
-        if (account != null) {
-            long expireAt = Instant.now().getEpochSecond() + expirationTime;
-            String token = key + "|" + account.getId() + "|" + expireAt + "|" + account.getPassword() + "|" + account.getDatetimeChangePass();
-            String encodedToken = Base64.getEncoder().encodeToString(token.getBytes());
-            tokenStore.put(email, encodedToken);
-            tokenExpireTime.put(email, expireAt);
-            System.out.println("generateToken" + encodedToken);
-            return encodedToken;
-        }
-        return "no generate token";
-    }
-
-    public String getExistingTokenIfValid(String email) {
-        if (tokenStore.containsKey(email)) {
-            long expireAt = tokenExpireTime.getOrDefault(email, 0L);
-            if (Instant.now().getEpochSecond() < expireAt) {
-                return tokenStore.get(email);
-            }
-        }
-        return null;
-    }
 }
