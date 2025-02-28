@@ -7,6 +7,7 @@ import fa.appcode.common.vo.ParentVo;
 import fa.appcode.common.vo.RoleVo;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.AccountService;
+import fa.appcode.services.MasterDatumService;
 import fa.appcode.web.controller.ForgotPasswordController;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
@@ -28,7 +30,7 @@ import java.util.List;
 @Service
 public class AccountServiceImpl implements AccountService {
     @Autowired
-    private MasterDataService masterDataService;
+    private MasterDatumService masterDatumService;
     @Autowired
     private AccountRepository accountRepository;
 
@@ -74,10 +76,7 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findByEmail(email);
     }
 
-    @Override
-    public AccountVo findAccountByPhone(String phone) {
-        return accountRepository.findByPhone(phone);
-    }
+
 
     @Transactional
     @Override
@@ -109,11 +108,13 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.save(accountInfo); // Lưu vào DB
     }
 
+    // Get list of user account
     @Override
     public Page<AccountVo> getAllAccounts(String search, Pageable pageable) {
         return accountRepository.findAllWithFullAddress(search, pageable);
     }
 
+    // Find account by Id
     @Override
     public AccountVo getAccountById(Integer id) {
         AccountInfo user = accountRepository.findById(id)
@@ -172,11 +173,13 @@ public class AccountServiceImpl implements AccountService {
             accountVo.setFullAddress(fullAddress.toString().trim());
         }
         // Resolve role and status names
-        accountVo.setRole(masterDataService.getMasterById(accountInfo.getRoleId()));
-        accountVo.setStatus(masterDataService.getMasterById(accountInfo.getStatusId()));
+        accountVo.setRole(masterDatumService.getMasterById(accountInfo.getRoleId()));
+        accountVo.setStatus(masterDatumService.getMasterById(accountInfo.getStatusId()));
         return accountVo;
     }
 
+
+    // Change status from active to inactive (and vice versa)
     @Override
     public void toggleUserStatus(Integer id) {
         AccountInfo user = accountRepository.findById(id)
@@ -192,6 +195,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(user);
     }
 
+    // Update user account by information get from form
     @Override
     public void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId) {
         AccountInfo user = accountRepository.findById(id)
@@ -206,6 +210,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(user);
     }
 
+    // Delete logic user account
     public void deleteAccount(Integer id) {
         AccountInfo account = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -227,21 +232,34 @@ public class AccountServiceImpl implements AccountService {
         return null;
     }
 
-    @Override
-    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable) {
-        return accountRepository.findParentEnrolledSchoolByParentId(id, pageable);
-    }
 
     @Override
-    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId, Pageable pageable) {
-        return accountRepository.findParentEnrolledSchoolByParentIdAndSchoolOwner(parentId, schoolOwnerId, pageable);
+    public String findAccountRoleString(String email) {
+        return accountRepository.findAccountRoleString(email);
     }
-
-    @Override
-    public String findAccountRoleString(String email) {return accountRepository.findAccountRoleString(email);}
 
     @Override
     public AccountInfo getAccountInfoById(int id) {
         return accountRepository.getAccountInfoById(id);
     }
+
+
+    @Override
+    public AccountVo findAccountByPhone(String phone) {
+        return accountRepository.findByPhone(phone);
+    }
+
+    @Override
+    public Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email, String search, Pageable pageable) {
+        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email,search,pageable);
+    }
+
+    @Override
+    public AccountInfo getAccountInfo(Principal principal) {
+        String user = principal.getName();
+        AccountInfo account = findByEmail(user);
+        return account;
+    }
+
+
 }

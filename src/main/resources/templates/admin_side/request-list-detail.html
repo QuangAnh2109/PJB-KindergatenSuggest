@@ -105,14 +105,27 @@
     </div>
     <!-- end Topbar --> <!-- ========== Left Sidebar Start ========== -->
     <div class="left-side-menu">
-        <div id="sidebar-menu">
-            <ul class="metismenu" id="side-menu">
-                <li><a th:href="@{/school-owner/request-list}"><i class="ti-home"></i> <span> School Management </span></a></li>
-                <li><a th:href="@{/school-owner/request-list}"><i class="fa-regular fa-user"></i> <span> User Management </span></a></li>
-                <li><a th:href="@{/school-owner/request-reminder}"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a></li>
-                <li><a th:href="@{/school-owner/request-list}"><i class="fa-solid fa-user-tie"></i> <span> Parent Management </span></a></li>
-                <li><a th:href="@{/school-owner/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a></li>
-            </ul>
+        <div class="left-side-menu">
+            <div id="sidebar-menu">
+                <ul class="metismenu" id="side-menu">
+                    <li><a th:href="@{/manager/request-list}"><i class="ti-home"></i>
+                        <span> School Management </span></a>
+                    </li>
+                    <li th:if="${#strings.equalsIgnoreCase(role, 'Admin')}">
+                        <a th:href="@{/admin/userlist}">
+                            <i class="fa-regular fa-user"></i>
+                            <span> User Management </span>
+                        </a>
+                    </li>
+                    <li><a th:href="@{/manager/parent-list}"><i class="fa-solid fa-user-tie"></i>
+                        <span> Parent Management </span></a>
+                    </li>
+                    <li><a th:href="@{/manager/request-reminder}"><i class="fa-regular fa-bell"></i>
+                        <span> Reminder </span></a></li>
+                    <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a>
+                    </li>
+                </ul>
+            </div>
         </div>
         <!-- End Sidebar -->
 
@@ -131,7 +144,25 @@
 
             <!-- Start container-fluid -->
             <div class="container-fluid">
-
+                <div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="${page == 'Detail' ? '/manager/request-reminder' : '/manager/request-list'}"
+                                   th:text="${page == 'Detail' ? 'Reminder' : 'Request Management'}">
+                                    Request Management
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a th:href="${page == 'Detail' ? '/manager/request-reminder' : '/manager/request-list'}"
+                                   th:text="${page == 'Detail' ? 'Request Reminder' : 'Request List'}">
+                                    Request List
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Request Details</li>
+                        </ol>
+                    </nav>
+                </div>
                 <!-- start  -->
                 <div class="row">
                     <div class="col-12">
@@ -214,7 +245,7 @@
                                                     data-dismiss="modal">No. Take me back!
                                             </button>
                                             <button type="button" class="btn btn-primary px-4"
-                                                    th:onclick="|window.location.href='@{/school-owner/updateRequest(id=${requestDetail.id}, page=${page})}'|">
+                                                    th:onclick="|window.location.href='@{/manager/updateRequest(id=${requestDetail.id}, page=${page})}'|">
                                                 Yes
                                             </button>
                                         </div>

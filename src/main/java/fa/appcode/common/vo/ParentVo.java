@@ -20,17 +20,17 @@ public class ParentVo {
     private String parentPhone;
     private LocalDate DOB;
     private String parentAddress;
-    private Boolean enrolled;
+    private String enrollStatus;
     private List<SchoolInfo> enrolledSchoolName;
     private Float latestRating;
     private String latestFeedback;
 
-    public ParentVo(Integer parentId, String parentName, String parentEmail,String parentPhone, Boolean enrolled){
+    public ParentVo(Integer parentId, String parentName, String parentEmail,String parentPhone, String enrollStatus){
         this.parentId = parentId;
         this.parentName = parentName;
         this.parentEmail = parentEmail;
         this.parentPhone = parentPhone;
-        this.enrolled = enrolled;
+        this.enrollStatus = enrollStatus;
     }
     public ParentVo(Integer parentId, String parentName, String parentEmail, String parentPhone, LocalDate DOB, String parentAddress){
         this.parentId = parentId;
@@ -39,5 +39,9 @@ public class ParentVo {
         this.parentPhone = parentPhone;
         this.DOB = DOB;
         this.parentAddress = parentAddress;
+    }
+
+    public String getParentAddress() {
+        return this.parentAddress.replace("   "," - ");
     }
 }

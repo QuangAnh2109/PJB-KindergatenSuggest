@@ -4,7 +4,10 @@ import fa.appcode.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
 @SpringBootApplication
+@EnableScheduling
 public class KindergartenG3Application {
 	@Autowired
 	private EmailService emailService;

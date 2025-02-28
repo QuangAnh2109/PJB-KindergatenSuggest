@@ -1,30 +1,36 @@
-$(document).ready(function (){
+$(document).ready(function () {
 
-    var timeout = null;
     var num = $('#parentSearchField').val();
-    $("body").on("change keydown paste input", "input#parentSearchField", function() {
-        clearTimeout(timeout);
-        timeout = setTimeout(function() {
-            findAll($("#parentSearchField").val(), 0);
-        }, 500);
-    })
-    $('#parentSearchField').focus().val('').val(num);
 
-    $("body").on("click", "li.parent-page-item", function() {
+// Trigger search on Enter key
+    $("body").on("keydown", "input#parentSearchField", function (event) {
+        if (event.key === "Enter") {
+            findAll($(this).val(), 0);
+        }
+    });
+
+// Trigger search on button click
+    $("body").on("click", "#searchButtonParent", function (event) {
+        findAll($('#parentSearchField').val(), 0);
+    });
+
+// Keep previous value on focus
+    $('#parentSearchField').focus().val('').val(num);
+    $("body").on("click", "li.parent-page-item", function () {
         if ($(this).data("page") != null) {
             console.log($(this).data("page"))
-            findAll($("#parentSearchField").val(),$(this).data("page"));
+            findAll($("#parentSearchField").val(), $(this).data("page"));
         }
     })
-    var role = $("#userRole").val();
-    function findAll(search,currentPage) {
+
+    function findAll(search, currentPage) {
         $.get({
-            url: "/" + role + "/parent-list",
+            url: "/manager/parent-list",
             data: {
                 search: search,
                 currentPage: currentPage,
             },
-            success: function(responseData) {
+            success: function (responseData) {
                 console.log("LOADED!");
                 $("#main-content").html(responseData);
             },
