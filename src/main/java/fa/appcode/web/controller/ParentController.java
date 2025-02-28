@@ -43,13 +43,14 @@ public class ParentController {
 
     @Autowired
     private SchoolInfoService schoolInfoService;
+
     @Value("${ME_013}")
     private String me13;
 
 
     @GetMapping({"parent-list", "parent-list/parent-details"})
     public String parentList(@RequestParam(name = "currentPage"
-              ,defaultValue = Constant.SCHOOL_AND_ENROLL_INIT_PAGE) int currentPage,
+                                     , defaultValue = Constant.SCHOOL_AND_ENROLL_INIT_PAGE) int currentPage,
                              @RequestParam(defaultValue = Constant.KEY_WORD_DEFAULT) String search, Model model,
                              @RequestHeader(value = "X-Requested-With", required = false) String requestedWith, Principal principal) {
 
@@ -60,20 +61,22 @@ public class ParentController {
          */
         Log4jUtils.getLogger().info("Inside parentList Content : ");
         Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(),
-                  Sort.by("id").ascending());
+                Sort.by("id").ascending());
         /*
          * Get page from Service
          */
         String role = accountService.findAccountRoleString(principal.getName());
 
-        Page<ParentVo> list = Page.empty();
-        if(role.equals("Admin")) {
-            list = accountService.findAllParent(search,pageable);
+        Page<ParentVo> list;
+        if (role.equals("Admin")) {
+            list = accountService.findAllParent(search, pageable);
         } else if (role.equals("School owner")) {
-            list = accountService.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(principal.getName(), search,pageable);
+            list = accountService.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(principal.getName(), search, pageable);
+        } else {
+            list = Page.empty();
         }
         List<ParentVo> accounts = list.getContent();
-        Log4jUtils.getLogger().info("Inside parentList Content : "+list);
+        Log4jUtils.getLogger().info("Inside parentList Content : " + list);
         /*
          * Put data into Model
          */
@@ -81,8 +84,6 @@ public class ParentController {
         model.addAttribute("search", search);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", list.getTotalPages());
-        Instant time = LocalDateTime.now().toInstant(ZoneOffset.ofHours(7));
-        System.out.println(time);
         /*
          * Return view name
          */
@@ -95,7 +96,7 @@ public class ParentController {
 
     @GetMapping("parent-list/parent-details/{id}")
     public String parentDetailsAdmin(@RequestParam(name = "currentPage"
-            ,defaultValue = Constant.SCHOOL_AND_ENROLL_INIT_PAGE) int currentPage, @PathVariable("id") int id, Model model,Principal principal,
+                                             , defaultValue = Constant.SCHOOL_AND_ENROLL_INIT_PAGE) int currentPage, @PathVariable("id") int id, Model model, Principal principal,
                                      @RequestHeader(value = "X-Requested-With", required = false) String requestedWith) {
 
         /*
@@ -107,20 +108,23 @@ public class ParentController {
          * Get page from Service
          */
         String role = accountService.findAccountRoleString(principal.getName());
-        Page<EnrolledSchoolVo> listParentEnroll = Page.empty();
-        List<SchoolInfo> schoolInfoList = Collections.emptyList();
+        Page<EnrolledSchoolVo> listParentEnroll;
+        List<SchoolInfo> schoolInfoList;
 
 
-        if("Admin".equals(role)){
+        if ("Admin".equals(role)) {
 
-            listParentEnroll = enrollSchoolService.findParentEnrolledSchoolByParentId(id,pageable);
-            schoolInfoList=  schoolInfoService.findAllSchoolPublished();
+            listParentEnroll = enrollSchoolService.findParentEnrolledSchoolByParentId(id, pageable);
+            schoolInfoList = schoolInfoService.findAllSchoolPublished();
 
-        } else if("School owner".equals(role)){
+        } else if ("School owner".equals(role)) {
 
             listParentEnroll = enrollSchoolService.findParentEnrolledSchoolByParentIdAndSchoolOwner(id, principal.getName(), pageable);
             schoolInfoList = schoolInfoService.findSchoolInfoListByAccountEmail(principal.getName());
 
+        } else {
+            listParentEnroll = Page.empty();
+            schoolInfoList = Collections.emptyList();
         }
 
 
@@ -135,7 +139,6 @@ public class ParentController {
         model.addAttribute("accountInfo", accountInfo);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", listParentEnroll.getTotalPages());
-        model.addAttribute("role", role);
         /*
          * Return view name
          */
@@ -148,60 +151,59 @@ public class ParentController {
     @PostMapping({"parent-list/parent-details/{id}"})
     public String enrollParentToSchool(@PathVariable("id") int id, @RequestParam(value = "school", required = false) Integer schoolId,
                                        RedirectAttributes redirectAttributes, Principal principal, @RequestParam("actionType") String actionType,
-                                       @RequestParam(value = "enroll", required = false) Integer enrollId) {
+                                       @RequestParam(value = "enroll", required = false) Integer enrollId) throws Exception {
         /*
          * get String role URL
          */
 
         String role = accountService.findAccountRoleString(principal.getName());
-        String normalizedRole = role.toUpperCase().trim().replaceAll(" ", "_");
+        String normalizedRole = role.toUpperCase().trim().replace(" ", "_");
 
         /*
          * Enroll Parent to School if action = enroll
          */
-        if("enroll".equals(actionType)) {
-            try {
-                // Enroll Parent to School
-                if(role.equals("School owner")) {
-                    List<Integer> schoolIdList = schoolInfoService.getAllSchoolIdsByAccountEmail(principal.getName());
-                    if(!schoolIdList.contains(schoolId)) {
-                        throw new Exception();
-                    }
-                }
-                enrollSchoolService.enrollSchool(accountService.getAccountInfoById(id),schoolInfoService.getSchoolInfoById(schoolId),LocalDate.now(),normalizedRole);
-                // Success message
-                redirectAttributes.addFlashAttribute("message", me13);
-                redirectAttributes.addFlashAttribute("alertType", "success");
-                Log4jUtils.getLogger().info("message and type of alert if enrollment if enrollment successful " + me13 + " ,success");
-            } catch (Exception e) {
-                // Error message
-                redirectAttributes.addFlashAttribute("message", e);
-                redirectAttributes.addFlashAttribute("alertType", "danger");
-                Log4jUtils.getLogger().info("Exception if enrollment fail or error because of method: " + e);
+//        if ("enroll".equals(actionType)) {
+//            try {
+//                // Enroll Parent to School
+//                if (role.equals("School owner")) {
+//                    List<Integer> schoolIdList = schoolInfoService.getAllSchoolIdsByAccountEmail(principal.getName());
+//                    if (!schoolIdList.contains(schoolId)) {
+//                        throw new Exception();
+//                    }
+//                    System.out.println("schoolIdList : " + schoolIdList);
+//                }
+//                enrollSchoolService.enrollSchoolParent(accountService.getAccountInfoById(id), schoolInfoService.getSchoolInfoById(schoolId), LocalDate.now(), normalizedRole);
+//                // Success message
+//                redirectAttributes.addFlashAttribute("message", me13);
+//                redirectAttributes.addFlashAttribute("alertType", "success");
+//                Log4jUtils.getLogger().info("message and type of alert if enrollment if enrollment successful " + me13 + " ,success");
+//            } catch (Exception e) {
+//                // Error message
+//                redirectAttributes.addFlashAttribute("message", e);
+//                redirectAttributes.addFlashAttribute("alertType", "danger");
+//                Log4jUtils.getLogger().info("Exception if enrollment fail or error becauase of method: " + e);
+//
+//            }
+//        } else
+//            /*
+//             * UnEnroll Parent to School if action = unenroll
+//             */
+//            if ("unenroll".equals(actionType)) {
+//                try {
+//                    EnrollSchool enrollSchool = enrollSchoolService.findEnrollSchoolById(enrollId);
+//                    enrollSchoolService.execute(actionType,enrollSchool, LocalDate.now(), normalizedRole, principal);
+//                    redirectAttributes.addFlashAttribute("message", "You have been successfully unenrolled parent to " + enrollSchool.getSchool().getSchoolName());
+//                    redirectAttributes.addFlashAttribute("alertType", "success");
+//                } catch (Exception e) {
+//                    redirectAttributes.addFlashAttribute("message", e);
+//                    redirectAttributes.addFlashAttribute("alertType", "danger");
+//                }
+//            }
+            EnrollSchool enrollSchool = enrollSchoolService.findEnrollSchoolById(enrollId);
+            enrollSchoolService.execute(actionType,enrollSchool, LocalDate.now(), normalizedRole, principal);
+            redirectAttributes.addFlashAttribute("message", "You have been successfully unenrolled parent to " + enrollSchool.getSchool().getSchoolName());
+            redirectAttributes.addFlashAttribute("alertType", "success");
 
-            }
-        } else
-            /*
-             * UnEnroll Parent to School if action = unenroll
-             */
-            if ("unenroll".equals(actionType)) {
-                try{
-                    EnrollSchool enrollSchool = enrollSchoolService.findEnrollSchoolById(enrollId);
-                    if(role.equals("School owner")) {
-                        List<Integer> schoolIdList = schoolInfoService.getAllSchoolIdsForUnenrollParentByAccountEmail(principal.getName());
-                        if(!schoolIdList.contains(enrollSchool.getSchool().getId())) {
-                            throw new Exception();
-                        }
-                    }
-                    enrollSchoolService.unenrollParentToSchool(enrollSchool, LocalDate.now(),normalizedRole);
-                    redirectAttributes.addFlashAttribute("message", "You have been successfully unenrolled parent to " + enrollSchool.getSchool().getSchoolName());
-                    redirectAttributes.addFlashAttribute("alertType", "success");
-                }
-                 catch (Exception e) {
-                     redirectAttributes.addFlashAttribute("message", e);
-                     redirectAttributes.addFlashAttribute("alertType", "danger");
-                }
-            }
 
         /*
          * Return view name

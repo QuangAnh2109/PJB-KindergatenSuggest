@@ -1,6 +1,8 @@
 package fa.appcode.web.controller;
 
+import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.AccountVo;
+import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.MasterDatum;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.impl.MasterDatumServiceImpl;
@@ -21,17 +23,19 @@ import java.util.List;
 @RequestMapping("/admin/")
 public class UserManagementController {
     @Autowired
+    private GlobalConfig globalConfig;
+    @Autowired
     AccountService accountService;
     @Autowired
     private MasterDatumServiceImpl masterDatumService;
 
     // Display list of user account
     @GetMapping("userlist")
-    public String getUserList(@RequestParam(defaultValue = "") String search,
-                              @RequestParam(defaultValue = "0") int currentPage,
+    public String getUserList(@RequestParam(defaultValue = Constant.KEY_WORD_DEFAULT) String search,
+                              @RequestParam(defaultValue = Constant.USER_INIT_PAGE) int currentPage,
                               Model model) {
 
-        Pageable pageable = PageRequest.of(currentPage, 10);
+        Pageable pageable = PageRequest.of(currentPage,globalConfig.getSizeOfPage());
 
         Page<AccountVo> accounts = accountService.getAllAccounts(search, pageable);
         List<AccountVo> listAccount = accounts.getContent();
