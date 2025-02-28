@@ -33,7 +33,7 @@ public class EnrollSchool {
     private LocalDate enrollEndDate;
 
     @Column(name = "status", nullable = false)
-    private Boolean status = false;
+    private Integer status;
 
     @ColumnDefault("(1)")
     @Column(name = "record_no", nullable = false)

@@ -26,7 +26,7 @@ public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Inte
             "          FROM Feedback f2 " +
             "          WHERE f2.id.schoolId = s.id " +
             "         AND f2.id.accountId = ai.id AND f2.deleteFlg=false) " +
-            "WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=41 AND s.account.email=?2 AND e.status=true")
+            "WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=41 AND s.account.email=?2 AND e.status=2")
     Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner (int parentId, String schoolOwnerId, Pageable pageable);
 
     //    Find All enrolled School for admin
@@ -41,6 +41,6 @@ public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Inte
             "          FROM Feedback f2 " +
             "          WHERE f2.id.schoolId = s.id " +
             "         AND f2.id.accountId = ai.id AND f2.deleteFlg=false) " +
-            "WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=41 AND e.status=true")
+            "WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=41 AND e.status=2")
     Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId (int id,Pageable pageable);
 }
