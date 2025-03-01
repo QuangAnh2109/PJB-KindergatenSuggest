@@ -1,13 +1,20 @@
 package fa.appcode.config;
 
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
+@PropertySource("classpath:email.properties")
+@Getter
+@Component
 public class EmailConfig {
-    public static final String USER_NAME = "%USER NAME%";
-    public static final String TITLE = "%TITLE%";
-    public static final String LINK = "%LINK%";
-    public static final String EMAIL = "%EMAIL%";
-    public static final String PASSWORD = "%PASSWORD%";
-    public static final String OWNER_ACCOUNT = "%OWNER ACCOUNT%";
-    public static final String SCHOOL_NAME = "%SCHOOL NAME%";
+    @Value("${REGEX_MAIL_TEXT_PLACEHOLDER}")
+    public String REGEX_MAIL_TEXT_PLACEHOLDER;
+
+    @Value("${spring.mail.username}")
+    private String SYSTEM_MAIL;
+
+    @Value("${mail.to.manager}")
+    private String MANAGER_MAIL;
 }
