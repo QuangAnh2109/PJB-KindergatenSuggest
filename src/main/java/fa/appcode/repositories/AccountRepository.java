@@ -1,10 +1,8 @@
 package fa.appcode.repositories;
 
-import com.cloudinary.provisioning.Account;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
-import fa.appcode.common.vo.RoleVo;
 import fa.appcode.entities.AccountInfo;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -41,19 +39,19 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
     int updatePassword(String newPassword, String email);
 
     @Query("""
-            SELECT new fa.appcode.common.vo.AccountVo(
-                ai.id, ai.fullName, ai.email, ai.phone, ai.dob, 
-                CONCAT(ai.address, ', ', w.wardName, ', ', d.districtName, ', ', c.cityName), 
-                ma.typeValue, ms.typeValue)
-            FROM AccountInfo ai
-            LEFT JOIN ai.ward w
-            LEFT JOIN ai.district d
-            LEFT JOIN ai.city c     
-            LEFT JOIN MasterDatum ma ON ai.roleId = ma.id
-            LEFT JOIN MasterDatum ms ON ai.statusId = ms.id
-            WHERE ai.deleteFlg = false
-            AND (:search IS NULL OR ai.fullName LIKE %:search% OR ai.email LIKE %:search% OR ai.phone LIKE %:search%)
-            """)
+                SELECT new fa.appcode.common.vo.AccountVo(
+                    ai.id, ai.fullName, ai.email, ai.phone, ai.dob, 
+                    CONCAT(ai.address, ', ', w.wardName, ', ', d.districtName, ', ', c.cityName), 
+                    ma.typeValue, ms.typeValue)
+                FROM AccountInfo ai
+                LEFT JOIN ai.ward w
+                LEFT JOIN ai.district d
+                LEFT JOIN ai.city c     
+                LEFT JOIN MasterDatum ma ON ai.roleId = ma.typeKey AND ma.typeName = "ROLE"
+                LEFT JOIN MasterDatum ms ON ai.statusId = ms.typeKey AND ms.typeName="ACCOUNT STATUS"
+                WHERE ai.deleteFlg = false
+                AND (:search IS NULL OR ai.fullName LIKE %:search% OR ai.email LIKE %:search% OR ai.phone LIKE %:search%)
+                """)
     Page<AccountVo> findAllWithFullAddress(@Param("search") String search, Pageable pageable);
 
     // Find Parent data by parent Id

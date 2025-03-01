@@ -11,7 +11,6 @@ import java.util.List;
 
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
-import fa.appcode.common.vo.RoleVo;
 import fa.appcode.entities.AccountInfo;
 
 
@@ -30,13 +29,17 @@ public interface AccountService {
      boolean updatePassword(String email, String newPassword);
 
     Page<ParentVo> findAllParent(String search ,Pageable pageable);
-    //tuanpa79
-    Page<AccountVo> getAllAccounts(String search, Pageable pageable);
 
+    //tuanpa79
+
+    Page<AccountVo> getAllAccounts(String search, Pageable pageable);
     AccountVo getAccountById(Integer id);
     void toggleUserStatus(Integer id);
-    void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId);
+    void updateUser(AccountVo accountVo);
     void deleteAccount(Integer id);
+    void addUserFromAdmin(AccountVo accountVo);
+
+
 
     Page<AccountInfo> findAll(Pageable pageable);
 
