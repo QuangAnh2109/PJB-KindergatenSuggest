@@ -61,7 +61,7 @@ $(document).ready(function () {
 
     function findAll(keySearch, currentPage) {
         $.get({
-            url: "/admin/user_list",
+            url: "/admin/user-list",
             data: {
                 search: keySearch,
                 currentPage: currentPage,

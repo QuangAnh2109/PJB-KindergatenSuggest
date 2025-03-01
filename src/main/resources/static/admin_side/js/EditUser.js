@@ -3,34 +3,27 @@ setTimeout(function () {
 }, 3000); // Ẩn thông báo sau 3 giây
 
 $("body").on("click", "button#save-user", function(event) {
-    $("#errorFullName").html('');
-    $("#errorEmail").html('');
-    $("#errorDob").html('');
-    $("#errorPhone").html('');
-    $("#errorRole").html('');
-    $("#errorStatus").html('');
+    $(".text-danger").html(""); // Xóa thông báo lỗi cũ
 
     var count = 0;
-    var phoneRegex = /^[0-9]{10,15}$/; // Thay bằng regex từ fa.appcode.common.Constant.phone_regex
-    var today = new Date().toISOString().split("T")[0]; // Lấy ngày hôm nay theo định dạng YYYY-MM-DD
+    var phoneRegex = /^[0-9]{10,15}$/;
+    var today = new Date().toISOString().split("T")[0];
     var emailRegex = /^[a-z][a-z0-9]*@gmail.com/;
-    // Kiểm tra Full Name
+
     if ($("#fullName").val().trim() === '') {
         $("#errorFullName").html('Please enter full name');
         count++;
     }
 
-    // Kiểm tra Email
     var email = $("#email").val().trim();
-    if(email === ''){
-        $("errorEmail").html('Please enter email');
+    if (email === '') {
+        $("#errorEmail").html('Please enter email');
         count++;
-    }else if(!emailRegex.test(email)) {
-        $("errorEmail").html('Invalid email format');
+    } else if (!emailRegex.test(email)) {
+        $("#errorEmail").html('Invalid email format');
         count++;
     }
 
-    // Kiểm tra Date of Birth (DOB)
     var dob = $("#dob").val();
     if (dob.trim() === '') {
         $("#errorDob").html('Please enter date of birth');
@@ -40,7 +33,6 @@ $("body").on("click", "button#save-user", function(event) {
         count++;
     }
 
-    // Kiểm tra Phone
     var phone = $("#phone").val().trim();
     if (phone === '') {
         $("#errorPhone").html('Please enter phone number');
@@ -50,24 +42,20 @@ $("body").on("click", "button#save-user", function(event) {
         count++;
     }
 
-    // Kiểm tra Role
-    if ($('#role :selected').val() === '') {
+    if ($('#role').val() === '') {
         $("#errorRole").html('Please select a role');
         count++;
     }
 
-    // Kiểm tra Role
-    if ($('#status :selected').val() === '') {
+    if ($('#status').val() === '') {
         $("#errorStatus").html('Please select a status');
         count++;
     }
 
-
     if (count > 0) {
-        event.preventDefault(); // Ngăn chặn submit nếu có lỗi
+        event.preventDefault();
     }
 });
-
 
 
 // $("body").on("click", "button#save-user", function() {

@@ -1,6 +1,5 @@
     package fa.appcode.web.controller;
 
-    import fa.appcode.common.constant.Constant;
     import fa.appcode.config.GlobalConfig;
     import jakarta.servlet.ServletException;
     import jakarta.servlet.http.HttpServletRequest;

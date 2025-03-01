@@ -29,8 +29,6 @@ public class MasterDatumServiceImpl implements MasterDatumService {
        return masterDatumRepository.getMasterByTypeNameAndTypeKey(typeName, typeKey);
     }
 
-
-
     @Override
     public List<MasterDatum> getListByTypeName(String typeName) {
         return masterDatumRepository.getMasterByTypeName(typeName);

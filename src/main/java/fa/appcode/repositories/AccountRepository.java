@@ -3,7 +3,6 @@ package fa.appcode.repositories;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
-import fa.appcode.common.vo.RoleVo;
 import fa.appcode.entities.AccountInfo;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;

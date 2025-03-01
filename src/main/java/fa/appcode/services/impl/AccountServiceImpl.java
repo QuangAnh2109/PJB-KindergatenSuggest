@@ -1,6 +1,4 @@
 package fa.appcode.services.impl;
-
-import fa.appcode.common.enums.UserStatus;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
@@ -115,34 +113,9 @@ public class AccountServiceImpl implements AccountService {
     // Find account by Id
     @Override
     public AccountVo getAccountById(Integer id) {
-        AccountInfo user = accountRepository.findById(id)
+        AccountInfo accountInfo = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return convertToAccountVo(user);
-    }
 
-    // ========================================================
-    @Override
-    public Page<AccountInfo> findAll(Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public List<AccountInfo> findAllRoles() {
-        return List.of();
-    }
-
-
-
-    @Override
-    public Page<ParentVo> findAllParent(Pageable pageable) {
-        return null;
-    }
-
-    //=========================================================
-    /**
-     * Chuyển đổi AccountInfo thành AccountVo
-     */
-    private AccountVo convertToAccountVo(AccountInfo accountInfo) {
         AccountVo accountVo = new AccountVo();
         accountVo.setId(accountInfo.getId());
         accountVo.setFullName(accountInfo.getFullName());
@@ -171,9 +144,9 @@ public class AccountServiceImpl implements AccountService {
         // Resolve role and status names
         accountVo.setRole(masterDatumService.getMasterByTypeNameAndTypeKey("ROLE",accountInfo.getRoleId()));
         accountVo.setStatus(masterDatumService.getMasterByTypeNameAndTypeKey("ACCOUNT STATUS",accountInfo.getStatusId()));
-        return accountVo;
-    }
 
+        return  accountVo;
+    }
 
     // Change status from active to inactive (and vice versa)
     @Override
@@ -181,10 +154,10 @@ public class AccountServiceImpl implements AccountService {
         AccountInfo user = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        if (user.getStatusId() == UserStatus.ACTIVE.getStatusId()) {
-            user.setStatusId(UserStatus.INACTIVE.getStatusId()); // Deactivate
+        if (user.getStatusId() == 1) {
+            user.setStatusId(2); // Deactivate
         } else {
-            user.setStatusId(UserStatus.ACTIVE.getStatusId()); // Activate
+            user.setStatusId(1); // Activate
         }
 
         accountRepository.save(user);
@@ -192,25 +165,70 @@ public class AccountServiceImpl implements AccountService {
 
     // Update user account by information get from form
     @Override
-    public void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId) {
-        AccountInfo user = accountRepository.findById(id)
+    public void updateUser(AccountVo accountVo) {
+        AccountInfo user = accountRepository.findById(accountVo.getId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         // Cập nhật các trường được phép chỉnh sửa
-        user.setFullName(fullName);
-        user.setPhone(phone);
-        user.setDob(LocalDate.parse(dob)); // Chuyển đổi String sang LocalDate
-        user.setRoleId(roleId);
+        user.setFullName(accountVo.getFullName());
+        user.setPhone(accountVo.getPhone());
+        user.setDob(LocalDate.parse(accountVo.getDob())); // Chuyển đổi String sang LocalDate
+        user.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE",accountVo.getRole()));
+
+        user.setRecordNo(user.getRecordNo()+1);
+        user.setUpdateId("SYSTEM_ADMIN");
+        user.setUpdateTime(Instant.now());
 
         accountRepository.save(user);
     }
 
     // Delete logic user account
+    @Override
     public void deleteAccount(Integer id) {
         AccountInfo account = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         account.setDeleteFlg(true);
         accountRepository.save(account);
     }
+
+    @Override
+    public void addUserFromAdmin(AccountVo accountVo) {
+        AccountInfo accountInfo = new AccountInfo();
+        accountInfo.setFullName(accountVo.getFullName());
+        accountInfo.setEmail(accountVo.getEmail());
+        accountInfo.setPhone(accountVo.getPhone());
+        accountInfo.setDob(LocalDate.parse(accountVo.getDob()));
+        accountInfo.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE",accountVo.getRole()));
+        accountInfo.setPassword("{noop}"+accountVo.getPassword());
+        accountInfo.setStatusId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS",accountVo.getStatus())); // Default status
+        accountInfo.setImageUrl("null");
+        accountInfo.setRecordNo(1);
+        accountInfo.setCreateId("SYSTEM_ADMIN");
+        accountInfo.setUpdateId("SYSTEM_ADMIN");
+        accountInfo.setCreateTime(Instant.now());
+        accountInfo.setUpdateTime(Instant.now());
+        accountRepository.save(accountInfo);
+    }
+
+
+    // ========================================================
+    @Override
+    public Page<AccountInfo> findAll(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<AccountInfo> findAllRoles() {
+        return List.of();
+    }
+
+
+
+    @Override
+    public Page<ParentVo> findAllParent(Pageable pageable) {
+        return null;
+    }
+
+    //=========================================================
 
     public Page<ParentVo> findAllParent(String search, Pageable pageable) {
         return accountRepository.findAllParent(search, pageable);

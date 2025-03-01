@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Controller
@@ -56,26 +57,26 @@ public class UserManagementController {
         model.addAttribute("roles", roles);
         model.addAttribute("status", status);
 
-        return "admin_side/AddUser"; // Tạo trang add user riêng hoặc dùng chung với EditUser.html
+        return "admin_side/EditUser"; // Sử dụng trang EditUser.html
     }
-//    @PostMapping("add-user")
-//    public String addUser(@RequestParam String fullName,
-//                          @RequestParam String email,
-//                          @RequestParam String phone,
-//                          @RequestParam String dob,
-//                          @RequestParam Integer roleId,
-//                          RedirectAttributes redirectAttributes) {
-//        try {
-//            accountService.addUser(fullName, email, phone, dob, roleId);
-//            redirectAttributes.addFlashAttribute("message", "User added successfully.");
-//            return "redirect:/admin/add-user";
-//        } catch (Exception e) {
-//            redirectAttributes.addFlashAttribute("error", "An error occurred: " + e.getMessage());
-//            return "redirect:/admin/add-user";
-//        }
-//    }
+    @PostMapping("add-user")
+    public String addUser(@ModelAttribute("user") AccountVo accountVo, RedirectAttributes redirectAttributes) {
+        try {
+            System.out.println("Received user data: " + accountVo);
+            System.out.println("Role ID: " + accountVo.getRole());
 
+            String randomPassword = UUID.randomUUID().toString();
+            accountVo.setPassword(randomPassword);
+            accountVo.setConfirmPassword(randomPassword);
 
+            accountService.addUserFromAdmin(accountVo);
+            redirectAttributes.addFlashAttribute("message", "User added successfully.");
+            return "redirect:/admin/add-user";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An error occurred: " + e.getMessage());
+            return "redirect:/admin/add-user";
+        }
+    }
 
     // Display user detail
     @GetMapping("user-detail/{id}")
@@ -114,27 +115,18 @@ public class UserManagementController {
     }
 
     // update User account
-    @PostMapping("/edit-user/{id}")
-    public String updateUser(@PathVariable("id") Integer id,
-                             @RequestParam String fullName,
-                             @RequestParam String phone,
-                             @RequestParam String dob,
-                             @RequestParam Integer roleId,
-                             RedirectAttributes redirectAttributes) {
-
+    @PostMapping("edit-user/{id}")
+    public String updateUser(@ModelAttribute("user") AccountVo accountVo, RedirectAttributes redirectAttributes) {
         try {
-            accountService.updateUser(id, fullName, phone, dob, roleId);
+            accountService.updateUser(accountVo);
             redirectAttributes.addFlashAttribute("message", "Change has been successfully updated.");
-            return "redirect:/admin/edit-user/" + id;
+            return "redirect:/admin/edit-user/" + accountVo.getId();
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", "User not found.");
-            return "redirect:/admin/edit-user/" + id;
-        } catch (NumberFormatException e) {
-            redirectAttributes.addFlashAttribute("error", "Invalid role ID.");
-            return "redirect:/admin/edit-user/" + id;
+            return "redirect:/admin/edit-user/" + accountVo.getId();
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "An error occurred: " + e.getMessage());
-            return "redirect:/admin/edit-user/" + id;
+            return "redirect:/admin/edit-user/" + accountVo.getId();
         }
     }
 
