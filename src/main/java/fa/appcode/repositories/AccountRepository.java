@@ -23,21 +23,22 @@ import java.util.List;
 @Transactional
 public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
-    @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1")
+    @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1 AND c.deleteFlg = false")
     AccountInfo findByEmail(String email);
 
-    @Query("Select c from AccountInfo c where c.phone=?1")
+    @Query("SELECT c FROM AccountInfo c WHERE c.phone = ?1 AND c.deleteFlg = false")
     AccountVo findByPhone(String phone);
 
-    @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1")
+    @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1 AND c.deleteFlg = false")
     AccountVo findAccountByEmail(String email);
 
-    @Query("SELECT c FROM AccountInfo c WHERE c.phone = ?1")
+    @Query("SELECT c FROM AccountInfo c WHERE c.phone = ?1 AND c.deleteFlg = false")
     AccountInfo findAccountByPhone(String email);
+
 
     @Modifying
     @Transactional
-    @Query("UPDATE AccountInfo a SET a.password = ?1 WHERE a.email = ?2")
+    @Query("UPDATE AccountInfo a SET a.password = ?1 WHERE a.email = ?2 AND a.deleteFlg=false")
     int updatePassword(String newPassword, String email);
 
     @Query("""
@@ -105,5 +106,12 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
             "WHERE ma.id=3 AND (ai.fullName LIKE %:search% OR ai.email LIKE%:search% OR ai.phone LIKE %:search% ) AND ai.deleteFlg=false AND ai.statusId=1 " +
             "GROUP BY ai.id,ai.fullName,ai.email,ai.phone")
     Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(@Param("email") String email, @Param("search") String search, Pageable pageable);
+
+    @Query("SELECT a FROM AccountInfo a " +
+            "JOIN FETCH a.city " +
+            "JOIN FETCH a.district " +
+            "JOIN FETCH a.ward " +
+            "WHERE a.email = :email AND a.deleteFlg = :deleteFlg")
+    AccountInfo findWithFullAddressByEmail(@Param("email") String email, @Param("deleteFlg") boolean deleteFlg);
 
 }

@@ -51,6 +51,7 @@
 //
 //}
 package fa.appcode.web.controller;
+
 import fa.appcode.common.utils.Constant;
 import fa.appcode.common.utils.TokenUtils;
 import fa.appcode.config.GlobalConfig;
@@ -61,6 +62,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 @Controller
 public class ForgotPasswordController {
     @Autowired
@@ -78,6 +80,7 @@ public class ForgotPasswordController {
     public String showForgotPasswordForm() {
         return Constant.FORGOT_PASSWORD_PAGE;
     }
+
     @PostMapping("/public/forgot-password")
     public String forgotPasswordProcess(@RequestParam String email, Model model) {
         try {
@@ -88,7 +91,7 @@ public class ForgotPasswordController {
             String resetLink = RESET_PASSWORD_URL + token;
             emailService.sendEmail(email, "Reset Your Password",
                     "Click this link to reset your password: " + resetLink);
-            model.addAttribute("message", "A password reset link has been sent to your email.");
+            model.addAttribute("message", globalConfig.getVerifyLinkSend());
         } catch (Exception e) {
             model.addAttribute("emailError", "An error occurred: " + e.getMessage());
         }
