@@ -146,7 +146,7 @@
                 </li>
 
                 <li>
-                    <a th:href="@{/admin/userlist}">
+                    <a th:href="@{/admin/user-list}">
                         <i class="ti-user"></i>
                         <span> User Management </span>
                     </a>
@@ -207,7 +207,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h4 class="header-title">User List</h4>
                             <div class="d-flex align-items-center">
-                                <a th:href="@{/admin/adduser}" class="btn btn-success">Add User</a>
+                                <a th:href="@{/admin/add-user}" class="btn btn-success">Add User</a>
                             </div>
                         </div>
                     </div>
@@ -249,7 +249,7 @@
                                 <tbody>
                                 <tr th:each="account : ${listAccounts}">
                                     <td>
-                                        <a th:href="@{/admin/userdetail/{id}(id=${account.id})}"
+                                        <a th:href="@{/admin/user-detail/{id}(id=${account.id})}"
                                            th:text="${account.fullName}" class="text-primary"></a>
                                     </td>
                                     <td th:text="${account.email}"></td>

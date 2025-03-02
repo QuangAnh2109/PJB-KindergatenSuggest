@@ -1,10 +1,8 @@
 package fa.appcode.services.impl;
-
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
-import fa.appcode.common.vo.RoleVo;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.MasterDatumService;
@@ -12,7 +10,6 @@ import fa.appcode.web.controller.ForgotPasswordController;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import fa.appcode.services.MasterDataService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
@@ -20,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.Instant;
@@ -33,9 +29,7 @@ public class AccountServiceImpl implements AccountService {
     private MasterDatumService masterDatumService;
     @Autowired
     private AccountRepository accountRepository;
-
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
     public AccountInfo getAccountById(int id) {
         return accountRepository.getAccountInfoById(id);
     }
@@ -45,12 +39,6 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findByEmail(email) != null;
     }
 
-    @Transactional
-    @Modifying
-    public void updateAccountInfo(AccountInfo accountInfo) {
-        accountRepository.save(accountInfo);
-    }
-
     @Override
     public AccountInfo findAccountInfoByPhone(String phone) {
         return accountRepository.findAccountByPhone(phone);
@@ -58,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String encodePassword(String password) {
-        return passwordEncoder.encode(password);
+        return "{bcrypt}"+ passwordEncoder.encode(password);
     }
 
     @Transactional
@@ -78,35 +66,69 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-    @Transactional
-    @Override
-    public boolean updatePassword(String email, String newPassword) {
 
-        AccountInfo account = accountRepository.findByEmail(email);
-        if (account == null) {
-            return false;
-        }
-        String encodedPassword = "{bcrypt}" + passwordEncoder.encode(newPassword);
-        int numberOfRows = accountRepository.updatePassword(encodedPassword, email);
-        return numberOfRows > 0;
+//    @Transactional
+//    @Override
+//    public boolean updatePassword(String email, String newPassword) {
+//
+//        AccountInfo account = accountRepository.findByEmail(email);
+//        if (account == null) {
+//            return false;
+//        }
+//        String encodedPassword = "{bcrypt}" + passwordEncoder.encode(newPassword);
+//        int numberOfRows = accountRepository.updatePassword(encodedPassword, email);
+//        return numberOfRows > 0;
+//    }
+@Transactional
+@Override
+public boolean updatePassword(String email, String newPassword) {
+    AccountInfo account = accountRepository.findByEmail(email);
+    if (account == null) {
+        return false;
     }
-    @Override
-    public AccountInfo createAccount(AccountVo accountVo) {
-        AccountInfo accountInfo = new AccountInfo();
-        accountInfo.setFullName(accountVo.getFullName());
-        accountInfo.setEmail(accountVo.getEmail());
-        accountInfo.setPassword("{bcrypt}" + passwordEncoder.encode(accountVo.getPassword()));
-        accountInfo.setPhone(accountVo.getPhone());
-        accountInfo.setStatusId(0);
-        accountInfo.setRoleId(3);
-        accountInfo.setImageUrl("null");
-        accountInfo.setRecordNo(1);
-        accountInfo.setCreateId("WEB_SYSTEM");
-        accountInfo.setUpdateId("WEB_SYSTEM");
-        accountInfo.setCreateTime(Instant.now());
-        accountInfo.setUpdateTime(Instant.now());
-        return accountRepository.save(accountInfo); // Lưu vào DB
-    }
+    String encodedPassword = encodePassword(newPassword);
+    account.setPassword(encodedPassword);
+    account.setUpdateTime(Instant.now());
+    accountRepository.save(account);
+    return true;
+}
+
+//    @Override
+//    public AccountInfo createAccount(AccountVo accountVo) {
+//        AccountInfo accountInfo = new AccountInfo();
+//        accountInfo.setFullName(accountVo.getFullName());
+//        accountInfo.setEmail(accountVo.getEmail());
+//        accountInfo.setPassword("{bcrypt}" + passwordEncoder.encode(accountVo.getPassword()));
+//        accountInfo.setPhone(accountVo.getPhone());
+//        accountInfo.setStatusId(0);
+//        accountInfo.setRoleId(3);
+//        accountInfo.setImageUrl("null");
+//        accountInfo.setRecordNo(1);
+//        accountInfo.setCreateId("WEB_SYSTEM");
+//        accountInfo.setUpdateId("WEB_SYSTEM");
+//        accountInfo.setCreateTime(Instant.now());
+//        accountInfo.setUpdateTime(Instant.now());
+//        return accountRepository.save(accountInfo);
+//    }
+@Override
+public AccountInfo createAccount(AccountVo accountVo) {
+    AccountInfo accountInfo = new AccountInfo();
+    accountInfo.setFullName(accountVo.getFullName());
+    accountInfo.setEmail(accountVo.getEmail());
+    accountInfo.setPassword(encodePassword(accountVo.getPassword()));
+    accountInfo.setPhone(accountVo.getPhone());
+    accountInfo.setStatusId(0);
+    accountInfo.setRoleId(3);   //
+    accountInfo.setImageUrl(null);
+    accountInfo.setRecordNo(1);
+    accountInfo.setCreateId("WEB_SYSTEM");
+    accountInfo.setUpdateId("WEB_SYSTEM");
+    Instant now = Instant.now();
+    accountInfo.setCreateTime(now);
+    accountInfo.setUpdateTime(now);
+
+        return accountRepository.save(accountInfo);
+}
 
     // Get list of user account
     @Override
@@ -117,10 +139,102 @@ public class AccountServiceImpl implements AccountService {
     // Find account by Id
     @Override
     public AccountVo getAccountById(Integer id) {
+        AccountInfo accountInfo = accountRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        AccountVo accountVo = new AccountVo();
+        accountVo.setId(accountInfo.getId());
+        accountVo.setFullName(accountInfo.getFullName());
+        accountVo.setEmail(accountInfo.getEmail());
+        accountVo.setPhone(accountInfo.getPhone());
+        accountVo.setDob(accountInfo.getDob() != null ? accountInfo.getDob().toString() : null);
+        accountVo.setImageUrl(accountInfo.getImageUrl());
+
+        // Build full address
+        if (accountInfo.getAddress() == null && accountInfo.getWard() == null &&
+                accountInfo.getDistrict() == null && accountInfo.getCity() == null) {
+            accountVo.setFullAddress("No specific information yet");
+        } else {
+            StringBuilder fullAddress = new StringBuilder(accountInfo.getAddress() != null ? accountInfo.getAddress() : "");
+            if (accountInfo.getWard() != null) {
+                fullAddress.append(", ").append(accountInfo.getWard().getWardName());
+            }
+            if (accountInfo.getDistrict() != null) {
+                fullAddress.append(", ").append(accountInfo.getDistrict().getDistrictName());
+            }
+            if (accountInfo.getCity() != null) {
+                fullAddress.append(", ").append(accountInfo.getCity().getCityName());
+            }
+            accountVo.setFullAddress(fullAddress.toString().trim());
+        }
+        // Resolve role and status names
+        accountVo.setRole(masterDatumService.getMasterByTypeNameAndTypeKey("ROLE",accountInfo.getRoleId()));
+        accountVo.setStatus(masterDatumService.getMasterByTypeNameAndTypeKey("ACCOUNT STATUS",accountInfo.getStatusId()));
+
+        return  accountVo;
+    }
+
+    // Change status from active to inactive (and vice versa)
+    @Override
+    public void toggleUserStatus(Integer id) {
         AccountInfo user = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return convertToAccountVo(user);
+
+        if (user.getStatusId() == 1) {
+            user.setStatusId(2); // Deactivate
+        } else {
+            user.setStatusId(1); // Activate
+        }
+
+        accountRepository.save(user);
     }
+
+    // Update user account by information get from form
+    @Override
+    public void updateUser(AccountVo accountVo) {
+        AccountInfo user = accountRepository.findById(accountVo.getId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        // Cập nhật các trường được phép chỉnh sửa
+        user.setFullName(accountVo.getFullName());
+        user.setPhone(accountVo.getPhone());
+        user.setDob(LocalDate.parse(accountVo.getDob())); // Chuyển đổi String sang LocalDate
+        user.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE",accountVo.getRole()));
+
+        user.setRecordNo(user.getRecordNo()+1);
+        user.setUpdateId("SYSTEM_ADMIN");
+        user.setUpdateTime(Instant.now());
+
+        accountRepository.save(user);
+    }
+
+    // Delete logic user account
+    @Override
+    public void deleteAccount(Integer id) {
+        AccountInfo account = accountRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        account.setDeleteFlg(true);
+        accountRepository.save(account);
+    }
+
+    @Override
+    public void addUserFromAdmin(AccountVo accountVo) {
+        AccountInfo accountInfo = new AccountInfo();
+        accountInfo.setFullName(accountVo.getFullName());
+        accountInfo.setEmail(accountVo.getEmail());
+        accountInfo.setPhone(accountVo.getPhone());
+        accountInfo.setDob(LocalDate.parse(accountVo.getDob()));
+        accountInfo.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE",accountVo.getRole()));
+        accountInfo.setPassword("{noop}"+accountVo.getPassword());
+        accountInfo.setStatusId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS",accountVo.getStatus())); // Default status
+        accountInfo.setImageUrl("null");
+        accountInfo.setRecordNo(1);
+        accountInfo.setCreateId("SYSTEM_ADMIN");
+        accountInfo.setUpdateId("SYSTEM_ADMIN");
+        accountInfo.setCreateTime(Instant.now());
+        accountInfo.setUpdateTime(Instant.now());
+        accountRepository.save(accountInfo);
+    }
+
 
     // ========================================================
     @Override
@@ -141,80 +255,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     //=========================================================
-    /**
-     * Chuyển đổi AccountInfo thành AccountVo
-     */
-    private AccountVo convertToAccountVo(AccountInfo accountInfo) {
-        AccountVo accountVo = new AccountVo();
-        accountVo.setId(accountInfo.getId());
-        accountVo.setFullName(accountInfo.getFullName());
-        accountVo.setEmail(accountInfo.getEmail());
-        accountVo.setPhone(accountInfo.getPhone());
-        accountVo.setDob(accountInfo.getDob() != null ? accountInfo.getDob().toString() : null);
-        accountVo.setImageUrl(accountInfo.getImageUrl());
-        accountVo.setRoleId(accountInfo.getRoleId());
-
-        // Build full address
-        if (accountInfo.getAddress() == null && accountInfo.getWard() == null &&
-                accountInfo.getDistrict() == null && accountInfo.getCity() == null) {
-            accountVo.setFullAddress("No specific information yet");
-        } else {
-            StringBuilder fullAddress = new StringBuilder(accountInfo.getAddress() != null ? accountInfo.getAddress() : "");
-            if (accountInfo.getWard() != null) {
-                fullAddress.append(", ").append(accountInfo.getWard().getWardName());
-            }
-            if (accountInfo.getDistrict() != null) {
-                fullAddress.append(", ").append(accountInfo.getDistrict().getDistrictName());
-            }
-            if (accountInfo.getCity() != null) {
-                fullAddress.append(", ").append(accountInfo.getCity().getCityName());
-            }
-            accountVo.setFullAddress(fullAddress.toString().trim());
-        }
-        // Resolve role and status names
-        accountVo.setRole(masterDatumService.getMasterById(accountInfo.getRoleId()));
-        accountVo.setStatus(masterDatumService.getMasterById(accountInfo.getStatusId()));
-        return accountVo;
-    }
-
-
-    // Change status from active to inactive (and vice versa)
-    @Override
-    public void toggleUserStatus(Integer id) {
-        AccountInfo user = accountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
-        // Giả sử statusId = 1 là Active, statusId = 2 là Inactive
-        if (user.getStatusId() == 41) {
-            user.setStatusId(42); // Deactivate
-        } else {
-            user.setStatusId(41); // Activate
-        }
-
-        accountRepository.save(user);
-    }
-
-    // Update user account by information get from form
-    @Override
-    public void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId) {
-        AccountInfo user = accountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        // Cập nhật các trường được phép chỉnh sửa
-        user.setFullName(fullName);
-        user.setPhone(phone);
-        user.setDob(LocalDate.parse(dob)); // Chuyển đổi String sang LocalDate
-        user.setRoleId(roleId);
-
-        accountRepository.save(user);
-    }
-
-    // Delete logic user account
-    public void deleteAccount(Integer id) {
-        AccountInfo account = accountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        account.setDeleteFlg(true);
-        accountRepository.save(account);
-    }
 
     public Page<ParentVo> findAllParent(String search, Pageable pageable) {
         return accountRepository.findAllParent(search, pageable);
@@ -249,7 +289,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email, String search, Pageable pageable) {
-        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email, search, pageable);
+        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email,search,pageable);
     }
 
     @Override
@@ -259,5 +299,22 @@ public class AccountServiceImpl implements AccountService {
         return account;
     }
 
+    @Transactional
+    @Override
+    public void updateAccountInfo(AccountInfo existing, AccountInfo formData) {
+        existing.setFullName(formData.getFullName());
+        existing.setPhone(formData.getPhone());
+        existing.setDob(formData.getDob());
+        existing.setUpdateTime(Instant.now());
+        existing.setCity(formData.getCity());
+        existing.setDistrict(formData.getDistrict());
+        existing.setWard(formData.getWard());
+        existing.setAddress(formData.getAddress());
+        accountRepository.save(existing);
+    }
 
+//    @Override
+//    public AccountInfo findWithFullAddressByEmail(String email, boolean deleteFlg) {
+//        return accountRepository.findWithFullAddressByEmail(email, deleteFlg);
+//    }
 }

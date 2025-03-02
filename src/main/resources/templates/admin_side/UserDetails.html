@@ -146,7 +146,7 @@
                 </li>
 
                 <li>
-                    <a th:href="@{/admin/userlist}">
+                    <a th:href="@{/admin/user-list}">
                         <i class="ti-user"></i>
                         <span> User Management </span>
                     </a>
@@ -192,7 +192,7 @@
             <div class="container-fluid">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a th:href="@{/admin/userlist}">User Management</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/admin/user-list}">User Management</a></li>
                         <li class="breadcrumb-item">UserList</li>
                         <li class="breadcrumb-item active" aria-current="page">User Details</li>
                     </ol>
@@ -235,17 +235,17 @@
                             </div>
 
                             <div class="form-group text-right mb-0">
-                                <form th:action="@{/admin/userdetail/{id}/toggleStatus(id=${user.id})}" method="post"
+                                <form th:action="@{/admin/user-detail/{id}/toggleStatus(id=${user.id})}" method="post"
                                       class="d-inline">
                                     <button type="submit" class="btn waves-effect"
                                             th:classappend="${user.status == 'Active'} ? 'btn-warning' : 'btn-success'"
                                             th:text="${user.status == 'Active'} ? 'Deactivate' : 'Activate'">
                                     </button>
                                 </form>
-                                <a th:href="@{/admin/userlist}" class="btn btn-danger waves-effect">
+                                <a th:href="@{/admin/user-list}" class="btn btn-danger waves-effect">
                                     Cancel
                                 </a>
-                                <a th:href="@{/admin/edituser/{id}(id=${user.id})}" class="btn btn-facebook waves-effect">
+                                <a th:href="@{/admin/edit-user/{id}(id=${user.id})}" class="btn btn-facebook waves-effect">
                                     Edit
                                 </a>
                             </div>

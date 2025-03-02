@@ -29,4 +29,32 @@ public class UserManagementRestController {
         }
     }
 
+
+//    @PostMapping(value = "/edit-user", consumes = "application/json")
+//    public ResponseEntity<Map<String, String>> updateUser(@RequestBody Map<String, String> userData) {
+//
+//        Integer id = Integer.parseInt(userData.get("id"));  // Lấy ID từ body
+//        System.out.println("Received request to update user with ID: " + id);
+//
+//        Map<String, String> response = new HashMap<>();
+//        try {
+//            String fullName = userData.get("fullName");
+//            String phone = userData.get("phone");
+//            String dob = userData.get("dob");
+//            Integer roleId = Integer.parseInt(userData.get("roleId"));
+//
+//            accountService.updateUser(id, fullName, phone, dob, roleId);
+//            response.put("message", "Change has been successfully updated.");
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        } catch (EntityNotFoundException e) {
+//            response.put("error", "User not found.");
+//            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+//        } catch (NumberFormatException e) {
+//            response.put("error", "Invalid role ID.");
+//            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//        } catch (Exception e) {
+//            response.put("error", "An error occurred: " + e.getMessage());
+//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 }
