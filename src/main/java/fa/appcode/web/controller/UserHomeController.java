@@ -1,5 +1,6 @@
 package fa.appcode.web.controller;
 
+import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.CityVo;
 import fa.appcode.common.vo.DistrictVo;
 import fa.appcode.common.vo.MasterDataVo;
@@ -25,11 +26,11 @@ public class UserHomeController {
     private final MasterDatumService masterDatumService;
     private final SchoolInfoService schoolInfoService;
 
-    @GetMapping("/public/home")
+    @GetMapping(Constant.HOME_PAGE_URL)
     public String parentHome(Model model) {
         List<CityVo> listCity1 = cityService.findAllByNoDelete();
         model.addAttribute("listCity", listCity1);
-        return "user_side/index";
+        return Constant.HOME_PAGE;
     }
 
     @GetMapping("/public/districts")
