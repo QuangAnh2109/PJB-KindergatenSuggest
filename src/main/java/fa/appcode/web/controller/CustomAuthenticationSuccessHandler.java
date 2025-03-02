@@ -34,6 +34,7 @@
 //    }
 package fa.appcode.web.controller;
 
+import fa.appcode.common.utils.Constant;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.services.AccountService;
 import jakarta.servlet.ServletException;
@@ -44,9 +45,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Collection;
 
 @Component
@@ -66,24 +65,22 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             return;
         }
 
-        // Xác định đường dẫn điều hướng theo vai trò
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        String redirectUrl = "/home";
+        String redirectUrl = "public/home";
 
         for (GrantedAuthority authority : authorities) {
             String role = authority.getAuthority();
-            if (role.equals("Admin")) {
-                redirectUrl = "/school-owner/request-list";
+            if (role.equals(Constant.ADMIN_ROLE)) {
+                redirectUrl = "/manager/request-list";
                 break;
-            } else if (role.equals("School owner")) {
-                redirectUrl = "/school-owner/request-list";
+            } else if (role.equals(Constant.SCHOOL_OWNER_ROLE)) {
+                redirectUrl = "/manager/request-list";
                 break;
-            } else if (role.equals("Parent")) {
+            } else if (role.equals(Constant.PARENT_ROLE)) {
                 redirectUrl = "/public/home";
                 break;
             }
         }
-
         response.sendRedirect(request.getContextPath() + redirectUrl);
     }
 }

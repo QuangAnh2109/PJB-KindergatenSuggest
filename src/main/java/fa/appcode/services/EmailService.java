@@ -1,9 +1,13 @@
 package fa.appcode.services;
 
+import fa.appcode.common.utils.Placeholder;
+import fa.appcode.common.utils.SendMailInfo;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
+
 import java.util.Map;
 
 public interface EmailService {
-        void sendEmailToOne(String mail, Integer id, Map<String, Object> detail);
-        void sendEmailToMany(String[] mail, Integer id, Map<String, Object> detail);
+        void sendEmailToMany(SendMailInfo sendMailInfo);
         void sendEmail(String to, String subject, String body);
 }
