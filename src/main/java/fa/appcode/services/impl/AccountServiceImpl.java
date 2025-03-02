@@ -29,9 +29,7 @@ public class AccountServiceImpl implements AccountService {
     private MasterDatumService masterDatumService;
     @Autowired
     private AccountRepository accountRepository;
-
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
     public AccountInfo getAccountById(int id) {
         return accountRepository.getAccountInfoById(id);
     }
@@ -39,11 +37,6 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean existsByEmail(String email) {
         return accountRepository.findByEmail(email) != null;
-    }
-    @Transactional
-    @Modifying
-    public void updateAccountInfo(AccountInfo accountInfo) {
-        accountRepository.save(accountInfo);
     }
 
     @Override
@@ -53,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String encodePassword(String password) {
-        return passwordEncoder.encode(password);
+        return "{bcrypt}"+ passwordEncoder.encode(password);
     }
 
     @Transactional
@@ -74,35 +67,68 @@ public class AccountServiceImpl implements AccountService {
 
 
 
-    @Transactional
-    @Override
-    public boolean updatePassword(String email, String newPassword) {
+//    @Transactional
+//    @Override
+//    public boolean updatePassword(String email, String newPassword) {
+//
+//        AccountInfo account = accountRepository.findByEmail(email);
+//        if (account == null) {
+//            return false;
+//        }
+//        String encodedPassword = "{bcrypt}" + passwordEncoder.encode(newPassword);
+//        int numberOfRows = accountRepository.updatePassword(encodedPassword, email);
+//        return numberOfRows > 0;
+//    }
+@Transactional
+@Override
+public boolean updatePassword(String email, String newPassword) {
+    AccountInfo account = accountRepository.findByEmail(email);
+    if (account == null) {
+        return false;
+    }
+    String encodedPassword = encodePassword(newPassword);
+    account.setPassword(encodedPassword);
+    account.setUpdateTime(Instant.now());
+    accountRepository.save(account);
+    return true;
+}
 
-        AccountInfo account = accountRepository.findByEmail(email);
-        if (account == null) {
-            return false;
-        }
-        String encodedPassword = "{bcrypt}" + passwordEncoder.encode(newPassword);
-        int numberOfRows = accountRepository.updatePassword(encodedPassword, email);
-        return numberOfRows > 0;
-    }
-    @Override
-    public AccountInfo createAccount(AccountVo accountVo) {
-        AccountInfo accountInfo = new AccountInfo();
-        accountInfo.setFullName(accountVo.getFullName());
-        accountInfo.setEmail(accountVo.getEmail());
-        accountInfo.setPassword("{bcrypt}" + passwordEncoder.encode(accountVo.getPassword()));
-        accountInfo.setPhone(accountVo.getPhone());
-        accountInfo.setStatusId(0);
-        accountInfo.setRoleId(3);
-        accountInfo.setImageUrl("null");
-        accountInfo.setRecordNo(1);
-        accountInfo.setCreateId("WEB_SYSTEM");
-        accountInfo.setUpdateId("WEB_SYSTEM");
-        accountInfo.setCreateTime(Instant.now());
-        accountInfo.setUpdateTime(Instant.now());
-        return accountRepository.save(accountInfo); // Lưu vào DB
-    }
+//    @Override
+//    public AccountInfo createAccount(AccountVo accountVo) {
+//        AccountInfo accountInfo = new AccountInfo();
+//        accountInfo.setFullName(accountVo.getFullName());
+//        accountInfo.setEmail(accountVo.getEmail());
+//        accountInfo.setPassword("{bcrypt}" + passwordEncoder.encode(accountVo.getPassword()));
+//        accountInfo.setPhone(accountVo.getPhone());
+//        accountInfo.setStatusId(0);
+//        accountInfo.setRoleId(3);
+//        accountInfo.setImageUrl("null");
+//        accountInfo.setRecordNo(1);
+//        accountInfo.setCreateId("WEB_SYSTEM");
+//        accountInfo.setUpdateId("WEB_SYSTEM");
+//        accountInfo.setCreateTime(Instant.now());
+//        accountInfo.setUpdateTime(Instant.now());
+//        return accountRepository.save(accountInfo);
+//    }
+@Override
+public AccountInfo createAccount(AccountVo accountVo) {
+    AccountInfo accountInfo = new AccountInfo();
+    accountInfo.setFullName(accountVo.getFullName());
+    accountInfo.setEmail(accountVo.getEmail());
+    accountInfo.setPassword(encodePassword(accountVo.getPassword()));
+    accountInfo.setPhone(accountVo.getPhone());
+    accountInfo.setStatusId(0);
+    accountInfo.setRoleId(3);   //
+    accountInfo.setImageUrl(null);
+    accountInfo.setRecordNo(1);
+    accountInfo.setCreateId("WEB_SYSTEM");
+    accountInfo.setUpdateId("WEB_SYSTEM");
+    Instant now = Instant.now();
+    accountInfo.setCreateTime(now);
+    accountInfo.setUpdateTime(now);
+
+        return accountRepository.save(accountInfo);
+}
 
     // Get list of user account
     @Override
@@ -273,5 +299,22 @@ public class AccountServiceImpl implements AccountService {
         return account;
     }
 
+    @Transactional
+    @Override
+    public void updateAccountInfo(AccountInfo existing, AccountInfo formData) {
+        existing.setFullName(formData.getFullName());
+        existing.setPhone(formData.getPhone());
+        existing.setDob(formData.getDob());
+        existing.setUpdateTime(Instant.now());
+        existing.setCity(formData.getCity());
+        existing.setDistrict(formData.getDistrict());
+        existing.setWard(formData.getWard());
+        existing.setAddress(formData.getAddress());
+        accountRepository.save(existing);
+    }
 
+//    @Override
+//    public AccountInfo findWithFullAddressByEmail(String email, boolean deleteFlg) {
+//        return accountRepository.findWithFullAddressByEmail(email, deleteFlg);
+//    }
 }

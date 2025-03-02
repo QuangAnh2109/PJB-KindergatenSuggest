@@ -1,49 +1,55 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Access Denied</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px;
-            background-color: #f8d7da;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #721c24;
-        }
-        p {
-            color: #721c24;
-        }
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #155724;
-            background: #d4edda;
-            padding: 10px 20px;
-            border-radius: 5px;
-        }
-        a:hover {
-            background: #c3e6cb;
-        }
-    </style>
+    <title>Kinder Garten Suggestion</title>
+    <link rel="icon" th:href="@{/user_side/images/icon.png}" type="image/gif" sizes="16x16">
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Rentaly - Multipurpose Vehicle Car Rental Website Template" name="description">
+
+    <!-- CSS Files -->
+    <link th:href="@{/user_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/user_side/css/mdb.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/user_side/css/plugins.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/user_side/css/style.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/user_side/css/coloring.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/user_side/css/colors/scheme-01.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/user_side/css/jquery.countdown.css}" rel="stylesheet" type="text/css">
 </head>
-<body>
-<div class="container">
-    <h1>Access Denied</h1>
-    <p>You do not have permission to access this page.</p>
-    <a th:href="@{/home}">Return to Home</a>
+
+<body class="dark-scheme">
+<div id="wrapper">
+    <!-- Page Preloader -->
+    <div id="de-preloader"></div>
+    <!-- Content Begin -->
+    <div class="no-bottom no-top" id="content">
+        <div id="top"></div>
+        <section id="section-hero" class="jarallax text-light pt50 pb50 vertical-center" aria-label="section">
+            <img th:src="@{/user_side/images/background/access-denied.jpg}" style="filter: brightness(66%);" class="jarallax-img" alt="">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h1>Access Denied</h1>
+                        <p>You don't have permission to access this page. Please contact the administrator if you believe this is an error.</p>
+                        <a href="javascript:void(0);" onclick="window.history.back();" class="btn-main">Go Back</a>
+                        <div class="spacer-10"></div>
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        <h1 class="s2">
+                            <span class="c1">403</span>
+                            <span class="spacer-single"></span>
+                            <span class="c3">Forbidden</span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- Content Close -->
 </div>
+
+<!-- Javascript Files -->
+<script th:src="@{/user_side/js/plugins.js}"></script>
+<script th:src="@{/user_side/js/designesia.js}"></script>
 </body>
 </html>

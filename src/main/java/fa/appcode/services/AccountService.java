@@ -15,7 +15,8 @@ import fa.appcode.entities.AccountInfo;
 
 
 public interface AccountService {
-     AccountInfo getAccountById(int id);
+    AccountInfo getAccountById(int id);
+
     boolean existsByEmail(String email);
 
     String encodePassword(String password);
@@ -23,10 +24,13 @@ public interface AccountService {
     void save(AccountInfo accountInfo);
 
     AccountVo findAccountByEmail(String email);
+
     AccountInfo findByEmail(String email);
-     void updateAccountInfo(AccountInfo accountInfo) ;
+
+
     AccountInfo findAccountInfoByPhone(String phone);
-     boolean updatePassword(String email, String newPassword);
+
+    boolean updatePassword(String email, String newPassword);
 
     Page<ParentVo> findAllParent(String search ,Pageable pageable);
 
@@ -34,8 +38,12 @@ public interface AccountService {
 
     Page<AccountVo> getAllAccounts(String search, Pageable pageable);
     AccountVo getAccountById(Integer id);
+
     void toggleUserStatus(Integer id);
     void updateUser(AccountVo accountVo);
+
+    void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId);
+
     void deleteAccount(Integer id);
     void addUserFromAdmin(AccountVo accountVo);
 
@@ -44,18 +52,24 @@ public interface AccountService {
     Page<AccountInfo> findAll(Pageable pageable);
 
     List<AccountInfo> findAllRoles();
+
     AccountInfo createAccount(AccountVo accountVo);
+
     Page<ParentVo> findAllParent(Pageable pageable);
 
     ParentVo findParentById(int id);
 
     String findAccountRoleString(String email);
+
     AccountInfo getAccountInfoById(int id);
 
     Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id, Pageable pageable);
+
     AccountVo findAccountByPhone(String phone);
 
-    Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email,String search, Pageable pageable);
+    Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email, String search, Pageable pageable);
 
     AccountInfo getAccountInfo(Principal principal);
+
+    void updateAccountInfo(AccountInfo existing, AccountInfo formData);
 }
