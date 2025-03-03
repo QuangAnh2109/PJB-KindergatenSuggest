@@ -215,7 +215,7 @@ public class ParentController {
         /*
          * Return view name
          */
-        return "redirect:/manager/parent-list/parent-details/" + id;
+        return "redirect:"+Constant.VIEW_PARENT_DETAIL_URL + id;
     }
 
 }
