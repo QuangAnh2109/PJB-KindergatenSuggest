@@ -9,10 +9,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository("masterDatumRepository")
-public interface MasterDatumRepository extends JpaRepository<MasterDatum,Integer> {
+public interface MasterDatumRepository extends JpaRepository<MasterDatum, Integer> {
 
-    List<MasterDataVo> findAllByTypeNameAndDeleteFlg(String typeName, Boolean deleteFlg);
+    List<MasterDataVo> findAllMasterDataVoByTypeNameAndDeleteFlg(String typeName, boolean deleteFlg);
 
+    List<MasterDataVo> findAllMasterDataVoByTypeNameInAndDeleteFlg(List<String> typeName, boolean deleteFlg);
 
     /*   @Query("""
         SELECT md.typeValue
@@ -23,16 +24,16 @@ public interface MasterDatumRepository extends JpaRepository<MasterDatum,Integer
   */
 
     @Query("""
-        SELECT md.typeValue 
-        FROM MasterDatum md 
-        WHERE md.id = :id  AND md.deleteFlg = false
-    """)
+                SELECT md.typeValue 
+                FROM MasterDatum md 
+                WHERE md.id = :id  AND md.deleteFlg = false
+            """)
     String getMasterById(Integer id);
 
     @Query("""
-    SELECT md
-    FROM MasterDatum md 
-    WHERE md.typeName = :typeName AND md.deleteFlg = false
-""")
+                SELECT md
+                FROM MasterDatum md 
+                WHERE md.typeName = :typeName AND md.deleteFlg = false
+            """)
     List<MasterDatum> getMasterByTypeName(String typeName);
 }
