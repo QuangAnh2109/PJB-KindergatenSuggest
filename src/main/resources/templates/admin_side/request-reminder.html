@@ -266,9 +266,9 @@
 <!-- Vendor js -->
 <script th:src="@{/admin_side/js/vendor.min.js}"></script>
 <script th:src="@{/admin_side/js/app.min.js}"></script>
+<script src="/admin_side/js/request-reminder.js"></script>
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
-        /*<![CDATA[*/
         var message = /*[[${message != null ? message : ''}]]*/ '';
         if (message.trim() !== '') {
             var toastElement = document.getElementById('myToast');
@@ -277,7 +277,6 @@
                 toast.show();
             }
         }
-        /*]]>*/
     });
 </script>
 
