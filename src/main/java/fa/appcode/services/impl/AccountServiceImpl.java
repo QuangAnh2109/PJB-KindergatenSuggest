@@ -259,5 +259,8 @@ public class AccountServiceImpl implements AccountService {
         return account;
     }
 
-
+    @Override
+    public String getEmailByAccountIdAndActiveAndNoDelete(int accountId) {
+        return accountRepository.getEmailByAccountIdAndStatusIdAndDeleteFlg(accountId, 1, false);
+    }
 }

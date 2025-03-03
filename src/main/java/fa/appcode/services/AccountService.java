@@ -55,4 +55,6 @@ public interface AccountService {
     Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email,String search, Pageable pageable);
 
     AccountInfo getAccountInfo(Principal principal);
+
+    String getEmailByAccountIdAndActiveAndNoDelete(int accountId);
 }

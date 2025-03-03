@@ -106,4 +106,6 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
             "GROUP BY ai.id,ai.fullName,ai.email,ai.phone")
     Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(@Param("email") String email, @Param("search") String search, Pageable pageable);
 
+    @Query("SELECT ai.email FROM AccountInfo ai WHERE ai.id = :id AND ai.statusId = :statusId AND ai.deleteFlg = :deleteFlg")
+    String getEmailByAccountIdAndStatusIdAndDeleteFlg(@Param("id") int id, @Param("statusId") int statusId, @Param("deleteFlg") boolean deleteFlg);
 }
