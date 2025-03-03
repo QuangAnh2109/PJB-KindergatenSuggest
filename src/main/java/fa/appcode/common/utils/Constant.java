@@ -20,7 +20,7 @@ public class Constant {
     //URL
     public static final String VIEW_ACCOUNT_URL = "/auth/view-account";
     public static final String REGISTER_VERIFY_URL = "http://localhost:8080/public/register/verify?token=";
-
+    public static final String VIEW_PARENT_DETAIL_URL = "/manager/parent-list/parent-details/";
 
     //ADMIN SIDE
 
