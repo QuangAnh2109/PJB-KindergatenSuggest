@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @PropertySource("classpath:messages.properties")
 @PropertySource("classpath:webconfig.properties")
+@PropertySource("classpath:application.properties")
 @ConfigurationProperties
 @Getter
 @AllArgsConstructor
@@ -50,4 +51,6 @@ public class GlobalConfig {
     private String passwordResetSuccess;
     @Value("${page.size}")
     private Integer sizeOfPage;
+    @Value("${server.link}")
+    private String serverLink;
 }
