@@ -9,31 +9,30 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository("masterDatumRepository")
-public interface MasterDatumRepository extends JpaRepository<MasterDatum,Integer> {
+public interface MasterDatumRepository extends JpaRepository<MasterDatum, Integer> {
 
-    List<MasterDataVo> findAllByTypeNameAndDeleteFlg(String typeName, Boolean deleteFlg);
+    List<MasterDataVo> findAllMasterDataVoByTypeNameAndDeleteFlg(String typeName, boolean deleteFlg);
 
+    List<MasterDataVo> findAllMasterDataVoByTypeNameInAndDeleteFlg(List<String> typeName, boolean deleteFlg);
 
     @Query("""
-        SELECT md.typeValue
-        FROM MasterDatum md
-        WHERE md.typeName = :typeName AND md.typeKey = :typeKey AND md.deleteFlg = false
-    """)
+                SELECT md.typeValue
+                FROM MasterDatum md
+                WHERE md.typeName = :typeName AND md.typeKey = :typeKey AND md.deleteFlg = false
+            """)
     String getMasterByTypeNameAndTypeKey(String typeName, Integer typeKey);
 
     @Query("""
-        SELECT md.typeKey
-        FROM MasterDatum md 
-        WHERE md.typeName = :typeName AND md.typeValue = :typeValue AND md.deleteFlg = false
-    """)
+                SELECT md.typeKey
+                FROM MasterDatum md 
+                WHERE md.typeName = :typeName AND md.typeValue = :typeValue AND md.deleteFlg = false
+            """)
     Integer getMasterKeyByTypeNameAndTypeValue(String typeName, String typeValue);
 
     @Query("""
-    SELECT md
-    FROM MasterDatum md 
-    WHERE md.typeName = :typeName AND md.deleteFlg = false
-""")
+                SELECT md
+                FROM MasterDatum md 
+                WHERE md.typeName = :typeName AND md.deleteFlg = false
+            """)
     List<MasterDatum> getMasterByTypeName(String typeName);
-
-
 }

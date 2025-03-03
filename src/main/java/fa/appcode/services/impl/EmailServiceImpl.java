@@ -12,8 +12,6 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -28,8 +26,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@PropertySource("application.properties")
-@Configuration
 @EnableAsync
 @Service
 @AllArgsConstructor
@@ -88,7 +84,7 @@ public class EmailServiceImpl implements EmailService {
 
             //send message
             javaMailSender.send(message);
-            log.info(" Email sent successfully to {}", sendMailInfo.getToMail());
+            log.info("Email sent successfully to {}", sendMailInfo.getToMail());
         } catch (ConstraintViolationException e) {
             log.error("SendMailInfo is not valid: {}", e.getMessage());
         } catch (NullPointerException e) {
@@ -111,7 +107,7 @@ public class EmailServiceImpl implements EmailService {
     private String replaceMapString(String content, Map<Placeholder, String> detail, String type) throws Exception {
         //declare placeholder and LackPlaceholderException message
         Placeholder placeholder;
-        String message = "";
+        StringBuilder message = new StringBuilder();
 
         //find all placeholder in content
         Matcher matcher = Pattern.compile(emailConfig.getREGEX_MAIL_TEXT_PLACEHOLDER()).matcher(content);
@@ -126,7 +122,7 @@ public class EmailServiceImpl implements EmailService {
             if(detail.containsKey(placeholder)){
                 content = content.replace(placeholder.getPlaceholder(), detail.get(placeholder));
             }
-            else message += ", " + placeholder.toString();
+            else message.append(", ").append(placeholder);
         }
 
         if(message.isEmpty()){
