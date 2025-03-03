@@ -75,51 +75,50 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         return enrollSchoolRepository.findParentEnrolledSchoolByParentIdAndSchoolOwner(parentId, schoolOwnerId, pageable);
     }
 
-    @Transactional
-    public void unenrollParentToSchool(EnrollSchool enrollSchool, LocalDate unenrollDate, String role) {
-        //set unenroll date
-        enrollSchool.setEnrollEndDate(unenrollDate);
-        //set Update ID
-        enrollSchool.setUpdateId(role);
-        //set Update Time
-        enrollSchool.setUpdateTime(Instant.now());
-        //Unenroll Parent
-        enrollSchool.setStatus(3);
-        //set Record data +1
-        enrollSchool.setRecordNo(enrollSchool.getRecordNo() + 1);
-        enrollSchoolRepository.save(enrollSchool);
-    }
 
     @Transactional
     public void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status) {
         //set enroll Date
-        enrollSchool.setEnrollDate(approvalEnrollDate);
+        if (status == 3) {
+            enrollSchool.setEnrollDate(approvalEnrollDate);
+        }
         //set Update ID
+        if (status == 4) {
+            enrollSchool.setEnrollEndDate(approvalEnrollDate);
+        }
         enrollSchool.setUpdateId(role);
         //set Update Time
         enrollSchool.setUpdateTime(Instant.now());
-        //Unenroll Parent
+        //set status of enroll parent school /reject,approve -> enrolled/ unenroll
         enrollSchool.setStatus(status);
         //set Record data +1
         enrollSchool.setRecordNo(enrollSchool.getRecordNo() + 1);
         enrollSchoolRepository.save(enrollSchool);
     }
 
-    public void execute(String action, EnrollSchool enrollSchool, LocalDate date, String role, Principal principal) throws Exception {
+    public String execute(String action, EnrollSchool enrollSchool, LocalDate date, String role, Principal principal) throws Exception {
         if (role.equals("SCHOOL_OWNER")) {
             List<Integer> schoolIdList = schoolInfoService.getAllSchoolIdsForUnenrollParentByAccountEmail(principal.getName());
             if (!schoolIdList.contains(enrollSchool.getSchool().getId())) {
-                throw new  IllegalAccessException("Unauthorized action for this school.");
+                throw new IllegalAccessException("Unauthorized action for this school.");
             }
         }
         EnrollSchoolService self = applicationContext.getBean(EnrollSchoolService.class);
         switch (action) {
-            case "unenroll" ->
-                    self.evaluateParentEnroll(enrollSchool, date, role, 4); //execute unenroll parent
-            case "approve" ->
-                    self.evaluateParentEnroll(enrollSchool, date, role, 3); //execute approve enroll parent
-            case "reject" ->
-                    self.evaluateParentEnroll(enrollSchool, date, role, 2); //execute reject enroll parent
+            case "unenroll" -> self.evaluateParentEnroll(enrollSchool, date, role, 4); //execute unenroll parent
+            case "approve" -> self.evaluateParentEnroll(enrollSchool, date, role, 3); //execute approve enroll parent
+            case "reject" -> self.evaluateParentEnroll(enrollSchool, date, role, 2); //execute reject enroll parent
         }
+        return action;
+    }
+
+    @Override
+    public List<EnrolledSchoolVo> findParentRequestEnrollSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId) {
+        return enrollSchoolRepository.findParentRequestEnrollSchoolByParentIdAndSchoolOwner(parentId, schoolOwnerId);
+    }
+
+    @Override
+    public List<EnrolledSchoolVo> findParentRequestEnrolledSchoolByParentId(int id) {
+        return enrollSchoolRepository.findParentRequestEnrolledSchoolByParentId(id);
     }
 }

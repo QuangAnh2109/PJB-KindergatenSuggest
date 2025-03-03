@@ -29,19 +29,18 @@ public class MasterDatumServiceImpl implements MasterDatumService {
         return masterDatumRepository.findAllMasterDataVoByTypeNameInAndDeleteFlg(typeName, false);
     }
 
-
-//    @Override
-//    public String getMasterByTypeNameAndTypeKey(String typeName, Integer typeKey) {
-//       return masterDataRepository.getMasterByTypeNameAndTypeKey(typeName, typeKey);
-//    }
-
-    @Override
-    public String getMasterById(Integer id) {
-        return masterDatumRepository.getMasterById(id);
+  @Override
+    public String getMasterByTypeNameAndTypeKey(String typeName, Integer typeKey) {
+       return masterDatumRepository.getMasterByTypeNameAndTypeKey(typeName, typeKey);
     }
 
     @Override
     public List<MasterDatum> getListByTypeName(String typeName) {
         return masterDatumRepository.getMasterByTypeName(typeName);
+    }
+
+    @Override
+    public Integer getMasterKeyByTypeNameAndTypeValue(String typeName, String typeValue) {
+        return masterDatumRepository.getMasterKeyByTypeNameAndTypeValue(typeName,typeValue);
     }
 }

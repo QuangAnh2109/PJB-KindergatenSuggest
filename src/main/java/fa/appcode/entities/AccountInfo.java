@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ public class AccountInfo {
     @Column(name = "phone", columnDefinition = "CHAR(12)")
     private String phone;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "dob")
     private LocalDate dob;
 

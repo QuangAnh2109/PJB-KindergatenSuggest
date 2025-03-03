@@ -1,10 +1,8 @@
 package fa.appcode.repositories;
 
-import com.cloudinary.provisioning.Account;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
-import fa.appcode.common.vo.RoleVo;
 import fa.appcode.entities.AccountInfo;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -23,21 +21,21 @@ import java.util.List;
 @Transactional
 public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
-    @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1")
+    @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1 AND c.deleteFlg = false")
     AccountInfo findByEmail(String email);
 
-    @Query("Select c from AccountInfo c where c.phone=?1")
+    @Query("SELECT c FROM AccountInfo c WHERE c.phone = ?1 AND c.deleteFlg = false")
     AccountVo findByPhone(String phone);
 
-    @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1")
+    @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1 AND c.deleteFlg = false")
     AccountVo findAccountByEmail(String email);
 
-    @Query("SELECT c FROM AccountInfo c WHERE c.phone = ?1")
+    @Query("SELECT c FROM AccountInfo c WHERE c.phone = ?1 AND c.deleteFlg = false")
     AccountInfo findAccountByPhone(String email);
 
     @Modifying
     @Transactional
-    @Query("UPDATE AccountInfo a SET a.password = ?1 WHERE a.email = ?2")
+    @Query("UPDATE AccountInfo a SET a.password = ?1 WHERE a.email = ?2 AND a.deleteFlg=false")
     int updatePassword(String newPassword, String email);
 
     @Query("""
@@ -49,8 +47,8 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
             LEFT JOIN ai.ward w
             LEFT JOIN ai.district d
             LEFT JOIN ai.city c     
-            LEFT JOIN MasterDatum ma ON ai.roleId = ma.id
-            LEFT JOIN MasterDatum ms ON ai.statusId = ms.id
+            LEFT JOIN MasterDatum ma ON ai.roleId = ma.typeKey AND ma.typeName = "ROLE"
+            LEFT JOIN MasterDatum ms ON ai.statusId = ms.typeKey AND ms.typeName="ACCOUNT STATUS"
             WHERE ai.deleteFlg = false
             AND (:search IS NULL OR ai.fullName LIKE %:search% OR ai.email LIKE %:search% OR ai.phone LIKE %:search%)
             """)
@@ -92,10 +90,10 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
     //find all parent for School Owner List
     @Query("SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone, " +
-            "CASE WHEN EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 1 AND s.account.email = :email) " +
+            "CASE WHEN EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 1 AND si.account.email = :email) " +
             "THEN (SELECT md.typeValue FROM MasterDatum md WHERE md.typeKey = 1 AND md.typeName='ENROLL STATUS') " +
-            "WHEN EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 3 AND s.account.email = :email) " +
-            "AND NOT EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 1 AND s.account.email = :email) " +
+            "WHEN EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 3 AND si.account.email = :email) " +
+            "AND NOT EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 1 AND si.account.email = :email) " +
             "THEN (SELECT md.typeValue FROM MasterDatum md WHERE md.typeKey = 3 AND md.typeName='ENROLL STATUS')" +
             "ELSE 'Not Enroll' END ) " +
             "FROM AccountInfo ai " +
@@ -108,4 +106,12 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
     @Query("SELECT ai.email FROM AccountInfo ai WHERE ai.id = :id AND ai.statusId = :statusId AND ai.deleteFlg = :deleteFlg")
     String getEmailByAccountIdAndStatusIdAndDeleteFlg(@Param("id") int id, @Param("statusId") int statusId, @Param("deleteFlg") boolean deleteFlg);
+
+    @Query("SELECT a FROM AccountInfo a " +
+            "JOIN FETCH a.city " +
+            "JOIN FETCH a.district " +
+            "JOIN FETCH a.ward " +
+            "WHERE a.email = :email AND a.deleteFlg = :deleteFlg")
+    AccountInfo findWithFullAddressByEmail(@Param("email") String email, @Param("deleteFlg") boolean deleteFlg);
+
 }

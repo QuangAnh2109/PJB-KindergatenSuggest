@@ -143,7 +143,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<!-- Cấu hình loại trừ lombok nếu không cần thiết -->
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
