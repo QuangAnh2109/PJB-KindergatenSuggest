@@ -10,6 +10,7 @@ import fa.appcode.services.AccountService;
 import fa.appcode.services.MasterDatumService;
 import fa.appcode.services.RequestService;
 import fa.appcode.services.SchoolInfoService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,8 +45,7 @@ public class RequestController {
 
     @GetMapping("/manager/request-list")
     public String showRequestList(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
-                                  @RequestParam(name = "message", defaultValue = Constant.KEY_WORD_DEFAULT) String message,
-                                  Model model, Principal principal) {
+                                  Model model, Principal principal,HttpSession session) {
         Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         Page<RequestVo> requestList;
@@ -55,6 +55,9 @@ public class RequestController {
             int accountID = accountService.getAccountInfo(principal).getId();
             requestList = requestService.listAllRequestWithSchoolOwner(accountID, pageable);
         }
+        String message = (String) session.getAttribute("message");
+        session.removeAttribute("message");
+
         model.addAttribute("requestList", requestList);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", requestList.getTotalPages());
@@ -65,8 +68,7 @@ public class RequestController {
 
     @GetMapping("/manager/request-reminder")
     public String showRequestReminder(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
-                                      @RequestParam(name = "message", defaultValue = Constant.KEY_WORD_DEFAULT) String message,
-                                      Model model, Principal principal) {
+                                      Model model, Principal principal ,HttpSession session) {
         Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         Page<RequestVo> requestList;
@@ -76,6 +78,9 @@ public class RequestController {
             int accountID = accountService.getAccountInfo(principal).getId();
             requestList = requestService.findOpenedRequestWithSchoolOwner(accountID, pageable);
         }
+        String message = (String) session.getAttribute("message");
+        session.removeAttribute("message");
+
         model.addAttribute("requestList", requestList);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", requestList.getTotalPages());
@@ -100,17 +105,19 @@ public class RequestController {
     public String updateRequest(@RequestParam Integer id,
                                 @RequestParam String page,
                                 Model model, Principal principal,
-                                RedirectAttributes redirectAttributes) {
+                                RedirectAttributes redirectAttributes,
+                                HttpSession session) {
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         if (role.equalsIgnoreCase("Admin")) {
             requestService.updateRequest("SYSTEM_ADMIN", id);
         } else if (role.equalsIgnoreCase("School owner")) {
             requestService.updateRequest("SCHOOL_OWNER", id);
         }
+
         RequestDetailVo requestDetail = requestService.findById(id);
         model.addAttribute("requestDetail", requestDetail);
         model.addAttribute("role", role);
-        redirectAttributes.addAttribute("message", "Update successfully!");
+        session.setAttribute("message", "Update successfully!");
         if (page.equals("Detail")) return "redirect:/manager/request-reminder";
         return "redirect:/manager/request-list";
     }
@@ -136,7 +143,7 @@ public class RequestController {
     }
 
     @GetMapping("/manager/searchRequestReminder")
-    public String searchRequestReminder(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
+    public ResponseEntity<Page<RequestVo>>  searchRequestReminder(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                         @RequestParam(name = "keyword", required = false) String keyword,
                                         Model model, Principal principal) {
         Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
@@ -152,6 +159,6 @@ public class RequestController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", requestList.getTotalPages());
         model.addAttribute("role", role);
-        return "admin_side/request-reminder";
+        return ResponseEntity.ok(requestList);
     }
 }
