@@ -60,6 +60,4 @@ public class ChangePasswordController {
             return Constant.CHANGE_PASSWORD_PAGE;
         }
     }
-
-
 }

@@ -1,6 +1,7 @@
 package fa.appcode.services.impl;
 
 import fa.appcode.common.utils.Constant;
+
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
@@ -49,7 +50,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String encodePassword(String password) {
-        return "{bcrypt}" + passwordEncoder.encode(password);
+        return "{bcrypt}"+ passwordEncoder.encode(password);
     }
 
     @Transactional
@@ -181,10 +182,6 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(user);
     }
 
-    @Override
-    public void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId) {
-    }
-
     // Delete logic user account
     @Override
     public void deleteAccount(Integer id) {
@@ -202,7 +199,7 @@ public class AccountServiceImpl implements AccountService {
         accountInfo.setPhone(accountVo.getPhone());
         accountInfo.setDob(LocalDate.parse(accountVo.getDob()));
         accountInfo.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
-        accountInfo.setPassword("{noop}" + accountVo.getPassword());
+        accountInfo.setPassword(encodePassword(accountVo.getPassword()));
         accountInfo.setStatusId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus())); // Default status
         accountInfo.setImageUrl("null");
         accountInfo.setRecordNo(1);

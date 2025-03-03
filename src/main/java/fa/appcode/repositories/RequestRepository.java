@@ -22,8 +22,8 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
               SELECT new fa.appcode.common.vo.RequestDetailVo(
                           r.id,r.fullName,r.requestEmail,r.requestPhone,
                           s.schoolAddress,s.schoolName,r.inquiries,m.typeValue)
-              FROM MasterDatum m 
-              JOIN Request r ON m.id = r.requestMasterId 
+              FROM  Request r
+              JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS"
               JOIN SchoolInfo s ON r.school.id=s.id 
               WHERE r.id = ?1
               """)
@@ -33,8 +33,8 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
               SELECT new fa.appcode.common.vo.RequestVo(
                           r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
               FROM  Request r 
-              JOIN MasterDatum m ON m.id = r.requestMasterId 
-              WHERE r.requestMasterId !=44
+              JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS" 
+              WHERE r.requestMasterId !=2
             """)
     Page<RequestVo> findOpenedRequest(Pageable pageable);
 
@@ -42,10 +42,10 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             SELECT new fa.appcode.common.vo.RequestVo(
                 r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue) 
             FROM Request r 
-            JOIN MasterDatum m ON m.id = r.requestMasterId 
+            JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS"
             JOIN SchoolInfo s On r.school.id=s.id 
             JOIN AccountInfo a On a.id=s.account.id 
-            WHERE r.requestMasterId !=44 And a.id = ?1 
+            WHERE r.requestMasterId !=2 And a.id = ?1 
             """)
     Page<RequestVo> findOpenedRequestWithSchoolOwner(Integer accountID,Pageable pageable);
 
@@ -53,7 +53,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
            SELECT new fa.appcode.common.vo.RequestVo(
                       r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
            FROM Request r 
-           JOIN MasterDatum m  ON m.id = r.requestMasterId 
+           JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS" 
            """)
     Page<RequestVo> listAllRequest(Pageable pageable);
 
@@ -61,7 +61,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             SELECT new fa.appcode.common.vo.RequestVo(
                         r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
             FROM Request r 
-            JOIN MasterDatum m ON m.id = r.requestMasterId 
+            JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS"
             JOIN SchoolInfo s ON r.school.id=s.id 
             JOIN AccountInfo a ON a.id=s.account.id 
             WHERE a.id = ?1 
@@ -72,7 +72,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
           SELECT new fa.appcode.common.vo.RequestVo(
                     r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
           FROM  Request r 
-          JOIN MasterDatum m ON m.id = r.requestMasterId 
+          JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS" 
           WHERE r.fullName LIKE %?1% 
              OR r.requestEmail LIKE %?1% 
              OR r.requestPhone LIKE %?1% 
@@ -84,7 +84,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             SELECT new fa.appcode.common.vo.RequestVo(
                         r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
             FROM  Request r 
-            JOIN MasterDatum m ON m.id = r.requestMasterId 
+            JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS"
             JOIN SchoolInfo s ON r.school.id=s.id 
             JOIN AccountInfo a ON a.id=s.account.id 
             where (r.fullName LIKE %?1% 
@@ -99,7 +99,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             SELECT new fa.appcode.common.vo.RequestVo(
                        r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
             FROM  Request r 
-            JOIN MasterDatum m ON m.id = r.requestMasterId 
+            JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS" 
             JOIN SchoolInfo s ON r.school.id=s.id 
             JOIN AccountInfo a ON a.id=s.account.id 
             where (r.fullName LIKE %?1% 
@@ -107,19 +107,20 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
                 Or r.requestPhone LIKE %?1% 
                 OR m.typeValue LIKE %?1%) 
                 AND a.id = ?2 
-                AND r.requestMasterId!=44 
+                AND r.requestMasterId!=2 
            """)
     Page<RequestVo> searchRequestReminderWithSchoolOwner(String keyword,Integer accountID,Pageable pageable);
 
     @Query(""" 
             SELECT new fa.appcode.common.vo.RequestVo(
                         r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
-            FROM  Request r Join MasterDatum m ON m.id = r.requestMasterId 
+            FROM  Request r 
+            JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS"
             WHERE (r.fullName LIKE %?1% 
                 OR r.requestEmail LIKE %?1% 
                 OR r.requestPhone LIKE %?1% 
                 OR m.typeValue LIKE %?1%) 
-                AND r.requestMasterId !=44 
+                AND r.requestMasterId !=2 
             """)
     Page<RequestVo> searchRequestReminder(String keyword,Pageable pageable);
 
@@ -128,7 +129,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
     @Transactional
     @Query(""" 
             UPDATE Request r 
-            SET r.requestMasterId = 44, r.updateId = ?1,r.updateTime= ?3
+            SET r.requestMasterId = 2, r.updateId = ?1,r.updateTime= ?3
             WHERE r.id = ?2
             """)
     void updateRequestStatus(String update_id, int id, Instant updateTime);
@@ -139,7 +140,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             FROM  Request r 
             JOIN SchoolInfo s On r.school.id=s.id 
             JOIN AccountInfo a On a.id=s.account.id 
-            WHERE r.requestMasterId!=44
+            WHERE r.requestMasterId!=2
             GROUP BY a.id,a.email 
             """)
     List<EmailContentVo> findAccountForEmail();

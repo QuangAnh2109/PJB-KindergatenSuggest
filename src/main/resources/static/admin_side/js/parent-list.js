@@ -34,6 +34,10 @@ $(document).ready(function () {
                 console.log("LOADED!");
                 $("#main-content").html(responseData);
             },
+            error: function (responseData) {
+                // Hiển thị thông báo lỗi
+                alert("Failed to Search user: " +$('#parentSearchField').val() );
+            }
         });
     };
 });

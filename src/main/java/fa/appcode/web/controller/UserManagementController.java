@@ -1,10 +1,13 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.common.utils.Constant;
+import fa.appcode.common.utils.Placeholder;
+import fa.appcode.common.utils.SendMailInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.MasterDatum;
 import fa.appcode.services.AccountService;
+import fa.appcode.services.EmailService;
 import fa.appcode.services.impl.MasterDatumServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -29,8 +33,18 @@ public class UserManagementController {
     AccountService accountService;
     @Autowired
     private MasterDatumServiceImpl masterDatumService;
+    @Autowired
+    private EmailService emailService;
 
-    // Display list of user account
+    /**
+     * Pagination, search, show list of movies
+     *
+     * @param search
+     * @param currentPage
+     * @param model
+     * @return
+     *
+     */
     @GetMapping("user-list")
     public String getUserList(@RequestParam(defaultValue = Constant.KEY_WORD_DEFAULT) String search,
                               @RequestParam(defaultValue = Constant.USER_INIT_PAGE) int currentPage,
@@ -48,7 +62,12 @@ public class UserManagementController {
         return "admin_side/UserList";
     }
 
-
+    /**
+     * show Add User screen
+     *
+     * @param model
+     * @return
+     * */
     @GetMapping("add-user")
     public String showAddUserPage(Model model) {
         model.addAttribute("user", new AccountVo()); // Gửi một user rỗng để form hiển thị đúng
@@ -59,17 +78,39 @@ public class UserManagementController {
 
         return "admin_side/EditUser"; // Sử dụng trang EditUser.html
     }
+
+    /**
+     * Adds a new user account
+     *
+     *
+     * @param accountVo
+     * @param redirectAttributes
+     * @return
+     */
+
     @PostMapping("add-user")
     public String addUser(@ModelAttribute("user") AccountVo accountVo, RedirectAttributes redirectAttributes) {
         try {
-            System.out.println("Received user data: " + accountVo);
-            System.out.println("Role ID: " + accountVo.getRole());
 
+            // Auto-generated password
             String randomPassword = UUID.randomUUID().toString();
+
             accountVo.setPassword(randomPassword);
             accountVo.setConfirmPassword(randomPassword);
 
-            accountService.addUserFromAdmin(accountVo);
+            accountService.addUserFromAdmin(accountVo);  // Add
+
+
+            //Send mail contains information to login
+            emailService.sendEmailToMany(SendMailInfo.builder().toMail(List.of(accountVo.getEmail()))
+                                                               .ccMail(List.of())
+                                                               .mailId(2)
+                                                               .detail(Map.of(Placeholder.USER_NAME, accountVo.getEmail(),
+                                                                              Placeholder.EMAIL,accountVo.getEmail(),
+                                                                              Placeholder.PASSWORD,randomPassword,
+                                                                              Placeholder.OWNER_ACCOUNT, "SYSTEM_ADMIN"))
+                                                               .build());
+
             redirectAttributes.addFlashAttribute("message", "User added successfully.");
             return "redirect:/admin/add-user";
         } catch (Exception e) {
@@ -78,7 +119,13 @@ public class UserManagementController {
         }
     }
 
-    // Display user detail
+    /**
+     * show User detail screen
+     *
+     * @param id
+     * @param model
+     * @return
+     */
     @GetMapping("user-detail/{id}")
     public String userDetail(@PathVariable("id") Integer id, Model model) {
         AccountVo user = accountService.getAccountById(id);
@@ -87,7 +134,13 @@ public class UserManagementController {
     }
 
 
-    // Activate/Deactivate user account
+    /**
+     * changes Status of user account  (active <-> inactive)
+     *
+     * @param id
+     * @param redirectAttributes
+     * @return
+     */
     @PostMapping("user-detail/{id}/toggleStatus")
     public String toggleUserStatus(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
@@ -99,7 +152,13 @@ public class UserManagementController {
         return "redirect:/admin/user-detail/" + id;
     }
 
-    // Display Edit User
+    /**
+     * show Edit user account screen
+     *
+     * @param id
+     * @param model
+     * @return
+     */
     @GetMapping("edit-user/{id}")
     public String showEditUserPage(@PathVariable("id") Integer id, Model model) {
         try {
@@ -114,7 +173,13 @@ public class UserManagementController {
         return "admin_side/EditUser";
     }
 
-    // update User account
+    /**
+     * Update user account
+     *
+     * @param accountVo
+     * @param redirectAttributes
+     * @return
+     */
     @PostMapping("edit-user/{id}")
     public String updateUser(@ModelAttribute("user") AccountVo accountVo, RedirectAttributes redirectAttributes) {
         try {

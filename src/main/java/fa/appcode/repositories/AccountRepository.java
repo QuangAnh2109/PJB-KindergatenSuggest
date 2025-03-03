@@ -39,20 +39,36 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
     @Query("UPDATE AccountInfo a SET a.password = ?1 WHERE a.email = ?2 AND a.deleteFlg=false")
     int updatePassword(String newPassword, String email);
 
+    /**
+     * This method retrieves a list of user accounts along with their full addresses.
+     *
+     * The returned list contains user accounts that match the search criteria, if provided.
+     * The search is performed on the user's full name, email, or phone number.
+     *
+     * The address information includes:
+     * - Account address
+     * - Ward name
+     * - District name
+     * - City name.
+     *
+     * @param search
+     * @param pageable
+     * @return
+     */
     @Query("""
-                SELECT new fa.appcode.common.vo.AccountVo(
-                    ai.id, ai.fullName, ai.email, ai.phone, ai.dob, 
-                    CONCAT(ai.address, ', ', w.wardName, ', ', d.districtName, ', ', c.cityName), 
-                    ma.typeValue, ms.typeValue)
-                FROM AccountInfo ai
-                LEFT JOIN ai.ward w
-                LEFT JOIN ai.district d
-                LEFT JOIN ai.city c     
-                LEFT JOIN MasterDatum ma ON ai.roleId = ma.typeKey AND ma.typeName = "ROLE"
-                LEFT JOIN MasterDatum ms ON ai.statusId = ms.typeKey AND ms.typeName="ACCOUNT STATUS"
-                WHERE ai.deleteFlg = false
-                AND (:search IS NULL OR ai.fullName LIKE %:search% OR ai.email LIKE %:search% OR ai.phone LIKE %:search%)
-                """)
+            SELECT new fa.appcode.common.vo.AccountVo(
+                ai.id, ai.fullName, ai.email, ai.phone, ai.dob, 
+                CONCAT(ai.address, ', ', w.wardName, ', ', d.districtName, ', ', c.cityName), 
+                ma.typeValue, ms.typeValue)
+            FROM AccountInfo ai
+            LEFT JOIN ai.ward w
+            LEFT JOIN ai.district d
+            LEFT JOIN ai.city c     
+            LEFT JOIN MasterDatum ma ON ai.roleId = ma.typeKey AND ma.typeName = "ROLE"
+            LEFT JOIN MasterDatum ms ON ai.statusId = ms.typeKey AND ms.typeName="ACCOUNT STATUS"
+            WHERE ai.deleteFlg = false
+            AND (:search IS NULL OR ai.fullName LIKE %:search% OR ai.email LIKE %:search% OR ai.phone LIKE %:search%)
+            """)
     Page<AccountVo> findAllWithFullAddress(@Param("search") String search, Pageable pageable);
 
     // Find Parent data by parent Id
@@ -91,10 +107,10 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
     //find all parent for School Owner List
     @Query("SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone, " +
-            "CASE WHEN EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 1 AND s.account.email = :email) " +
+            "CASE WHEN EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 1 AND si.account.email = :email) " +
             "THEN (SELECT md.typeValue FROM MasterDatum md WHERE md.typeKey = 1 AND md.typeName='ENROLL STATUS') " +
-            "WHEN EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 3 AND s.account.email = :email) " +
-            "AND NOT EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 1 AND s.account.email = :email) " +
+            "WHEN EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 3 AND si.account.email = :email) " +
+            "AND NOT EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 1 AND si.account.email = :email) " +
             "THEN (SELECT md.typeValue FROM MasterDatum md WHERE md.typeKey = 3 AND md.typeName='ENROLL STATUS')" +
             "ELSE 'Not Enroll' END ) " +
             "FROM AccountInfo ai " +
