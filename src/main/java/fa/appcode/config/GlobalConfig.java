@@ -66,6 +66,10 @@ public class GlobalConfig {
     private String oldPasswordWrong;
     @Value("${ME_024}")
     private String newPasswordWrong;
+    @Value("${ME_025}")
+    private String activeSuccess;
+    @Value("${ME_026}")
+    private String verifiedAccount;
     @Value("${page.size}")
     private Integer sizeOfPage;
 }

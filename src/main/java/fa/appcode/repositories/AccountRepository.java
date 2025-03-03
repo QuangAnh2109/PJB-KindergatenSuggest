@@ -33,6 +33,8 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
     @Query("SELECT c FROM AccountInfo c WHERE c.phone = ?1 AND c.deleteFlg = false")
     AccountInfo findAccountByPhone(String email);
 
+    @Query("Select c.recordNo from  AccountInfo c where c.email=?1 and c.deleteFlg=false")
+    AccountVo getRecordByEmail(String email);
 
     @Modifying
     @Transactional
@@ -41,10 +43,10 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
     /**
      * This method retrieves a list of user accounts along with their full addresses.
-     *
+     * <p>
      * The returned list contains user accounts that match the search criteria, if provided.
      * The search is performed on the user's full name, email, or phone number.
-     *
+     * <p>
      * The address information includes:
      * - Account address
      * - Ward name

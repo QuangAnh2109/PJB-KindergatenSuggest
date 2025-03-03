@@ -22,7 +22,9 @@ public class Constant {
     public static final String VIEW_ACCOUNT_URL = "/auth/view-account";
     public static final String REGISTER_VERIFY_URL = "http://localhost:8080/public/register/verify?token=";
     public static final String VIEW_PARENT_DETAIL_URL = "/manager/parent-list/parent-details/";
-
+    private static final String CHANGE_PASSWORD_URL = "/auth/change-password";
+    private static final String HOME_URL = "/public/home";
+    private static final String MANAGER_REQUEST_LIST_URL = "/manager/request-list";
     //ADMIN SIDE
 
     //REGEX

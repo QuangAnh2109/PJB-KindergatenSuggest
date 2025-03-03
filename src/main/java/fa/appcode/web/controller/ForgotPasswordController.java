@@ -8,7 +8,6 @@ import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.EmailService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,16 +17,22 @@ import java.util.Map;
 
 @Controller
 public class ForgotPasswordController {
-    @Autowired
-    private GlobalConfig globalConfig;
 
-    @Autowired
-    private EmailService emailService;
-    @Autowired
-    private AccountService accountService;
-    @Autowired
-    private TokenUtils tokenUtils;
-    private static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
+    private final GlobalConfig globalConfig;
+    private final EmailService emailService;
+    private final AccountService accountService;
+    private final TokenUtils tokenUtils;
+
+    // Constructor injection
+    public ForgotPasswordController(GlobalConfig globalConfig,
+                                    EmailService emailService,
+                                    AccountService accountService,
+                                    TokenUtils tokenUtils) {
+        this.globalConfig = globalConfig;
+        this.emailService = emailService;
+        this.accountService = accountService;
+        this.tokenUtils = tokenUtils;
+    }
 
     @GetMapping("/public/forgot-password")
     public String showForgotPasswordForm() {
@@ -36,21 +41,33 @@ public class ForgotPasswordController {
 
     @PostMapping("/public/forgot-password")
     public String forgotPasswordProcess(@RequestParam String email, Model model) {
+        if (email == null || email.isBlank()) {
+            model.addAttribute("userNotExist", globalConfig.getEmailNotExist());
+            return Constant.FORGOT_PASSWORD_PAGE;
+        }
         try {
-            if (email == null) {
-                model.addAttribute("userNotExist", globalConfig.getEmailNotExist());
-            }
             AccountInfo accountInfo = accountService.findByEmail(email);
-            String token = tokenUtils.generateTokenForgot(email,accountInfo.getDatetimeChangePass());
-            String resetLink = RESET_PASSWORD_URL + token;
-            Map<Placeholder, String> m = Map.of(Placeholder.LINK,resetLink);
-            SendMailInfo sendMailInfo = SendMailInfo.builder().toMail(List.of(email)).mailId(Constant.SEND_EMAIL_FORGOT).ccMail(List.of()).detail(m).build();
+            if (accountInfo == null) {
+                model.addAttribute("userNotExist", globalConfig.getEmailNotExist());
+                return Constant.FORGOT_PASSWORD_PAGE;
+            }
+            String token = tokenUtils.generateTokenForgot(email, accountInfo.getDatetimeChangePass());
+            String resetLink = Constant.RESET_PASSWORD_URL + token;
+
+            Map<Placeholder, String> link = Map.of(Placeholder.LINK, resetLink);
+
+            SendMailInfo sendMailInfo = SendMailInfo.builder()
+                    .toMail(List.of(email))
+                    .mailId(Constant.SEND_EMAIL_FORGOT)
+                    .ccMail(List.of())
+                    .detail(link)
+                    .build();
+
             emailService.sendEmailToMany(sendMailInfo);
-            model.addAttribute("message", globalConfig.getVerifyLinkSend());
+            model.addAttribute("message", globalConfig.getSendResetPassword());
         } catch (Exception e) {
             model.addAttribute("emailError", "An error occurred: " + e.getMessage());
         }
         return Constant.FORGOT_PASSWORD_PAGE;
     }
-
 }

@@ -198,8 +198,9 @@
                                 <div class="dropdown">
                                     <button class="dropdown-toggle" onclick="toggleDropdown()">
                                         <span><i class="fa fa-user-o" aria-hidden="true" style="margin-right: 5px"></i></span>
-                                        Welcome, <span th:text="${session.nameAccount}"></span>
+                                        <i class="fa-solid fa-user"></i> Welcome, <span th:text="${session.nameAccount}"></span>
                                         <i class="arrow-down"></i>
+
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" id="featuresDropdown">
                                         <a href="/feature1"><span><i class="fa-solid fa-school"></i></span> My
@@ -208,7 +209,7 @@
                                         <a href="/feature2"><span><i class="fas fa-clipboard-list"></i></span> My
                                             Request</a>
                                         <div class="dropdown-divider"></div>
-                                        <a href="/feature3"><span><i class="fa-solid fa-user"></i></span> My Profile</a>
+                                        <a href="/auth/view-account"><span><i class="fa-solid fa-user"></i></span> My Profile</a>
                                         <div class="dropdown-divider"></div>
                                         <a href="#" onclick="showPopup()"><span><i
                                                 class="fa-solid fa-right-from-bracket"></i></span> Logout</a>

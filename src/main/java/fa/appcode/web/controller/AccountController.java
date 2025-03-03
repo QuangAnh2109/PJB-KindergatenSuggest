@@ -25,7 +25,8 @@ public class AccountController {
     private final GlobalConfig globalConfig;
 
     @GetMapping("/auth/view-account")
-    public String viewAccount(Model model) {
+    public String viewAccount(Model model,
+                              @ModelAttribute("successMessage") String successMessage) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         AccountInfo accountInfo = accountService.findByEmail(email);
@@ -35,6 +36,11 @@ public class AccountController {
         } else {
             model.addAttribute("error", globalConfig.getNotFound());
         }
+
+        if (successMessage != null && !successMessage.isEmpty()) {
+            model.addAttribute("successMessage", successMessage);
+        }
+
         model.addAttribute("citys", cityService.findAllByNoDelete());
         return Constant.VIEW_ACCOUNT_PAGE;
     }
@@ -49,11 +55,13 @@ public class AccountController {
                 model.addAttribute("phoneFail", globalConfig.getPhoneIsNotValid());
                 return Constant.VIEW_ACCOUNT_PAGE;
             }
+
             AccountInfo currentAccount = accountService.findByEmail(accountInfo.getEmail());
             if (currentAccount == null) {
                 model.addAttribute("error", globalConfig.getUserNotFound());
                 return Constant.VIEW_ACCOUNT_PAGE;
             }
+
             if (!accountInfo.getPhone().equals(currentAccount.getPhone())) {
                 AccountInfo found = accountService.findAccountInfoByPhone(accountInfo.getPhone());
                 if (found != null && !found.getEmail().equals(accountInfo.getEmail())) {
@@ -71,5 +79,5 @@ public class AccountController {
             return Constant.VIEW_ACCOUNT_PAGE;
         }
     }
-}
 
+}
