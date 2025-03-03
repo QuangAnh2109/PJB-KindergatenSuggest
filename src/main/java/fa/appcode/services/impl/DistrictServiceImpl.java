@@ -3,18 +3,24 @@ package fa.appcode.services.impl;
 import fa.appcode.repositories.DistrictRepository;
 import fa.appcode.services.DistrictService;
 import fa.appcode.common.vo.DistrictVo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class DistrictServiceImpl implements DistrictService {
-    @Autowired
-    private DistrictRepository districtRepository;
+
+    private final DistrictRepository districtRepository;
 
     @Override
-    public List<DistrictVo> findAllByCityIdAndNoDelete(Integer cityId) {
+    public List<DistrictVo> findAllByCityIdAndNoDelete(int cityId) {
         return districtRepository.findAllByCityIdAndDeleteFlg(cityId, false);
+    }
+
+    @Override
+    public DistrictVo findByIdAndNoDelete(int id) {
+        return districtRepository.findByIdAndDeleteFlg(id, false);
     }
 }
