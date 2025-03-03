@@ -110,21 +110,22 @@ public class ParentController {
         String role = accountService.findAccountRoleString(principal.getName());
         Page<EnrolledSchoolVo> listParentEnroll;
         List<SchoolInfo> schoolInfoList;
-
+        List<EnrolledSchoolVo> requestList;
 
         if ("Admin".equals(role)) {
 
             listParentEnroll = enrollSchoolService.findParentEnrolledSchoolByParentId(id, pageable);
             schoolInfoList = schoolInfoService.findAllSchoolPublished();
-
+            requestList = enrollSchoolService.findParentRequestEnrolledSchoolByParentId(id);
         } else if ("School owner".equals(role)) {
 
             listParentEnroll = enrollSchoolService.findParentEnrolledSchoolByParentIdAndSchoolOwner(id, principal.getName(), pageable);
             schoolInfoList = schoolInfoService.findSchoolInfoListByAccountEmail(principal.getName());
-
+            requestList=enrollSchoolService.findParentRequestEnrollSchoolByParentIdAndSchoolOwner(id, principal.getName());
         } else {
             listParentEnroll = Page.empty();
             schoolInfoList = Collections.emptyList();
+            requestList = Collections.emptyList();
         }
 
 
@@ -138,6 +139,7 @@ public class ParentController {
         model.addAttribute("enrolledSchools", enrolledSchools);
         model.addAttribute("accountInfo", accountInfo);
         model.addAttribute("currentPage", currentPage);
+        model.addAttribute("requestList", requestList);
         model.addAttribute("numberPage", listParentEnroll.getTotalPages());
         /*
          * Return view name
@@ -199,11 +201,16 @@ public class ParentController {
 //                    redirectAttributes.addFlashAttribute("alertType", "danger");
 //                }
 //            }
+            //GET ENROLL SCHOOL
             EnrollSchool enrollSchool = enrollSchoolService.findEnrollSchoolById(enrollId);
-            enrollSchoolService.execute(actionType,enrollSchool, LocalDate.now(), normalizedRole, principal);
-            redirectAttributes.addFlashAttribute("message", "You have been successfully unenrolled parent to " + enrollSchool.getSchool().getSchoolName());
-            redirectAttributes.addFlashAttribute("alertType", "success");
-
+            //EXECUTE ACTION BASE ON ACTION TYPE UNENROLL, APPROVE, REJECT
+            String result=enrollSchoolService.execute(actionType,enrollSchool, LocalDate.now(), normalizedRole, principal);
+            if(result!=null){
+                redirectAttributes.addFlashAttribute("message", "You have been successfully "+result+" parent to " + enrollSchool.getSchool().getSchoolName());
+                redirectAttributes.addFlashAttribute("alertType", "success");
+            } else {
+                redirectAttributes.addFlashAttribute("alertType", "danger");
+            }
 
         /*
          * Return view name

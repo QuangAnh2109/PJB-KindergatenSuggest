@@ -16,6 +16,10 @@ public class EnrolledSchoolVo {
     private Float latestRate;
     private String latestFeedback;
 
+    public EnrolledSchoolVo(Integer enrollId,String enrolledName){
+        this.enrollId = enrollId;
+        this.enrolledName = enrolledName;
+    }
     @Override
     public String toString() {
         return "EnrolledSchoolVo{" +

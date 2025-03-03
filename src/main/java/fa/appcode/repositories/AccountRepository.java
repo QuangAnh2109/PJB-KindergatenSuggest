@@ -92,10 +92,10 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
     //find all parent for School Owner List
     @Query("SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone, " +
-            "CASE WHEN EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 1 AND s.account.email = :email) " +
+            "CASE WHEN EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 1 AND si.account.email = :email) " +
             "THEN (SELECT md.typeValue FROM MasterDatum md WHERE md.typeKey = 1 AND md.typeName='ENROLL STATUS') " +
-            "WHEN EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 3 AND s.account.email = :email) " +
-            "AND NOT EXISTS (SELECT 1 FROM EnrollSchool e WHERE e.account.id = ai.id AND e.status = 1 AND s.account.email = :email) " +
+            "WHEN EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 3 AND si.account.email = :email) " +
+            "AND NOT EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 1 AND si.account.email = :email) " +
             "THEN (SELECT md.typeValue FROM MasterDatum md WHERE md.typeKey = 3 AND md.typeName='ENROLL STATUS')" +
             "ELSE 'Not Enroll' END ) " +
             "FROM AccountInfo ai " +
