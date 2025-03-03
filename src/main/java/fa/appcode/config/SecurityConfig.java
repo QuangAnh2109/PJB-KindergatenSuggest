@@ -56,7 +56,11 @@ public class SecurityConfig {
                                 .successHandler(successHandler)
                                 .failureHandler(authenticationHandler)
                                 .permitAll())
-                .logout(logout -> logout.permitAll()
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/public/home")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                 )
                 .exceptionHandling(configurer -> configurer.accessDeniedPage("/public/access-denied"));
 

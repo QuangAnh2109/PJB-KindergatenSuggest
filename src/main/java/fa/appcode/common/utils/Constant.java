@@ -41,6 +41,8 @@ public class Constant {
     public static final Integer STATUS_INACTIVE = 0;
     public static final Integer STATUS_DELETED = 0;
     public static final String WEB_SYSTEM = "WEB_SYSTEM";
+    public static int SEND_EMAIL_FORGOT = 1;
+    public static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
 
 
 }
