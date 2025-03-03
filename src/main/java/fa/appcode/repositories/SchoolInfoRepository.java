@@ -32,4 +32,5 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
     List<Integer> getAllSchoolIdsForUnenrollParentByAccountEmail(String id);
 
 
+
 }

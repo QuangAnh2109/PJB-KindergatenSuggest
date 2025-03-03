@@ -24,7 +24,6 @@ public class UserHomeController {
     private final CityService cityService;
     private final DistrictService districtService;
     private final MasterDatumService masterDatumService;
-    private final SchoolInfoService schoolInfoService;
 
     @GetMapping(Constant.HOME_PAGE_URL)
     public String parentHome(Model model) {
@@ -58,8 +57,20 @@ public class UserHomeController {
         model.addAttribute("type_school", listTypeSchool);
         model.addAttribute("data_age", listDataAge);
         model.addAttribute("utilities", listUtilities);
+        model.addAttribute("listCity", listCity1);
         return "user_side/search-school";
     }
+    @GetMapping("/public/search/results")
+    public String showSearchResults(@RequestParam(required = false) String keyword,
+                                    @RequestParam(required = false) Integer cityId,
+                                    @RequestParam(required = false) Integer districtId,
+                                    Model model) {
 
+        // Thêm dữ liệu vào model để hiển thị trên trang
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("cityId", cityId);
+        model.addAttribute("districtId", districtId);
 
+        return "user_side/search-school"; 
+    }
 }
