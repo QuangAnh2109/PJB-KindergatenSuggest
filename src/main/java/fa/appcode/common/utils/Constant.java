@@ -2,6 +2,7 @@ package fa.appcode.common.utils;
 
 
 public class Constant {
+    private Constant(){}
 
     ///  USER SIDE
     public static final String USER_INIT_PAGE = "0";
@@ -20,12 +21,14 @@ public class Constant {
     //URL
     public static final String VIEW_ACCOUNT_URL = "/auth/view-account";
     public static final String REGISTER_VERIFY_URL = "http://localhost:8080/public/register/verify?token=";
-
+    public static final String VIEW_PARENT_DETAIL_URL = "/manager/parent-list/parent-details/";
 
     //ADMIN SIDE
 
     //REGEX
     public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{12,}$";
+    public static final String HOME_PAGE = "user_side/index";
+    public static final String HOME_PAGE_URL = "public/home";
     public static final String EMAIL_REGEX_HTML = "\\w[\\w0-9]*@gmail.com";
     public static final String PHONE_REGEX_HTML = "/(84|0)[0-9]{9}/g";
     public static final String EMAIL_REGEX = "^[a-z][a-z0-9]*@gmail.com$";
@@ -41,6 +44,8 @@ public class Constant {
     public static final Integer STATUS_INACTIVE = 0;
     public static final Integer STATUS_DELETED = 0;
     public static final String WEB_SYSTEM = "WEB_SYSTEM";
+    public static int SEND_EMAIL_FORGOT = 1;
+    public static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
 
 
 }

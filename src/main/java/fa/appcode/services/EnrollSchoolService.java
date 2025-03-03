@@ -9,19 +9,20 @@ import org.springframework.data.domain.Pageable;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface EnrollSchoolService {
-    void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role);
-
     EnrollSchool findEnrollSchoolById(Integer id);
-
+    //Find All School that parent Enrolled with ParentID
     Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable);
-
+    //Find All Enrolled School Of School Owner That Parent Enrolled with Parent ID and SchoolOwner email
     Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId, Pageable pageable);
-
-    void unenrollParentToSchool(EnrollSchool enrollSchool, LocalDate unenrollDate, String role);
-
+    //Execute Update Approve Reject Unenroll Parent to school
     void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status);
-
-    void execute(String action, EnrollSchool enrollSchool, LocalDate date, String role, Principal principal) throws Exception;
+    //Call to Update Approve, Reject, Unenroll
+    String execute(String action, EnrollSchool enrollSchool, LocalDate date, String role, Principal principal) throws Exception;
+    //find All Parent Request Enroll for Specific School Owner
+    List<EnrolledSchoolVo> findParentRequestEnrollSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId);
+    //find All Parent Request Enroll for Admin
+    List<EnrolledSchoolVo> findParentRequestEnrolledSchoolByParentId(int id);
 }

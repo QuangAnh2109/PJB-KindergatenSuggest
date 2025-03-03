@@ -23,14 +23,14 @@ public class SchoolFormController {
 
     @GetMapping("/school-form")
     public String schoolForm(Model model) {
-        model.addAttribute("schoolTypes",masterDatumService.findAllByTypeNameNoDelete("SCHOOL TYPE"));
-        model.addAttribute("childReceivingAges",masterDatumService.findAllByTypeNameNoDelete("CHILD RECEIVING AGE"));
-        model.addAttribute("educationMethods",masterDatumService.findAllByTypeNameNoDelete("EDUCATION METHOD"));
-        model.addAttribute("facilities",masterDatumService.findAllByTypeNameNoDelete("FACILITIES"));
-        model.addAttribute("utilities",masterDatumService.findAllByTypeNameNoDelete("UTILITIES"));
+        model.addAttribute("schoolTypes", masterDatumService.findAllByTypeNameNoDelete("SCHOOL TYPE"));
+        model.addAttribute("childReceivingAges", masterDatumService.findAllByTypeNameNoDelete("CHILD RECEIVING AGE"));
+        model.addAttribute("educationMethods", masterDatumService.findAllByTypeNameNoDelete("EDUCATION METHOD"));
+        model.addAttribute("facilities", masterDatumService.findAllByTypeNameNoDelete("FACILITIES"));
+        model.addAttribute("utilities", masterDatumService.findAllByTypeNameNoDelete("UTILITIES"));
         model.addAttribute("emailRegex", EMAIL_REGEX_HTML);
         model.addAttribute("phoneRegex", PHONE_REGEX_HTML);
-        model.addAttribute("citys",cityService.findAllByNoDelete());
+        model.addAttribute("citys", cityService.findAllByNoDelete());
         return "admin_side/school-manager-detail";
     }
 
@@ -45,7 +45,7 @@ public class SchoolFormController {
     }
 
     @GetMapping("/school-form/{id}")
-    public String schoolDetail(@PathVariable("id") int id){
+    public String schoolDetail(@PathVariable("id") int id) {
         return "admin_side/school-manager-detail";
     }
 }

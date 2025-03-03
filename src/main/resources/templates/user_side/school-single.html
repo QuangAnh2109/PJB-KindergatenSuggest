@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="zxx">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-
-<!-- Mirrored from www.madebydesignesia.com/themes/rentaly/school-single.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 06 Sep 2024 16:12:32 GMT -->
 <head>
     <title>Rentaly - Multipurpose Vehicle Car Rental Website Template</title>
     <link rel="icon" href="images/icon.png" type="image/gif" sizes="16x16">
@@ -11,15 +10,87 @@
     <meta content="Rentaly - Multipurpose Vehicle Car Rental Website Template" name="description">
     <meta content="" name="keywords">
     <meta content="" name="author">
-    <!-- CSS Files
-    ================================================== -->
-    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" id="bootstrap">
-    <link href="css/mdb.min.css" rel="stylesheet" type="text/css" id="mdb">
-    <link href="css/plugins.css" rel="stylesheet" type="text/css">
-    <link href="css/style.css" rel="stylesheet" type="text/css">
-    <link href="css/coloring.css" rel="stylesheet" type="text/css">
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- CSS Files -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/user_side/css/mdb.min.css}" rel="stylesheet" type="text/css" id="mdb">
+    <link th:href="@{/user_side/css/plugins.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/user_side/css/style.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/user_side/css/coloring.css}" rel="stylesheet" type="text/css">
     <!-- color scheme -->
-    <link id="colors" href="css/colors/scheme-01.css" rel="stylesheet" type="text/css">
+    <link id="colors" th:href="@{/user_side/css/colors/scheme-01.css}" rel="stylesheet" type="text/css">
+
+    <style>
+        #img-school{
+            display: flex;
+            justify-content: center;
+            border-radius: 5px;
+            border:1px solid #1ECB15 ;
+        }
+        #img-school img{
+            width: 90%;
+            margin: 10px;
+        }
+        .tab-btn {
+            border: none;
+            background: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .tab-btn.active {
+            border-bottom: 2px solid #007bff;
+        }
+        .rating-stars {
+            color: gold;
+        }
+        .rating-bar {
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .rating-fill {
+            height: 100%;
+            background-color: gold;
+        }
+        .filter-btn {
+            border: 1px solid #007bff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        #school-detail-info{
+            border: 1px solid #1ECB15;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+        .school-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background: white;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .btn-custom {
+            border-radius: 20px;
+            font-size: 14px;
+            padding: 8px 15px;
+        }
+        .rating {
+            color: #f4b400; /* Màu vàng */
+        }
+    </style>
 </head>
 
 <body>
@@ -31,28 +102,7 @@
 
         <!-- header begin -->
         <header class="transparent scroll-light has-topbar">
-            <div id="topbar" class="topbar-dark text-light">
-                <div class="container">
-                    <div class="topbar-left xs-hide">
-                        <div class="topbar-widget">
-                            <div class="topbar-widget"><a href="#"><i class="fa fa-phone"></i>+208 333 9296</a></div>
-                            <div class="topbar-widget"><a href="#"><i class="fa fa-envelope"></i>contact@rentaly.com</a></div>
-                            <div class="topbar-widget"><a href="#"><i class="fa fa-clock-o"></i>Mon - Fri 08.00 - 18.00</a></div>
-                        </div>
-                    </div>
-                
-                    <div class="topbar-right">
-                        <div class="social-icons">
-                            <a href="#"><i class="fa fa-facebook fa-lg"></i></a>
-                            <a href="#"><i class="fa fa-twitter fa-lg"></i></a>
-                            <a href="#"><i class="fa fa-youtube fa-lg"></i></a>
-                            <a href="#"><i class="fa fa-pinterest fa-lg"></i></a>
-                            <a href="#"><i class="fa fa-instagram fa-lg"></i></a>
-                        </div>
-                    </div>  
-                    <div class="clearfix"></div>
-                </div>
-            </div>
+
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
@@ -61,9 +111,9 @@
                                 <div class="de-flex-col">
                                     <!-- logo begin -->
                                     <div id="logo">
-                                        <a href="index.html">
-                                            <img class="logo-1" src="images/logo-light.png" alt="">
-                                            <img class="logo-2" src="images/logo.png" alt="">
+                                        <a th:href="@{/home}">
+                                            <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
+                                            <img class="logo-2" src="/user_side/images/logo1.png" alt="">
                                         </a>
                                     </div>
                                     <!-- logo close -->
@@ -71,92 +121,33 @@
                             </div>
                             <div class="de-flex-col header-col-mid">
                                 <ul id="mainmenu">
-                                    <li><a class="menu-item" href="index.html">Home</a>
-                                        <ul>
-                                            <li><a class="menu-item new" href="02_dark-index-1.html">Homepage 1 Dark</a></li>
-                                            <li><a class="menu-item new" href="02_dark-index-2.html">Homepage 2 Dark</a></li>
-                                            <li><a class="menu-item" href="index.html">Homepage Main</a></li>
-                                            <li><a class="menu-item" href="index-2.html">Homepage 2</a></li>
-                                            <li><a class="menu-item" href="index-3.html">Homepage 3</a></li>
-                                            <li><a class="menu-item" href="index-4.html">Homepage 4</a></li>
-                                            <li><a class="menu-item" href="index-5.html">Homepage 5</a></li>
-                                            <li><a class="menu-item" href="index-6.html">Homepage 6</a></li>
-                                        </ul>
+                                    <li><a class="menu-item" href="/search">School Search</a>
                                     </li>
-                                    <li><a class="menu-item" href="cars.html">Cars</a>
-                                        <ul>
-                                            <li><a class="menu-item" href="cars.html">Cars List 1</a></li>
-                                            <li><a class="menu-item" href="02_dark-cars.html">Cars List 1 Dark</a></li>
-                                            <li><a class="menu-item" href="search-school.html">Cars List 2</a></li>
-                                            <li><a class="menu-item" href="02_dark-cars-list.html">Cars List 2 Dark</a></li>
-                                            <li><a class="menu-item" href="school-single.html">Cars Single</a></li>
-                                            <li><a class="menu-item" href="02_dark-car-single.html">Cars Single Dark</a></li>
-                                        </ul>
+                                    <li><a class="menu-item" href="#">Community</a>
                                     </li>
-                                    <li><a class="menu-item" href="quick-booking.html">Booking</a>
-                                        <ul>
-                                            <li><a class="menu-item new" href="quick-booking.html">Quick Booking</a></li>
-                                            <li><a class="menu-item" href="booking.html">Booking</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a class="menu-item" href="account-dashboard.html">My Account</a>
-                                        <ul>
-                                            <li><a class="menu-item" href="account-dashboard.html">Dashboard</a></li>
-                                            <li><a class="menu-item" href="account-profile.html">My Profile</a></li>
-                                            <li><a class="menu-item" href="account-booking.html">My Orders</a></li>
-                                            <li><a class="menu-item" href="account-favorite.html">My Favorite Cars</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a class="menu-item" href="#">Pages</a>
-                                        <ul>
-                                            <li><a class="menu-item" href="about.html">About Us</a></li>
-                                            <li><a class="menu-item" href="contact.html">Contact</a></li>
-                                            <li><a class="menu-item" href="login.html">Login</a></li>
-                                            <li><a class="menu-item" href="register.html">Register</a></li>
-                                            <li><a class="menu-item" href="404.html">Page 404</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a class="menu-item" href="#">News</a>
-                                        <ul>
-                                            <li><a class="menu-item" href="news-standart-right-sidebar.html">News Standard</a>
-                                                <ul>
-                                                    <li><a class="menu-item" href="news-standart-right-sidebar.html">Right Sidebar</a></li>
-                                                    <li><a class="menu-item" href="news-standart-left-sidebar.html">Left Sidebar</a></li>
-                                                    <li><a class="menu-item" href="news-standart-no-sidebar.html">No Sidebar</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a class="menu-item" href="news-grid-right-sidebar.html">News Grid</a>
-                                                <ul>
-                                                    <li><a class="menu-item" href="news-grid-right-sidebar.html">Right Sidebar</a></li>
-                                                    <li><a class="menu-item" href="news-grid-left-sidebar.html">Left Sidebar</a></li>
-                                                    <li><a class="menu-item" href="news-grid-no-sidebar.html">No Sidebar</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li><a class="menu-item" href="#">Elements</a>
-                                        <ul>
-                                            <li><a class="menu-item" href="preloader.html">Preloader</a></li>
-                                            <li><a class="menu-item" href="icon-boxes.html">Icon Boxes</a></li>
-                                            <li><a class="menu-item" href="badge.html">Badge</a></li>
-                                            <li><a class="menu-item" href="counters.html">Counters</a></li>
-                                            <li><a class="menu-item" href="gallery-popup.html">Gallery Popup</a></li>
-                                            <li><a class="menu-item" href="icons-elegant.html">Icons Elegant</a></li>
-                                            <li><a class="menu-item" href="icons-etline.html">Icons Etline</a></li>
-                                            <li><a class="menu-item" href="icons-font-awesome.html">Icons Font Awesome</a></li>
-                                            <li><a class="menu-item" href="map.html">Map</a></li>
-                                            <li><a class="menu-item" href="modal.html">Modal</a></li>
-                                            <li><a class="menu-item" href="popover.html">Popover</a></li>
-                                            <li><a class="menu-item" href="tabs.html">Tabs</a></li>
-                                            <li><a class="menu-item" href="tooltips.html">Tooltips</a></li>
-                                        </ul>
+                                    <li><a class="menu-item" href="#">About Us</a>
                                     </li>
                                 </ul>
                             </div>
                             <div class="de-flex-col">
-                                <div class="menu_side_area">
-                                    <a href="login.html" class="btn-main">Sign In</a>
-                                    <span id="menu-btn"></span>
+                                <div class="menu_side_area" sec:authorize="!isAuthenticated()">
+                                    <a th:href="@{/showMyLoginPage}" class="btn-main">Login</a>
+                                    <span class="menu-btn"></span>
+                                </div>
+                                <div class="menu_side_area" sec:authorize="!isAuthenticated()">
+                                    <a th:href="@{/register}" class="btn-main">Sign Up</a>
+                                    <span class="menu-btn"></span>
+                                </div>
+                                <div class="logout-container" sec:authorize="isAuthenticated()">
+                                    <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa-solid fa-user"></i> Welcome, Tran Hoai Thu
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">Action</a>
+                                        <a class="dropdown-item" href="#">Another action</a>
+                                        <a class="dropdown-item" href="#">Something else here</a>
+                                        <a class="dropdown-item" href="#">Separated link</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -164,19 +155,19 @@
                 </div>
             </div>
         </header>
-            <!-- header close -->
+        <!-- header close -->
         <!-- content begin -->
         <div class="no-bottom no-top zebra" id="content">
             <div id="top"></div>
             
             <!-- section begin -->
             <section id="subheader" class="jarallax text-light">
-                <img src="images/background/2.jpg" class="jarallax-img" alt="">
+                <img src="/user_side/images/background/school-detail-background.jpg" class="jarallax-img" alt="">
                     <div class="center-y relative text-center">
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-12 text-center">
-									<h1>Vehicle Fleet</h1>
+									<h1>School Details</h1>
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
@@ -187,273 +178,163 @@
 
             <section id="section-car-details">
                 <div class="container">
-                    <div class="row g-5">
-                        <div class="col-lg-6">
-                            <div id="slider-carousel" class="owl-carousel">
-                                <div class="item">
-                                    <img src="images/car-single/1.jpg" alt="">
-                                </div>
-                                <div class="item">
-                                    <img src="images/car-single/2.jpg" alt="">
-                                </div>
-                                <div class="item">
-                                    <img src="images/car-single/3.jpg" alt="">
-                                </div>
-                                <div class="item">
-                                    <img src="images/car-single/4.jpg" alt="">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3">
-                            <h3>BMW M2 2020</h3>
-                            <p>The BMW M2 is the high-performance version of the 2 Series 2-door coupé. The first generation of the M2 is the F87 coupé and is powered by turbocharged.</p>
-
-                            <div class="spacer-10"></div>
-
-                            <h4>Specifications</h4>
-                            <div class="de-spec">
-                                <div class="d-row">
-                                    <span class="d-title">Body</span>
-                                    <spam class="d-value">Sedan</spam>
-                                </div>
-                                <div class="d-row">
-                                    <span class="d-title">Seat</span>
-                                    <spam class="d-value">2 seats</spam>
-                                </div>
-                                <div class="d-row">
-                                    <span class="d-title">Door</span>
-                                    <spam class="d-value">2 doors</spam>
-                                </div>
-                                <div class="d-row">
-                                    <span class="d-title">Luggage</span>
-                                    <spam class="d-value">150</spam>
-                                </div>
-                                <div class="d-row">
-                                    <span class="d-title">Fuel Type</span>
-                                    <spam class="d-value">Hybird</spam>
-                                </div>
-                                <div class="d-row">
-                                    <span class="d-title">Engine</span>
-                                    <spam class="d-value">3000</spam>
-                                </div>
-                                <div class="d-row">
-                                    <span class="d-title">Year</span>
-                                    <spam class="d-value">2020</spam>
-                                </div>
-                                <div class="d-row">
-                                    <span class="d-title">Mileage</span>
-                                    <spam class="d-value">200</spam>
-                                </div>
-                                <div class="d-row">
-                                    <span class="d-title">Transmission</span>
-                                    <spam class="d-value">Automatic</spam>
-                                </div>
-                                <div class="d-row">
-                                    <span class="d-title">Drive</span>
-                                    <spam class="d-value">4WD</spam>
-                                </div>
-                                <div class="d-row">
-                                    <span class="d-title">Fuel Economy</span>
-                                    <spam class="d-value">18.5</spam>
-                                </div>
-                                <div class="d-row">
-                                    <span class="d-title">Exterior Color</span>
-                                    <spam class="d-value">Blue Metalic</spam>
-                                </div>
-                                <div class="d-row">
-                                    <span class="d-title">Interior Color</span>
-                                    <spam class="d-value">Black</spam>
-                                </div>
-                            </div>
-
-                            <div class="spacer-single"></div>
-
-                            <h4>Features</h4>
-                            <ul class="ul-style-2">
-                                <li>Bluetooth</li>
-                                <li>Multimedia Player</li>
-                                <li>Central Lock</li>
-                                <li>Sunroof</li>
-                            </ul>
-                        </div>
-
-                        <div class="col-lg-3">
-                            <div class="de-price text-center">
-                                Daily rate
-                                <h3>$265</h3>
-                            </div>
-                            <div class="spacer-30"></div>
-                            <div class="de-box mb25">
-                                <form name="contactForm" id='contact_form' method="post">
-                                    <h4>Booking this car</h4>
-
-                                    <div class="spacer-20"></div>
-
-                                    <div class="row">
-                                        <div class="col-lg-12 mb20">
-                                            <h5>Pick Up Location</h5>
-                                            <input type="text" name="PickupLocation" onfocus="geolocate()" placeholder="Enter your pickup location" id="autocomplete" autocomplete="off" class="form-control">
-
-                                            <div class="jls-address-preview jls-address-preview--hidden">
-                                                <div class="jls-address-preview__header">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-12 mb20">
-                                            <h5>Drop Off Location</h5>
-                                            <input type="text" name="DropoffLocation" onfocus="geolocate()" placeholder="Enter your dropoff location" id="autocomplete2" autocomplete="off" class="form-control">
-
-                                            <div class="jls-address-preview jls-address-preview--hidden">
-                                                <div class="jls-address-preview__header">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-12 mb20">
-                                            <h5>Pick Up Date & Time</h5>
-                                            <div class="date-time-field">
-                                                <input type="text" id="date-picker" name="Pick Up Date" value="">
-                                                <select name="Pick Up Time" id="pickup-time">
-                                                    <option selected disabled value="Select time">Time</option>
-                                                    <option value="00:00">00:00</option>
-                                                    <option value="00:30">00:30</option>
-                                                    <option value="01:00">01:00</option>
-                                                    <option value="01:30">01:30</option>
-                                                    <option value="02:00">02:00</option>
-                                                    <option value="02:30">02:30</option>
-                                                    <option value="03:00">03:00</option>
-                                                    <option value="03:30">03:30</option>
-                                                    <option value="04:00">04:00</option>
-                                                    <option value="04:30">04:30</option>
-                                                    <option value="05:00">05:00</option>
-                                                    <option value="05:30">05:30</option>
-                                                    <option value="06:00">06:00</option>
-                                                    <option value="06:30">06:30</option>
-                                                    <option value="07:00">07:00</option>
-                                                    <option value="07:30">07:30</option>
-                                                    <option value="08:00">08:00</option>
-                                                    <option value="08:30">08:30</option>
-                                                    <option value="09:00">09:00</option>
-                                                    <option value="09:30">09:30</option>
-                                                    <option value="10:00">10:00</option>
-                                                    <option value="10:30">10:30</option>
-                                                    <option value="11:00">11:00</option>
-                                                    <option value="11:30">11:30</option>
-                                                    <option value="12:00">12:00</option>
-                                                    <option value="12:30">12:30</option>
-                                                    <option value="13:00">13:00</option>
-                                                    <option value="13:30">13:30</option>
-                                                    <option value="14:00">14:00</option>
-                                                    <option value="14:30">14:30</option>
-                                                    <option value="15:00">15:00</option>
-                                                    <option value="15:30">15:30</option>
-                                                    <option value="16:00">16:00</option>
-                                                    <option value="16:30">16:30</option>
-                                                    <option value="17:00">17:00</option>
-                                                    <option value="17:30">17:30</option>
-                                                    <option value="18:00">18:00</option>
-                                                    <option value="18:30">18:30</option>
-                                                    <option value="19:00">19:00</option>
-                                                    <option value="19:30">19:30</option>
-                                                    <option value="20:00">20:00</option>
-                                                    <option value="20:30">20:30</option>
-                                                    <option value="21:00">21:00</option>
-                                                    <option value="21:30">21:30</option>
-                                                    <option value="22:00">22:00</option>
-                                                    <option value="22:30">22:30</option>
-                                                    <option value="23:00">23:00</option>
-                                                    <option value="23:30">23:30</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-12 mb20">
-                                            <h5>Return Date & Time</h5>
-                                            <div class="date-time-field">
-                                                <input type="text" id="date-picker-2" name="Collection Date" value="">
-                                                <select name="Collection Time" id="collection-time">
-                                                    <option selected disabled value="Select time">Time</option>
-                                                    <option value="00:00">00:00</option>
-                                                    <option value="00:30">00:30</option>
-                                                    <option value="01:00">01:00</option>
-                                                    <option value="01:30">01:30</option>
-                                                    <option value="02:00">02:00</option>
-                                                    <option value="02:30">02:30</option>
-                                                    <option value="03:00">03:00</option>
-                                                    <option value="03:30">03:30</option>
-                                                    <option value="04:00">04:00</option>
-                                                    <option value="04:30">04:30</option>
-                                                    <option value="05:00">05:00</option>
-                                                    <option value="05:30">05:30</option>
-                                                    <option value="06:00">06:00</option>
-                                                    <option value="06:30">06:30</option>
-                                                    <option value="07:00">07:00</option>
-                                                    <option value="07:30">07:30</option>
-                                                    <option value="08:00">08:00</option>
-                                                    <option value="08:30">08:30</option>
-                                                    <option value="09:00">09:00</option>
-                                                    <option value="09:30">09:30</option>
-                                                    <option value="10:00">10:00</option>
-                                                    <option value="10:30">10:30</option>
-                                                    <option value="11:00">11:00</option>
-                                                    <option value="11:30">11:30</option>
-                                                    <option value="12:00">12:00</option>
-                                                    <option value="12:30">12:30</option>
-                                                    <option value="13:00">13:00</option>
-                                                    <option value="13:30">13:30</option>
-                                                    <option value="14:00">14:00</option>
-                                                    <option value="14:30">14:30</option>
-                                                    <option value="15:00">15:00</option>
-                                                    <option value="15:30">15:30</option>
-                                                    <option value="16:00">16:00</option>
-                                                    <option value="16:30">16:30</option>
-                                                    <option value="17:00">17:00</option>
-                                                    <option value="17:30">17:30</option>
-                                                    <option value="18:00">18:00</option>
-                                                    <option value="18:30">18:30</option>
-                                                    <option value="19:00">19:00</option>
-                                                    <option value="19:30">19:30</option>
-                                                    <option value="20:00">20:00</option>
-                                                    <option value="20:30">20:30</option>
-                                                    <option value="21:00">21:00</option>
-                                                    <option value="21:30">21:30</option>
-                                                    <option value="22:00">22:00</option>
-                                                    <option value="22:30">22:30</option>
-                                                    <option value="23:00">23:00</option>
-                                                    <option value="23:30">23:30</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <input type='submit' id='send_message' value='Book Now' class="btn-main btn-fullwidth">
-
-                                    <div class="clearfix"></div>
-                                    
-                                </form>
-                            </div>
-
-                            <div class="de-box">
-                                <h4>Share</h4>
-                                <div class="de-color-icons">
-                                    <span><i class="fa fa-twitter fa-lg"></i></span>
-                                    <span><i class="fa fa-facebook fa-lg"></i></span>
-                                    <span><i class="fa fa-reddit fa-lg"></i></span>
-                                    <span><i class="fa fa-linkedin fa-lg"></i></span>
-                                    <span><i class="fa fa-pinterest fa-lg"></i></span>
-                                    <span><i class="fa fa-stumbleupon fa-lg"></i></span>
-                                    <span><i class="fa fa-delicious fa-lg"></i></span>
-                                    <span><i class="fa fa-envelope fa-lg"></i></span>
-                                </div>
-                            </div>
-                        </div>                
+                    <div id="img-school">
+                        <img src="https://apu.edu.vn/uploads/gallery/slider_home-1-1724144804.jpg">
                     </div>
                 </div>
             </section>
-			
-			
+            <div class="container mt-4">
+                <div class="school-card d-flex justify-content-between align-items-start">
+                    <!-- Thông tin trường học -->
+                    <div>
+                        <h2><strong>Fort Street Public School</strong></h2>
+                        <p><strong>📍 Address:</strong> 24 Fordham Avenue CAMBERWELL VIC 3124</p>
+                        <p><strong>📧 Email:</strong> FortStreet@school.com</p>
+                        <p><strong>📞 Contact:</strong> 0123456789</p>
+                        <p><strong>🌍 Website:</strong> <a href="#">FortStreet.school.edu</a></p>
+                        <p><strong>💰 Tuition fee:</strong> From 4,000,000 VND/month</p>
+                        <p><strong>🎓 Admission age:</strong> From 6 months to 5 years</p>
+                        <p><strong>🏫 School type:</strong> Public</p>
+                    </div>
+
+                    <!-- Nút hành động -->
+                    <div class="text-end">
+                        <div style="display: flex">
+                            <button class="btn btn-primary btn-custom">Request Counseling</button>
+                            <button class="btn btn-outline-primary btn-custom">Rate School</button>
+                        </div>
+                        <!-- Xếp hạng -->
+                        <div style="display: flex" >
+                            <span class="rating">⭐⭐⭐⭐⭐</span>
+                            <span>5.0/5 (120 ratings)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="container mt-4" id="school-detail-info">
+                <!-- Tabs -->
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#overview">Overview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#ratings">Ratings</a>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content mt-3">
+                    <!-- Overview Tab -->
+                    <div class="tab-pane fade show active" id="overview">
+                        <h3>School Introduction</h3>
+                        <p>Thông tin tổng quan về sản phẩm hoặc dịch vụ.</p>
+                    </div>
+
+                    <!-- Ratings Tab -->
+                    <div class="tab-pane fade" id="ratings">
+                        <h3>Average ratings</h3>
+                        <h3>4.5 Stars (120 Ratings)</h3>
+                        <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+
+                        <div class="mt-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Learning program:</span>
+                                <span>(5/5)</span>
+                            </div>
+                            <div class="rating-bar">
+                                <div class="rating-fill" style="width: 100%;"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Facilities and Utilities:</span>
+                                <span>(4/5)</span>
+                            </div>
+                            <div class="rating-bar">
+                                <div class="rating-fill" style="width: 80%;"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Extracurricular Activities:</span>
+                                <span>(4/5)</span>
+                            </div>
+                            <div class="rating-bar">
+                                <div class="rating-fill" style="width: 80%;"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Teachers and Staff:</span>
+                                <span>(4/5)</span>
+                            </div>
+                            <div class="rating-bar">
+                                <div class="rating-fill" style="width: 80%;"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Hygiene and Nutrition:</span>
+                                <span>(5/5)</span>
+                            </div>
+                            <div class="rating-bar">
+                                <div class="rating-fill" style="width: 100%;"></div>
+                            </div>
+                            <!-- Details -->
+                            <div class="mt-4">
+                                <h5>Details</h5>
+                                <div class="mb-3">
+                                    <button class="filter-btn active">All</button>
+                                    <button class="filter-btn">5 ⭐</button>
+                                    <button class="filter-btn">4 ⭐</button>
+                                    <button class="filter-btn">3 ⭐</button>
+                                    <button class="filter-btn">2 ⭐</button>
+                                    <button class="filter-btn">1 ⭐</button>
+                                </div>
+
+                                <!-- Review Item -->
+                                <div class="border p-3 rounded">
+                                    <div class="d-flex align-items-center">
+                                        <img src="https://via.placeholder.com/50" class="rounded-circle me-2" alt="User">
+                                        <div>
+                                            <strong>Will Kenny</strong>
+                                            <div class="text-muted">Oct 10th, 2022 12:00AM</div>
+                                        </div>
+                                    </div>
+                                    <p class="mt-2">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
+                                    </p>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="rating-stars me-2">⭐⭐⭐⭐⭐</div>
+                                        <span>4.5/5</span>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Learning program:</span>
+                                            <span>⭐⭐⭐⭐⭐ (5/5)</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Facilities and Utilities:</span>
+                                            <span>⭐⭐⭐⭐ (4/5)</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Extracurricular Activities:</span>
+                                            <span>⭐⭐⭐⭐ (4/5)</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Teachers and Staff:</span>
+                                            <span>⭐⭐⭐⭐⭐ (5/5)</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Hygiene and Nutrition:</span>
+                                            <span>⭐⭐⭐⭐ (4/5)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </div>
         <!-- content close -->
 
@@ -534,22 +415,13 @@
             </div>
         </footer>
         <!-- footer close -->
-        
     </div>
 
-<div id="selector">
-        <div id="demo-rtl" class="sc-opt">
-            <div class="sc-icon">RTL</div><span class="sc-val">Click to Enable</span>
-        </div>
-    </div>
-    <div id="purchase-now">
-        <a href="https://themeforest.net/cart/configure_before_adding/44940477" target="_blank"><span>$</span>25</a>
-        <div class="pn-hover">Buy Now</div>
-    </div>
     <!-- Javascript Files
     ================================================== -->
-    <script src="js/plugins.js"></script>
-    <script src="js/designesia.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/user_side/js/plugins.js"></script>
+    <script src="/user_side/js/designesia.js"></script>
 
 </body>
 
