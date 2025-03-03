@@ -1,4 +1,6 @@
 package fa.appcode.services.impl;
+
+import fa.appcode.common.utils.Constant;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
@@ -30,6 +32,7 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepository accountRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     public AccountInfo getAccountById(int id) {
         return accountRepository.getAccountInfoById(id);
     }
@@ -46,7 +49,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String encodePassword(String password) {
-        return "{bcrypt}"+ passwordEncoder.encode(password);
+        return "{bcrypt}" + passwordEncoder.encode(password);
     }
 
     @Transactional
@@ -66,69 +69,40 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-
-//    @Transactional
-//    @Override
-//    public boolean updatePassword(String email, String newPassword) {
-//
-//        AccountInfo account = accountRepository.findByEmail(email);
-//        if (account == null) {
-//            return false;
-//        }
-//        String encodedPassword = "{bcrypt}" + passwordEncoder.encode(newPassword);
-//        int numberOfRows = accountRepository.updatePassword(encodedPassword, email);
-//        return numberOfRows > 0;
-//    }
-@Transactional
-@Override
-public boolean updatePassword(String email, String newPassword) {
-    AccountInfo account = accountRepository.findByEmail(email);
-    if (account == null) {
-        return false;
+    @Transactional
+    @Override
+    public boolean updatePassword(String email, String newPassword) {
+        AccountInfo account = accountRepository.findByEmail(email);
+        if (account == null) {
+            return false;
+        }
+        String encodedPassword = encodePassword(newPassword);
+        account.setPassword(encodedPassword);
+        account.setUpdateTime(Instant.now());
+        account.setDatetimeChangePass(Instant.now());
+        accountRepository.save(account);
+        return true;
     }
-    String encodedPassword = encodePassword(newPassword);
-    account.setPassword(encodedPassword);
-    account.setUpdateTime(Instant.now());
-    accountRepository.save(account);
-    return true;
-}
 
-//    @Override
-//    public AccountInfo createAccount(AccountVo accountVo) {
-//        AccountInfo accountInfo = new AccountInfo();
-//        accountInfo.setFullName(accountVo.getFullName());
-//        accountInfo.setEmail(accountVo.getEmail());
-//        accountInfo.setPassword("{bcrypt}" + passwordEncoder.encode(accountVo.getPassword()));
-//        accountInfo.setPhone(accountVo.getPhone());
-//        accountInfo.setStatusId(0);
-//        accountInfo.setRoleId(3);
-//        accountInfo.setImageUrl("null");
-//        accountInfo.setRecordNo(1);
-//        accountInfo.setCreateId("WEB_SYSTEM");
-//        accountInfo.setUpdateId("WEB_SYSTEM");
-//        accountInfo.setCreateTime(Instant.now());
-//        accountInfo.setUpdateTime(Instant.now());
-//        return accountRepository.save(accountInfo);
-//    }
-@Override
-public AccountInfo createAccount(AccountVo accountVo) {
-    AccountInfo accountInfo = new AccountInfo();
-    accountInfo.setFullName(accountVo.getFullName());
-    accountInfo.setEmail(accountVo.getEmail());
-    accountInfo.setPassword(encodePassword(accountVo.getPassword()));
-    accountInfo.setPhone(accountVo.getPhone());
-    accountInfo.setStatusId(0);
-    accountInfo.setRoleId(3);   //
-    accountInfo.setImageUrl(null);
-    accountInfo.setRecordNo(1);
-    accountInfo.setCreateId("WEB_SYSTEM");
-    accountInfo.setUpdateId("WEB_SYSTEM");
-    Instant now = Instant.now();
-    accountInfo.setCreateTime(now);
-    accountInfo.setUpdateTime(now);
+    @Override
+    public AccountInfo createAccount(AccountVo accountVo) {
+        AccountInfo accountInfo = new AccountInfo();
+        accountInfo.setFullName(accountVo.getFullName());
+        accountInfo.setEmail(accountVo.getEmail());
+        accountInfo.setPassword(encodePassword(accountVo.getPassword()));
+        accountInfo.setPhone(accountVo.getPhone());
+        accountInfo.setStatusId(Constant.STATUS_ACTIVE);
+        accountInfo.setRoleId(Constant.PARENT_ROLE_ID);
+        accountInfo.setImageUrl(null);
+        accountInfo.setRecordNo(1);
+        accountInfo.setCreateId(Constant.WEB_SYSTEM);
+        accountInfo.setUpdateId(Constant.WEB_SYSTEM);
+        Instant now = Instant.now();
+        accountInfo.setCreateTime(now);
+        accountInfo.setUpdateTime(now);
 
         return accountRepository.save(accountInfo);
-}
+    }
 
     // Get list of user account
     @Override
@@ -168,10 +142,10 @@ public AccountInfo createAccount(AccountVo accountVo) {
             accountVo.setFullAddress(fullAddress.toString().trim());
         }
         // Resolve role and status names
-        accountVo.setRole(masterDatumService.getMasterByTypeNameAndTypeKey("ROLE",accountInfo.getRoleId()));
-        accountVo.setStatus(masterDatumService.getMasterByTypeNameAndTypeKey("ACCOUNT STATUS",accountInfo.getStatusId()));
+        accountVo.setRole(masterDatumService.getMasterByTypeNameAndTypeKey("ROLE", accountInfo.getRoleId()));
+        accountVo.setStatus(masterDatumService.getMasterByTypeNameAndTypeKey("ACCOUNT STATUS", accountInfo.getStatusId()));
 
-        return  accountVo;
+        return accountVo;
     }
 
     // Change status from active to inactive (and vice versa)
@@ -198,13 +172,17 @@ public AccountInfo createAccount(AccountVo accountVo) {
         user.setFullName(accountVo.getFullName());
         user.setPhone(accountVo.getPhone());
         user.setDob(LocalDate.parse(accountVo.getDob())); // Chuyển đổi String sang LocalDate
-        user.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE",accountVo.getRole()));
+        user.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
 
-        user.setRecordNo(user.getRecordNo()+1);
+        user.setRecordNo(user.getRecordNo() + 1);
         user.setUpdateId("SYSTEM_ADMIN");
         user.setUpdateTime(Instant.now());
 
         accountRepository.save(user);
+    }
+
+    @Override
+    public void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId) {
     }
 
     // Delete logic user account
@@ -223,9 +201,9 @@ public AccountInfo createAccount(AccountVo accountVo) {
         accountInfo.setEmail(accountVo.getEmail());
         accountInfo.setPhone(accountVo.getPhone());
         accountInfo.setDob(LocalDate.parse(accountVo.getDob()));
-        accountInfo.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE",accountVo.getRole()));
-        accountInfo.setPassword("{noop}"+accountVo.getPassword());
-        accountInfo.setStatusId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS",accountVo.getStatus())); // Default status
+        accountInfo.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
+        accountInfo.setPassword("{noop}" + accountVo.getPassword());
+        accountInfo.setStatusId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus())); // Default status
         accountInfo.setImageUrl("null");
         accountInfo.setRecordNo(1);
         accountInfo.setCreateId("SYSTEM_ADMIN");
@@ -246,7 +224,6 @@ public AccountInfo createAccount(AccountVo accountVo) {
     public List<AccountInfo> findAllRoles() {
         return List.of();
     }
-
 
 
     @Override
@@ -289,7 +266,7 @@ public AccountInfo createAccount(AccountVo accountVo) {
 
     @Override
     public Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email, String search, Pageable pageable) {
-        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email,search,pageable);
+        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email, search, pageable);
     }
 
     @Override

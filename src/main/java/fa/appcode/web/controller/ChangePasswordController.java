@@ -37,6 +37,7 @@ public class ChangePasswordController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
             AccountInfo accountInfo = accountService.findByEmail(email);
+
             boolean isPasswordMatch = passwordEncoder.matches(oldPassword, accountInfo.getPassword().replace("{bcrypt}", ""));
             if (!isPasswordMatch) {
                 model.addAttribute("passwordWrong", globalConfig.getOldPasswordWrong());
@@ -47,17 +48,18 @@ public class ChangePasswordController {
             } else if (!confirmPassword.equals(newPassword)) {
                 model.addAttribute("notMatch", globalConfig.getPasswordNotMatch());
             } else {
-                accountInfo.setPassword(accountService.encodePassword(newPassword));
                 accountService.updatePassword(email, newPassword);
+                SecurityContextHolder.getContext().setAuthentication(null);
+
                 model.addAttribute("successUpdate", globalConfig.getUpdateSuccess());
-                return "redirect:/auth/change-password";
+                return Constant.CHANGE_PASSWORD_PAGE;
             }
             return Constant.CHANGE_PASSWORD_PAGE;
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             model.addAttribute("exceptionError", globalConfig.getAnErrorOccur());
             return Constant.CHANGE_PASSWORD_PAGE;
         }
     }
+
 
 }
