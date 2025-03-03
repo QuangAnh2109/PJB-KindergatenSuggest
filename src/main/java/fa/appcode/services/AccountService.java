@@ -36,15 +36,49 @@ public interface AccountService {
 
     //tuanpa79
 
+    /**
+     * Retrieves a paginated list of user accounts based on search criteria.
+     *
+     * @param search
+     * @param pageable t
+     * @return a page of AccountVo containing user account details
+     */
     Page<AccountVo> getAllAccounts(String search, Pageable pageable);
+
+    /**
+     * Retrieves a user account based on the provided ID.
+     *
+     * @param id
+     * @return the AccountVo containing user account details
+     */
     AccountVo getAccountById(Integer id);
 
+    /**
+     * Changes the status of a user account (e.g., activates or deactivates the account).
+     *
+     * @param id
+     */
     void toggleUserStatus(Integer id);
+
+    /**
+     * Updates the details of an existing user account.
+     *
+     * @param accountVo
+     */
     void updateUser(AccountVo accountVo);
 
-    void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId);
-
+    /**
+     * Deletes logic a user account based on the provided ID. (set deleteFlg=1)
+     *
+     * @param id
+     */
     void deleteAccount(Integer id);
+
+    /**
+     * Adds a new user account by admin
+     *
+     * @param accountVo
+     */
     void addUserFromAdmin(AccountVo accountVo);
 
 
