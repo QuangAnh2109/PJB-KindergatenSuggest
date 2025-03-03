@@ -1,67 +1,75 @@
 package fa.appcode.web.controller;
 
-import fa.appcode.common.utils.ValidateUtils;
+import fa.appcode.common.utils.Constant;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.impl.CityServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.Instant;
+import java.util.regex.Pattern;
 
 @Controller
+@RequiredArgsConstructor
+@Slf4j
 public class AccountController {
-    @Autowired
-    private AccountService accountService;
-    @Autowired
-    private CityServiceImpl cityServiceImpl;
-    @Autowired
-    GlobalConfig globalConfig;
+    private final AccountService accountService;
+    private final CityServiceImpl cityService;
+    private final GlobalConfig globalConfig;
 
     @GetMapping("/auth/view-account")
     public String viewAccount(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         AccountInfo accountInfo = accountService.findByEmail(email);
+
         if (accountInfo != null) {
             model.addAttribute("accountInfo", accountInfo);
+        } else {
+            model.addAttribute("error", globalConfig.getNotFound());
         }
-        model.addAttribute("citys", cityServiceImpl.findAllByNoDelete());
-        return "user_side/view-account";
+        model.addAttribute("citys", cityService.findAllByNoDelete());
+        return Constant.VIEW_ACCOUNT_PAGE;
     }
 
     @PostMapping("/auth/update-account")
-    public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo, Model model, RedirectAttributes redirectAttributes) {
-        AccountInfo existingAccount = accountService.findByEmail(accountInfo.getEmail());
-        if (existingAccount == null) {
-            throw new RuntimeException("Account not found!");
+    public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo,
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
+        model.addAttribute("citys", cityService.findAllByNoDelete());
+        try {
+            if (!Pattern.matches(Constant.PHONE_REGEX, accountInfo.getPhone())) {
+                model.addAttribute("phoneFail", globalConfig.getPhoneIsNotValid());
+                return Constant.VIEW_ACCOUNT_PAGE;
+            }
+            AccountInfo currentAccount = accountService.findByEmail(accountInfo.getEmail());
+            if (currentAccount == null) {
+                model.addAttribute("error", globalConfig.getUserNotFound());
+                return Constant.VIEW_ACCOUNT_PAGE;
+            }
+            if (!accountInfo.getPhone().equals(currentAccount.getPhone())) {
+                AccountInfo found = accountService.findAccountInfoByPhone(accountInfo.getPhone());
+                if (found != null && !found.getEmail().equals(accountInfo.getEmail())) {
+                    model.addAttribute("phoneFail", globalConfig.getPhoneIsExist());
+                    return Constant.VIEW_ACCOUNT_PAGE;
+                }
+            }
+            accountService.updateAccountInfo(currentAccount, accountInfo);
+            redirectAttributes.addFlashAttribute("successMessage", globalConfig.getUpdateSuccess());
+            return "redirect:" + Constant.VIEW_ACCOUNT_URL;
+        } catch (Exception e) {
+            log.error("Error while updating account", e);
+            model.addAttribute("error", globalConfig.getAnErrorOccur());
+            model.addAttribute("accountInfo", accountInfo);
+            return Constant.VIEW_ACCOUNT_PAGE;
         }
-        if (ValidateUtils.validatePhone(accountInfo.getPhone())) {
-            model.addAttribute("phoneFail", "enter a valid phone number");
-            return "user_side/view-account";
-        } else if (accountService.findAccountInfoByPhone(accountInfo.getPhone()) != null) {
-            model.addAttribute("phoneFail", "This phone number is already in use");
-            return "user_side/view-account";
-        }
-        existingAccount.setFullName(accountInfo.getFullName());
-        existingAccount.setPhone(accountInfo.getPhone());
-        existingAccount.setDob(accountInfo.getDob());
-        existingAccount.setUpdateTime(Instant.now());
-        existingAccount.setCity(accountInfo.getCity());
-        existingAccount.setDistrict(accountInfo.getDistrict());
-        existingAccount.setWard(accountInfo.getWard());
-        existingAccount.setAddress(accountInfo.getAddress());
-        accountService.save(existingAccount);
-        redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
-        return "redirect:/auth/view-account";
     }
 }
 

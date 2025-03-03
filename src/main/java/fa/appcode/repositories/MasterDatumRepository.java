@@ -15,20 +15,19 @@ public interface MasterDatumRepository extends JpaRepository<MasterDatum, Intege
 
     List<MasterDataVo> findAllMasterDataVoByTypeNameInAndDeleteFlg(List<String> typeName, boolean deleteFlg);
 
-    /*   @Query("""
-        SELECT md.typeValue
-        FROM MasterDatum md
-        WHERE md.typeName = :typeName AND md.typeKey = :typeKey AND md.deleteFlg = false
-    """)
+    @Query("""
+                SELECT md.typeValue
+                FROM MasterDatum md
+                WHERE md.typeName = :typeName AND md.typeKey = :typeKey AND md.deleteFlg = false
+            """)
     String getMasterByTypeNameAndTypeKey(String typeName, Integer typeKey);
-  */
 
     @Query("""
-                SELECT md.typeValue 
+                SELECT md.typeKey
                 FROM MasterDatum md 
-                WHERE md.id = :id  AND md.deleteFlg = false
+                WHERE md.typeName = :typeName AND md.typeValue = :typeValue AND md.deleteFlg = false
             """)
-    String getMasterById(Integer id);
+    Integer getMasterKeyByTypeNameAndTypeValue(String typeName, String typeValue);
 
     @Query("""
                 SELECT md

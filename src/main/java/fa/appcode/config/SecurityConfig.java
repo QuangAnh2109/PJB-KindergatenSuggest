@@ -1,5 +1,6 @@
 package fa.appcode.config;
 
+import fa.appcode.common.utils.Constant;
 import fa.appcode.web.controller.AuthenticationHandler;
 import fa.appcode.web.controller.CustomAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,12 +41,12 @@ public class SecurityConfig {
         http.authorizeHttpRequests(configurer ->
                         configurer
                                 .requestMatchers("/", "/user_side/**", "/public/**").permitAll()
-                                .requestMatchers("/user/**").not().hasAnyAuthority("School owner", "Admin")
-                                .requestMatchers("/auth/**").hasAnyAuthority("Parent", "School owner", "Admin")
-                                .requestMatchers("/parent/**").hasAuthority("Parent")
-                                .requestMatchers("/school-owner/**").hasAuthority("School owner")
-                                .requestMatchers("/manager/**").hasAnyAuthority("School owner", "Admin")
-                                .requestMatchers("/admin/**").hasAuthority("Admin")
+                                .requestMatchers("/user/**").not().hasAnyAuthority(Constant.SCHOOL_OWNER_ROLE, Constant.ADMIN_ROLE)
+                                .requestMatchers("/auth/**").hasAnyAuthority(Constant.PARENT_ROLE, Constant.SCHOOL_OWNER_ROLE, Constant.ADMIN_ROLE)
+                                .requestMatchers("/parent/**").hasAuthority(Constant.PARENT_ROLE)
+                                .requestMatchers("/school-owner/**").hasAuthority(Constant.SCHOOL_OWNER_ROLE)
+                                .requestMatchers("/manager/**").hasAnyAuthority(Constant.SCHOOL_OWNER_ROLE, Constant.ADMIN_ROLE)
+                                .requestMatchers("/admin/**").hasAuthority(Constant.ADMIN_ROLE)
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form ->
@@ -55,9 +56,13 @@ public class SecurityConfig {
                                 .successHandler(successHandler)
                                 .failureHandler(authenticationHandler)
                                 .permitAll())
-                .logout(logout -> logout.permitAll()
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/public/home")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                 )
-                .exceptionHandling(configurer -> configurer.accessDeniedPage("/access-denied"));
+                .exceptionHandling(configurer -> configurer.accessDeniedPage("/public/access-denied"));
 
         return http.build();
     }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.Base64;
+import java.util.Date;
 
 @Component
 public class TokenUtils {
@@ -23,6 +24,13 @@ public class TokenUtils {
         long expireAt = Instant.now().getEpochSecond() + EXPIRATION_TIME;
         String token = String.join("|", KEY, email, String.valueOf(expireAt), account.getPassword(),
                 String.valueOf(account.getDatetimeChangePass()));
+        return Base64.getEncoder().encodeToString(token.getBytes());
+    }
+
+    public String generateTokenForgot(String email, Instant passwordChange) throws Exception {
+        long expireAt = Instant.now().getEpochSecond() + EXPIRATION_TIME;
+        String token = String.join("|", KEY, email, String.valueOf(expireAt),
+                String.valueOf(passwordChange));
         return Base64.getEncoder().encodeToString(token.getBytes());
     }
 
@@ -58,6 +66,7 @@ public class TokenUtils {
     public long getCreateTime(String token) throws Exception {
         return getExpiredTime(token) - EXPIRATION_TIME;
     }
+
     public boolean isTokenValid(String token, AccountInfo account) throws Exception {
         long expiredTime = getExpiredTime(token);
         if (Instant.now().getEpochSecond() > expiredTime) {
@@ -71,17 +80,9 @@ public class TokenUtils {
         long createdTime = expiredTime - EXPIRATION_TIME;
         return passwordChangeTime != null && passwordChangeTime.getEpochSecond() >= createdTime;
     }
+
     public boolean isTokenExpired(String token) throws Exception {
         return Instant.now().getEpochSecond() > getExpiredTime(token);
     }
 
-//    public boolean isTokenUsed(String token, AccountInfo account) throws Exception {
-//        Instant passwordChangeTime = account.getDatetimeChangePass();
-//        long createdTime = getCreateTime(token);
-//        long expiredTime = getExpiredTime(token);
-//
-//        return passwordChangeTime != null &&
-//                passwordChangeTime.getEpochSecond() >= createdTime &&
-//                passwordChangeTime.getEpochSecond() <= expiredTime;
-//    }
 }

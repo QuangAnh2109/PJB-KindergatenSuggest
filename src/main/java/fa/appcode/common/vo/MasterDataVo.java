@@ -8,11 +8,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class MasterDataVo {
-    private Integer id;
-
+    private int id;
+    private int typeKey;
     private String typeName;
-
-    private Integer typeKey;
-
     private String typeValue;
 }
