@@ -42,16 +42,13 @@ public class JwtUtils {
 
     public boolean validateToken(String token) {
         if (token == null || token.trim().isEmpty()) {
-            System.out.println("Token is invalid: Token is null or empty.");
             return false;
         }
         try {
             return extractClaims(token).getExpiration().after(new Date());
         } catch (ExpiredJwtException e) {
-            System.out.println("Token is expired: " + e.getMessage());
             return false;
         } catch (Exception e) {
-            System.out.println("Token is invalid: " + e.getMessage());
             return false;
         }
     }

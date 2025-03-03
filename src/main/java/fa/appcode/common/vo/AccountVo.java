@@ -1,6 +1,6 @@
 package fa.appcode.common.vo;
 
-import fa.appcode.common.constant.Constant;
+import fa.appcode.common.utils.Constant;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -27,7 +27,6 @@ public class AccountVo {
     private String dob;
     private String fullAddress;
     private String role;
-    private Integer roleId;
     private String status;
     private String recordNo;
     private String datetimeChangePass;

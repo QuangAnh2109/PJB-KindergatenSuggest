@@ -21,7 +21,7 @@ public class GlobalConfig {
     @Value("${ME_001}")
     private String incorrectLogin;
     @Value("${ME_002}")
-    private String passwordValidate;
+    private String validEmail;
     @Value("${ME_003}")
     private String requiredField;
     @Value("${ME_004}")
@@ -46,6 +46,26 @@ public class GlobalConfig {
     private String enrollSuccess;
     @Value("${ME_014}")
     private String emailExist;
+    @Value("${ME_015}")
+    private String passwordResetSuccess;
+    @Value("${ME_016}")
+    private String verifyLinkSend;
+    @Value("${ME_017}")
+    private String anErrorOccur;
+    @Value("${ME_018}")
+    private String phoneIsNotValid;
+    @Value("${ME_019}")
+    private String phoneIsExist;
+    @Value("${ME_020}")
+    private String userNotFound;
+    @Value("${ME_021}")
+    private String updateSuccess;
+    @Value("${ME_022}")
+    private String inactivateAccount;
+    @Value("${ME_023}")
+    private String oldPasswordWrong;
+    @Value("${ME_024}")
+    private String newPasswordWrong;
     @Value("${page.size}")
     private Integer sizeOfPage;
 }

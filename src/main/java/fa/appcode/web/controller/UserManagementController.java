@@ -1,6 +1,8 @@
 package fa.appcode.web.controller;
 
+import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.AccountVo;
+import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.MasterDatum;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.impl.MasterDatumServiceImpl;
@@ -15,23 +17,26 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Controller
 @RequestMapping("/admin/")
 public class UserManagementController {
     @Autowired
+    private GlobalConfig globalConfig;
+    @Autowired
     AccountService accountService;
     @Autowired
     private MasterDatumServiceImpl masterDatumService;
 
     // Display list of user account
-    @GetMapping("userlist")
-    public String getUserList(@RequestParam(defaultValue = "") String search,
-                              @RequestParam(defaultValue = "0") int currentPage,
+    @GetMapping("user-list")
+    public String getUserList(@RequestParam(defaultValue = Constant.KEY_WORD_DEFAULT) String search,
+                              @RequestParam(defaultValue = Constant.USER_INIT_PAGE) int currentPage,
                               Model model) {
 
-        Pageable pageable = PageRequest.of(currentPage, 10);
+        Pageable pageable = PageRequest.of(currentPage,globalConfig.getSizeOfPage());
 
         Page<AccountVo> accounts = accountService.getAllAccounts(search, pageable);
         List<AccountVo> listAccount = accounts.getContent();
@@ -44,14 +49,37 @@ public class UserManagementController {
     }
 
 
-    @GetMapping("adduser")
-    public String admin_addUser() {
-        return "admin_side/AddUser";
+    @GetMapping("add-user")
+    public String showAddUserPage(Model model) {
+        model.addAttribute("user", new AccountVo()); // Gửi một user rỗng để form hiển thị đúng
+        List<MasterDatum> roles = masterDatumService.getListByTypeName("ROLE");
+        List<MasterDatum> status = masterDatumService.getListByTypeName("ACCOUNT STATUS");
+        model.addAttribute("roles", roles);
+        model.addAttribute("status", status);
+
+        return "admin_side/EditUser"; // Sử dụng trang EditUser.html
+    }
+    @PostMapping("add-user")
+    public String addUser(@ModelAttribute("user") AccountVo accountVo, RedirectAttributes redirectAttributes) {
+        try {
+            System.out.println("Received user data: " + accountVo);
+            System.out.println("Role ID: " + accountVo.getRole());
+
+            String randomPassword = UUID.randomUUID().toString();
+            accountVo.setPassword(randomPassword);
+            accountVo.setConfirmPassword(randomPassword);
+
+            accountService.addUserFromAdmin(accountVo);
+            redirectAttributes.addFlashAttribute("message", "User added successfully.");
+            return "redirect:/admin/add-user";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An error occurred: " + e.getMessage());
+            return "redirect:/admin/add-user";
+        }
     }
 
-
     // Display user detail
-    @GetMapping("userdetail/{id}")
+    @GetMapping("user-detail/{id}")
     public String userDetail(@PathVariable("id") Integer id, Model model) {
         AccountVo user = accountService.getAccountById(id);
         model.addAttribute("user", user);
@@ -60,7 +88,7 @@ public class UserManagementController {
 
 
     // Activate/Deactivate user account
-    @PostMapping("userdetail/{id}/toggleStatus")
+    @PostMapping("user-detail/{id}/toggleStatus")
     public String toggleUserStatus(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
             accountService.toggleUserStatus(id);
@@ -68,11 +96,11 @@ public class UserManagementController {
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", "User not found.");
         }
-        return "redirect:/admin/userdetail/" + id;
+        return "redirect:/admin/user-detail/" + id;
     }
 
     // Display Edit User
-    @GetMapping("edituser/{id}")
+    @GetMapping("edit-user/{id}")
     public String showEditUserPage(@PathVariable("id") Integer id, Model model) {
         try {
             AccountVo user = accountService.getAccountById(id);
@@ -87,29 +115,18 @@ public class UserManagementController {
     }
 
     // update User account
-    @PostMapping("/edituser/{id}")
-    public String updateUser(@PathVariable("id") Integer id,
-                             @RequestParam String fullName,
-                             @RequestParam String phone,
-                             @RequestParam String dob,
-                             @RequestParam Integer roleId,
-                             RedirectAttributes redirectAttributes) {
-
-        System.out.println("Received request to update user with ID: " + id);
-
+    @PostMapping("edit-user/{id}")
+    public String updateUser(@ModelAttribute("user") AccountVo accountVo, RedirectAttributes redirectAttributes) {
         try {
-            accountService.updateUser(id, fullName, phone, dob, roleId);
+            accountService.updateUser(accountVo);
             redirectAttributes.addFlashAttribute("message", "Change has been successfully updated.");
-            return "redirect:/admin/edituser/" + id;
+            return "redirect:/admin/edit-user/" + accountVo.getId();
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", "User not found.");
-            return "redirect:/admin/edituser/" + id;
-        } catch (NumberFormatException e) {
-            redirectAttributes.addFlashAttribute("error", "Invalid role ID.");
-            return "redirect:/admin/edituser/" + id;
+            return "redirect:/admin/edit-user/" + accountVo.getId();
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "An error occurred: " + e.getMessage());
-            return "redirect:/admin/edituser/" + id;
+            return "redirect:/admin/edit-user/" + accountVo.getId();
         }
     }
 
