@@ -43,14 +43,13 @@ public class UserManagementController {
      * @param currentPage
      * @param model
      * @return
-     *
      */
     @GetMapping("user-list")
     public String getUserList(@RequestParam(defaultValue = Constant.KEY_WORD_DEFAULT) String search,
                               @RequestParam(defaultValue = Constant.USER_INIT_PAGE) int currentPage,
                               Model model) {
 
-        Pageable pageable = PageRequest.of(currentPage,globalConfig.getSizeOfPage());
+        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage());
 
         Page<AccountVo> accounts = accountService.getAllAccounts(search, pageable);
         List<AccountVo> listAccount = accounts.getContent();
@@ -67,7 +66,7 @@ public class UserManagementController {
      *
      * @param model
      * @return
-     * */
+     */
     @GetMapping("add-user")
     public String showAddUserPage(Model model) {
         model.addAttribute("user", new AccountVo()); // Gửi một user rỗng để form hiển thị đúng
@@ -81,7 +80,6 @@ public class UserManagementController {
 
     /**
      * Adds a new user account
-     *
      *
      * @param accountVo
      * @param redirectAttributes
@@ -103,13 +101,13 @@ public class UserManagementController {
 
             //Send mail contains information to login
             emailService.sendEmailToMany(SendMailInfo.builder().toMail(List.of(accountVo.getEmail()))
-                                                               .ccMail(List.of())
-                                                               .mailId(2)
-                                                               .detail(Map.of(Placeholder.USER_NAME, accountVo.getEmail(),
-                                                                              Placeholder.EMAIL,accountVo.getEmail(),
-                                                                              Placeholder.PASSWORD,randomPassword,
-                                                                              Placeholder.OWNER_ACCOUNT, "SYSTEM_ADMIN"))
-                                                               .build());
+                    .ccMail(List.of())
+                    .mailId(2)
+                    .detail(Map.of(Placeholder.USER_NAME, accountVo.getEmail(),
+                            Placeholder.EMAIL, accountVo.getEmail(),
+                            Placeholder.PASSWORD, randomPassword,
+                            Placeholder.OWNER_ACCOUNT, "SYSTEM_ADMIN"))
+                    .build());
 
             redirectAttributes.addFlashAttribute("message", "User added successfully.");
             return "redirect:/admin/add-user";
