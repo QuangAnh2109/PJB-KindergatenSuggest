@@ -58,7 +58,6 @@ public class SecurityConfig {
                                 .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/public/home")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 )
