@@ -105,5 +105,7 @@ public interface AccountService {
 
     AccountInfo getAccountInfo(Principal principal);
 
+    String getEmailByAccountIdAndActiveAndNoDelete(int accountId);
+
     void updateAccountInfo(AccountInfo existing, AccountInfo formData);
 }

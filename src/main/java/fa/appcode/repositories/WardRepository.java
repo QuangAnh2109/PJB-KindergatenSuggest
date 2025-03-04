@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface WardRepository extends JpaRepository<Ward, Integer> {
     List<WardVo> findAllByDistrictIdAndDeleteFlg(Integer districtId, Boolean deleteFlg);
+
+    WardVo findByIdAndDeleteFlg(int id, boolean deleteFlg);
 }

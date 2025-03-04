@@ -15,18 +15,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.regex.Pattern;
+
 @Controller
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/auth")
 public class AccountController {
     private final AccountService accountService;
     private final CityServiceImpl cityService;
     private final GlobalConfig globalConfig;
 
-    @GetMapping("/auth/view-account")
-    public String viewAccount(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+    @GetMapping("/view-account")
+    public String viewAccount(Model model, @RequestParam(value = "successMessage", required = false) String successMessage) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         AccountInfo accountInfo = accountService.findByEmail(email);
 
         if (accountInfo != null) {
@@ -34,25 +35,30 @@ public class AccountController {
         } else {
             model.addAttribute("error", globalConfig.getNotFound());
         }
+
+        if (successMessage != null && !successMessage.isEmpty()) {
+            model.addAttribute("successMessage", successMessage);
+        }
+
         model.addAttribute("citys", cityService.findAllByNoDelete());
         return Constant.VIEW_ACCOUNT_PAGE;
     }
 
-    @PostMapping("/auth/update-account")
-    public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo,
-                                Model model,
-                                RedirectAttributes redirectAttributes) {
+    @PostMapping("/update-account")
+    public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo, Model model, RedirectAttributes redirectAttributes) {
         model.addAttribute("citys", cityService.findAllByNoDelete());
         try {
             if (!Pattern.matches(Constant.PHONE_REGEX, accountInfo.getPhone())) {
                 model.addAttribute("phoneFail", globalConfig.getPhoneIsNotValid());
                 return Constant.VIEW_ACCOUNT_PAGE;
             }
+
             AccountInfo currentAccount = accountService.findByEmail(accountInfo.getEmail());
             if (currentAccount == null) {
                 model.addAttribute("error", globalConfig.getUserNotFound());
                 return Constant.VIEW_ACCOUNT_PAGE;
             }
+
             if (!accountInfo.getPhone().equals(currentAccount.getPhone())) {
                 AccountInfo found = accountService.findAccountInfoByPhone(accountInfo.getPhone());
                 if (found != null && !found.getEmail().equals(accountInfo.getEmail())) {
@@ -71,4 +77,3 @@ public class AccountController {
         }
     }
 }
-

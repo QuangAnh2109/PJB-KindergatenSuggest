@@ -7,8 +7,10 @@ import java.util.List;
 
 public interface MasterDatumService {
     String findNameById(int id);
+
     List<MasterDataVo> findAllByTypeNameNoDelete(String typeName);
 
+    List<MasterDataVo> findAllByTypeNameInNoDelete(List<String> typeName);
 
     /**
      * Get the master value based on the provided type name and type key.

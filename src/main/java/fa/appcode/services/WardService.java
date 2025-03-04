@@ -5,5 +5,7 @@ import fa.appcode.common.vo.WardVo;
 import java.util.List;
 
 public interface WardService {
-    List<WardVo> findAllByDistrictIdAndNoDelete(Integer districtId);
+    List<WardVo> findAllByDistrictIdAndNoDelete(int districtId);
+
+    WardVo findByIdAndNoDelete(int id);
 }

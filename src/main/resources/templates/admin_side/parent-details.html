@@ -103,46 +103,12 @@
 
 
     <!-- Topbar Start -->
-    <div class="navbar-custom">
-        <div class="logo-box">
-            <a href="index.html" class="logo text-center logo-dark">
-                <span class="logo-lg">
-                    <img th:src="@{/user_side/images/logo1.png}" alt="Logo" width="100" height="100">
-                </span>
-            </a>
-        </div>
-        <div class="logout-container">
-            <a href="#" class="logout-btn">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </a>
-        </div>
-    </div>
+    <div th:replace="~{admin_side/top-sidebar :: topSidebar}"></div>
     <!-- end Topbar -->
 
     <!-- Left Sidebar Start -->
-    <div class="left-side-menu">
-        <div id="sidebar-menu">
-            <ul class="metismenu" id="side-menu">
-                <li><a th:href="@{/manager/request-list}"><i class="ti-home"></i>
-                    <span> School Management </span></a>
-                </li>
-                <li th:if="${#strings.equalsIgnoreCase(role, 'Admin')}">
-                    <a th:href="@{/admin/userlist}">
-                        <i class="fa-regular fa-user"></i>
-                        <span> User Management </span>
-                    </a>
-                </li>
-                <li><a th:href="@{/manager/parent-list}"><i class="fa-solid fa-user-tie"></i>
-                    <span> Parent Management </span></a>
-                </li>
-                <li><a th:href="@{/manager/request-reminder}"><i class="fa-regular fa-bell"></i>
-                    <span> Reminder </span></a></li>
-                <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a>
-                </li>
-            </ul>
-        </div>
-    </div>
+    <div th:replace="~{admin_side/left-sidebar :: leftSidebar}"></div>
+    <!-- End Sidebar -->
     <!-- End Sidebar -->
 
     <!-- ============================================================== -->

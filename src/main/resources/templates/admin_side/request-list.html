@@ -2,12 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <title>Dashboard | Simple - Responsive Bootstrap 4 Admin Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Responsive bootstrap 4 admin template" name="description" />
-    <meta content="Coderthemes" name="author" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta content="Responsive bootstrap 4 admin template" name="description"/>
+    <meta content="Coderthemes" name="author"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
     <!-- App favicon -->
     <link rel="shortcut icon" th:href="@{/admin_side/images/favicon.ico}">
@@ -15,84 +15,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- App css -->
-    <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
-    <link th:href="@{/admin_side/css/icons.min.css}" rel="stylesheet" type="text/css" />
-    <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/admin_side/css/icons.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/admin_side/css/request-list.css}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
 
-    <style>
-        .btn-closed {
-            background-color: #E6FAE6;
-            color: #28a745;
-            border: 2px solid #555;
-            border-radius: 20px;
-            padding: 5px 15px;
-            font-weight: bold;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .btn-closed:hover {
-            border-color: #333;
-            background-color: #D4F5D4;
-        }
-
-        .app-search {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .app-search-box {
-            max-width: 300px;
-        }
-
-        .app-search .form-control {
-            border-radius: 20px;
-            border: 2px solid #ccc;
-            padding: 10px 15px;
-        }
-
-        .app-search .btn {
-            background-color: #28a745;
-            color: white;
-            border-radius: 20px;
-            padding: 8px 15px;
-            border: none;
-        }
-
-        .pagination-container {
-            margin-top: 20px;
-        }
-
-        .logout-container {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 20px;
-        }
-
-        .logout-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-            color: #3498db;
-            margin-top: 20px;
-        }
-
-        .logout-btn i {
-            font-size: 22px;
-            color: #333;
-        }
-        .btn-closed {
-            font-size: 12px; /* Giảm kích thước chữ */
-            padding: 3px 10px; /* Giảm padding */
-            border-radius: 15px; /* Giảm độ bo tròn */
-            min-width: 70px; /* Đặt chiều rộng tối thiểu */
-            text-align: center;
-        }
-    </style>
 </head>
 
 <body>
@@ -100,46 +28,11 @@
 <div id="wrapper">
 
     <!-- Topbar Start -->
-    <div class="navbar-custom">
-        <div class="logo-box">
-            <a href="index.html" class="logo text-center logo-dark">
-                <span class="logo-lg">
-                    <img th:src="@{/user_side/images/logo1.png}" alt="Logo" width="100" height="100">
-                </span>
-            </a>
-        </div>
-        <div class="logout-container">
-            <a href="#" class="logout-btn">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </a>
-        </div>
-    </div>
+    <div th:replace="~{admin_side/top-sidebar :: topSidebar}"></div>
     <!-- end Topbar -->
 
     <!-- Left Sidebar Start -->
-    <div class="left-side-menu">
-        <div id="sidebar-menu">
-            <ul class="metismenu" id="side-menu">
-                <li><a th:href="@{/manager/request-list}"><i class="ti-home"></i>
-                    <span> School Management </span></a>
-                </li>
-                <li th:if="${#strings.equalsIgnoreCase(role, 'Admin')}">
-                    <a th:href="@{/admin/userlist}">
-                        <i class="fa-regular fa-user"></i>
-                        <span> User Management </span>
-                    </a>
-                </li>
-                <li><a th:href="@{/manager/parent-list}"><i class="fa-solid fa-user-tie"></i>
-                    <span> Parent Management </span></a>
-                </li>
-                <li><a th:href="@{/manager/request-reminder}"><i class="fa-regular fa-bell"></i>
-                    <span> Reminder </span></a></li>
-                <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a>
-                </li>
-            </ul>
-        </div>
-    </div>
+    <div th:replace="~{admin_side/left-sidebar :: leftSidebar}"></div>
     <!-- End Sidebar -->
 
     <div class="content-page">
@@ -148,7 +41,8 @@
                 <div>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a th:href="@{/manager/request-list}">Request Management</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/manager/request-list}">Request Management</a>
+                            </li>
                             <li class="breadcrumb-item active" aria-current="page">Request List</li>
                         </ol>
                     </nav>
@@ -159,7 +53,8 @@
                         <form class="app-search" th:action="@{/manager/searchRequestList}" method="get">
                             <div class="app-search-box">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="keyword" placeholder="Search for request ....">
+                                    <input type="text" class="form-control" name="keyword"
+                                           placeholder="Search for request ....">
                                     <div class="input-group-append">
                                         <button class="btn" type="submit">
                                             <i class="fas fa-search"></i>
@@ -187,12 +82,15 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="request : ${requestList}" th:attr="onclick='redirectToDetail('+ ${request.id}+')'">
-                                       <th scope="row" th:text="${request.id}"/>
-                                       <th th:text="${request.fullName}"/>
-                                       <th th:text="${request.requestEmail}"/>
-                                       <th th:text="${request.requestPhone}"/>
-                                       <td><button class="btn btn-closed" th:text="${request.requestMasterName}"/></td>
+                                <tr th:each="request : ${requestList}"
+                                    th:attr="onclick='redirectToDetail('+ ${request.id}+')'">
+                                    <th scope="row" th:text="${request.id}"/>
+                                    <th th:text="${request.fullName}"/>
+                                    <th th:text="${request.requestEmail}"/>
+                                    <th th:text="${request.requestPhone}"/>
+                                    <td>
+                                        <button class="btn btn-closed" th:text="${request.requestMasterName}"/>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -206,24 +104,28 @@
                         <ul class="pagination justify-content-end">
                             <!-- Previous Button -->
                             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                                <a class="page-link" th:if="${currentPage > 0}" th:href="@{'?currentPage=' + ${currentPage - 1}}">Previous</a>
+                                <a class="page-link" th:if="${currentPage > 0}"
+                                   th:href="@{'?currentPage=' + ${currentPage - 1}}">Previous</a>
                             </li>
 
                             <!-- Page Numbers -->
                             <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, numberPage - 1)}"
                                 th:classappend="${pageNum == currentPage} ? 'active'">
-                                <a class="page-link" th:href="@{'?currentPage=' + ${pageNum}}" th:text="${pageNum + 1}"></a>
+                                <a class="page-link" th:href="@{'?currentPage=' + ${pageNum}}"
+                                   th:text="${pageNum + 1}"></a>
                             </li>
 
                             <!-- Next Button -->
                             <li class="page-item" th:classappend="${currentPage == numberPage - 1} ? 'disabled'">
-                                <a class="page-link" th:if="${currentPage < numberPage - 1}" th:href="@{'?currentPage=' + ${currentPage + 1}}">Next</a>
+                                <a class="page-link" th:if="${currentPage < numberPage - 1}"
+                                   th:href="@{'?currentPage=' + ${currentPage + 1}}">Next</a>
                             </li>
                         </ul>
                     </nav>
                 </th:block>
                 <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
-                    <div id="myToast" class="toast" style="position: absolute; top: 0; right: 0;" data-delay="5000" th:if="${message}">
+                    <div id="myToast" class="toast" style="position: absolute; top: 0; right: 0;" data-delay="5000"
+                         th:if="${message}">
                         <div class="toast-header">
                             <strong class="mr-auto">Notification</strong>
                             <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">

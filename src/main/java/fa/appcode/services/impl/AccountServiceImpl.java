@@ -1,5 +1,7 @@
 package fa.appcode.services.impl;
 
+import fa.appcode.common.utils.Constant;
+
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
@@ -7,13 +9,9 @@ import fa.appcode.common.vo.ParentVo;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.MasterDatumService;
-import fa.appcode.web.controller.ForgotPasswordController;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
@@ -28,8 +26,10 @@ import java.util.List;
 public class AccountServiceImpl implements AccountService {
     @Autowired
     private MasterDatumService masterDatumService;
+
     @Autowired
     private AccountRepository accountRepository;
+
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public AccountInfo getAccountById(int id) {
@@ -68,18 +68,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-    //    @Transactional
-//    @Override
-//    public boolean updatePassword(String email, String newPassword) {
-//
-//        AccountInfo account = accountRepository.findByEmail(email);
-//        if (account == null) {
-//            return false;
-//        }
-//        String encodedPassword = "{bcrypt}" + passwordEncoder.encode(newPassword);
-//        int numberOfRows = accountRepository.updatePassword(encodedPassword, email);
-//        return numberOfRows > 0;
-//    }
     @Transactional
     @Override
     public boolean updatePassword(String email, String newPassword) {
@@ -90,27 +78,12 @@ public class AccountServiceImpl implements AccountService {
         String encodedPassword = encodePassword(newPassword);
         account.setPassword(encodedPassword);
         account.setUpdateTime(Instant.now());
+        account.setDatetimeChangePass(Instant.now());
+        account.setRecordNo(account.getRecordNo() + 1);
         accountRepository.save(account);
         return true;
     }
 
-    //    @Override
-//    public AccountInfo createAccount(AccountVo accountVo) {
-//        AccountInfo accountInfo = new AccountInfo();
-//        accountInfo.setFullName(accountVo.getFullName());
-//        accountInfo.setEmail(accountVo.getEmail());
-//        accountInfo.setPassword("{bcrypt}" + passwordEncoder.encode(accountVo.getPassword()));
-//        accountInfo.setPhone(accountVo.getPhone());
-//        accountInfo.setStatusId(0);
-//        accountInfo.setRoleId(3);
-//        accountInfo.setImageUrl("null");
-//        accountInfo.setRecordNo(1);
-//        accountInfo.setCreateId("WEB_SYSTEM");
-//        accountInfo.setUpdateId("WEB_SYSTEM");
-//        accountInfo.setCreateTime(Instant.now());
-//        accountInfo.setUpdateTime(Instant.now());
-//        return accountRepository.save(accountInfo);
-//    }
     @Override
     public AccountInfo createAccount(AccountVo accountVo) {
         AccountInfo accountInfo = new AccountInfo();
@@ -118,16 +91,15 @@ public class AccountServiceImpl implements AccountService {
         accountInfo.setEmail(accountVo.getEmail());
         accountInfo.setPassword(encodePassword(accountVo.getPassword()));
         accountInfo.setPhone(accountVo.getPhone());
-        accountInfo.setStatusId(0);
-        accountInfo.setRoleId(3);   //
+        accountInfo.setStatusId(Constant.STATUS_INACTIVE);
+        accountInfo.setRoleId(Constant.PARENT_ROLE_ID);
         accountInfo.setImageUrl(null);
         accountInfo.setRecordNo(1);
-        accountInfo.setCreateId("WEB_SYSTEM");
-        accountInfo.setUpdateId("WEB_SYSTEM");
+        accountInfo.setCreateId(Constant.WEB_SYSTEM);
+        accountInfo.setUpdateId(Constant.WEB_SYSTEM);
         Instant now = Instant.now();
         accountInfo.setCreateTime(now);
         accountInfo.setUpdateTime(now);
-
         return accountRepository.save(accountInfo);
     }
 
@@ -207,6 +179,7 @@ public class AccountServiceImpl implements AccountService {
 
         accountRepository.save(user);
     }
+
 
     // Delete logic user account
     @Override
@@ -310,11 +283,16 @@ public class AccountServiceImpl implements AccountService {
         existing.setDistrict(formData.getDistrict());
         existing.setWard(formData.getWard());
         existing.setAddress(formData.getAddress());
+        existing.setRecordNo(existing.getRecordNo() + 1);
         accountRepository.save(existing);
     }
 
-//    @Override
+    //    @Override
 //    public AccountInfo findWithFullAddressByEmail(String email, boolean deleteFlg) {
 //        return accountRepository.findWithFullAddressByEmail(email, deleteFlg);
 //    }
+    @Override
+    public String getEmailByAccountIdAndActiveAndNoDelete(int accountId) {
+        return accountRepository.getEmailByAccountIdAndStatusIdAndDeleteFlg(accountId, 1, false);
+    }
 }
