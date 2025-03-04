@@ -3,18 +3,24 @@ package fa.appcode.services.impl;
 import fa.appcode.repositories.WardRepository;
 import fa.appcode.services.WardService;
 import fa.appcode.common.vo.WardVo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class WardServiceImpl implements WardService {
-    @Autowired
-    private WardRepository wardRepository;
+
+    private final WardRepository wardRepository;
 
     @Override
-    public List<WardVo> findAllByDistrictIdAndNoDelete(Integer districtId) {
+    public List<WardVo> findAllByDistrictIdAndNoDelete(int districtId) {
         return wardRepository.findAllByDistrictIdAndDeleteFlg(districtId, false);
+    }
+
+    @Override
+    public WardVo findByIdAndNoDelete(int id) {
+        return wardRepository.findByIdAndDeleteFlg(id, false);
     }
 }

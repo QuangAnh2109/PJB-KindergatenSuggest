@@ -19,16 +19,15 @@ import java.util.regex.Pattern;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/auth")
 public class AccountController {
     private final AccountService accountService;
     private final CityServiceImpl cityService;
     private final GlobalConfig globalConfig;
 
-    @GetMapping("/auth/view-account")
-    public String viewAccount(Model model,
-                              @ModelAttribute("successMessage") String successMessage) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+    @GetMapping("/view-account")
+    public String viewAccount(Model model, @RequestParam(value = "successMessage", required = false) String successMessage) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         AccountInfo accountInfo = accountService.findByEmail(email);
 
         if (accountInfo != null) {
@@ -45,10 +44,8 @@ public class AccountController {
         return Constant.VIEW_ACCOUNT_PAGE;
     }
 
-    @PostMapping("/auth/update-account")
-    public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo,
-                                Model model,
-                                RedirectAttributes redirectAttributes) {
+    @PostMapping("/update-account")
+    public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo, Model model, RedirectAttributes redirectAttributes) {
         model.addAttribute("citys", cityService.findAllByNoDelete());
         try {
             if (!Pattern.matches(Constant.PHONE_REGEX, accountInfo.getPhone())) {
@@ -79,5 +76,4 @@ public class AccountController {
             return Constant.VIEW_ACCOUNT_PAGE;
         }
     }
-
 }

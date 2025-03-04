@@ -21,7 +21,12 @@ public class MasterDatumServiceImpl implements MasterDatumService {
 
     @Override
     public List<MasterDataVo> findAllByTypeNameNoDelete(String typeName) {
-        return masterDatumRepository.findAllByTypeNameAndDeleteFlg(typeName, false);
+        return masterDatumRepository.findAllMasterDataVoByTypeNameAndDeleteFlg(typeName, false);
+    }
+
+    @Override
+    public List<MasterDataVo> findAllByTypeNameInNoDelete(List<String> typeName) {
+        return masterDatumRepository.findAllMasterDataVoByTypeNameInAndDeleteFlg(typeName, false);
     }
 
   @Override

@@ -41,22 +41,6 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
     @Query("UPDATE AccountInfo a SET a.password = ?1 WHERE a.email = ?2 AND a.deleteFlg=false")
     int updatePassword(String newPassword, String email);
 
-    /**
-     * This method retrieves a list of user accounts along with their full addresses.
-     * <p>
-     * The returned list contains user accounts that match the search criteria, if provided.
-     * The search is performed on the user's full name, email, or phone number.
-     * <p>
-     * The address information includes:
-     * - Account address
-     * - Ward name
-     * - District name
-     * - City name.
-     *
-     * @param search
-     * @param pageable
-     * @return
-     */
     @Query("""
             SELECT new fa.appcode.common.vo.AccountVo(
                 ai.id, ai.fullName, ai.email, ai.phone, ai.dob, 
@@ -122,6 +106,9 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
             "WHERE ma.id=3 AND (ai.fullName LIKE %:search% OR ai.email LIKE%:search% OR ai.phone LIKE %:search% ) AND ai.deleteFlg=false AND ai.statusId=1 " +
             "GROUP BY ai.id,ai.fullName,ai.email,ai.phone")
     Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(@Param("email") String email, @Param("search") String search, Pageable pageable);
+
+    @Query("SELECT ai.email FROM AccountInfo ai WHERE ai.id = :id AND ai.statusId = :statusId AND ai.deleteFlg = :deleteFlg")
+    String getEmailByAccountIdAndStatusIdAndDeleteFlg(@Param("id") int id, @Param("statusId") int statusId, @Param("deleteFlg") boolean deleteFlg);
 
     @Query("SELECT a FROM AccountInfo a " +
             "JOIN FETCH a.city " +
