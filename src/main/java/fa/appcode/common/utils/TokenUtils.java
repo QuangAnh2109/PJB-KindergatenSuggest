@@ -1,88 +1,66 @@
 package fa.appcode.common.utils;
 
 import fa.appcode.entities.AccountInfo;
-import fa.appcode.services.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
+import fa.appcode.exceptions.TokenException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
-import java.util.Date;
 
 @Component
 public class TokenUtils {
-    @Autowired
-    private AccountService accountService;
-    private static final String KEY = "gugugu";
+    @Value("${token.key}")
+    private String tokenKey;
+
     private static final long EXPIRATION_TIME = 10 * 60;
 
-    public String generateToken(String email) throws Exception {
-        AccountInfo account = accountService.findByEmail(email);
-        if (account == null) {
-            throw new Exception("Account not found for email: " + email);
-        }
+    public String generateTokenForgot(String email, Instant passwordChange) {
         long expireAt = Instant.now().getEpochSecond() + EXPIRATION_TIME;
-        String token = String.join("|", KEY, email, String.valueOf(expireAt), account.getPassword(),
-                String.valueOf(account.getDatetimeChangePass()));
-        return Base64.getEncoder().encodeToString(token.getBytes());
+        return encodeToken(tokenKey, email, String.valueOf(expireAt), String.valueOf(passwordChange.getEpochSecond()));
     }
 
-    public String generateTokenForgot(String email, Instant passwordChange) throws Exception {
-        long expireAt = Instant.now().getEpochSecond() + EXPIRATION_TIME;
-        String token = String.join("|", KEY, email, String.valueOf(expireAt),
-                String.valueOf(passwordChange));
-        return Base64.getEncoder().encodeToString(token.getBytes());
+    public String generateTokenRegister(String email) {
+        return encodeToken(tokenKey, email);
     }
 
-    public String generateTokenRegister(String email) throws Exception {
-        String token = String.join("|", KEY, email);
-        return Base64.getEncoder().encodeToString(token.getBytes());
+    private String encodeToken(String... parts) {
+        return Base64.getEncoder().encodeToString(String.join("|", parts).getBytes(StandardCharsets.UTF_8));
     }
 
-    public String decodeToken(String token) throws Exception {
+    private String[] parseToken(String token) {
         try {
-            return new String(Base64.getDecoder().decode(token));
+            String decoded = new String(Base64.getDecoder().decode(token), StandardCharsets.UTF_8);
+            return decoded.split("\\|");
         } catch (IllegalArgumentException e) {
-            throw new Exception("Invalid token format", e);
+            throw new TokenException(Constant.INVALID_TOKEN_FORMAT, e);
         }
     }
 
-    public String getEmailFromToken(String token) throws Exception {
-        String[] parts = decodeToken(token).split("\\|");
-        if (parts.length < 2) {
-            throw new Exception("Invalid token structure");
-        }
+    public String getEmailFromToken(String token) {
+        String[] parts = parseToken(token);
+        if (parts.length < 2) throw new TokenException(Constant.INVALID_TOKEN);
         return parts[1];
     }
 
-    public long getExpiredTime(String token) throws Exception {
-        String[] parts = decodeToken(token).split("\\|");
-        if (parts.length < 3) {
-            throw new Exception("Invalid token structure");
+    public long getExpiredTime(String token) {
+        String[] parts = parseToken(token);
+        if (parts.length < 3) throw new TokenException(Constant.INVALID_TOKEN);
+        try {
+            return Long.parseLong(parts[2]);
+        } catch (NumberFormatException e) {
+            throw new TokenException(Constant.INVALID_TOKEN_FORMAT, e);
         }
-        return Long.parseLong(parts[2]);
     }
 
-    public long getCreateTime(String token) throws Exception {
-        return getExpiredTime(token) - EXPIRATION_TIME;
-    }
-
-    public boolean isTokenValid(String token, AccountInfo account) throws Exception {
+    public boolean isTokenValid(String token, AccountInfo account) {
         long expiredTime = getExpiredTime(token);
-        if (Instant.now().getEpochSecond() > expiredTime) {
-            return false; // Token expired
-        }
-        return !isTokenUsed(account, expiredTime);
+        return Instant.now().getEpochSecond() <= expiredTime && !isTokenUsed(account, expiredTime);
     }
 
-    public boolean isTokenUsed(AccountInfo account, long expiredTime) throws Exception {
-        Instant passwordChangeTime = account.getDatetimeChangePass();
-        long createdTime = expiredTime - EXPIRATION_TIME;
-        return passwordChangeTime != null && passwordChangeTime.getEpochSecond() >= createdTime;
+    public boolean isTokenUsed(AccountInfo account, long expiredTime) {
+        if (account.getDatetimeChangePass() == null) return false;
+        return account.getDatetimeChangePass().getEpochSecond() >= (expiredTime - EXPIRATION_TIME);
     }
-
-    public boolean isTokenExpired(String token) throws Exception {
-        return Instant.now().getEpochSecond() > getExpiredTime(token);
-    }
-
 }

@@ -1,22 +1,26 @@
 package fa.appcode.web.controller;
 
+import fa.appcode.common.vo.CityVo;
+import fa.appcode.services.CityService;
 import fa.appcode.services.WardService;
 import fa.appcode.services.DistrictService;
 import fa.appcode.common.vo.DistrictVo;
 import fa.appcode.common.vo.WardVo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/public")
+@AllArgsConstructor
 public class AddressController {
-    @Autowired
-    private DistrictService districtService;
 
-    @Autowired
-    private WardService wardService;
+    private final CityService cityService;
+
+    private final DistrictService districtService;
+
+    private final WardService wardService;
 
     @GetMapping("/district")
     List<DistrictVo> getDistrictByCity(@RequestParam(name = "cityId") Integer cityId){
@@ -25,5 +29,18 @@ public class AddressController {
     @GetMapping("/ward")
     List<WardVo> getWardByDistrict(@RequestParam(name = "districtId") Integer districtId){
         return wardService.findAllByDistrictIdAndNoDelete(districtId);
+    }
+
+    @GetMapping("/city/{id}")
+    CityVo getCityById(@PathVariable("id") int id){
+        return cityService.findByIdAndNoDelete(id);
+    }
+    @GetMapping("/district/{id}")
+    DistrictVo getDistrictById(@PathVariable("id") int id){
+        return districtService.findByIdAndNoDelete(id);
+    }
+    @GetMapping("/ward/{id}")
+    WardVo getWardById(@PathVariable("id") int id){
+        return wardService.findByIdAndNoDelete(id);
     }
 }

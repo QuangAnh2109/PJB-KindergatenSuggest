@@ -9,13 +9,9 @@ import fa.appcode.common.vo.ParentVo;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.MasterDatumService;
-import fa.appcode.web.controller.ForgotPasswordController;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
@@ -30,8 +26,10 @@ import java.util.List;
 public class AccountServiceImpl implements AccountService {
     @Autowired
     private MasterDatumService masterDatumService;
+
     @Autowired
     private AccountRepository accountRepository;
+
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public AccountInfo getAccountById(int id) {
@@ -50,7 +48,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String encodePassword(String password) {
-        return "{bcrypt}"+ passwordEncoder.encode(password);
+        return "{bcrypt}" + passwordEncoder.encode(password);
     }
 
     @Transactional
@@ -81,6 +79,7 @@ public class AccountServiceImpl implements AccountService {
         account.setPassword(encodedPassword);
         account.setUpdateTime(Instant.now());
         account.setDatetimeChangePass(Instant.now());
+        account.setRecordNo(account.getRecordNo() + 1);
         accountRepository.save(account);
         return true;
     }
@@ -92,7 +91,7 @@ public class AccountServiceImpl implements AccountService {
         accountInfo.setEmail(accountVo.getEmail());
         accountInfo.setPassword(encodePassword(accountVo.getPassword()));
         accountInfo.setPhone(accountVo.getPhone());
-        accountInfo.setStatusId(Constant.STATUS_ACTIVE);
+        accountInfo.setStatusId(Constant.STATUS_INACTIVE);
         accountInfo.setRoleId(Constant.PARENT_ROLE_ID);
         accountInfo.setImageUrl(null);
         accountInfo.setRecordNo(1);
@@ -101,7 +100,6 @@ public class AccountServiceImpl implements AccountService {
         Instant now = Instant.now();
         accountInfo.setCreateTime(now);
         accountInfo.setUpdateTime(now);
-
         return accountRepository.save(accountInfo);
     }
 
@@ -181,7 +179,7 @@ public class AccountServiceImpl implements AccountService {
 
         accountRepository.save(user);
     }
-    
+
 
     // Delete logic user account
     @Override
@@ -285,11 +283,16 @@ public class AccountServiceImpl implements AccountService {
         existing.setDistrict(formData.getDistrict());
         existing.setWard(formData.getWard());
         existing.setAddress(formData.getAddress());
+        existing.setRecordNo(existing.getRecordNo() + 1);
         accountRepository.save(existing);
     }
 
-//    @Override
+    //    @Override
 //    public AccountInfo findWithFullAddressByEmail(String email, boolean deleteFlg) {
 //        return accountRepository.findWithFullAddressByEmail(email, deleteFlg);
 //    }
+    @Override
+    public String getEmailByAccountIdAndActiveAndNoDelete(int accountId) {
+        return accountRepository.getEmailByAccountIdAndStatusIdAndDeleteFlg(accountId, 1, false);
+    }
 }

@@ -45,7 +45,7 @@ public class RequestController {
 
     @GetMapping("/manager/request-list")
     public String showRequestList(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
-                                  Model model, Principal principal,HttpSession session) {
+                                  Model model, Principal principal, HttpSession session) {
         Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         Page<RequestVo> requestList;
@@ -68,7 +68,7 @@ public class RequestController {
 
     @GetMapping("/manager/request-reminder")
     public String showRequestReminder(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
-                                      Model model, Principal principal ,HttpSession session) {
+                                      Model model, Principal principal, HttpSession session) {
         Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         Page<RequestVo> requestList;
@@ -143,9 +143,9 @@ public class RequestController {
     }
 
     @GetMapping("/manager/searchRequestReminder")
-    public ResponseEntity<Page<RequestVo>>  searchRequestReminder(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
-                                        @RequestParam(name = "keyword", required = false) String keyword,
-                                        Model model, Principal principal) {
+    public ResponseEntity<Page<RequestVo>> searchRequestReminder(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
+                                                                 @RequestParam(name = "keyword", required = false) String keyword,
+                                                                 Model model, Principal principal) {
         Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         Page<RequestVo> requestList;
