@@ -68,9 +68,9 @@ public class ParentController {
         String role = accountService.findAccountRoleString(principal.getName());
 
         Page<ParentVo> list;
-        if (role.equals("Admin")) {
+        if (role.equals(Constant.ADMIN_ROLE)) {
             list = accountService.findAllParent(search, pageable);
-        } else if (role.equals("School owner")) {
+        } else if (role.equals(Constant.SCHOOL_OWNER_ROLE)) {
             list = accountService.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(principal.getName(), search, pageable);
         } else {
             list = Page.empty();
@@ -84,6 +84,7 @@ public class ParentController {
         model.addAttribute("search", search);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", list.getTotalPages());
+        model.addAttribute("role", role);
         /*
          * Return view name
          */
@@ -112,17 +113,18 @@ public class ParentController {
         List<SchoolInfo> schoolInfoList;
         List<EnrolledSchoolVo> requestList;
 
-        if ("Admin".equals(role)) {
+        if (Constant.ADMIN_ROLE.equals(role)) {
 
             listParentEnroll = enrollSchoolService.findParentEnrolledSchoolByParentId(id, pageable);
             schoolInfoList = schoolInfoService.findAllSchoolPublished();
             requestList = enrollSchoolService.findParentRequestEnrolledSchoolByParentId(id);
-        } else if ("School owner".equals(role)) {
+        } else if (Constant.SCHOOL_OWNER_ROLE.equals(role)) {
 
             listParentEnroll = enrollSchoolService.findParentEnrolledSchoolByParentIdAndSchoolOwner(id, principal.getName(), pageable);
             schoolInfoList = schoolInfoService.findSchoolInfoListByAccountEmail(principal.getName());
-            requestList=enrollSchoolService.findParentRequestEnrollSchoolByParentIdAndSchoolOwner(id, principal.getName());
+            requestList = enrollSchoolService.findParentRequestEnrollSchoolByParentIdAndSchoolOwner(id, principal.getName());
         } else {
+            Log4jUtils.getLogger().warn("There No Role, the List is emoty");
             listParentEnroll = Page.empty();
             schoolInfoList = Collections.emptyList();
             requestList = Collections.emptyList();
@@ -141,6 +143,7 @@ public class ParentController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("requestList", requestList);
         model.addAttribute("numberPage", listParentEnroll.getTotalPages());
+        model.addAttribute("role", role);
         /*
          * Return view name
          */
@@ -201,21 +204,25 @@ public class ParentController {
 //                    redirectAttributes.addFlashAttribute("alertType", "danger");
 //                }
 //            }
-            //GET ENROLL SCHOOL
-            EnrollSchool enrollSchool = enrollSchoolService.findEnrollSchoolById(enrollId);
-            //EXECUTE ACTION BASE ON ACTION TYPE UNENROLL, APPROVE, REJECT
-            String result=enrollSchoolService.execute(actionType,enrollSchool, LocalDate.now(), normalizedRole, principal);
-            if(result!=null){
-                redirectAttributes.addFlashAttribute("message", "You have been successfully "+result+" parent to " + enrollSchool.getSchool().getSchoolName());
-                redirectAttributes.addFlashAttribute("alertType", "success");
-            } else {
-                redirectAttributes.addFlashAttribute("alertType", "danger");
-            }
+        //GET ENROLL SCHOOL
+        EnrollSchool enrollSchool = enrollSchoolService.findEnrollSchoolById(enrollId);
+        //EXECUTE ACTION BASE ON ACTION TYPE UNENROLL, APPROVE, REJECT
+        String result = enrollSchoolService.execute(actionType, enrollSchool, LocalDate.now(), normalizedRole, principal);
+        if (result != null && result.equals(Constant.APPROVE_ENROLL_REQUEST)) {
+            redirectAttributes.addFlashAttribute("message", "Enrolled the parent successfully into the school.");
+            redirectAttributes.addFlashAttribute("alertType", "success");
+        } else if(result != null && (result.equals(Constant.REJECT_ENROLL_REQUEST) || result.equals(Constant.UNENROLL_PARENT_SCHOOL))) {
+            redirectAttributes.addFlashAttribute("message", "You have " + result + " parent to " + enrollSchool.getSchool().getSchoolName());
+            redirectAttributes.addFlashAttribute("action", result.toUpperCase());
+            redirectAttributes.addFlashAttribute("alertType", "danger");
+        } else {
+            redirectAttributes.addFlashAttribute("alertType", "danger");
+        }
 
         /*
          * Return view name
          */
-        return "redirect:"+Constant.VIEW_PARENT_DETAIL_URL + id;
+        return "redirect:" + Constant.VIEW_PARENT_DETAIL_URL + id;
     }
 
 }
