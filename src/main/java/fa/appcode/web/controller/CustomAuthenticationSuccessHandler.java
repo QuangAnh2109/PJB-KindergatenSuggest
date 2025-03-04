@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,10 +20,9 @@ import java.net.http.HttpRequest;
 import java.util.Collection;
 
 @Component
+@RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
-    @Autowired
-    AccountService accountService;
-
+    private final AccountService accountService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -41,15 +41,15 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 redirectUrl = "/manager/request-list";
                 break;
             } else if (role.equals(Constant.SCHOOL_OWNER_ROLE)) {
-                redirectUrl = "/manager/request-list";
+                redirectUrl = "/manager/home";
                 break;
             } else if (role.equals(Constant.PARENT_ROLE)) {
                 redirectUrl = "/public/home";
                 break;
             }
         }
-        session.setAttribute("idAccount",accountInfo.getId());
-        session.setAttribute("nameAccount",accountInfo.getFullName());
+        session.setAttribute("idAccount", accountInfo.getId());
+        session.setAttribute("nameAccount", accountInfo.getFullName());
         response.sendRedirect(request.getContextPath() + redirectUrl);
     }
 }

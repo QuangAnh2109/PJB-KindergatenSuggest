@@ -1,6 +1,8 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.common.utils.Constant;
+import fa.appcode.common.utils.Placeholder;
+import fa.appcode.common.utils.SendMailInfo;
 import fa.appcode.common.utils.TokenUtils;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.config.GlobalConfig;
@@ -15,6 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("public/register")
@@ -55,8 +60,15 @@ public class RegisterController {
         try {
             accountService.createAccount(accountVo);
             String token = tokenUtils.generateTokenRegister(accountVo.getEmail());
-            emailService.sendEmail(accountVo.getEmail(), "Verify Your Account",
-                    "Click this link to verify your account: " + Constant.REGISTER_VERIFY_URL + token);
+            String verifiedLink = Constant.REGISTER_VERIFY_URL + token;
+            Map<Placeholder, String> link = Map.of(Placeholder.LINK, verifiedLink);
+            SendMailInfo sendMailInfo = SendMailInfo.builder()
+                    .toMail(List.of(accountVo.getEmail()))
+                    .mailId(Constant.SEND_EMAIL_FORGOT)
+                    .ccMail(List.of())
+                    .detail(link)
+                    .build();
+            emailService.sendEmailToMany(sendMailInfo);
             redirectAttributes.addFlashAttribute("message", globalConfig.getVerifyLinkSend());
             return "redirect:/public/register";
         } catch (Exception e) {
@@ -65,6 +77,7 @@ public class RegisterController {
             return Constant.REGISTER_PAGE;
         }
     }
+
     @GetMapping("/verify")
     public String verifyAccount(@RequestParam String token, Model model) {
         try {
@@ -72,12 +85,12 @@ public class RegisterController {
             AccountInfo accountInfo = accountService.findByEmail(email);
 
             if (accountInfo == null || accountInfo.getDatetimeChangePass() != null) {
-                model.addAttribute(ERROR_ATTRIBUTE, "Account not found or already verified.");
+                model.addAttribute(ERROR_ATTRIBUTE, globalConfig.getVerifiedAccount());
                 return Constant.TOKEN_INVALID_PAGE;
             }
             accountInfo.setStatusId(Constant.STATUS_ACTIVE);
             accountService.save(accountInfo);
-            model.addAttribute("message", "Your account has been successfully created. You can now log in.");
+            model.addAttribute("message", globalConfig.getActiveSuccess());
             return Constant.VERIFY_ACCOUNT_PAGE;
         } catch (Exception e) {
             log.error("Error during account verification", e);
@@ -86,4 +99,3 @@ public class RegisterController {
         }
     }
 }
-

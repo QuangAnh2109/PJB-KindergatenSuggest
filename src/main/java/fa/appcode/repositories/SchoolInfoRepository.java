@@ -1,5 +1,6 @@
 package fa.appcode.repositories;
 
+import fa.appcode.common.vo.SchoolInfoVo;
 import fa.appcode.entities.SchoolInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -31,6 +32,11 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
     @Query("SELECT s.id FROM SchoolInfo s JOIN AccountInfo ai ON s.account.id = ai.id WHERE ai.email=?1 AND s.deleteFlg=false")
     List<Integer> getAllSchoolIdsForUnenrollParentByAccountEmail(String id);
 
+    SchoolInfoVo findSchoolInfoVoByIdAndDeleteFlg(int schoolId, boolean deleteFlg);
 
+    SchoolInfoVo findSchoolInfoVoByIdAndAccountIdAndDeleteFlg(int schoolId, int accountId, boolean deleteFlg);
 
+    SchoolInfo findSchoolInfoByIdAndDeleteFlg(int id, boolean deleteFlg);
+
+    SchoolInfo findSchoolInfoByIdAndAccountIdAndDeleteFlg(int id, int accountId, boolean deleteFlg);
 }

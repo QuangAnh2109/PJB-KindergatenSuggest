@@ -7,7 +7,6 @@ $(document).ready(function () {
     });
 
 
-
     var selectedUserId = null;
 
     // Khi người dùng nhấn vào icon delete
