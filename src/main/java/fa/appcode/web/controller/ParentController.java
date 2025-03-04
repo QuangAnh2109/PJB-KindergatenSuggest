@@ -211,8 +211,11 @@ public class ParentController {
         if (result != null && result.equals(Constant.APPROVE_ENROLL_REQUEST)) {
             redirectAttributes.addFlashAttribute("message", "Enrolled the parent successfully into the school.");
             redirectAttributes.addFlashAttribute("alertType", "success");
-        } else{
-            redirectAttributes.addFlashAttribute("message", "You have been " + result + " parent to " + enrollSchool.getSchool().getSchoolName());
+        } else if(result != null && (result.equals(Constant.REJECT_ENROLL_REQUEST) || result.equals(Constant.UNENROLL_PARENT_SCHOOL))) {
+            redirectAttributes.addFlashAttribute("message", "You have " + result + " parent to " + enrollSchool.getSchool().getSchoolName());
+            redirectAttributes.addFlashAttribute("action", result.toUpperCase());
+            redirectAttributes.addFlashAttribute("alertType", "danger");
+        } else {
             redirectAttributes.addFlashAttribute("alertType", "danger");
         }
 

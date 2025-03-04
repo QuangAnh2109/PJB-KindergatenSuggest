@@ -142,7 +142,7 @@
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>Oh snap!</strong> Something went wrongs, please try again!
+                    <strong th:text="${action}">!</strong> <span th:text="${message}"></span>
                 </div>
                 <div th:if="${alertType eq 'danger' and message == null}"
                      class="alert alert-danger text-danger alert-dismissible fade show" role="alert">
