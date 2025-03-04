@@ -283,7 +283,7 @@ public class AccountServiceImpl implements AccountService {
         existing.setDistrict(formData.getDistrict());
         existing.setWard(formData.getWard());
         existing.setAddress(formData.getAddress());
-        existing.setRecordNo(existing.getRecordNo()+1);
+        existing.setRecordNo(existing.getRecordNo() + 1);
         accountRepository.save(existing);
     }
 

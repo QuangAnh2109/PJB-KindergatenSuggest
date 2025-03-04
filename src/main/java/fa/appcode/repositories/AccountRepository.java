@@ -41,6 +41,19 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
     @Query("UPDATE AccountInfo a SET a.password = ?1 WHERE a.email = ?2 AND a.deleteFlg=false")
     int updatePassword(String newPassword, String email);
 
+    /**
+     * get a list of user accounts along with their full addresses by search criteria by name, email,phone .
+     * <p>
+     * The address information includes:
+     * - Account address
+     * - Ward name
+     * - District name
+     * - City name.
+     *
+     * @param search
+     * @param pageable
+     * @return
+     */
     @Query("""
             SELECT new fa.appcode.common.vo.AccountVo(
                 ai.id, ai.fullName, ai.email, ai.phone, ai.dob, 
