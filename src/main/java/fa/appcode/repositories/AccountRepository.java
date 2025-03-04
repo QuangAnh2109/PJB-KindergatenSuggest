@@ -40,10 +40,7 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
     int updatePassword(String newPassword, String email);
 
     /**
-     * This method retrieves a list of user accounts along with their full addresses.
-     *
-     * The returned list contains user accounts that match the search criteria, if provided.
-     * The search is performed on the user's full name, email, or phone number.
+     * get a list of user accounts along with their full addresses by search criteria by name, email,phone .
      *
      * The address information includes:
      * - Account address

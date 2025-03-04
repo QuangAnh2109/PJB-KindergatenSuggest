@@ -6,31 +6,38 @@ $(document).ready(function () {
         window.location.href = "/admin/edit-user/" + userId;
     });
 
+
+
+    var selectedUserId = null;
+
+    // Khi người dùng nhấn vào icon delete
     $("body").on("click", "a.delete-user-btn", function (event) {
-        event.preventDefault(); // Ngăn chặn hành động mặc định của thẻ <a>
+        event.preventDefault();
+        selectedUserId = $(this).data("userid");
+        $("#deleteUserModal").modal("show");
+    });
 
-        // Lấy userId từ thuộc tính data-userid của nút xóa
-        var userId = $(this).data("userid");
-
-        // Xác nhận trước khi xóa
-        if (confirm("Are you sure you want to delete this user?")) {
-            // Gửi yêu cầu DELETE đến server
+    // Khi người dùng xác nhận xóa
+    $("#confirmDeleteUser").click(function () {
+        if (selectedUserId) {
             $.get({
-                url: "/admin/api/user/" + userId, // URL endpoint
+                url: "/admin/api/user/" + selectedUserId,
                 success: function (responseData) {
-                    // Hiển thị thông báo thành công
-                    alert(responseData);
-                    // Tải lại danh sách người dùng hoặc xóa hàng khỏi bảng
-                    location.reload(); // Tải lại trang để cập nhật danh sách
+                    $("#deleteUserModal").modal("hide"); // Đóng modal xác nhận
+                    $("#deleteResultMessage").text(responseData);
+                    $("#deleteResultModal").modal("show"); // Hiển thị modal kết quả
+                    setTimeout(function () {
+                        location.reload(); // Tải lại danh sách sau khi đóng modal
+                    }, 1500);
                 },
                 error: function (responseData) {
-                    // Hiển thị thông báo lỗi
-                    alert("Failed to delete user: " + responseData.responseText);
+                    $("#deleteUserModal").modal("hide"); // Đóng modal xác nhận
+                    $("#deleteResultMessage").text("Failed to delete user: " + responseData.responseText);
+                    $("#deleteResultModal").modal("show"); // Hiển thị modal thất bại
                 }
             });
         }
     });
-
 
     var timeout = null;
     var num = $('#userSearchField').val();

@@ -182,11 +182,6 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(user);
     }
 
-    @Override
-    public void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId) {
-
-    }
-
     // Delete logic user account
     @Override
     public void deleteAccount(Integer id) {
