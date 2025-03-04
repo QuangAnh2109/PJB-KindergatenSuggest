@@ -70,6 +70,8 @@ public class GlobalConfig {
     private String activeSuccess;
     @Value("${ME_026}")
     private String verifiedAccount;
+    @Value("${ME_027}")
+    private String loginFailed;
     @Value("${page.size}")
     private Integer sizeOfPage;
 }

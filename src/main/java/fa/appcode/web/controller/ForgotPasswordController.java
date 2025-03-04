@@ -8,6 +8,7 @@ import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.EmailService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class ForgotPasswordController {
 
     private final GlobalConfig globalConfig;
@@ -23,16 +25,6 @@ public class ForgotPasswordController {
     private final AccountService accountService;
     private final TokenUtils tokenUtils;
 
-    // Constructor injection
-    public ForgotPasswordController(GlobalConfig globalConfig,
-                                    EmailService emailService,
-                                    AccountService accountService,
-                                    TokenUtils tokenUtils) {
-        this.globalConfig = globalConfig;
-        this.emailService = emailService;
-        this.accountService = accountService;
-        this.tokenUtils = tokenUtils;
-    }
 
     @GetMapping("/public/forgot-password")
     public String showForgotPasswordForm() {

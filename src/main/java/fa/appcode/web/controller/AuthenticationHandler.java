@@ -23,11 +23,11 @@ public class AuthenticationHandler implements AuthenticationFailureHandler {
                                         HttpServletResponse response,
                                         AuthenticationException exception)
             throws IOException, ServletException {
-        String error = "Invalid email or password.";
+        String error = globalConfig.getLoginFailed();
         if (exception instanceof UsernameNotFoundException) {
             error = globalConfig.getEmailNotExist();
         } else if (exception instanceof BadCredentialsException) {
-            error = "Invalid email or password.";
+            error = globalConfig.getIncorrectLogin();
         }
         String encodedError = URLEncoder.encode(error, StandardCharsets.UTF_8);
         response.sendRedirect("public/showMyLoginPage?error=" + encodedError);
