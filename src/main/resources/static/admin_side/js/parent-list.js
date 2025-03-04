@@ -3,14 +3,14 @@ $(document).ready(function () {
     var num = $('#parentSearchField').val();
 
 // Trigger search on Enter key
-    $("body").on("keydown", "input#parentSearchField", function (event) {
+    $("body").on("keyup", "input#parentSearchField", function (event) {
         if (event.key === "Enter") {
             findAll($(this).val(), 0);
         }
     });
 
 // Trigger search on button click
-    $("body").on("click", "#searchButtonParent", function (event) {
+    $("body").on("click", "button#searchButtonParent", function (event) {
         findAll($('#parentSearchField').val(), 0);
     });
 

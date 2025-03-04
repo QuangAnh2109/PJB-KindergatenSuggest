@@ -41,6 +41,8 @@ public class Constant {
     public static final Integer STATUS_INACTIVE = 0;
     public static final Integer STATUS_DELETED = 0;
     public static final String WEB_SYSTEM = "WEB_SYSTEM";
-
+    public static final String APPROVE_ENROLL_REQUEST ="approve";
+    public static final String REJECT_ENROLL_REQUEST ="reject";
+    public static final String UNENROLL_PARENT_SCHOOL ="unenroll";
 
 }
