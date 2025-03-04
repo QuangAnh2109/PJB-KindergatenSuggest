@@ -74,6 +74,11 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    public Page<Request> findRequestByAccountIdAndDeleteFlg(Integer accountId) {
+        return (Page<Request>) requestRepository.findRequestByAccountIdAndDeleteFlgIsFalse(accountId);
+    }
+
+    @Override
     public void updateRequest(String update_id, int id) {
         Instant vietnamTime = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toInstant();
         requestRepository.updateRequestStatus(update_id, id, vietnamTime);

@@ -32,7 +32,7 @@ public interface AccountService {
 
     boolean updatePassword(String email, String newPassword);
 
-    Page<ParentVo> findAllParent(String search ,Pageable pageable);
+    Page<ParentVo> findAllParent(String search, Pageable pageable);
 
     //tuanpa79
 
@@ -80,7 +80,6 @@ public interface AccountService {
      * @param accountVo
      */
     void addUserFromAdmin(AccountVo accountVo);
-
 
 
     Page<AccountInfo> findAll(Pageable pageable);

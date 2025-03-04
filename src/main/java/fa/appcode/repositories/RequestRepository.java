@@ -144,4 +144,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             GROUP BY a.id,a.email 
             """)
     List<EmailContentVo> findAccountForEmail();
+
+    //Find all request of parent
+    List<Request> findRequestByAccountIdAndDeleteFlgIsFalse(Integer accountId);
 }

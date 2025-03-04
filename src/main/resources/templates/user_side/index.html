@@ -177,7 +177,7 @@
                         </div>
                         <div class="de-flex-col header-col-mid">
                             <ul id="mainmenu">
-                                <li><a class="menu-item" href="/search">School Search</a>
+                                <li><a class="menu-item" href="/public/search">School Search</a>
                                 </li>
                                 <li><a class="menu-item" href="#">Community</a>
                                 </li>
@@ -198,18 +198,19 @@
                                 <div class="dropdown">
                                     <button class="dropdown-toggle" onclick="toggleDropdown()">
                                         <span><i class="fa fa-user-o" aria-hidden="true" style="margin-right: 5px"></i></span>
-                                        <i class="fa-solid fa-user"></i> Welcome, <span th:text="${session.nameAccount}"></span>
+                                        Welcome, <span th:text="${session.nameAccount}"></span>
                                         <i class="arrow-down"></i>
-
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" id="featuresDropdown">
                                         <a href="/feature1"><span><i class="fa-solid fa-school"></i></span> My
                                             School</a>
                                         <div class="dropdown-divider"></div>
-                                        <a href="/feature2"><span><i class="fas fa-clipboard-list"></i></span> My
+                                        <a href="/parent/my-request"><span><i class="fas fa-clipboard-list"></i></span>
+                                            My
                                             Request</a>
                                         <div class="dropdown-divider"></div>
-                                        <a href="/auth/view-account"><span><i class="fa-solid fa-user"></i></span> My Profile</a>
+                                        <a href="/auth/view-account"><span><i class="fa-solid fa-user"></i></span> My
+                                            Profile</a>
                                         <div class="dropdown-divider"></div>
                                         <a href="#" onclick="showPopup()"><span><i
                                                 class="fa-solid fa-right-from-bracket"></i></span> Logout</a>
@@ -250,7 +251,8 @@
                                             <h4 class="dialog-box-search">Search by school name</h4>
                                             <div class="dialog-box-search">
                                                 <input type="text" name="keyword"
-                                                       placeholder="Enter a school name" id="keyword" class="form-control"
+                                                       placeholder="Enter a school name" id="keyword"
+                                                       class="form-control"
                                                        style="width: 50%;height: 50px">
                                                 <button class="btn-main" onclick="searchRedirect()">Search</button>
                                             </div>
@@ -275,7 +277,9 @@
                                             <select name="district" id="district" class="form-select">
                                                 <option selected disabled value="">Select District</option>
                                             </select>
-                                            <button class="btn-main" style="width: 15%;" onclick="searchRedirect()">Search</button>
+                                            <button class="btn-main" style="width: 15%;" onclick="searchRedirect()">
+                                                Search
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -643,7 +647,6 @@
         document.getElementById("featuresDropdown").classList.toggle("show");
     }
 
-    // Close the dropdown if clicked outside
     window.onclick = function (event) {
         if (!event.target.matches('.dropdown-toggle')) {
             var dropdowns = document.getElementsByClassName("dropdown-menu");
@@ -680,7 +683,7 @@
                 document.getElementById("address").value = "";
             },
             error: function (xhr) {
-                console.log("load district faild" + xhr);
+                console.log("load district failed" + xhr);
             },
         });
     }
@@ -690,15 +693,13 @@
         const cityId = document.getElementById("citySelect").value;
         const district = document.getElementById("district").value;
 
-        // Tạo URL với query parameters
-        const url = `/public/search/process?keyword=${encodeURIComponent(input)}&cityId=${cityId}&districtId=${district}`;
+        const uri = `/public/search/process?keyword=${encodeURIComponent(input)}&cityId=${cityId}&districtId=${district}`;
 
-        // Chuyển hướng trình duyệt đến URL mới
-        window.location.href = url;
+        window.location.href = uri;
     }
 
     //Catch event EnterKey
-    document.addEventListener('keydown', function(event) {
+    document.addEventListener('keydown', function (event) {
         if (event.key === 'Enter') {
             searchRedirect();
         }
