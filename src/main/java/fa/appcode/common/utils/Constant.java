@@ -2,7 +2,8 @@ package fa.appcode.common.utils;
 
 
 public class Constant {
-    private Constant(){}
+    private Constant() {
+    }
 
     ///  USER SIDE
     public static final String USER_INIT_PAGE = "0";
@@ -22,6 +23,10 @@ public class Constant {
     public static final String VIEW_ACCOUNT_URL = "/auth/view-account";
     public static final String REGISTER_VERIFY_URL = "http://localhost:8080/public/register/verify?token=";
     public static final String VIEW_PARENT_DETAIL_URL = "/manager/parent-list/parent-details/";
+    private static final String CHANGE_PASSWORD_URL = "/auth/change-password";
+    private static final String HOME_URL = "/public/home";
+    private static final String MANAGER_REQUEST_LIST_URL = "/manager/request-list";
+    public static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
 
     //ADMIN SIDE
 
@@ -44,8 +49,8 @@ public class Constant {
     public static final Integer STATUS_INACTIVE = 0;
     public static final Integer STATUS_DELETED = 0;
     public static final String WEB_SYSTEM = "WEB_SYSTEM";
-    public static int SEND_EMAIL_FORGOT = 1;
-    public static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
-
+    public static final int SEND_EMAIL_FORGOT = 1;
+    public static final String INVALID_TOKEN_FORMAT = "Invalid token format";
+    public static final String INVALID_TOKEN = "Invalid token structure";
 
 }
