@@ -19,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -47,9 +48,10 @@ public class UserManagementController {
     @GetMapping("user-list")
     public String getUserList(@RequestParam(defaultValue = Constant.KEY_WORD_DEFAULT) String search,
                               @RequestParam(defaultValue = Constant.USER_INIT_PAGE) int currentPage,
-                              Model model) {
+                              Model model, Principal principal) {
 
         Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage());
+        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
 
         Page<AccountVo> accounts = accountService.getAllAccounts(search, pageable);
         List<AccountVo> listAccount = accounts.getContent();
@@ -57,6 +59,7 @@ public class UserManagementController {
         model.addAttribute("searchField", search);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", accounts.getTotalPages());
+        model.addAttribute("role", role);
 
         return "admin_side/UserList";
     }

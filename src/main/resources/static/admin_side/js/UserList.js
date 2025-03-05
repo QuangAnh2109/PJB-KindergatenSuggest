@@ -66,6 +66,9 @@ $(document).ready(function () {
     });
 
     function findAll(keySearch, currentPage) {
+        let newUrl = window.location.pathname + "?search=" + encodeURIComponent(keySearch) + "&currentPage=" + currentPage;
+        window.history.pushState({ path: newUrl }, "", newUrl); // Cập nhật URL mà không reload
+
         $.get({
             url: "/admin/user-list",
             data: {
@@ -76,17 +79,11 @@ $(document).ready(function () {
                 let newContent = $(responseData);
                 $("#userListContent").html(newContent.find("#userListContent").html());
                 $(".pagination-container").html(newContent.find(".pagination-container").html());
-
-                // // Hiển thị hoặc ẩn thông báo "No results found."
-                // if (newContent.find("#userListContent tbody tr").length === 0) {
-                //     $("#noResultsMessage").show();
-                // } else {
-                //     $("#noResultsMessage").hide();
-                // }
             },
             error: function () {
                 console.error("Error fetching data.");
             }
         });
     }
+
 });
