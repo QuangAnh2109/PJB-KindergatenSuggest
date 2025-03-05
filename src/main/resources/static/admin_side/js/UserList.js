@@ -3,6 +3,8 @@ $(document).ready(function () {
     $("body").on("click", "a.edit-user-btn", function (event) {
         event.preventDefault();
         var userId = $(this).data("userid");
+        var currentUrl = window.location.href;
+        localStorage.setItem('previousUrl', currentUrl);
         window.location.href = "/admin/edit-user/" + userId;
     });
 

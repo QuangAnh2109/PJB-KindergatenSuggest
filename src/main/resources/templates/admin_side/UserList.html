@@ -106,10 +106,7 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="account : ${listAccounts}">
-                                    <td>
-                                        <a th:href="@{/admin/user-detail/{id}(id=${account.id})}"
-                                           th:text="${account.fullName}" class="text-primary"></a>
-                                    </td>
+                                    <td th:text="${account.fullName}"></td>
                                     <td th:text="${account.email}"></td>
                                     <td th:text="${account.phone}"></td>
                                     <td th:text="${account.dob}"></td>
