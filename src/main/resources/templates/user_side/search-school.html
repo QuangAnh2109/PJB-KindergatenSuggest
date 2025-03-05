@@ -623,26 +623,26 @@
                 <div class="modal-body">
                     <p class="text-muted mb-4">Please check your details below and confirm to submit the request.</p>
 
-                    <form id="counselingForm">
+                    <form id="counselingForm" th:action="@{/public/createRequest}" method="POST">
                         <div class="mb-3">
                             <label for="fullName" class="form-label">Full Name</label>
                             <input type="text" class="form-control" id="fullName" th:value="${session.nameAccount}"
-                                   placeholder="Enter your full name...">
+                                   placeholder="Enter your full name..." name="fullName">
                         </div>
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="email" placeholder="info@xyz.com">
+                            <input type="email" class="form-control" id="email" placeholder="info@xyz.com" name="email">
                         </div>
 
                         <div class="mb-3">
                             <label for="mobile" class="form-label">Mobile No. :</label>
-                            <input type="tel" class="form-control" id="mobile" placeholder="+91 - 98596 58000">
+                            <input type="tel" class="form-control" id="mobile" placeholder="+91 - 98596 58000" name="phone">
                         </div>
 
                         <div class="mb-3">
                             <label for="inquiries" class="form-label">Inquiries</label>
-                            <textarea class="form-control" id="inquiries" rows="5"></textarea>
+                            <textarea class="form-control" id="inquiries" rows="5" name="inquiries"></textarea>
                         </div>
 
                         <div class="mb-4">
@@ -656,7 +656,7 @@
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
                                     style="width: 45%;">Cancel
                             </button>
-                            <button type="button" class="btn btn-primary" onclick="submitCounselingForm()"
+                            <button type="button" class="btn btn-primary" onclick="submitRequestCounselingForm()"
                                     style="width: 45%;">Submit
                             </button>
                         </div>
@@ -752,6 +752,16 @@
 
 <script>
 
+
+    // Hàm hiển thị thông báo lỗi
+    function showErrorMessage(inputId, message) {
+        let inputElement = document.getElementById(inputId);
+        let errorElement = document.createElement("div");
+        errorElement.className = "error-message text-danger mt-1";
+        errorElement.textContent = message;
+        inputElement.parentElement.appendChild(errorElement);
+    }
+
     // Show pop-up logout
     function showPopup() {
         document.querySelector(".overlay").classList.add("active");
@@ -814,6 +824,80 @@
         });
     }
 </script>
+<script th:inline="javascript">
+    function submitRequestCounselingForm() {
+        let email = document.getElementById("email").value.trim();
+        let mobile = document.getElementById("mobile").value.trim();
+        let fullName = document.getElementById("fullName").value.trim();
+        let inquiries = document.getElementById("inquiries").value.trim();
+
+        // Lấy giá trị từ Thymeleaf, sử dụng giá trị mặc định nếu null hoặc undefined
+        let emailErrorMessage = /*[[${emailErrorMessage}]]*/ 'Email must end with @gmail.com';
+        let mobileErrorMessage = /*[[${mobileErrorMessage}]]*/ 'Mobile number must be 10 digits';
+        let requiredFieldMessage = /*[[${requiredFieldMessage}]]*/ 'This field is required';
+
+        let emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        let mobileRegex = /^\d{10}$/;
+
+        // Xóa thông báo lỗi cũ
+        document.querySelectorAll('.error-message').forEach(e => e.remove());
+
+        let isValid = true;
+
+        // Kiểm tra các trường không được để trống
+        if (!fullName) {
+            showErrorMessage("fullName", requiredFieldMessage);
+            isValid = false;
+        }
+        if (!email) {
+            showErrorMessage("email", requiredFieldMessage);
+            isValid = false;
+        }
+        if (!mobile) {
+            showErrorMessage("mobile", requiredFieldMessage);
+            isValid = false;
+        }
+        if (!inquiries) {
+            showErrorMessage("inquiries", requiredFieldMessage);
+            isValid = false;
+        }
+
+        // Kiểm tra email và mobile
+        if (email && !emailRegex.test(email)) {
+            showErrorMessage("email", emailErrorMessage);
+            isValid = false;
+        }
+        if (mobile && !mobileRegex.test(mobile)) {
+            showErrorMessage("mobile", mobileErrorMessage);
+            isValid = false;
+        }
+
+        // Nếu tất cả đều hợp lệ, submit form
+        if (isValid) {
+            let formData = new FormData(document.getElementById("counselingForm"));
+
+            fetch('/public/createRequest', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Hiển thị thông báo
+                        alert('My request is sent successfully!');
+                        $('#counselingModal').modal('hide');
+                        // Xóa dữ liệu form
+                        document.getElementById("counselingForm").reset();
+
+                    } else {
+                        alert('Failed to submit request.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    }
+
+</script>
+
 <!-- Javascript Files
 ================================================== -->
 <script src="/user_side/js/search.js"></script>
@@ -821,6 +905,7 @@
 <script src="/user_side/js/plugins.js"></script>
 <script src="/user_side/js/designesia.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 
 </body>
 

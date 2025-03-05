@@ -34,18 +34,24 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     private EnrollSchoolRepository enrollSchoolRepository;
 
     @Transactional
-    public void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role) {
+    public void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role) throws IllegalStateException {
 
         //create instant enroll School
         EnrollSchool schoolEnroll = new EnrollSchool();
         //AParent that enroll
+        if(account.getDeleteFlg() || account.getStatusId().equals(Constant.STATUS_INACTIVE) ){
+            throw new IllegalStateException("Account is not active Or No Longer Available Please Try Again!");
+        }
+        if(school.getDeleteFlg() || !school.getStatusId().equals(Constant.SCHOOL_PUBLISH_STATUS) ){
+            throw new IllegalStateException("School is not published Or No Longer Available Please Try Again!");
+        }
         schoolEnroll.setAccount(account);
         //School that Parent will enroll
         schoolEnroll.setSchool(school);
         //Enroll Date
         schoolEnroll.setEnrollDate(enrollDate);
         //Start of Enroll is Always true
-        schoolEnroll.setStatus(2);
+        schoolEnroll.setStatus(3);
         //change with LocalDate time zone
 //                schoolEnroll.setCreateTime(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
 //                schoolEnroll.setUpdateTime(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -121,5 +127,10 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     @Override
     public List<EnrolledSchoolVo> findParentRequestEnrolledSchoolByParentId(int id) {
         return enrollSchoolRepository.findParentRequestEnrolledSchoolByParentId(id);
+    }
+    //check if parent is already enrolled or not
+    @Override
+    public boolean isParentEnrollingToSchool(Integer accountId, Integer schoolId) {
+        return enrollSchoolRepository.isParentEnrollingToSchool(accountId, schoolId);
     }
 }

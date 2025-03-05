@@ -25,6 +25,7 @@ public class Constant {
     private static final String HOME_URL = "/public/home";
     private static final String MANAGER_REQUEST_LIST_URL = "/manager/request-list";
     public static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
+    public static final String PARENT_LIST_URL = "/manager/parent-list";
 
     //ADMIN SIDE
 
@@ -53,5 +54,7 @@ public class Constant {
     public static final String APPROVE_ENROLL_REQUEST ="approve";
     public static final String REJECT_ENROLL_REQUEST ="reject";
     public static final String UNENROLL_PARENT_SCHOOL ="unenroll";
+    public static final String ENROLL_PARENT_SCHOOL ="enroll";
+    public static final Integer SCHOOL_PUBLISH_STATUS = 5;
 
 }
