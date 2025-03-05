@@ -34,52 +34,12 @@
 <div id="wrapper">
 
     <!-- Topbar Start -->
-    <div class="navbar-custom">
-        <div class="logo-box">
-            <a href="index.html" class="logo text-center logo-dark">
-                <span class="logo-lg">
-                    <img th:src="@{/admin_side/images/logo-dark.png}" alt="" height="26">
-                </span>
-            </a>
-        </div>
-        <div class="logout-container">
-            <a href="#" class="logout-btn">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </a>
-        </div>
-    </div>
+    <div th:replace="~{admin_side/top-sidebar :: topSidebar}"></div>
     <!-- end Topbar -->
-    <!-- ========== Left Sidebar Start ========== -->
-    <div class="left-side-menu">
 
-        <!--- Sidemenu -->
-        <div id="sidebar-menu">
-            <ul class="metismenu" id="side-menu">
-                <li><a th:href="@{/manager/request-list}"><i class="ti-home"></i>
-                    <span> School Management </span></a>
-                </li>
-                <li>
-                    <a th:href="@{/admin/user-list}">
-                        <i class="fa-regular fa-user"></i>
-                        <span> User Management </span>
-                    </a>
-                </li>
-                <li><a th:href="@{/manager/parent-list}"><i class="fa-solid fa-user-tie"></i>
-                    <span> Parent Management </span></a>
-                </li>
-                <li><a th:href="@{/manager/request-reminder}"><i class="fa-regular fa-bell"></i>
-                    <span> Reminder </span></a></li>
-                <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a>
-                </li>
-            </ul>
-        </div>
-        <!-- End Sidebar -->
-
-        <div class="clearfix"></div>
-
-    </div>
-    <!-- Left Sidebar End -->
+    <!-- Left Sidebar Start -->
+    <div th:replace="~{admin_side/left-sidebar :: leftSidebar}"></div>
+    <!-- End Sidebar -->
 
     <!-- ============================================================== -->
     <!-- Start Page Content here -->

@@ -6,6 +6,7 @@ $(document).ready(function () {
         window.location.href = "/admin/edit-user/" + userId;
     });
 
+
     var selectedUserId = null;
 
     // Khi người dùng nhấn vào icon delete
@@ -15,28 +16,64 @@ $(document).ready(function () {
         $("#deleteUserModal").modal("show");
     });
 
-    var currentPage = parseInt(sessionStorage.getItem("currentPage")) || 0;
-    var searchKey = sessionStorage.getItem("searchKey") || "";
+    // Khi người dùng xác nhận xóa
+    $("#confirmDeleteUser").click(function () {
+        if (selectedUserId) {
+            $.get({
+                url: "/admin/api/user/" + selectedUserId,
+                success: function (responseData) {
+                    $("#deleteUserModal").modal("hide"); // Đóng modal xác nhận
+                    $("#deleteResultMessage").text(responseData);
+                    $("#deleteResultModal").modal("show"); // Hiển thị modal kết quả
+                    setTimeout(function () {
+                        location.reload(); // Tải lại danh sách sau khi đóng modal
+                    }, 1500);
+                },
+                error: function (responseData) {
+                    $("#deleteUserModal").modal("hide"); // Đóng modal xác nhận
+                    $("#deleteResultMessage").text("Failed to delete user: " + responseData.responseText);
+                    $("#deleteResultModal").modal("show"); // Hiển thị modal thất bại
+                }
+            });
+        }
+    });
 
-    // Điền lại giá trị vào ô tìm kiếm khi load trang
-    $("#userSearchField").val(searchKey);
+    var timeout = null;
+    var num = $('#userSearchField').val();
 
-    function setPage(page) {
-        sessionStorage.setItem("currentPage", page);
-        history.replaceState(null, null, "?page=" + page);
-    }
+// Khi nhập vào ô search và nhấn Enter
+    $("#userSearchField").on("keydown", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Ngăn chặn reload trang
+            findAll($(this).val(), 0);
+        }
+    });
 
-    function setSearchKey(key) {
-        sessionStorage.setItem("searchKey", key);
-    }
+// Khi bấm vào nút search
+    $("#userSearchButton").on("click", function () {
+        findAll($("#userSearchField").val(), 0);
+    });
 
-    function loadPageData() {
-        let searchKey = $("#userSearchField").val();
+    $('#userSearchField').focus().val('').val(num);
+
+// Xử lý phân trang bằng AJAX
+    $("body").on("click", "a.user-page-item", function (event) {
+        event.preventDefault(); // Ngăn tải lại trang
+        let page = $(this).data("page");
+        if (page !== undefined) {
+            findAll($("#userSearchField").val(), page);
+        }
+    });
+
+    function findAll(keySearch, currentPage) {
+        let newUrl = window.location.pathname + "?search=" + encodeURIComponent(keySearch) + "&currentPage=" + currentPage;
+        window.history.pushState({ path: newUrl }, "", newUrl); // Cập nhật URL mà không reload
+
         $.get({
             url: "/admin/user-list",
             data: {
-                search: $("#userSearchField").val(),
-                currentPage: parseInt(sessionStorage.getItem("currentPage")) || 0,
+                search: keySearch,
+                currentPage: currentPage,
             },
             success: function (responseData) {
                 let newContent = $(responseData);
@@ -49,63 +86,4 @@ $(document).ready(function () {
         });
     }
 
-    // Khi nhấn vào phân trang, chỉ tải lại nội dung mà không reload trang
-    $("body").on("click", "a.user-page-item", function (event) {
-        event.preventDefault();
-        let page = $(this).data("page");
-
-        if (page !== undefined) {
-            currentPage = page;  // Cập nhật biến global
-            setPage(page); // Lưu vào sessionStorage
-            loadPageData();
-        }
-    });
-
-    // Khi nhấn nút tìm kiếm
-    $("#userSearchButton").click(function () {
-        let searchValue = $("#userSearchField").val();
-        setSearchKey(searchValue);
-        setPage(0); // Reset về trang đầu khi tìm kiếm
-        loadPageData();
-    });
-
-    // Khi nhấn Enter trong ô tìm kiếm
-    $("#userSearchField").keypress(function (event) {
-        if (event.which === 13) { // Enter key
-            event.preventDefault();
-            $("#userSearchButton").click();
-        }
-    });
-
-    // Khi trang vừa tải xong, tự động tải dữ liệu trang hiện tại luôn
-    if (currentPage > 0 || searchKey !== "") {
-        loadPageData();
-    }
-
-    // Khi xác nhận xóa, tải lại trang hiện tại mà không bị nháy về trang đầu
-    $("#confirmDeleteUser").click(function () {
-        if (selectedUserId) {
-            $.get({
-                url: "/admin/api/user/" + selectedUserId,
-                success: function (responseData) {
-                    $("#deleteUserModal").modal("hide");
-                    $("#deleteResultMessage").text(responseData);
-                    $("#deleteResultModal").modal("show");
-                    setTimeout(function () {
-                        loadPageData(); // Chỉ tải lại nội dung thay vì reload toàn trang
-                    }, 1500);
-                },
-                error: function (responseData) {
-                    $("#deleteUserModal").modal("hide");
-                    $("#deleteResultMessage").text("Failed to delete user: " + responseData.responseText);
-                    $("#deleteResultModal").modal("show");
-                }
-            });
-        }
-    });
-
-    // Khi trang vừa tải xong, tự động tải dữ liệu trang hiện tại luôn
-    if (currentPage > 0 || searchKey !== "") {
-        loadPageData();
-    }
 });
