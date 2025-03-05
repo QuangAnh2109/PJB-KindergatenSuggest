@@ -71,8 +71,11 @@ public class UserManagementController {
      * @return
      */
     @GetMapping("add-user")
-    public String showAddUserPage(Model model) {
+    public String showAddUserPage(Model model, Principal principal) {
+        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
+        model.addAttribute("role", role);
         model.addAttribute("user", new AccountVo()); // Gửi một user rỗng để form hiển thị đúng
+
         List<MasterDatum> roles = masterDatumService.getListByTypeName("ROLE");
         List<MasterDatum> status = masterDatumService.getListByTypeName("ACCOUNT STATUS");
         model.addAttribute("roles", roles);
@@ -120,38 +123,6 @@ public class UserManagementController {
         }
     }
 
-    /**
-     * show User detail screen
-     *
-     * @param id
-     * @param model
-     * @return
-     */
-    @GetMapping("user-detail/{id}")
-    public String userDetail(@PathVariable("id") Integer id, Model model) {
-        AccountVo user = accountService.getAccountById(id);
-        model.addAttribute("user", user);
-        return "admin_side/UserDetails";
-    }
-
-
-    /**
-     * changes Status of user account  (active <-> inactive)
-     *
-     * @param id
-     * @param redirectAttributes
-     * @return
-     */
-    @PostMapping("user-detail/{id}/toggleStatus")
-    public String toggleUserStatus(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
-        try {
-            accountService.toggleUserStatus(id);
-            redirectAttributes.addFlashAttribute("message", "User status updated successfully.");
-        } catch (EntityNotFoundException e) {
-            redirectAttributes.addFlashAttribute("error", "User not found.");
-        }
-        return "redirect:/admin/user-detail/" + id;
-    }
 
     /**
      * show Edit user account screen
@@ -161,13 +132,18 @@ public class UserManagementController {
      * @return
      */
     @GetMapping("edit-user/{id}")
-    public String showEditUserPage(@PathVariable("id") Integer id, Model model) {
+    public String showEditUserPage(@PathVariable("id") Integer id, Model model, Principal principal) {
         try {
             AccountVo user = accountService.getAccountById(id);
+            String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
+
             List<MasterDatum> roles = masterDatumService.getListByTypeName("ROLE");
+            List<MasterDatum> status = masterDatumService.getListByTypeName("ACCOUNT STATUS");
             // Lấy danh sách roles từ service
+            model.addAttribute("role",role);
             model.addAttribute("user", user);
             model.addAttribute("roles", roles);
+            model.addAttribute("status", status);
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", "User not found.");
         }
