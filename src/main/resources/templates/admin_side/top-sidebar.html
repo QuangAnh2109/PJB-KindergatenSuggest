@@ -14,10 +14,12 @@
         </a>
     </div>
     <div class="logout-container">
-        <a href="#" class="logout-btn">
+        <form id="logoutForm" th:action="@{/logout}" method="post">
+        <button  class="logout-btn" style="border: none; outline: none; background: none; cursor: pointer;">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Logout</span>
-        </a>
+        </button>
+        </form>
     </div>
 </div>
 </body>
