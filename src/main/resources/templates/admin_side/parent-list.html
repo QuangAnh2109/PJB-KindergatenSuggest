@@ -121,18 +121,24 @@
             <div class="container-fluid" id="main-contentBROS">
 
                 <!-- start  -->
-                <div class="row">
-                    <div class="col-12">
-                        <div>
-                            <h4 class="header-title mb-3"><a href="/manager/parent-list">Parent List</a></h4>
-                        </div>
-                    </div>
-                </div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/manager/parent-list}">Parent Management</a></li>
+                        <li class="breadcrumb-item">Parent List</li>
+                    </ol>
+                </nav>
                 <!-- end row -->
 
                 <div class="row">
                     <div class="col-12">
                         <div class="table-responsive">
+                            <div th:if="${message != null}"
+                                 class="alert alert-danger text-danger alert-dismissible fade show" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong th:text="${action}">!</strong> <span th:text="${message}"></span>
+                            </div>
                             <!--                            <form action="/admin/parent-list" method="get">-->
                             <div class="input-group" style="padding: 0px 0px 15px 0px;">
                                             <span class="input-group-prepend">
