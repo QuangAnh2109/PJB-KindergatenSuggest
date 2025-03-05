@@ -25,4 +25,8 @@ public interface EnrollSchoolService {
     List<EnrolledSchoolVo> findParentRequestEnrollSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId);
     //find All Parent Request Enroll for Admin
     List<EnrolledSchoolVo> findParentRequestEnrolledSchoolByParentId(int id);
+    //Enroll Parent School
+    void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role);
+    //check if parent is already enrolled or not
+    boolean isParentEnrollingToSchool(Integer accountId, Integer schoolId);
 }
