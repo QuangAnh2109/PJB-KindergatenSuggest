@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Left Sidebar</title>
+</head>
+<body>
+<div class="left-side-menu" th:fragment="leftSidebar">
+    <div id="sidebar-menu">
+        <ul class="metismenu" id="side-menu">
+            <li><a th:href="@{/manager/request-list}"><i class="ti-home"></i>
+                <span> School Management </span></a>
+            </li>
+            <li th:if="${#strings.equalsIgnoreCase(role, 'Admin')}">
+                <a th:href="@{/admin/user-list}">
+                    <i class="fa-regular fa-user"></i>
+                    <span> User Management </span>
+                </a>
+            </li>
+            <li><a th:href="@{/manager/parent-list}"><i class="fa-solid fa-user-tie"></i>
+                <span> Parent Management </span></a>
+            </li>
+            <li><a th:href="@{/manager/request-reminder}"><i class="fa-regular fa-bell"></i>
+                <span> Reminder </span></a></li>
+            <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-clipboard"></i>
+                <span> Request Management </span></a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

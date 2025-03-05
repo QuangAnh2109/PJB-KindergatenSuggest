@@ -65,12 +65,26 @@ public class UserHomeController {
                                     @RequestParam(required = false) Integer cityId,
                                     @RequestParam(required = false) Integer districtId,
                                     Model model) {
-
-        // Thêm dữ liệu vào model để hiển thị trên trang
+        loadCommonData(model);
         model.addAttribute("keyword", keyword);
         model.addAttribute("cityId", cityId);
         model.addAttribute("districtId", districtId);
 
-        return "user_side/search-school"; 
+        return "user_side/search-school";
     }
+
+    private void loadCommonData(Model model) {
+        List<CityVo> listCity = cityService.findAllByNoDelete();
+        List<MasterDataVo> listFacilities = masterDatumService.findAllByTypeNameNoDelete("FACILITIES");
+        List<MasterDataVo> listTypeSchool = masterDatumService.findAllByTypeNameNoDelete("SCHOOL TYPE");
+        List<MasterDataVo> listDataAge = masterDatumService.findAllByTypeNameNoDelete("CHILD RECEIVING AGE");
+        List<MasterDataVo> listUtilities = masterDatumService.findAllByTypeNameNoDelete("UTILITIES");
+
+        model.addAttribute("facilities", listFacilities);
+        model.addAttribute("type_school", listTypeSchool);
+        model.addAttribute("data_age", listDataAge);
+        model.addAttribute("utilities", listUtilities);
+        model.addAttribute("listCity", listCity);
+    }
+
 }

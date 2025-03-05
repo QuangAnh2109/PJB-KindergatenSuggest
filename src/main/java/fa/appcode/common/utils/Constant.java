@@ -2,8 +2,6 @@ package fa.appcode.common.utils;
 
 
 public class Constant {
-    private Constant() {
-    }
 
     ///  USER SIDE
     public static final String USER_INIT_PAGE = "0";
@@ -52,5 +50,8 @@ public class Constant {
     public static final int SEND_EMAIL_FORGOT = 1;
     public static final String INVALID_TOKEN_FORMAT = "Invalid token format";
     public static final String INVALID_TOKEN = "Invalid token structure";
+    public static final String APPROVE_ENROLL_REQUEST ="approve";
+    public static final String REJECT_ENROLL_REQUEST ="reject";
+    public static final String UNENROLL_PARENT_SCHOOL ="unenroll";
 
 }

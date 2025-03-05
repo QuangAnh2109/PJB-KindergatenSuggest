@@ -19,14 +19,14 @@ import java.util.List;
 public interface RequestRepository extends JpaRepository<Request, Integer> {
 
     @Query("""
-              SELECT new fa.appcode.common.vo.RequestDetailVo(
-                          r.id,r.fullName,r.requestEmail,r.requestPhone,
-                          s.schoolAddress,s.schoolName,r.inquiries,m.typeValue)
-              FROM  Request r
-              JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS"
-              JOIN SchoolInfo s ON r.school.id=s.id 
-              WHERE r.id = ?1
-              """)
+            SELECT new fa.appcode.common.vo.RequestDetailVo(
+                        r.id,r.fullName,r.requestEmail,r.requestPhone,
+                        s.schoolAddress,s.schoolName,r.inquiries,m.typeValue)
+            FROM  Request r
+            JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS"
+            JOIN SchoolInfo s ON r.school.id=s.id 
+            WHERE r.id = ?1
+            """)
     RequestDetailVo findRequestsById(Integer id);
 
     @Query("""
@@ -144,4 +144,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             GROUP BY a.id,a.email 
             """)
     List<EmailContentVo> findAccountForEmail();
+
+    //Find all request of parent
+    List<Request> findRequestByAccountIdAndDeleteFlgIsFalse(Integer accountId);
 }
