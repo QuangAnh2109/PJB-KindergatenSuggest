@@ -93,4 +93,9 @@ public class RequestServiceImpl implements RequestService {
                     "You have " + emailContentVo.getNumberOfRequest() + " unresolved requests");
         }
     }
+
+    @Override
+    public void createRequest(Request request) {
+        requestRepository.save(request);
+    }
 }

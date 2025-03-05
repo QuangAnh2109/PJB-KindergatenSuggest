@@ -77,4 +77,10 @@ public class GlobalConfig {
     private Integer sizeOfPage;
     @Value("${server.link}")
     private String serverLink;
+    @Value("${ME_028}")
+    private String inValidEmail;
+    @Value("${ME_029}")
+    private String invalidPhoneNumber;
+    @Value("${ME_030}")
+    private String requiredMessage;
 }

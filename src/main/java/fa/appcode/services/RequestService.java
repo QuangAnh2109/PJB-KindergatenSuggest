@@ -36,4 +36,6 @@ public interface RequestService {
 
 
     void emailRequestReminder();
+
+    void createRequest(Request request);
 }

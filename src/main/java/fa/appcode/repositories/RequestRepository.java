@@ -147,4 +147,6 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
 
     //Find all request of parent
     List<Request> findRequestByAccountIdAndDeleteFlgIsFalse(Integer accountId);
+
+
 }

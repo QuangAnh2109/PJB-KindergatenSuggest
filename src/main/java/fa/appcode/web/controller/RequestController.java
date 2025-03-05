@@ -1,11 +1,13 @@
 package fa.appcode.web.controller;
 
+import com.cloudinary.provisioning.Account;
 import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.RequestDetailVo;
 import fa.appcode.common.vo.RequestVo;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.entities.Request;
+import fa.appcode.entities.SchoolInfo;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.MasterDatumService;
 import fa.appcode.services.RequestService;
@@ -20,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -160,5 +163,18 @@ public class RequestController {
         model.addAttribute("numberPage", requestList.getTotalPages());
         model.addAttribute("role", role);
         return ResponseEntity.ok(requestList);
+    }
+    @PostMapping("/public/createRequest")
+    public String createRequestCounseling(@RequestParam String fullName,
+                                          @RequestParam String email,
+                                          @RequestParam String phone,
+                                          @RequestParam String inquiries,
+                                          Principal principal){
+        AccountInfo accountID = accountService.getAccountInfo(principal);
+        SchoolInfo school = schoolInfoService.getSchoolInfoById(1);
+        System.out.println("Name: "+school.getSchoolName());
+        Request request = new Request(accountID,school,fullName,email,phone,inquiries,1,1,"PARENT",Instant.now());
+        requestService.createRequest(request);
+        return "redirect:/public/search";
     }
 }
