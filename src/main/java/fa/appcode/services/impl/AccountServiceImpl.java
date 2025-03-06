@@ -293,4 +293,9 @@ public class AccountServiceImpl implements AccountService {
     public String getEmailByAccountIdAndActiveAndNoDelete(int accountId) {
         return accountRepository.getEmailByAccountIdAndStatusIdAndDeleteFlg(accountId, 1, false);
     }
+
+    @Override
+    public String getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(int id) {
+        return accountRepository.getSchoolOwnerEmailBySchoolIdAndStatusAndDeleteFlg(id, 1, false);
+    }
 }

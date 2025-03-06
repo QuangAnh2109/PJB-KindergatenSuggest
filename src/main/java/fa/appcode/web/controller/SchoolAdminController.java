@@ -1,16 +1,17 @@
 package fa.appcode.web.controller;
 
+import fa.appcode.common.utils.Constant;
 import fa.appcode.common.utils.Placeholder;
 import fa.appcode.common.utils.SendMailInfo;
 import fa.appcode.config.GlobalConfig;
-import fa.appcode.entities.SchoolInfo;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.EmailService;
 import fa.appcode.services.SchoolInfoService;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SchoolAdminController {
 
     private final SchoolInfoService schoolInfoService;
@@ -30,72 +31,64 @@ public class SchoolAdminController {
 
     private final GlobalConfig globalConfig;
 
+    private final int APPROVE_MAIL_ID = 4;
+
     @ResponseBody
-    @PostMapping("/school/delete/{id}")
-    public String deleteSchoolByAdmin(@PathVariable("id") int id) {
+    @PostMapping("/school/delete/{id}&{recordNo}")
+    public ResponseEntity deleteSchoolByAdmin(@PathVariable("id") int id, @PathVariable("recordNo") int recordNo) {
+        if (schoolInfoService.updateSchoolStatusByRequest(id, recordNo, Constant.SCHOOL_STATUS_DELETED_ID, Constant.ADMIN, List.of()) > 0) {
+            return ResponseEntity.accepted().body("Delete success");
+        } else return ResponseEntity.badRequest().body("Delete failed");
+    }
+
+    @GetMapping("/school/detail/{id}&{edit}")
+    public String getSchoolDetailByAdmin(@PathVariable("id") int id, @PathVariable("edit") boolean edit, Model model) {
+        model.addAttribute("school", schoolInfoService.getSchoolFormByIdAndNoDelete(id));
+        model.addAttribute("edit", edit);
         return "";
     }
 
-    @GetMapping("/school/detail/{id}")
-    public String getSchoolDetailByAdmin(@PathVariable("id") int id) {
+    @ResponseBody
+    @PostMapping("/school/update")
+    public String updateSchoolByAdmin(@RequestBody Map<String, Object> map) {
+
         return "";
     }
 
     @ResponseBody
-    @PostMapping("/school/update/{id}")
-    public String updateSchoolByAdmin(@PathVariable("id") int id) {
-        return "";
-    }
-
-    @ResponseBody
-    @PatchMapping("/school/submit/{id}")
-    public ResponseEntity addSchoolBySchoolOwner(@PathVariable("id") int id) {
-        try{
-            // Find school info by id
-            SchoolInfo schoolInfo = schoolInfoService.findSchoolInfoByIdNoDelete(id);
-
-            // Check if school info is null
-            if(schoolInfo != null) {
-                return ResponseEntity.badRequest().body("School not found");
-            }
-
-            // Check if school info is not in saved status
-            if(schoolInfo.getStatusId() != 1) {
-                return ResponseEntity.badRequest().body("School not in saved status");
-            }
-
-            // Set status to approve
-            schoolInfo.setStatusId(3);
-
-            // Increase record no
-            schoolInfo.setRecordNo(schoolInfo.getRecordNo() + 1);
-            schoolInfo.setUpdateId("USER_ADMIN");
-            schoolInfo.setUpdateTime(Instant.now());
-
-            // Save school info to database
-            schoolInfoService.save(schoolInfo);
-
-            // Send email to school owner
-            String email = accountService.getEmailByAccountIdAndActiveAndNoDelete(schoolInfo.getAccount().getId());
-            Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "School approved", Placeholder.LINK, (globalConfig.getServerLink()+"/school/detail/"+schoolInfo.getId()));
-            SendMailInfo sendMailInfo = SendMailInfo.builder().toMail(List.of(email)).ccMail(List.of()).mailId(4).detail(detail).build();
-            emailService.sendEmailToMany(sendMailInfo);
-
+    @PostMapping("/school/submit/{id}&{recordNo}")
+    public ResponseEntity submitSchoolByAdmin(@PathVariable("id") int id, @PathVariable("recordNo") int recordNo) {
+        List<Integer> status = List.of(Constant.SCHOOL_STATUS_SUBMITTED_ID, Constant.SCHOOL_STATUS_REJECTED_ID, Constant.SCHOOL_STATUS_PUBLISHED_ID, Constant.SCHOOL_STATUS_UNPUBLISHED_ID, Constant.SCHOOL_STATUS_DELETED_ID);
+        if (schoolInfoService.updateSchoolStatusByRequest(id, recordNo, Constant.SCHOOL_STATUS_APPROVED_ID, Constant.ADMIN, status) > 0) {
+            String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
+            Map<Placeholder, String> detail = Map.of(Placeholder.LINK, globalConfig.getServerLink() + "/school-owner/school/detail/" + id, Placeholder.TITLE, "Admin approve school");
+            emailService.sendEmailToMany(SendMailInfo.builder().toMail(List.of(email)).ccMail(List.of()).mailId(APPROVE_MAIL_ID).detail(detail).build());
             return ResponseEntity.accepted().body("Submit success");
-        }catch(Exception e){
-            return ResponseEntity.badRequest().body("Submit failed " + e.getMessage());
-        }
+        } else return ResponseEntity.badRequest().body("Submit failed");
     }
 
     @ResponseBody
-    @PostMapping("/school/reject/{id}")
-    public String rejectSchoolByAdmin(@PathVariable("id") int id) {
-        return "";
+    @PostMapping("/school/reject/{id}&{recordNo}")
+    public ResponseEntity rejectSchoolByAdmin(@PathVariable("id") int id, @PathVariable("recordNo") int recordNo) {
+        List<Integer> status = List.of(Constant.SCHOOL_STATUS_SAVED_ID, Constant.SCHOOL_STATUS_APPROVED_ID, Constant.SCHOOL_STATUS_PUBLISHED_ID, Constant.SCHOOL_STATUS_UNPUBLISHED_ID, Constant.SCHOOL_STATUS_DELETED_ID);
+        if (schoolInfoService.updateSchoolStatusByRequest(id, recordNo, Constant.SCHOOL_STATUS_REJECTED_ID, Constant.ADMIN, List.of()) > 0) {
+            String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
+            Map<Placeholder, String> detail = Map.of(Placeholder.LINK, globalConfig.getServerLink() + "/school-owner/school/detail/" + id, Placeholder.TITLE, "Admin approve school");
+            emailService.sendEmailToMany(SendMailInfo.builder().toMail(List.of(email)).ccMail(List.of()).mailId(APPROVE_MAIL_ID).detail(detail).build());
+            return ResponseEntity.accepted().body("Reject success");
+        } else return ResponseEntity.badRequest().body("Reject failed");
     }
 
+
     @ResponseBody
-    @PostMapping("/school/approve/{id}")
-    public String approveSchoolByAdmin(@PathVariable("id") int id) {
-        return "";
+    @PostMapping("/school/approve/{id}&{recordNo}")
+    public ResponseEntity approveSchoolByAdmin(@PathVariable("id") int id, @PathVariable("recordNo") int recordNo) {
+        List<Integer> status = List.of(Constant.SCHOOL_STATUS_SAVED_ID, Constant.SCHOOL_STATUS_REJECTED_ID, Constant.SCHOOL_STATUS_PUBLISHED_ID, Constant.SCHOOL_STATUS_UNPUBLISHED_ID, Constant.SCHOOL_STATUS_DELETED_ID);
+        if (schoolInfoService.updateSchoolStatusByRequest(id, recordNo, Constant.SCHOOL_STATUS_APPROVED_ID, Constant.ADMIN, List.of()) > 0) {
+            String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
+            Map<Placeholder, String> detail = Map.of(Placeholder.LINK, globalConfig.getServerLink() + "/school-owner/school/detail/" + id, Placeholder.TITLE, "Admin approve school");
+            emailService.sendEmailToMany(SendMailInfo.builder().toMail(List.of(email)).ccMail(List.of()).mailId(APPROVE_MAIL_ID).detail(detail).build());
+            return ResponseEntity.accepted().body("Approve success");
+        } else return ResponseEntity.badRequest().body("Approve failed");
     }
 }

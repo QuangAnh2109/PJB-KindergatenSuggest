@@ -28,7 +28,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String email = authentication.getName();
         AccountInfo accountInfo = accountService.findByEmail(email);
-        if (accountInfo != null && accountInfo.getDatetimeChangePass() == null) {
+        if (accountInfo.getDatetimeChangePass() == null) {
             response.sendRedirect(request.getContextPath() + "/auth/change-password");
             return;
         }

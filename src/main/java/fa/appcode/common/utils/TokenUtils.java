@@ -13,14 +13,14 @@ import java.util.Base64;
 public class TokenUtils {
     @Value("${token.key}")
     private String tokenKey;
-
-    private static final long EXPIRATION_TIME = 10 * 60;
+    @Value("${token.time}")
+    private String expirationTime;
 
     public String generateTokenForgot(String email, Instant passwordChange) {
-        long expireAt = Instant.now().getEpochSecond() + EXPIRATION_TIME;
-        return encodeToken(tokenKey, email, String.valueOf(expireAt), String.valueOf(passwordChange.getEpochSecond()));
+        long expireAt = Instant.now().getEpochSecond() + Long.parseLong(expirationTime);
+        String passwordChangeEpoch = (passwordChange != null) ? String.valueOf(passwordChange.getEpochSecond()) : "0";
+        return encodeToken(tokenKey, email, String.valueOf(expireAt), passwordChangeEpoch);
     }
-
     public String generateTokenRegister(String email) {
         return encodeToken(tokenKey, email);
     }
@@ -53,14 +53,16 @@ public class TokenUtils {
             throw new TokenException(Constant.INVALID_TOKEN_FORMAT, e);
         }
     }
-
     public boolean isTokenValid(String token, AccountInfo account) {
         long expiredTime = getExpiredTime(token);
         return Instant.now().getEpochSecond() <= expiredTime && !isTokenUsed(account, expiredTime);
     }
 
-    public boolean isTokenUsed(AccountInfo account, long expiredTime) {
-        if (account.getDatetimeChangePass() == null) return false;
-        return account.getDatetimeChangePass().getEpochSecond() >= (expiredTime - EXPIRATION_TIME);
+public boolean isTokenUsed(AccountInfo account, long expiredTime) {
+    if (account.getDatetimeChangePass() == null) {
+        return false;
     }
+    return account.getDatetimeChangePass().getEpochSecond() >= (expiredTime - Long.parseLong(expirationTime));
+}
+
 }

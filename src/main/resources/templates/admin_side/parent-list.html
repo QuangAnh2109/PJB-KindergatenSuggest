@@ -199,9 +199,9 @@
                                     <li class="page-item parent-page-item disabled" th:if="${currentPage==0}"><a
                                             class="page-link" type="button">Previous</a></li>
                                     <li th:unless="${currentPage==0}" class="page-item parent-page-item"
-                                        th:data-page="${currentPage - 1}"
-                                        th:classappend="${currentPage == 0} ? 'disabled'">
-                                        <a class="page-link" type="button" th:aria-disabled="${currentPage == 0}">Previous</a>
+                                        th:data-page="${currentPage - 1}" th:classappend="${currentPage == 0} ? 'disabled'">
+                                        <a class="page-link" type="button"
+                                           th:aria-disabled="${currentPage == 0}">Previous</a>
                                     </li>
 
                                     <!-- Page Numbers -->
@@ -213,9 +213,9 @@
 
                                     <!-- Next Button -->
                                     <li class="page-item parent-page-item disabled"
-                                        th:if="${currentPage == numberPage - 1}"><a class="page-link"
-                                                                                    type="button">Next</a></li>
-                                    <li th:unless="${currentPage == numberPage - 1}" class="page-item parent-page-item"
+                                        th:if="${currentPage == numberPage - 1 || numberPage==0}"><a class="page-link" type="button">Next</a>
+                                    </li>
+                                    <li th:unless="${currentPage == numberPage - 1 || numberPage==0}" class="page-item parent-page-item"
                                         th:data-page="${currentPage + 1}"
                                         th:classappend="${currentPage == numberPage - 1} ? 'disabled'">
                                         <a class="page-link" type="button"

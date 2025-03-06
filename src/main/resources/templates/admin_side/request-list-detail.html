@@ -172,7 +172,7 @@
                                                     data-dismiss="modal">No. Take me back!
                                             </button>
                                             <button type="button" class="btn btn-primary px-4"
-                                                    th:onclick="|window.location.href='@{/manager/updateRequest(id=${requestDetail.id}, page=${page})}'|">
+                                                    th:onclick="|window.location.href='@{/manager/updateRequest(id=${requestDetail.id}, page=${page},currentPage=${currentPage})}'|">
                                                 Yes
                                             </button>
                                         </div>
