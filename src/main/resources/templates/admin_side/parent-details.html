@@ -239,37 +239,46 @@
                                 </tr>
                                 </tbody>
                             </table>
+                            <div id="noResultsMessage" th:if="${enrolledSchools.size() == 0 || enrolledSchools==null}" class="alert alert-warning"
+                                 role="alert">
+                                <span th:text="#{ME_012}">No results found.</span>
+                            </div>
                         </div>
                         <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-end">
-                                <!-- Previous Button -->
-                                <li class="page-item parent-page-item disabled" th:if="${currentPage==0}"><a
-                                        class="page-link" type="button">Previous</a></li>
-                                <li th:unless="${currentPage==0}" class="page-item parent-page-item"
-                                    th:data-page="${currentPage - 1}" th:classappend="${currentPage == 0} ? 'disabled'">
-                                    <a class="page-link" type="button"
-                                       th:aria-disabled="${currentPage == 0}">Previous</a>
-                                </li>
+                            <th:block th:if="${numberPage > 1}">
+                                <ul class="pagination justify-content-end">
+                                    <!-- Previous Button -->
+                                    <li class="page-item parent-page-item disabled" th:if="${currentPage==0}"><a
+                                            class="page-link" type="button">Previous</a></li>
+                                    <li th:unless="${currentPage==0}" class="page-item parent-page-item"
+                                        th:data-page="${currentPage - 1}"
+                                        th:classappend="${currentPage == 0} ? 'disabled'">
+                                        <a class="page-link" type="button"
+                                           th:aria-disabled="${currentPage == 0}">Previous</a>
+                                    </li>
 
-                                <!-- Page Numbers -->
-                                <li class="page-item parent-page-item"
-                                    th:each="pageNum : ${numberPage > 0 ? #numbers.sequence(0, numberPage - 1) : #numbers.sequence(0, 0)}"
-                                    th:classappend="${pageNum == currentPage} ? 'active'" th:data-page="${pageNum}">
-                                    <a class="page-link" type="button" th:text="${pageNum + 1}"></a>
-                                </li>
+                                    <!-- Page Numbers -->
+                                    <li class="page-item parent-page-item"
+                                        th:each="pageNum : ${numberPage > 0 ? #numbers.sequence(0, numberPage - 1) : #numbers.sequence(0, 0)}"
+                                        th:classappend="${pageNum == currentPage} ? 'active'" th:data-page="${pageNum}">
+                                        <a class="page-link" type="button" th:text="${pageNum + 1}"></a>
+                                    </li>
 
-                                <!-- Next Button -->
-                                <li class="page-item parent-page-item disabled"
-                                    th:if="${currentPage == numberPage - 1}"><a class="page-link" type="button">Next</a>
-                                </li>
-                                <li th:unless="${currentPage == numberPage - 1}" class="page-item parent-page-item"
-                                    th:data-page="${currentPage + 1}"
-                                    th:classappend="${currentPage == numberPage - 1} ? 'disabled'">
-                                    <a class="page-link" type="button"
-                                       th:aria-disabled="${currentPage == numberPage - 1}">Next</a>
-                                </li>
-                            </ul>
+                                    <!-- Next Button -->
+                                    <li class="page-item parent-page-item disabled"
+                                        th:if="${currentPage == numberPage - 1}"><a class="page-link"
+                                                                                    type="button">Next</a>
+                                    </li>
+                                    <li th:unless="${currentPage == numberPage - 1}" class="page-item parent-page-item"
+                                        th:data-page="${currentPage + 1}"
+                                        th:classappend="${currentPage == numberPage - 1} ? 'disabled'">
+                                        <a class="page-link" type="button"
+                                           th:aria-disabled="${currentPage == numberPage - 1}">Next</a>
+                                    </li>
+                                </ul>
+                            </th:block>
                         </nav>
+
                         <form class="form-horizontal mt-4 mt-lg-0"
                               th:action="@{/manager/parent-list/parent-details/{id}(id=${accountInfo.parentId})}"
                               method="post">

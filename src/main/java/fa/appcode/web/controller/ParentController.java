@@ -116,12 +116,12 @@ public class ParentController {
         List<EnrolledSchoolVo> requestList;
 
         if (Constant.ADMIN_ROLE.equals(role)) {
-
+            //get Data for Admin Role
             listParentEnroll = enrollSchoolService.findParentEnrolledSchoolByParentId(id, pageable);
             schoolInfoList = schoolInfoService.findAllSchoolPublished();
             requestList = enrollSchoolService.findParentRequestEnrolledSchoolByParentId(id);
         } else if (Constant.SCHOOL_OWNER_ROLE.equals(role)) {
-
+            //get Data for School Owner Role
             listParentEnroll = enrollSchoolService.findParentEnrolledSchoolByParentIdAndSchoolOwner(id, principal.getName(), pageable);
             schoolInfoList = schoolInfoService.findSchoolInfoListByAccountEmail(principal.getName());
             requestList = enrollSchoolService.findParentRequestEnrollSchoolByParentIdAndSchoolOwner(id, principal.getName());
@@ -132,7 +132,7 @@ public class ParentController {
             requestList = Collections.emptyList();
         }
 
-
+        //Get List of Enroll School and get Parent Data
         List<EnrolledSchoolVo> enrolledSchools = listParentEnroll.getContent();
         ParentVo accountInfo = accountService.findParentById(id);
 
@@ -188,8 +188,12 @@ public class ParentController {
                 if (enrollSchoolService.isParentEnrollingToSchool(id, schoolId)) {
                     throw new IllegalAccessException("Parent is Already Enrolled To This school.");
                 }
+                //Enroll Parent to School
                 enrollSchoolService.enrollSchoolParent(accountService.getAccountInfoById(id), schoolInfoService.getSchoolInfoById(schoolId), LocalDate.now(), normalizedRole);
-                redirectAttributes.addFlashAttribute("message", "Enrolled the parent successfully into the school.");
+                /*
+                * Add FlashAttribute into redirectAttribute
+                */
+                redirectAttributes.addFlashAttribute("message",globalConfig.getEnrollSuccess());
                 redirectAttributes.addFlashAttribute("alertType", "success");
             } else {
                 EnrollSchool enrollSchool = enrollSchoolService.findEnrollSchoolById(enrollId);

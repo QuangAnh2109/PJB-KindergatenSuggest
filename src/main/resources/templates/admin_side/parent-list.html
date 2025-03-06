@@ -146,8 +146,8 @@
                                                                 class="btn btn-primary"><i
                                                                 class="fa fa-search"></i></button>
                                             </span>
-                                <input type="text" id="parentSearchField" name="search" class="form-control"
-                                       th:placeholder="Search" th:value="${search}">
+                                <input type="search" id="parentSearchField" name="search" class="form-control"
+                                       th:placeholder="Search" aria-label="Search" th:value="${search}">
                             </div>
                             <!--                            </form>-->
                             <div style="max-height: 600px; overflow-y: auto;">
@@ -191,9 +191,14 @@
                                     </tr>
                                     </tbody>
                                 </table>
+                                <div id="noResultsMessage" th:if="${accounts.size() == 0 || accounts==null}" class="alert alert-warning"
+                                     role="alert">
+                                    <span th:text="#{ME_012}">No results found.</span>
+                                </div>
                             </div>
 
                             <nav aria-label="Page navigation">
+                                <th:block th:if="${numberPage > 1}">
                                 <ul class="pagination justify-content-end">
                                     <!-- Previous Button -->
                                     <li class="page-item parent-page-item disabled" th:if="${currentPage==0}"><a
@@ -222,6 +227,7 @@
                                            th:aria-disabled="${currentPage == numberPage - 1}">Next</a>
                                     </li>
                                 </ul>
+                                </th:block>
                             </nav>
                         </div>
                     </div>
