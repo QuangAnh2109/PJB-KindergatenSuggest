@@ -57,4 +57,17 @@ public class Constant {
     public static final String ENROLL_PARENT_SCHOOL ="enroll";
     public static final Integer SCHOOL_PUBLISH_STATUS = 5;
 
+    public static final String ADMIN = "USER_ADMIN";
+    public static final String SCHOOL_OWNER = "USER_SCHOOL_OWNER";
+    public static final String PARENT = "USER_PARENT";
+    public static final String GUEST = "USER_GUEST";
+
+    public static final int SCHOOL_STATUS_SAVED_ID = 1;
+    public static final int SCHOOL_STATUS_SUBMITTED_ID = 2;
+    public static final int SCHOOL_STATUS_APPROVED_ID = 3;
+    public static final int SCHOOL_STATUS_REJECTED_ID = 4;
+    public static final int SCHOOL_STATUS_PUBLISHED_ID = 5;
+    public static final int SCHOOL_STATUS_UNPUBLISHED_ID = 6;
+    public static final int SCHOOL_STATUS_DELETED_ID = 7;
+
 }

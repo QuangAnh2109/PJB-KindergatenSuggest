@@ -1,31 +1,26 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.common.vo.MasterDataVo;
-import fa.appcode.entities.AccountInfo;
 import fa.appcode.entities.SchoolInfo;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.CityService;
 import fa.appcode.services.MasterDatumService;
 import fa.appcode.services.SchoolInfoService;
-import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static fa.appcode.common.utils.Constant.EMAIL_REGEX_HTML;
 import static fa.appcode.common.utils.Constant.PHONE_REGEX_HTML;
 
 @Controller
 @RequestMapping("/school-owner")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SchoolSchoolOwnerController {
     private final MasterDatumService masterDatumService;
 
@@ -35,28 +30,40 @@ public class SchoolSchoolOwnerController {
 
     private final AccountService accountService;
 
+    private final String SCHOOL_TYPE = "SCHOOL TYPE";
+
+    private final String CHILD_RECEIVING_AGE = "CHILD RECEIVING AGE";
+
+    private final String EDUCATION_METHOD = "EDUCATION METHOD";
+
+    private final String FACILITIES = "FACILITIES";
+
+    private final String UTILITIES = "UTILITIES";
+
+    private final String SCHOOL_FORM_HTML = "admin_side/school-form";
+
     @GetMapping("/school/form")
     public String getSchoolFormBySchoolOwner(Model model) {
         // Get all master data by type name(SCHOOL TYPE, CHILD RECEIVING AGE, EDUCATION METHOD, FACILITIES, UTILITIES) in no delete
-        List<MasterDataVo> masterDataVoList = masterDatumService.findAllByTypeNameInNoDelete(List.of("SCHOOL TYPE", "CHILD RECEIVING AGE", "EDUCATION METHOD", "FACILITIES", "UTILITIES"));
+        List<MasterDataVo> masterDataVoList = masterDatumService.findAllByTypeNameInNoDelete(List.of(SCHOOL_TYPE, CHILD_RECEIVING_AGE, EDUCATION_METHOD, FACILITIES, UTILITIES));
 
         // Create list to store each type of master data
         List<MasterDataVo> schoolTypes = new ArrayList<>(), childReceivingAges = new ArrayList<>(), educationMethods = new ArrayList<>(), facilities = new ArrayList<>(), utilities = new ArrayList<>();
         for (MasterDataVo vo : masterDataVoList) {
             switch (vo.getTypeName()) {
-                case "SCHOOL TYPE":
+                case SCHOOL_TYPE:
                     schoolTypes.add(vo);
                     break;
-                case "CHILD RECEIVING AGE":
+                case CHILD_RECEIVING_AGE:
                     childReceivingAges.add(vo);
                     break;
-                case "EDUCATION METHOD":
+                case EDUCATION_METHOD:
                     educationMethods.add(vo);
                     break;
-                case "FACILITIES":
+                case FACILITIES:
                     facilities.add(vo);
                     break;
-                case "UTILITIES":
+                case UTILITIES:
                     utilities.add(vo);
                     break;
             }
@@ -76,7 +83,7 @@ public class SchoolSchoolOwnerController {
         // Add city list to model
         model.addAttribute("citys", cityService.findAllByNoDelete());
 
-        return "admin_side/school-form";
+        return SCHOOL_FORM_HTML;
     }
 
     @ResponseBody
@@ -89,29 +96,33 @@ public class SchoolSchoolOwnerController {
     @ResponseBody
     @PatchMapping("/school/submit/{id}")
     public ResponseEntity addSchoolBySchoolOwner(@PathVariable("id") int id) {
-        try{
-            // Find school info by id and account id
-            SchoolInfo schoolInfo = schoolInfoService.findSchoolInfoByIdAndAccountIdNoDelete(id, getAuthenAccountId());
-            if(schoolInfo != null) {
-                throw new Exception("School not found");
-            }
-            if(schoolInfo.getStatusId() != 1) {
-                throw new Exception("School not in saved status");
-            }
-
-            // Set status to submit
-            schoolInfo.setStatusId(2);
-
-            // Increase record no
-            schoolInfo.setRecordNo(schoolInfo.getRecordNo() + 1);
-            schoolInfo.setUpdateId("USER_ADMIN");
-            schoolInfo.setUpdateTime(Instant.now());
-
-            // Save school info
-            schoolInfoService.save(schoolInfo);
+        try {
+//            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+//
+//            // Find school info by id and account id
+//            SchoolInfo schoolInfo = schoolInfoService.findSchoolInfoByIdAndAccountNoDelete(id, email);
+//
+//            // Check school info
+//            if (schoolInfo == null) {
+//                throw new Exception("School not found");
+//            }
+//            else if (schoolInfo.getStatusId() != Constant.SCHOOL_STATUS_SAVED_ID) {
+//                throw new Exception("School not in saved status");
+//            }
+//
+//            // Set status to submit
+//            schoolInfo.setStatusId(Constant.SCHOOL_STATUS_SUBMITTED_ID);
+//
+//            // Increase record no
+//            schoolInfo.setRecordNo(schoolInfo.getRecordNo() + 1);
+//            schoolInfo.setUpdateId(Constant.SCHOOL_OWNER);
+//            schoolInfo.setUpdateTime(Instant.now());
+//
+//            // Save school info
+//            //schoolInfoService.save(schoolInfo);
 
             return ResponseEntity.accepted().body("Submit success");
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body("Submit failed: " + e.getMessage());
         }
     }
@@ -119,38 +130,47 @@ public class SchoolSchoolOwnerController {
     @ResponseBody
     @PatchMapping("/school/delete/{id}")
     public ResponseEntity deleteSchoolBySchoolOwner(@PathVariable("id") int id) {
-        try{
-            // Find school info by id and account id
-            SchoolInfo schoolInfo = schoolInfoService.findSchoolInfoByIdAndAccountIdNoDelete(id, getAuthenAccountId());
-            if(schoolInfo != null) {
-                throw new Exception("School not found");
-            }
-            if(schoolInfo.getStatusId() == 3) {
-                throw new Exception("Don't have permission to delete");
-            }
-            if(schoolInfo.getStatusId() == 7) {
-                throw new Exception("School already deleted");
-            }
-
-            // Set status to delete
-            schoolInfo.setStatusId(7);
-
-            // Increase record no
-            schoolInfo.setRecordNo(schoolInfo.getRecordNo() + 1);
-            schoolInfo.setUpdateId("USER_ADMIN");
-            schoolInfo.setUpdateTime(Instant.now());
-
-            // Save school info
-            schoolInfoService.save(schoolInfo);
+        try {
+//            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+//
+//            // Find school info by id and account id
+//            SchoolInfo schoolInfo = schoolInfoService.findSchoolInfoByIdAndAccountNoDelete(id, email);
+//
+//            // Check school info
+//            if (schoolInfo == null) {
+//                throw new Exception("School not found");
+//            }
+//            else if (schoolInfo.getStatusId() == Constant.SCHOOL_STATUS_APPROVED_ID) {
+//                throw new Exception("Don't have permission to delete");
+//            }
+//            else if (schoolInfo.getStatusId() == Constant.SCHOOL_STATUS_DELETED_ID) {
+//                throw new Exception("School already deleted");
+//            }
+//
+//            // Set status to delete
+//            schoolInfo.setStatusId(Constant.SCHOOL_STATUS_DELETED_ID);
+//
+//            // Increase record no
+//            schoolInfo.setRecordNo(schoolInfo.getRecordNo() + 1);
+//            schoolInfo.setUpdateId(Constant.SCHOOL_OWNER);
+//            schoolInfo.setUpdateTime(Instant.now());
+//
+//            // Save school info
+//            //schoolInfoService.save(schoolInfo);
 
             return ResponseEntity.accepted().body("Delete success");
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body("Delete failed " + e.getMessage());
         }
     }
 
     @GetMapping("/school/detail/{id}")
     public String getSchoolDetailBySchoolOwner(@PathVariable("id") int id) {
+        return "";
+    }
+
+    @GetMapping("/school/edit/{id}")
+    public String getSchoolDetailForEditBySchoolOwner(@PathVariable("id") int id) {
         return "";
     }
 
@@ -164,10 +184,5 @@ public class SchoolSchoolOwnerController {
     @PostMapping("/school/save-draft")
     public String saveDraftBySchoolOwner() {
         return "";
-    }
-
-    // Get account id from authentication
-    private int getAuthenAccountId() throws Exception {
-        return accountService.findAccountByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
     }
 }
