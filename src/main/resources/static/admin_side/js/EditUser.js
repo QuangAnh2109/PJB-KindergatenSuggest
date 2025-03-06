@@ -64,16 +64,6 @@ $("body").on("click", "button#save-user", function(event) {
 
 });
 
-document.getElementById("cancel-button").addEventListener("click", function() {
-    var previousUrl = localStorage.getItem('previousUrl');
-    if (previousUrl) {
-        window.location.href = previousUrl;
-        localStorage.removeItem('previousUrl');
-    } else {
-        window.history.back();
-    }
-});
-
 // $("body").on("click", "button#save-user", function() {
 //     $("#errorFullName").html('');
 //     $("#errorEmail").html('');

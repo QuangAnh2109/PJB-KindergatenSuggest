@@ -116,8 +116,8 @@
                     <form th:action="@{${role == 'Admin' ? (user.id != null ? '/admin/edit-user/' + user.id : '/admin/add-user') : '/auth/update-account'}}"
                           method="post" th:object="${user}">
 
-                    <input type="hidden" th:field="*{id}">
-                        <input type="hidden" th:field="*{email}">
+                        <input type="hidden" th:field="*{id}">
+
 
                         <!-- Full Name -->
                         <div class="mb-3">
@@ -129,7 +129,7 @@
                         <!-- Email -->
                         <div class="mb-3">
                             <label class="form-label">Email<span class="text-danger">*</span> </label>
-                            <input type="email" class="form-control" required th:field="*{email}" id="email" th:readonly="${user.id != null and role == 'Admin'}">
+                            <input type="email" class="form-control" required th:field="*{email}" id="email"  th:readonly="${user.id != null}">
                             <div class="text-danger" id="errorEmail"></div>
                         </div>
 
@@ -212,13 +212,18 @@
 
 <!-- END wrapper -->
 
-
 <script>
     document.getElementById("cancel-button").addEventListener("click", function() {
-        window.history.back();
+        var previousUrl = localStorage.getItem('previousUrl');
+        if (previousUrl) {
+            window.location.href = previousUrl;
+            localStorage.removeItem('previousUrl');
+        } else {
+            window.history.back();
+        }
     });
-</script>
 
+</script>
 
 <!---------------------------------------- Admin -------------------------------------->
 <th:block th:if="${#strings.equalsIgnoreCase(role, 'Admin')}" >

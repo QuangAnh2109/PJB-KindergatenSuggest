@@ -33,7 +33,7 @@ public class AccountController {
         AccountInfo accountInfo = accountService.findByEmail(email);
 
         if (accountInfo != null) {
-            model.addAttribute("accountInfo", accountInfo);
+            model.addAttribute("user", accountInfo);
             model.addAttribute("role", masterDatumService.getMasterByTypeNameAndTypeKey("ROLE",accountInfo.getRoleId()));
         } else {
             model.addAttribute("error", globalConfig.getNotFound());
@@ -79,7 +79,7 @@ public class AccountController {
         } catch (Exception e) {
             log.error("Error while updating account", e);
             model.addAttribute("error", globalConfig.getAnErrorOccur());
-            model.addAttribute("accountInfo", accountInfo);
+            model.addAttribute("user", accountInfo);
             return Constant.VIEW_ACCOUNT_PAGE;
         }
     }
