@@ -24,7 +24,12 @@ public class ChangePasswordController {
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @GetMapping("/auth/change-password")
-    public String showChangePasswordPage() {
+    public String showChangePasswordPage(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        AccountInfo accountInfo = accountService.findByEmail(email);
+
+        model.addAttribute("accountInfo", accountInfo);
         return Constant.CHANGE_PASSWORD_PAGE;
     }
 

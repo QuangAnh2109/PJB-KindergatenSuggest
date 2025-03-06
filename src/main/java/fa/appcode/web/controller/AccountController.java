@@ -1,5 +1,6 @@
 package fa.appcode.web.controller;
 
+import com.cloudinary.utils.StringUtils;
 import fa.appcode.common.utils.Constant;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
@@ -58,8 +59,12 @@ public class AccountController {
                 model.addAttribute("error", globalConfig.getUserNotFound());
                 return Constant.VIEW_ACCOUNT_PAGE;
             }
-
-            if (!accountInfo.getPhone().equals(currentAccount.getPhone())) {
+            if (StringUtils.isEmpty(accountInfo.getAddress())) {
+                accountInfo.setCity(currentAccount.getCity());
+                accountInfo.setWard(currentAccount.getWard());
+                accountInfo.setDistrict(currentAccount.getDistrict());
+                accountInfo.setAddress(currentAccount.getAddress());
+            } else if (!accountInfo.getPhone().equals(currentAccount.getPhone())) {
                 AccountInfo found = accountService.findAccountInfoByPhone(accountInfo.getPhone());
                 if (found != null && !found.getEmail().equals(accountInfo.getEmail())) {
                     model.addAttribute("phoneFail", globalConfig.getPhoneIsExist());

@@ -1,12 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Token Invalid</title>
+    <link rel="icon" th:href="@{/user_side/images/icon.png}" type="image/gif" sizes="16x16">
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- CSS Files -->
+    <link th:href="@{/user_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/user_side/css/mdb.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/user_side/css/style.css}" rel="stylesheet" type="text/css">
+    <style>
+        .btn-custom {
+            width: 100%;
+            padding: 12px 0;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            color: white;
+        }
+
+        .forgot-btn {
+            background: linear-gradient(135deg, #0dcaf0, #0093c4);
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #00b74a, #073b8c);
+            margin-top: 10px;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
 </head>
-<body>
-<h2>Your token is used or end</h2>
-</form>
+
+<body class="dark-scheme">
+<div id="wrapper">
+    <!-- Page Preloader -->
+    <div id="de-preloader"></div>
+
+    <!-- Content Begin -->
+    <div class="no-bottom no-top" id="content">
+        <div id="top"></div>
+        <section id="section-verify" class="jarallax text-light pt50 pb50 vertical-center" aria-label="section">
+            <img th:src="@{/user_side/images/background/background3.jpg}" style="filter: brightness(66%);"
+                 class="jarallax-img" alt="Token Expired">
+
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h1>Token Expired</h1>
+                        <button class="btn-custom forgot-btn"
+                                th:onclick="|window.location.href='@{/public/forgot-password}'|">Forgot Password
+                        </button>
+                        <button class="btn-custom login-btn"
+                                th:onclick="|window.location.href='@{/public/showMyLoginPage}'|">Login
+                        </button>
+                        <div class="spacer-10"></div>
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        <h1 class="s2">
+                            <span class="c1">Token Expired</span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- Content Close -->
 </div>
+<!-- Javascript Files -->
+<script th:src="@{/user_side/js/plugins.js}"></script>
+<script th:src="@{/user_side/js/designesia.js}"></script>
 </body>
 </html>
