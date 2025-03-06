@@ -1,16 +1,19 @@
 package fa.appcode.web.controller;
 
+import com.cloudinary.provisioning.Account;
 import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.RequestDetailVo;
 import fa.appcode.common.vo.RequestVo;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.entities.Request;
+import fa.appcode.entities.SchoolInfo;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.MasterDatumService;
 import fa.appcode.services.RequestService;
 import fa.appcode.services.SchoolInfoService;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -29,19 +33,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class RequestController {
-    @Autowired
-    private RequestService requestService;
-    @Autowired
-    private MasterDatumService masterDatumService;
-    @Autowired
-    private AccountService accountService;
-
-    @Autowired
-    private SchoolInfoService schoolInfoService;
-
-    @Autowired
-    private GlobalConfig globalConfig;
+    private final RequestService requestService;
+    private final MasterDatumService masterDatumService;
+    private final AccountService accountService;
+    private final SchoolInfoService schoolInfoService;
+    private final GlobalConfig globalConfig;
 
     @GetMapping("/manager/request-list")
     public String showRequestList(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
@@ -92,18 +90,21 @@ public class RequestController {
     @GetMapping("/manager/request-list-detail")
     public String requestListDetail(@RequestParam Integer id,
                                     @RequestParam(name = "page", required = false) String page,
+                                    @RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                     Model model, Principal principal) {
         RequestDetailVo requestDetail = requestService.findById(id);
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         model.addAttribute("requestDetail", requestDetail);
         model.addAttribute("page", page);
         model.addAttribute("role", role);
+        model.addAttribute("currentPage", currentPage);
         return "admin_side/request-list-detail";
     }
 
     @GetMapping("/manager/updateRequest")
     public String updateRequest(@RequestParam Integer id,
                                 @RequestParam String page,
+                                @RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                 Model model, Principal principal,
                                 RedirectAttributes redirectAttributes,
                                 HttpSession session) {
@@ -117,6 +118,7 @@ public class RequestController {
         RequestDetailVo requestDetail = requestService.findById(id);
         model.addAttribute("requestDetail", requestDetail);
         model.addAttribute("role", role);
+        redirectAttributes.addAttribute("currentPage", currentPage);
         session.setAttribute("message", "Update successfully!");
         if (page.equals("Detail")) return "redirect:/manager/request-reminder";
         return "redirect:/manager/request-list";
@@ -160,5 +162,18 @@ public class RequestController {
         model.addAttribute("numberPage", requestList.getTotalPages());
         model.addAttribute("role", role);
         return ResponseEntity.ok(requestList);
+    }
+    @PostMapping("/public/createRequest")
+    public String createRequestCounseling(@RequestParam String fullName,
+                                          @RequestParam String email,
+                                          @RequestParam String phone,
+                                          @RequestParam String inquiries,
+                                          Principal principal){
+        AccountInfo accountID = accountService.getAccountInfo(principal);
+        SchoolInfo school = schoolInfoService.getSchoolInfoById(1);
+        System.out.println("Name: "+school.getSchoolName());
+        Request request = new Request(accountID,school,fullName,email,phone,inquiries,1,1,"PARENT",Instant.now());
+        requestService.createRequest(request);
+        return "redirect:/public/search";
     }
 }

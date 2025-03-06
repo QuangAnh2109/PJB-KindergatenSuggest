@@ -1,6 +1,7 @@
 package fa.appcode.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -10,10 +11,12 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
 @Table(name = "request", schema = "instance_kintergarden_db")
 public class Request {
     @Id
-    @Column(name = "request_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "request_id")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -50,13 +53,30 @@ public class Request {
     @Column(name = "create_time", nullable = false)
     private Instant createTime;
 
-    @Column(name = "update_id", nullable = false, length = 50)
+    @Column(name = "update_id", length = 50)
     private String updateId;
 
-    @Column(name = "update_time", nullable = false)
+    @Column(name = "update_time")
     private Instant updateTime;
 
     @Column(name = "delete_flg", nullable = false)
     private Boolean deleteFlg = false;
 
+    public Request() {
+    }
+
+    public Request(AccountInfo account, SchoolInfo school, String fullName, String requestEmail, String requestPhone, String inquiries, Integer requestMasterId, Integer recordNo, String createId, Instant createTime) {
+        this.account = account;
+        this.school = school;
+        this.fullName = fullName;
+        this.requestEmail = requestEmail;
+        this.requestPhone = requestPhone;
+        this.inquiries = inquiries;
+        this.requestMasterId = requestMasterId;
+        this.recordNo = recordNo;
+        this.createId = createId;
+        this.createTime = createTime;
+        this.updateId = "PARENT";
+        this.updateTime = Instant.now();
+    }
 }

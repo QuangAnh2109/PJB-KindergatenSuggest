@@ -1,6 +1,7 @@
 package fa.appcode.services;
 
-import fa.appcode.common.vo.SchoolInfoVo;
+import fa.appcode.common.vo.SchoolFormManager;
+import fa.appcode.common.vo.SchoolListManager;
 import fa.appcode.entities.SchoolInfo;
 
 import java.util.List;
@@ -16,13 +17,13 @@ public interface SchoolInfoService {
 
     List<Integer> getAllSchoolIdsForUnenrollParentByAccountEmail(String email);
 
-    SchoolInfoVo findSchoolInfoVoByIdAndAccountIdNoDelete(int id, int accountId);
+    List<SchoolListManager> searchAllByNameAndPagingAndDeleteFlg(int page, String search);
 
-    SchoolInfoVo findSchoolInfoVoByIdNoDelete(int id);
+    List<SchoolListManager> searchAllByNameAndAccountAndPagingAndDeleteFlg(int page, String search, String email);
 
-    SchoolInfo findSchoolInfoByIdAndAccountIdNoDelete(int id, int accountId);
+    int updateSchoolStatusByRequest(int id, int recordNo, int schoolStatus, String updateId, List<Integer> list);
 
-    SchoolInfo findSchoolInfoByIdNoDelete(int id);
+    int updateSchoolStatusByRequestAndAccount(int id, String email, int recordNo, int schoolStatus, String updateId, List<Integer> list);
 
-    SchoolInfo save(SchoolInfo schoolInfo);
+    SchoolFormManager getSchoolFormByIdAndNoDelete(int id);
 }

@@ -8,12 +8,15 @@ import java.time.Instant;
 @AllArgsConstructor
 @Getter
 public class SchoolListManager {
+    private int schoolId;
     private String schoolName;
     private String schoolAddress;
+    private String city;
+    private String district;
+    private String ward;
     private String schoolPhone;
     private String schoolEmail;
-    private Instant postDate;
+    private Instant postedDate;
     private int statusId;
-    private boolean canEdit;
     private boolean canDelete;
 }

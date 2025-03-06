@@ -168,10 +168,8 @@ public class AccountServiceImpl implements AccountService {
         AccountInfo user = accountRepository.findById(accountVo.getId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         // Cập nhật các trường được phép chỉnh sửa
-        user.setFullName(accountVo.getFullName());
-        user.setPhone(accountVo.getPhone());
-        user.setDob(LocalDate.parse(accountVo.getDob())); // Chuyển đổi String sang LocalDate
         user.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
+        user.setStatusId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
 
         user.setRecordNo(user.getRecordNo() + 1);
         user.setUpdateId("SYSTEM_ADMIN");
@@ -294,5 +292,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public String getEmailByAccountIdAndActiveAndNoDelete(int accountId) {
         return accountRepository.getEmailByAccountIdAndStatusIdAndDeleteFlg(accountId, 1, false);
+    }
+
+    @Override
+    public String getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(int id) {
+        return accountRepository.getSchoolOwnerEmailBySchoolIdAndStatusAndDeleteFlg(id, 1, false);
     }
 }
