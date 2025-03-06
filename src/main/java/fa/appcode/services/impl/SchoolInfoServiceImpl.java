@@ -1,20 +1,32 @@
 package fa.appcode.services.impl;
 
-import fa.appcode.common.vo.SchoolInfoVo;
+import fa.appcode.common.vo.SchoolFormManager;
+import fa.appcode.common.vo.SchoolListManager;
+import fa.appcode.common.vo.SchoolStatusUpdateRequest;
+import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.SchoolInfo;
 import fa.appcode.repositories.SchoolInfoRepository;
 import fa.appcode.services.SchoolInfoService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SchoolInfoServiceImpl implements SchoolInfoService {
 
     private final SchoolInfoRepository schoolInfoRepository;
+
+    private final GlobalConfig globalConfig;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public List<SchoolInfo> findSchoolInfoListByAccountEmail(String email) {
@@ -40,28 +52,36 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
         return schoolInfoRepository.getAllSchoolIdsForUnenrollParentByAccountEmail(email);
     }
 
+    //find all SchoolListManager by paging and search and delete flag
     @Override
-    public SchoolInfoVo findSchoolInfoVoByIdAndAccountIdNoDelete(int id, int accountId) {
-        return schoolInfoRepository.findSchoolInfoVoByIdAndAccountIdAndDeleteFlg(id, accountId, false);
+    public List<SchoolListManager> searchAllByNameAndPagingAndDeleteFlg(int page, String search) {
+        return schoolInfoRepository.searchAllByNameAndPagingAndDeleteFlg(PageRequest.of(page, globalConfig.getSizeOfPage()), search, false);
+    }
+
+    //find all SchoolListManager by paging and search and account and delete flag
+    @Override
+    public List<SchoolListManager> searchAllByNameAndAccountAndPagingAndDeleteFlg(int page, String search, String email) {
+        return schoolInfoRepository.searchAllByNameAndAccountAndPagingAndDeleteFlg(PageRequest.of(page, globalConfig.getSizeOfPage()), search, email, false);
+    }
+
+    //update school status by school id and record no and no delete
+    @Override
+    @Transactional
+    public int updateSchoolStatusByRequest(int id, int recordNo, int schoolStatus, String updateId, List<Integer> list) {
+        list.add(schoolStatus);
+        return schoolInfoRepository.updateSchoolStatusByRequest(SchoolStatusUpdateRequest.builder().id(id).recordNo(recordNo).schoolStatus(schoolStatus).statusList(list).updateId(updateId).updateTime(Instant.now()).build());
+    }
+
+    //update school status by school id and account and record no and no delete
+    @Override
+    @Transactional
+    public int updateSchoolStatusByRequestAndAccount(int id, String email, int recordNo, int schoolStatus, String updateId, List<Integer> list) {
+        list.add(schoolStatus);
+        return schoolInfoRepository.updateSchoolStatusByRequest(SchoolStatusUpdateRequest.builder().id(id).recordNo(recordNo).email(email).schoolStatus(schoolStatus).statusList(list).updateId(updateId).updateTime(Instant.now()).build());
     }
 
     @Override
-    public SchoolInfoVo findSchoolInfoVoByIdNoDelete(int id) {
-        return schoolInfoRepository.findSchoolInfoVoByIdAndDeleteFlg(id, false);
-    }
-
-    @Override
-    public SchoolInfo findSchoolInfoByIdAndAccountIdNoDelete(int id, int accountId) {
-        return schoolInfoRepository.findSchoolInfoByIdAndAccountIdAndDeleteFlg(id, accountId, false);
-    }
-
-    @Override
-    public SchoolInfo findSchoolInfoByIdNoDelete(int id) {
-        return schoolInfoRepository.findSchoolInfoByIdAndDeleteFlg(id, false);
-    }
-
-    @Override
-    public SchoolInfo save(SchoolInfo schoolInfo) {
-        return schoolInfoRepository.save(schoolInfo);
+    public SchoolFormManager getSchoolFormByIdAndNoDelete(int id) {
+        return schoolInfoRepository.getSchoolFormByIdAndDeleteFlg(id, false);
     }
 }
