@@ -3424,13 +3424,6 @@ a.btn-big:after {
     margin-left: 20px;
 }
 
-a.btn,
-.btn {
-    position: relative;
-    z-index: 1;
-    overflow: hidden;
-}
-
 a.btn:before {
     content: "";
     background: rgba(0, 0, 0, 0);

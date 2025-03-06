@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns="http://www.w3.org/1999/html">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>Search School</title>
+    <link rel="icon" th:href="@{/user_side/images/icon.png}" type="image/gif" sizes="16x16">
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- CSS Files -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link th:href="@{/user_side/css/plugins.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/user_side/css/style.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/user_side/css/coloring.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/user_side/css/my-school.css}" rel="stylesheet" type="text/css">
+    <!-- color scheme -->
+    <link id="colors" th:href="@{/user_side/css/colors/scheme-01.css}" rel="stylesheet" type="text/css">
+
+    <style>
+        #messages {
+            text-align: center;
+            font-style: italic;
+            padding: 0;
+            margin-top: 30px;
+        }
+
+        /* Drop-down */
+        .logout-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown {
+
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-toggle {
+            background-color: #1ECB15;
+            color: white;
+            padding: 8px 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .arrow-down {
+            display: inline-block;
+            margin-left: 8px;
+            border: solid #212529;
+            border-width: 0 2px 2px 0;
+            padding: 3px;
+            transform: rotate(45deg);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 4px;
+            margin-top: 2px;
+        }
+
+        .dropdown-menu a {
+            color: #212529;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f8f9fa;
+        }
+
+        .dropdown-menu-right {
+            right: 0;
+            left: auto;
+        }
+
+        .show {
+            display: block;
+        }
+
+        .btn-primary {
+            height: 38px; /* Match input height */
+            padding: 0 20px;
+            transition: none; /* Disable any transitions */
+            transform: none !important; /* Prevent transformations */
+            width: auto; /* Let it size based on content */
+            white-space: nowrap;
+            border-radius: 4px;
+            margin-left: 5px;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:active {
+            transform: none !important;
+            scale: 1 !important; /* Prevent scaling */
+            zoom: 1 !important; /* Prevent zooming */
+        }
+
+        .overlay {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 9999;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+
+
+        .overlay.active {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .popup {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 300px;
+        }
+
+        .button-container {
+            margin-top: 15px;
+        }
+
+        .btn-yes {
+            background-color: #d9534f;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .btn-cancel {
+            background-color: #5bc0de;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .school-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .school-image {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .school-title {
+            color: #0d99ff;
+            font-weight: bold;
+        }
+
+        .rating-stars {
+            color: #ffc107;
+        }
+
+        .badge-light-blue {
+            background-color: #e6f4ff;
+            color: #0d99ff;
+            font-weight: normal;
+        }
+
+        .info-icon {
+            width: 24px;
+            color: #6c757d;
+            margin-right: 10px;
+        }
+
+        .request-btn {
+            background-color: #0d99ff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+
+
+        .modal-dialog {
+            max-width: 500px;
+        }
+
+        .form-control {
+            background-color: #f5f5f5;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: #0d9bdb;
+            border-color: #0d9bdb;
+        }
+
+        .btn-primary:hover {
+            background-color: #0b89c3;
+            border-color: #0b89c3;
+        }
+
+        .modal-header {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .hotline {
+            color: #0d9bdb;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="wrapper">
+
+    <!-- page preloader begin -->
+    <div id="de-preloader"></div>
+    <!-- page preloader close -->
+
+    <!-- header begin -->
+    <header class="transparent scroll-light has-topbar">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="de-flex sm-pt10">
+                        <div class="de-flex-col">
+                            <div class="de-flex-col">
+                                <!-- logo begin -->
+                                <div id="logo">
+                                    <a th:href="@{/public/home}">
+                                        <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
+                                        <img class="logo-2" src="/user_side/images/logo1.png" alt="">
+                                    </a>
+                                </div>
+                                <!-- logo close -->
+                            </div>
+                        </div>
+                        <div class="de-flex-col header-col-mid">
+                            <ul id="mainmenu">
+                                <li><a class="menu-item" href="/public/search">School Search</a>
+                                </li>
+                                <li><a class="menu-item" href="#">Community</a>
+                                </li>
+                                <li><a class="menu-item" href="#">About Us</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="de-flex-col">
+                            <div class="menu_side_area" sec:authorize="!isAuthenticated()">
+                                <a th:href="@{/showMyLoginPage}" class="btn-main">Login</a>
+                                <span class="menu-btn"></span>
+                            </div>
+                            <div class="menu_side_area" sec:authorize="!isAuthenticated()">
+                                <a th:href="@{/register}" class="btn-main">Sign Up</a>
+                                <span class="menu-btn"></span>
+                            </div>
+                            <div class="logout-container" sec:authorize="isAuthenticated()">
+                                <div class="dropdown">
+                                    <button class="dropdown-toggle" onclick="toggleDropdown()">
+                                        <span><i class="fa fa-user-o" aria-hidden="true" style="margin-right: 5px"></i></span>
+                                        Welcome, <span th:text="${session.nameAccount}"></span>
+                                        <i class="arrow-down"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right" id="featuresDropdown">
+                                        <a href="/parent/my-school"><span><i class="fa-solid fa-school"></i></span> My
+                                            School</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="/parent/my-request"><span><i class="fas fa-clipboard-list"></i></span>
+                                            My
+                                            Request</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="/auth/view-account"><span><i class="fa-solid fa-user"></i></span> My
+                                            Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" onclick="showPopup()"><span><i
+                                                class="fa-solid fa-right-from-bracket"></i></span> Logout</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- header close -->
+    <!-- content begin -->
+    <!-- content begin -->
+    <div class="no-bottom no-top zebra" id="content">
+        <div id="top"></div>
+
+        <!-- section begin -->
+        <section id="subheader" class="jarallax text-light">
+            <img src="/user_side/images/background/my-school.jpg" class="jarallax-img" alt="">
+            <div class="center-y relative text-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <h1>My School</h1>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- section close -->
+
+        <section id="section-cars">
+            <div class="container">
+
+            </div>
+        </section>
+    </div>
+    <!--Log out-->
+    <div id="logoutPopup" class="overlay">
+        <div class="popup">
+            <h2>Are you leaving?</h2>
+            <p>Are you sure you want to logout? All your unsaved data will be lost.</p>
+            <div class="button-container">
+                <button class="btn-yes" onclick="confirmLogout()">Yes</button>
+                <button class="btn-cancel" onclick="hidePopup()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <form id="logoutForm" th:action="@{/logout}" method="post"></form>
+
+
+    <!-- content close -->
+
+    <a href="#" id="back-to-top"></a>
+
+    <!-- footer begin -->
+    <footer class="text-light">
+        <div class="container">
+            <div class="row g-custom-x">
+                <div class="col-lg-3">
+                    <div class="widget">
+                        <h5>About Rentaly</h5>
+                        <p>Where quality meets affordability. We understand the importance of a smooth and enjoyable
+                            journey without the burden of excessive costs. That's why we have meticulously crafted our
+                            offerings to provide you with top-notch vehicles at minimum expense.</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="widget">
+                        <h5>Contact Info</h5>
+                        <address class="s1">
+                            <span><i class="id-color fa fa-map-marker fa-lg"></i>08 W 36th St, New York, NY 10001</span>
+                            <span><i class="id-color fa fa-phone fa-lg"></i>+1 333 9296</span>
+                            <span><i class="id-color fa fa-envelope-o fa-lg"></i><a href="mailto:contact@example.com">contact@example.com</a></span>
+                            <span><i class="id-color fa fa-file-pdf-o fa-lg"></i><a
+                                    href="#">Download Brochure</a></span>
+                        </address>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <h5>Quick Links</h5>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="widget">
+                                <ul>
+                                    <li><a href="#">About</a></li>
+                                    <li><a href="#">Blog</a></li>
+                                    <li><a href="#">Careers</a></li>
+                                    <li><a href="#">News</a></li>
+                                    <li><a href="#">Partners</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="widget">
+                        <h5>Social Network</h5>
+                        <div class="social-icons">
+                            <a href="#"><i class="fa fa-facebook fa-lg"></i></a>
+                            <a href="#"><i class="fa fa-twitter fa-lg"></i></a>
+                            <a href="#"><i class="fa fa-linkedin fa-lg"></i></a>
+                            <a href="#"><i class="fa fa-pinterest fa-lg"></i></a>
+                            <a href="#"><i class="fa fa-rss fa-lg"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="subfooter">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="de-flex">
+                            <div class="de-flex-col">
+                                <a href="index.html">
+                                    Copyright 2024 - Rentaly by Designesia
+                                </a>
+                            </div>
+                            <ul class="menu-simple">
+                                <li><a href="#">Terms &amp; Conditions</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- footer close -->
+
+</div>
+
+<script>
+
+    // Show pop-up logout
+    function showPopup() {
+        document.querySelector(".overlay").classList.add("active");
+    }
+
+    function hidePopup() {
+        document.querySelector(".overlay").classList.remove("active");
+    }
+
+    function confirmLogout() {
+        document.getElementById("logoutForm").submit();
+    }
+
+
+    // Close the dropdown if clicked outside
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropdown-toggle')) {
+            var dropdowns = document.getElementsByClassName("dropdown-menu");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+
+    function toggleDropdown() {
+        document.getElementById("featuresDropdown").classList.toggle("show");
+    }
+
+    //End dropdown
+
+</script>
+<!-- Javascript Files
+================================================== -->
+<script src="/user_side/js/plugins.js"></script>
+<script src="/user_side/js/designesia.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
