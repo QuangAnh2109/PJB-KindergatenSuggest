@@ -83,7 +83,7 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="request : ${requestList}"
-                                    th:attr="onclick='redirectToDetail('+ ${request.id}+')'">
+                                    th:attr="onclick='redirectToDetail(' + ${request.id} + ',' + ${currentPage} + ')'">
                                     <th scope="row" th:text="${request.id}"/>
                                     <th th:text="${request.fullName}"/>
                                     <th th:text="${request.requestEmail}"/>
