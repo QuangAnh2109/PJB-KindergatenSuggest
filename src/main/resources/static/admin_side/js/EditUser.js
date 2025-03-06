@@ -1,20 +1,22 @@
 setTimeout(function () {
     $(".alert").remove();
-}, 3000); // Ẩn thông báo sau 3 giây
+}, 3000); // Hide alert after 3 seconds
 
 $("body").on("click", "button#save-user", function(event) {
-    $(".text-danger").html(""); // Xóa thông báo lỗi cũ
+    $(".text-danger").html(""); // Clear old error messages
 
     var count = 0;
     var phoneRegex = /^[0-9]{10,15}$/;
     var today = new Date().toISOString().split("T")[0];
     var emailRegex = /^[a-z][a-z0-9]*@gmail.com/;
 
+    // Validate Full Name
     if ($("#fullName").val().trim() === '') {
         $("#errorFullName").html('Please enter full name');
         count++;
     }
 
+    // Validate Email
     var email = $("#email").val().trim();
     if (email === '') {
         $("#errorEmail").html('Please enter email');
@@ -24,6 +26,7 @@ $("body").on("click", "button#save-user", function(event) {
         count++;
     }
 
+    // Validate DOB
     var dob = $("#dob").val();
     if (dob.trim() === '') {
         $("#errorDob").html('Please enter date of birth');
@@ -33,6 +36,7 @@ $("body").on("click", "button#save-user", function(event) {
         count++;
     }
 
+    // Validate Phone
     var phone = $("#phone").val().trim();
     if (phone === '') {
         $("#errorPhone").html('Please enter phone number');
@@ -42,11 +46,13 @@ $("body").on("click", "button#save-user", function(event) {
         count++;
     }
 
+    // Validate Role
     if ($('#role').val() === '') {
         $("#errorRole").html('Please select a role');
         count++;
     }
 
+    // Validate Status
     if ($('#status').val() === '') {
         $("#errorStatus").html('Please select a status');
         count++;
@@ -55,8 +61,18 @@ $("body").on("click", "button#save-user", function(event) {
     if (count > 0) {
         event.preventDefault();
     }
+
 });
 
+document.getElementById("cancel-button").addEventListener("click", function() {
+    var previousUrl = localStorage.getItem('previousUrl');
+    if (previousUrl) {
+        window.location.href = previousUrl;
+        localStorage.removeItem('previousUrl');
+    } else {
+        window.history.back();
+    }
+});
 
 // $("body").on("click", "button#save-user", function() {
 //     $("#errorFullName").html('');

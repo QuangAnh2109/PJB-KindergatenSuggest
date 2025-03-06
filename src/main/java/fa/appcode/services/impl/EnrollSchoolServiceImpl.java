@@ -1,6 +1,7 @@
 package fa.appcode.services.impl;
 
 import fa.appcode.common.logging.Log4jUtils;
+import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.entities.EnrollSchool;
@@ -33,18 +34,24 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     private EnrollSchoolRepository enrollSchoolRepository;
 
     @Transactional
-    public void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role) {
+    public void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role) throws IllegalStateException {
 
         //create instant enroll School
         EnrollSchool schoolEnroll = new EnrollSchool();
         //AParent that enroll
+        if(account.getDeleteFlg() || account.getStatusId().equals(Constant.STATUS_INACTIVE) ){
+            throw new IllegalStateException("Account is not active Or No Longer Available Please Try Again!");
+        }
+        if(school.getDeleteFlg() || !school.getStatusId().equals(Constant.SCHOOL_PUBLISH_STATUS) ){
+            throw new IllegalStateException("School is not published Or No Longer Available Please Try Again!");
+        }
         schoolEnroll.setAccount(account);
         //School that Parent will enroll
         schoolEnroll.setSchool(school);
         //Enroll Date
         schoolEnroll.setEnrollDate(enrollDate);
         //Start of Enroll is Always true
-        schoolEnroll.setStatus(2);
+        schoolEnroll.setStatus(3);
         //change with LocalDate time zone
 //                schoolEnroll.setCreateTime(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
 //                schoolEnroll.setUpdateTime(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -97,7 +104,7 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     }
 
     public String execute(String action, EnrollSchool enrollSchool, LocalDate date, String role, Principal principal) throws Exception {
-        if (role.equals("SCHOOL_OWNER")) {
+        if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ","_"))) {
             List<Integer> schoolIdList = schoolInfoService.getAllSchoolIdsForUnenrollParentByAccountEmail(principal.getName());
             if (!schoolIdList.contains(enrollSchool.getSchool().getId())) {
                 throw new IllegalAccessException("Unauthorized action for this school.");
@@ -105,9 +112,9 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         }
         EnrollSchoolService self = applicationContext.getBean(EnrollSchoolService.class);
         switch (action) {
-            case "unenroll" -> self.evaluateParentEnroll(enrollSchool, date, role, 4); //execute unenroll parent
-            case "approve" -> self.evaluateParentEnroll(enrollSchool, date, role, 3); //execute approve enroll parent
-            case "reject" -> self.evaluateParentEnroll(enrollSchool, date, role, 2); //execute reject enroll parent
+            case Constant.UNENROLL_PARENT_SCHOOL -> self.evaluateParentEnroll(enrollSchool, date, role, 4); //execute unenroll parent
+            case Constant.APPROVE_ENROLL_REQUEST -> self.evaluateParentEnroll(enrollSchool, date, role, 3); //execute approve enroll parent
+            case Constant.REJECT_ENROLL_REQUEST -> self.evaluateParentEnroll(enrollSchool, date, role, 2); //execute reject enroll parent
         }
         return action;
     }
@@ -120,5 +127,10 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     @Override
     public List<EnrolledSchoolVo> findParentRequestEnrolledSchoolByParentId(int id) {
         return enrollSchoolRepository.findParentRequestEnrolledSchoolByParentId(id);
+    }
+    //check if parent is already enrolled or not
+    @Override
+    public boolean isParentEnrollingToSchool(Integer accountId, Integer schoolId) {
+        return enrollSchoolRepository.isParentEnrollingToSchool(accountId, schoolId);
     }
 }

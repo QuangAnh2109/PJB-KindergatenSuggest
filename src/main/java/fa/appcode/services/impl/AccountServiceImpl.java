@@ -79,6 +79,7 @@ public class AccountServiceImpl implements AccountService {
         account.setPassword(encodedPassword);
         account.setUpdateTime(Instant.now());
         account.setDatetimeChangePass(Instant.now());
+        account.setRecordNo(account.getRecordNo() + 1);
         accountRepository.save(account);
         return true;
     }
@@ -90,7 +91,7 @@ public class AccountServiceImpl implements AccountService {
         accountInfo.setEmail(accountVo.getEmail());
         accountInfo.setPassword(encodePassword(accountVo.getPassword()));
         accountInfo.setPhone(accountVo.getPhone());
-        accountInfo.setStatusId(Constant.STATUS_ACTIVE);
+        accountInfo.setStatusId(Constant.STATUS_INACTIVE);
         accountInfo.setRoleId(Constant.PARENT_ROLE_ID);
         accountInfo.setImageUrl(null);
         accountInfo.setRecordNo(1);
@@ -99,7 +100,6 @@ public class AccountServiceImpl implements AccountService {
         Instant now = Instant.now();
         accountInfo.setCreateTime(now);
         accountInfo.setUpdateTime(now);
-
         return accountRepository.save(accountInfo);
     }
 
@@ -168,10 +168,8 @@ public class AccountServiceImpl implements AccountService {
         AccountInfo user = accountRepository.findById(accountVo.getId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         // Cập nhật các trường được phép chỉnh sửa
-        user.setFullName(accountVo.getFullName());
-        user.setPhone(accountVo.getPhone());
-        user.setDob(LocalDate.parse(accountVo.getDob())); // Chuyển đổi String sang LocalDate
         user.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
+        user.setStatusId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
 
         user.setRecordNo(user.getRecordNo() + 1);
         user.setUpdateId("SYSTEM_ADMIN");
@@ -180,10 +178,6 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(user);
     }
 
-//    @Override
-//    public void updateUser(Integer id, String fullName, String phone, String dob, Integer roleId) {
-//
-//    }
 
     // Delete logic user account
     @Override
@@ -287,6 +281,7 @@ public class AccountServiceImpl implements AccountService {
         existing.setDistrict(formData.getDistrict());
         existing.setWard(formData.getWard());
         existing.setAddress(formData.getAddress());
+        existing.setRecordNo(existing.getRecordNo() + 1);
         accountRepository.save(existing);
     }
 

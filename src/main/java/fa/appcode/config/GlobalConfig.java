@@ -67,8 +67,20 @@ public class GlobalConfig {
     private String oldPasswordWrong;
     @Value("${ME_024}")
     private String newPasswordWrong;
+    @Value("${ME_025}")
+    private String activeSuccess;
+    @Value("${ME_026}")
+    private String verifiedAccount;
+    @Value("${ME_027}")
+    private String loginFailed;
     @Value("${page.size}")
     private Integer sizeOfPage;
     @Value("${server.link}")
     private String serverLink;
+    @Value("${ME_028}")
+    private String inValidEmail;
+    @Value("${ME_029}")
+    private String invalidPhoneNumber;
+    @Value("${ME_030}")
+    private String requiredMessage;
 }

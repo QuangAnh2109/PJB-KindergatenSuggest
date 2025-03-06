@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@ResponseBody
+@RequestMapping("/public/search")
 public class SearchRestController {
-    @GetMapping("/public/search/process")
+    @GetMapping("/process")
     public ResponseEntity<Void> search(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Integer cityId,

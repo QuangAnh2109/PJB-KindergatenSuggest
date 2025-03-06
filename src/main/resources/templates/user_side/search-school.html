@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="zxx" xmlns="http://www.w3.org/1999/html">
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
@@ -202,6 +202,84 @@
             border-radius: 8px;
             padding: 8px 12px;
         }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .pagination ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+        }
+
+        .pagination .page-item {
+            margin: 0 5px; /* Tạo khoảng cách giữa các nút */
+        }
+
+        .pagination .page-link {
+            display: block;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            color: #007bff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #0056b3;
+            color: white;
+            border-color: #0056b3;
+            font-weight: bold;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #ccc;
+            pointer-events: none;
+            background-color: #f8f9fa;
+        }
+
+        .modal-dialog {
+            max-width: 500px;
+        }
+
+        .form-control {
+            background-color: #f5f5f5;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: #0d9bdb;
+            border-color: #0d9bdb;
+        }
+
+        .btn-primary:hover {
+            background-color: #0b89c3;
+            border-color: #0b89c3;
+        }
+
+        .modal-header {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .hotline {
+            color: #0d9bdb;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
     </style>
 </head>
 
@@ -214,7 +292,6 @@
 
     <!-- header begin -->
     <header class="transparent scroll-light has-topbar">
-
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -223,7 +300,7 @@
                             <div class="de-flex-col">
                                 <!-- logo begin -->
                                 <div id="logo">
-                                    <a th:href="@{/home}">
+                                    <a th:href="@{/public/home}">
                                         <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
                                         <img class="logo-2" src="/user_side/images/logo1.png" alt="">
                                     </a>
@@ -302,15 +379,17 @@
                 <div class="row justify-content-center">
                     <div class="col-md-8">
                         <div class="input-group" style="display: flex;align-items: center">
-                            <input type="text" class="form-control" placeholder="Enter a school name">
+                            <input type="text" class="form-control" th:value="${keyword}"
+                                   placeholder="Enter a school name">
                             <select id="citySelect" name="city" class="form-select" onchange="loadDistrict(this.value)"
                                     style="width: 5%;">
-                                <option selected disabled value="">----Select City/Province-----</option>
-                                <option th:each="city : ${listCity}" th:value="${city.getId()}"
+                                <option selected disabled>----Select City/Province-----</option>
+                                <option th:selected="${cityId == city.getId()}" th:each="city : ${listCity}"
+                                        th:value="${city.getId()}"
                                         th:text="${city.getCityName()}"></option>
                             </select>
                             <select name="district" id="district" class="form-select">
-                                <option selected disabled value="">Select District</option>
+                                <option selected disabled value="">Please choose city/province</option>
                             </select>
                             <button class="btn-primary">Search</button>
                         </div>
@@ -318,11 +397,20 @@
                 </div>
             </div>
         </section>
-        <section id="messages" style="justify-content: center">
-            <div>There are 100 schools that match your search criteria</div>
-        </section>
         <section id="section-cars">
             <div class="container">
+                <div id="messages" style="justify-content: center">
+                    <div>There are 10 schools that match your search criteria</div>
+                </div>
+                <div style="display: flex;justify-content: end;margin-bottom: 10px" ;>
+                    <select name="sortBy" class="form-select" id="sortBy" style="width: auto;">
+                        <option selected disabled value="">Sort By</option>
+                        <option>By Rating</option>
+                        <option>Newest to Oldest</option>
+                        <option>Monthly fee(Highest)</option>
+                        <option>Monthly fee(Lowest)</option>
+                    </select>
+                </div>
                 <div class="row">
                     <div class="col-lg-3" style="position: relative">
                         <div class="item_filter_group">
@@ -411,7 +499,8 @@
                                                         School</h4>
                                                 </a>
                                                 <div class="col-md-5">
-                                                    <button class="request-btn text-white">Request Counseling
+                                                    <button class="request-btn text-white"
+                                                            onclick="openCounselingForm()">Request Counseling
                                                     </button>
                                                     <button class="request-btn text-white">Enroll</button>
                                                 </div>
@@ -484,7 +573,7 @@
                         </div>
 
 
-                        <div class="pagination">
+                        <div class="pagination" style="margin-top: 30px">
                             <ul class="pagination">
                                 <li class="page-item">
                                     <a class="page-link" href="#" aria-label="Previous">
@@ -506,107 +595,172 @@
                     </div>
                 </div>
             </div>
-    </section>
-</div>
-<!--Log out-->
-<div id="logoutPopup" class="overlay">
-    <div class="popup">
-        <h2>Are you leaving?</h2>
-        <p>Are you sure you want to logout? All your unsaved data will be lost.</p>
-        <div class="button-container">
-            <button class="btn btn-yes" onclick="confirmLogout()">Yes</button>
-            <button class="btn btn-cancel" onclick="hidePopup()">Cancel</button>
+        </section>
+    </div>
+    <!--Log out-->
+    <div id="logoutPopup" class="overlay">
+        <div class="popup">
+            <h2>Are you leaving?</h2>
+            <p>Are you sure you want to logout? All your unsaved data will be lost.</p>
+            <div class="button-container">
+                <button class="btn btn-yes" onclick="confirmLogout()">Yes</button>
+                <button class="btn btn-cancel" onclick="hidePopup()">Cancel</button>
+            </div>
         </div>
     </div>
-</div>
 
-<form id="logoutForm" th:action="@{/logout}" method="post"></form>
-<!-- content close -->
+    <form id="logoutForm" th:action="@{/logout}" method="post"></form>
 
-<a href="#" id="back-to-top"></a>
+    <!-- Modal -->
+    <div class="modal fade" id="counselingModal" tabindex="-1" aria-labelledby="counselingModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="counselingModalLabel">Request Counseling</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted mb-4">Please check your details below and confirm to submit the request.</p>
 
-<!-- footer begin -->
-<footer class="text-light">
-    <div class="container">
-        <div class="row g-custom-x">
-            <div class="col-lg-3">
-                <div class="widget">
-                    <h5>About Rentaly</h5>
-                    <p>Where quality meets affordability. We understand the importance of a smooth and enjoyable
-                        journey without the burden of excessive costs. That's why we have meticulously crafted our
-                        offerings to provide you with top-notch vehicles at minimum expense.</p>
+                    <form id="counselingForm" th:action="@{/public/createRequest}" method="POST">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" th:value="${session.nameAccount}"
+                                   placeholder="Enter your full name..." name="fullName">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="email" placeholder="info@xyz.com" name="email">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mobile" class="form-label">Mobile No. :</label>
+                            <input type="tel" class="form-control" id="mobile" placeholder="+91 - 98596 58000" name="phone">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="inquiries" class="form-label">Inquiries</label>
+                            <textarea class="form-control" id="inquiries" rows="5" name="inquiries"></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <p class="small text-muted">
+                                Our staff will contact with you within 24 hrs. If you need urgent
+                                assistance, please contact us via our hotline <a href="tel:09123456888" class="hotline">09123456888</a>
+                            </p>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+                                    style="width: 45%;">Cancel
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="submitRequestCounselingForm()"
+                                    style="width: 45%;">Submit
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
+        </div>
+    </div>
+    <!-- content close -->
 
-            <div class="col-lg-3">
-                <div class="widget">
-                    <h5>Contact Info</h5>
-                    <address class="s1">
-                        <span><i class="id-color fa fa-map-marker fa-lg"></i>08 W 36th St, New York, NY 10001</span>
-                        <span><i class="id-color fa fa-phone fa-lg"></i>+1 333 9296</span>
-                        <span><i class="id-color fa fa-envelope-o fa-lg"></i><a href="mailto:contact@example.com">contact@example.com</a></span>
-                        <span><i class="id-color fa fa-file-pdf-o fa-lg"></i><a
-                                href="#">Download Brochure</a></span>
-                    </address>
+    <a href="#" id="back-to-top"></a>
+
+    <!-- footer begin -->
+    <footer class="text-light">
+        <div class="container">
+            <div class="row g-custom-x">
+                <div class="col-lg-3">
+                    <div class="widget">
+                        <h5>About Rentaly</h5>
+                        <p>Where quality meets affordability. We understand the importance of a smooth and enjoyable
+                            journey without the burden of excessive costs. That's why we have meticulously crafted our
+                            offerings to provide you with top-notch vehicles at minimum expense.</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="widget">
+                        <h5>Contact Info</h5>
+                        <address class="s1">
+                            <span><i class="id-color fa fa-map-marker fa-lg"></i>08 W 36th St, New York, NY 10001</span>
+                            <span><i class="id-color fa fa-phone fa-lg"></i>+1 333 9296</span>
+                            <span><i class="id-color fa fa-envelope-o fa-lg"></i><a href="mailto:contact@example.com">contact@example.com</a></span>
+                            <span><i class="id-color fa fa-file-pdf-o fa-lg"></i><a
+                                    href="#">Download Brochure</a></span>
+                        </address>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <h5>Quick Links</h5>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="widget">
+                                <ul>
+                                    <li><a href="#">About</a></li>
+                                    <li><a href="#">Blog</a></li>
+                                    <li><a href="#">Careers</a></li>
+                                    <li><a href="#">News</a></li>
+                                    <li><a href="#">Partners</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="widget">
+                        <h5>Social Network</h5>
+                        <div class="social-icons">
+                            <a href="#"><i class="fa fa-facebook fa-lg"></i></a>
+                            <a href="#"><i class="fa fa-twitter fa-lg"></i></a>
+                            <a href="#"><i class="fa fa-linkedin fa-lg"></i></a>
+                            <a href="#"><i class="fa fa-pinterest fa-lg"></i></a>
+                            <a href="#"><i class="fa fa-rss fa-lg"></i></a>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="col-lg-3">
-                <h5>Quick Links</h5>
+        </div>
+        <div class="subfooter">
+            <div class="container">
                 <div class="row">
-                    <div class="col-lg-6">
-                        <div class="widget">
-                            <ul>
-                                <li><a href="#">About</a></li>
-                                <li><a href="#">Blog</a></li>
-                                <li><a href="#">Careers</a></li>
-                                <li><a href="#">News</a></li>
-                                <li><a href="#">Partners</a></li>
+                    <div class="col-md-12">
+                        <div class="de-flex">
+                            <div class="de-flex-col">
+                                <a href="index.html">
+                                    Copyright 2024 - Rentaly by Designesia
+                                </a>
+                            </div>
+                            <ul class="menu-simple">
+                                <li><a href="#">Terms &amp; Conditions</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-lg-3">
-                <div class="widget">
-                    <h5>Social Network</h5>
-                    <div class="social-icons">
-                        <a href="#"><i class="fa fa-facebook fa-lg"></i></a>
-                        <a href="#"><i class="fa fa-twitter fa-lg"></i></a>
-                        <a href="#"><i class="fa fa-linkedin fa-lg"></i></a>
-                        <a href="#"><i class="fa fa-pinterest fa-lg"></i></a>
-                        <a href="#"><i class="fa fa-rss fa-lg"></i></a>
-                    </div>
-                </div>
-            </div>
         </div>
-    </div>
-    <div class="subfooter">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="de-flex">
-                        <div class="de-flex-col">
-                            <a href="index.html">
-                                Copyright 2024 - Rentaly by Designesia
-                            </a>
-                        </div>
-                        <ul class="menu-simple">
-                            <li><a href="#">Terms &amp; Conditions</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
-<!-- footer close -->
+    </footer>
+    <!-- footer close -->
 
 </div>
 
 <script>
+
+
+    // Hàm hiển thị thông báo lỗi
+    function showErrorMessage(inputId, message) {
+        let inputElement = document.getElementById(inputId);
+        let errorElement = document.createElement("div");
+        errorElement.className = "error-message text-danger mt-1";
+        errorElement.textContent = message;
+        inputElement.parentElement.appendChild(errorElement);
+    }
 
     // Show pop-up logout
     function showPopup() {
@@ -670,11 +824,88 @@
         });
     }
 </script>
+<script th:inline="javascript">
+    function submitRequestCounselingForm() {
+        let email = document.getElementById("email").value.trim();
+        let mobile = document.getElementById("mobile").value.trim();
+        let fullName = document.getElementById("fullName").value.trim();
+        let inquiries = document.getElementById("inquiries").value.trim();
+
+        // Lấy giá trị từ Thymeleaf, sử dụng giá trị mặc định nếu null hoặc undefined
+        let emailErrorMessage = /*[[${emailErrorMessage}]]*/ 'Email must end with @gmail.com';
+        let mobileErrorMessage = /*[[${mobileErrorMessage}]]*/ 'Mobile number must be 10 digits';
+        let requiredFieldMessage = /*[[${requiredFieldMessage}]]*/ 'This field is required';
+
+        let emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        let mobileRegex = /^\d{10}$/;
+
+        // Xóa thông báo lỗi cũ
+        document.querySelectorAll('.error-message').forEach(e => e.remove());
+
+        let isValid = true;
+
+        // Kiểm tra các trường không được để trống
+        if (!fullName) {
+            showErrorMessage("fullName", requiredFieldMessage);
+            isValid = false;
+        }
+        if (!email) {
+            showErrorMessage("email", requiredFieldMessage);
+            isValid = false;
+        }
+        if (!mobile) {
+            showErrorMessage("mobile", requiredFieldMessage);
+            isValid = false;
+        }
+        if (!inquiries) {
+            showErrorMessage("inquiries", requiredFieldMessage);
+            isValid = false;
+        }
+
+        // Kiểm tra email và mobile
+        if (email && !emailRegex.test(email)) {
+            showErrorMessage("email", emailErrorMessage);
+            isValid = false;
+        }
+        if (mobile && !mobileRegex.test(mobile)) {
+            showErrorMessage("mobile", mobileErrorMessage);
+            isValid = false;
+        }
+
+        // Nếu tất cả đều hợp lệ, submit form
+        if (isValid) {
+            let formData = new FormData(document.getElementById("counselingForm"));
+
+            fetch('/public/createRequest', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Hiển thị thông báo
+                        alert('My request is sent successfully!');
+                        $('#counselingModal').modal('hide');
+                        // Xóa dữ liệu form
+                        document.getElementById("counselingForm").reset();
+
+                    } else {
+                        alert('Failed to submit request.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    }
+
+</script>
+
 <!-- Javascript Files
 ================================================== -->
+<script src="/user_side/js/search.js"></script>
+<script src="/user_side/js/request-conseling.js"></script>
 <script src="/user_side/js/plugins.js"></script>
 <script src="/user_side/js/designesia.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 
 </body>
 

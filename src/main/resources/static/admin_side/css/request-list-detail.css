@@ -1,0 +1,51 @@
+.btn-closed {
+    background-color: #E6FAE6; /* Nền xanh nhạt */
+    color: #28a745; /* Chữ xanh lá */
+    border: 1px solid #555; /* Viền đen nhạt */
+    border-radius: 20px; /* Bo tròn viền */
+    padding: 3px 15px; /* Kích thước nút */
+    font-weight: bold; /* Chữ đậm */
+    font-size: 14px; /* Kích thước chữ */
+    min-width: 80px; /* Độ rộng tối thiểu */
+    text-align: center; /* Canh giữa chữ */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: none; /* Xóa hiệu ứng bóng */
+    outline: none; /* Xóa viền focus */
+}
+
+.btn-closed:hover {
+    background-color: #D4F5D4; /* Hover nhẹ */
+    border-color: #333;
+    cursor: pointer;
+}
+
+
+.form-horizontal label {
+    color: buttontext;
+}
+
+.logout-container {
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: flex-end; /* Đẩy sang phải */
+    flex-grow: 1; /* Cho phép chiếm không gian còn lại để đẩy sang phải */
+    padding-right: 20px; /* Khoảng cách với mép phải */
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    color: #3498db; /* Màu xanh */
+    margin-top: 20px;
+}
+
+.logout-btn i {
+    font-size: 22px;
+    color: #333; /* Màu tối hơn */
+}
