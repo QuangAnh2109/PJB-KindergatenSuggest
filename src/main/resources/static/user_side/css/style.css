@@ -3424,13 +3424,6 @@ a.btn-big:after {
     margin-left: 20px;
 }
 
-a.btn,
-.btn {
-    position: relative;
-    z-index: 1;
-    overflow: hidden;
-}
-
 a.btn:before {
     content: "";
     background: rgba(0, 0, 0, 0);
@@ -12257,6 +12250,121 @@ input[type="range"]::-moz-range-thumb {
 .de-item-list .d-info img{
     width: 32px;
     height: 32px;
+}
+
+.overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 9999;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.overlay.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.popup {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 300px;
+}
+
+.button-container {
+    margin-top: 15px;
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-yes {
+    background-color: #d9534f;
+    color: white;
+}
+
+.btn-cancel {
+    background-color: #5bc0de;
+    color: white;
+}
+
+/* Improved Dropdown Styles */
+.logout-container {
+    position: relative;
+    display: inline-block;
+    z-index: 1000;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    background-color: #1ECB15;
+    color: white;
+    padding: 8px 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.arrow-down {
+    display: inline-block;
+    margin-left: 8px;
+    border: solid #212529;
+    border-width: 0 2px 2px 0;
+    padding: 3px;
+    transform: rotate(45deg);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #fff;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    border-radius: 4px;
+    margin-top: 2px;
+}
+
+.dropdown-menu a {
+    color: #212529;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: #e9ecef;
+    margin: 0;
+}
+
+.show {
+    display: block !important;
 }
 
 .de-item-list .d-info ul{

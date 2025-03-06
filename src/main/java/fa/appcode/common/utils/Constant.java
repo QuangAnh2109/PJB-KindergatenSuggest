@@ -2,8 +2,6 @@ package fa.appcode.common.utils;
 
 
 public class Constant {
-    private Constant() {
-    }
 
     ///  USER SIDE
     public static final String USER_INIT_PAGE = "0";
@@ -27,6 +25,7 @@ public class Constant {
     private static final String HOME_URL = "/public/home";
     private static final String MANAGER_REQUEST_LIST_URL = "/manager/request-list";
     public static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
+    public static final String PARENT_LIST_URL = "/manager/parent-list";
 
     //ADMIN SIDE
 
@@ -52,5 +51,23 @@ public class Constant {
     public static final int SEND_EMAIL_FORGOT = 1;
     public static final String INVALID_TOKEN_FORMAT = "Invalid token format";
     public static final String INVALID_TOKEN = "Invalid token structure";
+    public static final String APPROVE_ENROLL_REQUEST ="approve";
+    public static final String REJECT_ENROLL_REQUEST ="reject";
+    public static final String UNENROLL_PARENT_SCHOOL ="unenroll";
+    public static final String ENROLL_PARENT_SCHOOL ="enroll";
+    public static final Integer SCHOOL_PUBLISH_STATUS = 5;
+
+    public static final String ADMIN = "USER_ADMIN";
+    public static final String SCHOOL_OWNER = "USER_SCHOOL_OWNER";
+    public static final String PARENT = "USER_PARENT";
+    public static final String GUEST = "USER_GUEST";
+
+    public static final int SCHOOL_STATUS_SAVED_ID = 1;
+    public static final int SCHOOL_STATUS_SUBMITTED_ID = 2;
+    public static final int SCHOOL_STATUS_APPROVED_ID = 3;
+    public static final int SCHOOL_STATUS_REJECTED_ID = 4;
+    public static final int SCHOOL_STATUS_PUBLISHED_ID = 5;
+    public static final int SCHOOL_STATUS_UNPUBLISHED_ID = 6;
+    public static final int SCHOOL_STATUS_DELETED_ID = 7;
 
 }

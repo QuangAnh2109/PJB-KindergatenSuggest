@@ -30,12 +30,12 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Page<RequestVo> findAll(Pageable pageable) {
-        return (Page<RequestVo>)requestRepository.listAllRequest(pageable);
+        return (Page<RequestVo>) requestRepository.listAllRequest(pageable);
     }
 
     @Override
     public Page<RequestVo> listAllRequestWithSchoolOwner(Integer accountID, Pageable pageable) {
-        return (Page<RequestVo>)requestRepository.listAllRequestWithSchoolOwner(accountID,pageable);
+        return (Page<RequestVo>) requestRepository.listAllRequestWithSchoolOwner(accountID, pageable);
     }
 
     @Override
@@ -45,47 +45,57 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Page<RequestVo> findOpenedRequest(Pageable pageable) {
-        return (Page<RequestVo>)requestRepository.findOpenedRequest(pageable);
+        return (Page<RequestVo>) requestRepository.findOpenedRequest(pageable);
     }
 
     @Override
     public Page<RequestVo> findOpenedRequestWithSchoolOwner(Integer accountID, Pageable pageable) {
-        return (Page<RequestVo>)requestRepository.findOpenedRequestWithSchoolOwner(accountID,pageable);
+        return (Page<RequestVo>) requestRepository.findOpenedRequestWithSchoolOwner(accountID, pageable);
     }
 
     @Override
     public Page<RequestVo> searchRequest(String keyword, Pageable pageable) {
-        return (Page<RequestVo>)requestRepository.searchRequest(keyword,pageable);
+        return (Page<RequestVo>) requestRepository.searchRequest(keyword, pageable);
     }
 
     @Override
-    public Page<RequestVo> searchRequestWithSchoolOwner(String keyword,Integer accountID, Pageable pageable) {
-        return (Page<RequestVo>)requestRepository.searchRequestWithSchoolOwner(keyword,accountID,pageable);
+    public Page<RequestVo> searchRequestWithSchoolOwner(String keyword, Integer accountID, Pageable pageable) {
+        return (Page<RequestVo>) requestRepository.searchRequestWithSchoolOwner(keyword, accountID, pageable);
     }
 
     @Override
     public Page<RequestVo> searchRequestReminder(String keyword, Pageable pageable) {
-        return (Page<RequestVo>)requestRepository.searchRequestReminder(keyword,pageable);
+        return (Page<RequestVo>) requestRepository.searchRequestReminder(keyword, pageable);
     }
 
     @Override
     public Page<RequestVo> searchRequestReminderWithSchoolOwner(String keyword, Integer accountID, Pageable pageable) {
-        return (Page<RequestVo>)requestRepository.searchRequestReminderWithSchoolOwner(keyword,accountID,pageable);
+        return (Page<RequestVo>) requestRepository.searchRequestReminderWithSchoolOwner(keyword, accountID, pageable);
     }
 
     @Override
-    public void updateRequest(String update_id,int id) {
+    public Page<Request> findRequestByAccountIdAndDeleteFlg(Integer accountId) {
+        return (Page<Request>) requestRepository.findRequestByAccountIdAndDeleteFlgIsFalse(accountId);
+    }
+
+    @Override
+    public void updateRequest(String update_id, int id) {
         Instant vietnamTime = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toInstant();
-        requestRepository.updateRequestStatus(update_id,id, vietnamTime);
+        requestRepository.updateRequestStatus(update_id, id, vietnamTime);
     }
 
     @Override
     @Scheduled(cron = "0 0 0 */2 * ?")
     public void emailRequestReminder() {
         List<EmailContentVo> listSending = requestRepository.findAccountForEmail();
-        for(EmailContentVo emailContentVo : listSending){
-            emailService.sendEmail(emailContentVo.getEmail(),"Kindergarten",
-                    "You have "+emailContentVo.getNumberOfRequest()+" unresolved requests");
+        for (EmailContentVo emailContentVo : listSending) {
+            emailService.sendEmail(emailContentVo.getEmail(), "Kindergarten",
+                    "You have " + emailContentVo.getNumberOfRequest() + " unresolved requests");
         }
+    }
+
+    @Override
+    public void createRequest(Request request) {
+        requestRepository.save(request);
     }
 }

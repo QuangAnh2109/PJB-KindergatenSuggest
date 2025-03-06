@@ -32,7 +32,7 @@ public interface AccountService {
 
     boolean updatePassword(String email, String newPassword);
 
-    Page<ParentVo> findAllParent(String search ,Pageable pageable);
+    Page<ParentVo> findAllParent(String search, Pageable pageable);
 
     //tuanpa79
 
@@ -82,7 +82,6 @@ public interface AccountService {
     void addUserFromAdmin(AccountVo accountVo);
 
 
-
     Page<AccountInfo> findAll(Pageable pageable);
 
     List<AccountInfo> findAllRoles();
@@ -106,6 +105,8 @@ public interface AccountService {
     AccountInfo getAccountInfo(Principal principal);
 
     String getEmailByAccountIdAndActiveAndNoDelete(int accountId);
+
+    String getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(int id);
 
     void updateAccountInfo(AccountInfo existing, AccountInfo formData);
 }

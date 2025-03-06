@@ -4,8 +4,6 @@
 
 <html lang="zxx">
 
-
-<!-- Mirrored from www.madebydesignesia.com/themes/rentaly/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 06 Sep 2024 16:11:57 GMT -->
 <head>
     <title>Kindergarten Suggestion - The Perfect Place for Your Child’s First Steps in Learning!</title>
     <link rel="icon" th:href="@{/user_side/images/icon1.png}" type="image/gif" sizes="16x16">
@@ -76,11 +74,19 @@
         .btn-yes {
             background-color: #d9534f;
             color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
         }
 
         .btn-cancel {
             background-color: #5bc0de;
             color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius:5px;
         }
 
         /* Drop-down */
@@ -177,7 +183,7 @@
                         </div>
                         <div class="de-flex-col header-col-mid">
                             <ul id="mainmenu">
-                                <li><a class="menu-item" href="/search">School Search</a>
+                                <li><a class="menu-item" href="/public/search">School Search</a>
                                 </li>
                                 <li><a class="menu-item" href="#">Community</a>
                                 </li>
@@ -198,18 +204,19 @@
                                 <div class="dropdown">
                                     <button class="dropdown-toggle" onclick="toggleDropdown()">
                                         <span><i class="fa fa-user-o" aria-hidden="true" style="margin-right: 5px"></i></span>
-                                        <i class="fa-solid fa-user"></i> Welcome, <span th:text="${session.nameAccount}"></span>
+                                        Welcome, <span th:text="${session.nameAccount}"></span>
                                         <i class="arrow-down"></i>
-
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" id="featuresDropdown">
-                                        <a href="/feature1"><span><i class="fa-solid fa-school"></i></span> My
+                                        <a href="/parent/my-school"><span><i class="fa-solid fa-school"></i></span> My
                                             School</a>
                                         <div class="dropdown-divider"></div>
-                                        <a href="/feature2"><span><i class="fas fa-clipboard-list"></i></span> My
+                                        <a href="/parent/my-request"><span><i class="fas fa-clipboard-list"></i></span>
+                                            My
                                             Request</a>
                                         <div class="dropdown-divider"></div>
-                                        <a href="/auth/view-account"><span><i class="fa-solid fa-user"></i></span> My Profile</a>
+                                        <a href="/auth/view-account"><span><i class="fa-solid fa-user"></i></span> My
+                                            Profile</a>
                                         <div class="dropdown-divider"></div>
                                         <a href="#" onclick="showPopup()"><span><i
                                                 class="fa-solid fa-right-from-bracket"></i></span> Logout</a>
@@ -250,9 +257,10 @@
                                             <h4 class="dialog-box-search">Search by school name</h4>
                                             <div class="dialog-box-search">
                                                 <input type="text" name="keyword"
-                                                       placeholder="Enter a school name" id="keyword" class="form-control"
+                                                       placeholder="Enter a school name" id="keyword"
+                                                       class="form-control"
                                                        style="width: 50%;height: 50px">
-                                                <button class="btn-main" onclick="searchRedirect()">Search</button>
+                                                <button class="btn-main" style="margin-left: 15px" onclick="searchRedirect()">Search</button>
                                             </div>
                                             <div class="jls-address-preview jls-address-preview--hidden">
                                                 <div class="jls-address-preview__header">
@@ -275,7 +283,9 @@
                                             <select name="district" id="district" class="form-select">
                                                 <option selected disabled value="">Select District</option>
                                             </select>
-                                            <button class="btn-main" style="width: 15%;" onclick="searchRedirect()">Search</button>
+                                            <button class="btn-main" style="width: 15%;margin-left: 15px" onclick="searchRedirect()">
+                                                Search
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -344,7 +354,7 @@
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <img src="/user_side/images/misc/car.png" alt="" class="img-fluid wow fadeInUp">
+                        <img src="/user_side/images/school-model.png" alt="" class="img-fluid wow fadeInUp">
                     </div>
                     <div class="col-lg-3">
                         <div class="box-icon s2 d-invert p-small mb20 wow fadeInL fadeInLeft" data-wow-delay="1s">
@@ -607,7 +617,7 @@
                     <div class="col-md-12">
                         <div class="de-flex">
                             <div class="de-flex-col">
-                                <a href="index.html">
+                                <a href="/public/home">
                                     Copyright 2025 - Kindergarten Suggestion System
                                 </a>
                             </div>
@@ -643,7 +653,6 @@
         document.getElementById("featuresDropdown").classList.toggle("show");
     }
 
-    // Close the dropdown if clicked outside
     window.onclick = function (event) {
         if (!event.target.matches('.dropdown-toggle')) {
             var dropdowns = document.getElementsByClassName("dropdown-menu");
@@ -680,7 +689,7 @@
                 document.getElementById("address").value = "";
             },
             error: function (xhr) {
-                console.log("load district faild" + xhr);
+                console.log("load district failed" + xhr);
             },
         });
     }
@@ -690,15 +699,13 @@
         const cityId = document.getElementById("citySelect").value;
         const district = document.getElementById("district").value;
 
-        // Tạo URL với query parameters
-        const url = `/public/search/process?keyword=${encodeURIComponent(input)}&cityId=${cityId}&districtId=${district}`;
+        const uri = `/public/search/process?keyword=${encodeURIComponent(input)}&cityId=${cityId}&districtId=${district}`;
 
-        // Chuyển hướng trình duyệt đến URL mới
-        window.location.href = url;
+        window.location.href = uri;
     }
 
     //Catch event EnterKey
-    document.addEventListener('keydown', function(event) {
+    document.addEventListener('keydown', function (event) {
         if (event.key === 'Enter') {
             searchRedirect();
         }

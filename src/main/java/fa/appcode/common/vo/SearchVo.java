@@ -17,6 +17,7 @@ public class SearchVo {
     private int cityId;
     private int districtId;
     private double fee_from;
+    private double fee_to;
 
 
 }

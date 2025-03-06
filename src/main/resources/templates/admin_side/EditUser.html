@@ -1,108 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
-    <title>form Advanced | Simple - Responsive Bootstrap 4 Admin Dashboard</title>
+    <title th:text="${role == 'Admin' ? 'Edit User' : 'User Profile'}"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Responsive bootstrap 4 admin template" name="description"/>
     <meta content="Coderthemes" name="author"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <!-- App favicon -->
-    <link rel="shortcut icon" th:href="@{/admin_side/images/favicon.ico}">
-    <!-- Plugin css -->
-    <link th:href="@{/admin_side/libs/bootstrap-tagsinput/bootstrap-tagsinput.css}" rel="stylesheet"/>
-    <link th:href="@{/admin_side/libs/switchery/switchery.min.css}" rel="stylesheet" type="text/css"/>
-    <link th:href="@{/admin_side/libs/select2/select2.min.css}" rel="stylesheet" type="text/css"/>
-    <link th:href="@{/admin_side/libs/clockpicker/bootstrap-clockpicker.min.css}" rel="stylesheet">
-    <link th:href="@{/admin_side/libs/bootstrap-timepicker/bootstrap-timepicker.min.css}" rel="stylesheet"
-          type="text/css"/>
-    <link th:href="@{/admin_side/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.css}" rel="stylesheet"
-          type="text/css"/>
-    <link th:href="@{/admin_side/libs/bootstrap-datepicker/bootstrap-datepicker.css}" rel="stylesheet">
-    <link th:href="@{/admin_side/libs/bootstrap-daterangepicker/daterangepicker.css}" rel="stylesheet">
-    <!-- Summernote css -->
-    <link th:href="@{/admin_side/libs/summernote/summernote-bs4.css}" rel="stylesheet" type="text/css"/>
-    <!-- App css -->
-    <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css" id="bootstrap-stylesheet"/>
-    <link th:href="@{/admin_side/css/icons.min.css}" rel="stylesheet" type="text/css"/>
-    <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css" id="app-stylesheet"/>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
 
-    <style>
-        .btn-closed {
-            background-color: #E6FAE6;
-            color: #0b5ed7;
-            border: 2px solid #555;
-            border-radius: 20px;
-            padding: 5px 15px;
-            font-weight: bold;
-            transition: all 0.3s ease-in-out;
-        }
+    <!------------------------------Admin Screen--------------------------------------------------------->
+    <th:block th:if="${role == 'Admin'}">
+        <!-- App favicon -->
+        <link rel="shortcut icon" th:href="@{/admin_side/images/favicon.ico}">
+        <!-- Plugin css -->
+        <link th:href="@{/admin_side/libs/bootstrap-tagsinput/bootstrap-tagsinput.css}" rel="stylesheet" />
+        <link th:href="@{/admin_side/libs/switchery/switchery.min.css}" rel="stylesheet" type="text/css" />
+        <link th:href="@{/admin_side/libs/select2/select2.min.css}" rel="stylesheet" type="text/css"/>
+        <link th:href="@{/admin_side/libs/clockpicker/bootstrap-clockpicker.min.css}" rel="stylesheet">
+        <link th:href="@{/admin_side/libs/bootstrap-timepicker/bootstrap-timepicker.min.css}" rel="stylesheet"
+              type="text/css"/>
+        <link th:href="@{/admin_side/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.css}" rel="stylesheet"
+              type="text/css"/>
+        <link th:href="@{/admin_side/libs/bootstrap-datepicker/bootstrap-datepicker.css}" rel="stylesheet">
+        <link th:href="@{/admin_side/libs/bootstrap-daterangepicker/daterangepicker.css}" rel="stylesheet">
+        <!-- Summernote css -->
+        <link th:href="@{/admin_side/libs/summernote/summernote-bs4.css}" rel="stylesheet" type="text/css"/>
+        <!-- App css -->
+        <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css" id="bootstrap-stylesheet"/>
+        <link th:href="@{/admin_side/css/icons.min.css}" rel="stylesheet" type="text/css"/>
+        <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css" id="app-stylesheet"/>
+        <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
+        <link rel="stylesheet"  th:href="@{/admin_side/css/EditUser.css}" type="text/css"/>
+    </th:block>
 
-        .btn-closed:hover {
-            border-color: #333;
-            background-color: #D4F5D4;
-        }
+    <!-------------------------------- User Screen---------------------------------------------------->
+    <th:block th:unless="${role == 'Admin'}">
+        <link th:href="@{/user_side/css/bootstrap.min.css}" rel="stylesheet">
+        <link th:href="@{/user_side/css/mdb.min.css}" rel="stylesheet">
+        <link th:href="@{/user_side/css/plugins.css}" rel="stylesheet">
+        <link th:href="@{/user_side/css/style.css}" rel="stylesheet">
+        <link th:href="@{/user_side/css/coloring.css}" rel="stylesheet">
+        <link id="colors" th:href="@{/user_side/css/colors/scheme-01.css}" rel="stylesheet">
+        <style>
+            .required-label::after {
+                content: " *";
+                color: red;
+                font-weight: bold;
+            }
 
-        .app-search {
-            display: flex;
-            justify-content: flex-end;
-        }
+            .btn-primary {
+                background-color: green !important;
+                border-color: green !important;
+            }
+        </style>
+        <style>
+            body {
+                background-image: url('/user_side/images/background/background3.jpg');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                min-height: 100vh;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </th:block>
 
-        .app-search-box {
-            max-width: 300px;
-        }
-
-        .app-search .form-control {
-            border-radius: 20px;
-            border: 2px solid #ccc;
-            padding: 10px 15px;
-        }
-
-        .app-search .btn {
-            background-color: #28a745;
-            color: white;
-            border-radius: 20px;
-            padding: 8px 15px;
-            border: none;
-        }
-
-        .pagination-container {
-            margin-top: 20px;
-        }
-
-        .logout-container {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 20px;
-        }
-
-        .logout-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-            color: #3498db;
-            margin-top: 20px;
-        }
-
-        .logout-btn i {
-            font-size: 22px;
-            color: #333;
-        }
-
-        .btn-closed {
-            font-size: 12px; /* Giảm kích thước chữ */
-            padding: 3px 10px; /* Giảm padding */
-            border-radius: 15px; /* Giảm độ bo tròn */
-            min-width: 70px; /* Đặt chiều rộng tối thiểu */
-            text-align: center;
-        }
-    </style>
 </head>
 
 <body>
@@ -110,202 +73,157 @@
 <!-- Begin page -->
 <div id="wrapper">
 
+    <div id="de-preloader"></div>
 
     <!-- Topbar Start -->
-    <div class="navbar-custom">
-        <div class="logo-box">
-            <a href="index.html" class="logo text-center logo-dark">
-                <span class="logo-lg">
-                    <img th:src="@{/user_side/images/logo1.png}" alt="Logo" width="100" height="100">
-                </span>
-            </a>
-        </div>
-        <div class="logout-container">
-            <a href="#" class="logout-btn">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </a>
-        </div>
-    </div>
-    <!-- end Topbar -->
-    <!-- ========== Left Sidebar Start ========== -->
-    <div class="left-side-menu">
+    <!-- Topbar -->
+    <th:block th:if="${role == 'Admin'}">
+        <div th:replace="~{admin_side/top-sidebar :: topSidebar}"></div>
+    </th:block>
 
-        <!--- Sidemenu -->
-        <div id="sidebar-menu">
+    <!-- Left Sidebar -->
+    <th:block th:if="${role == 'Admin'}">
+        <div th:replace="~{admin_side/left-sidebar :: leftSidebar}"></div>
+    </th:block>
 
-            <ul class="metismenu" id="side-menu">
-
-                <li class="menu-title">Navigation</li>
-
-                <li>
-                    <a th:href="@{/admin/home}">
-                        <i class="ti-home"></i>
-                        <span> School Management </span>
-                    </a>
-                </li>
-
-                <li>
-                    <a th:href="@{/admin/user-list}">
-                        <i class="ti-user"></i>
-                        <span> User Management </span>
-                    </a>
-                </li>
-
-                <li>
-                    <a th:href="@{/manager/request-reminder}">
-                        <i class="ti-bell"></i>
-                        <span> Reminder </span>
-                    </a>
-                </li>
-
-                <li>
-                    <a th:href="@{/manager/parent-list}">
-                        <i class="ti-face-smile"></i>
-                        <span> Parent Management </span>
-                    </a>
-                </li>
-
-                <li>
-                    <a th:href="@{/manager/request-list}">
-                        <i class="ti-email"></i>
-                        <span> Request Management </span>
-                    </a>
-                </li>
-
-            </ul>
-
-        </div>
-        <!-- End Sidebar -->
-
-        <div class="clearfix"></div>
-
-    </div>
-    <!-- Left Sidebar End -->
+    <!-- User Header -->
+    <th:block th:if="${role != 'Admin'}">
+        <div th:replace="~{user_side/header::header}"></div>
+    </th:block>
 
     <!-- ============================================================== -->
     <!-- Start Page Content here -->
     <!-- ============================================================== -->
+    <div class="container" style="margin-top: 100px;">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow p-4 rounded-5">
+                    <h2 class="text-center mb-4" th:text="${user.id != null ? 'Edit User' : 'Add User'}"></h2>
 
-    <div class="content-page">
-        <div class="content">
-            <div class="container-fluid">
-                <!-- Breadcrumb -->
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a th:href="@{/admin/user-list}">User Management</a></li>
-                        <li class="breadcrumb-item">UserList</li>
-                        <li class="breadcrumb-item active" aria-current="page">Edit user</li>
-                    </ol>
-                </nav>
-
-                <!-- Hiển thị thông báo -->
-                <div th:if="${message}" class="alert alert-success" role="alert">
-                    <span th:text="${message}"></span>
-                </div>
-                <div th:if="${error}" class="alert alert-danger" role="alert">
-                    <span th:text="${error}"></span>
-                </div>
-
-                <!-- Form chỉnh sửa thông tin user -->
-                <div>
-                    <div class="mt-5">
-                        <h4 class="header-title mb-3" th:text="${user.id != null ? 'Edit User' : 'Add User'}"></h4>
-                        <div>
-                            <form id="editUserForm" method="post"
-                                  th:action="${user.id != null ? '/admin/edit-user/' + user.id : '/admin/add-user'}"
-                                  th:object="${user}" class="form-validation">
-
-                                <input type="hidden" id="userID" name="id" th:field="*{id}"/>
-
-                                <!-- Full Name -->
-                                <div class="form-group">
-                                    <label for="fullName">Full Name<span class="text-danger">*</span></label>
-                                    <input type="text" name="fullName" class="form-control" id="fullName" th:field="*{fullName}">
-                                    <span id="errorFullName" class="text-danger"></span>
-                                </div>
-
-                                <!-- Email -->
-                                <div class="form-group">
-                                    <label for="email">Email<span class="text-danger" th:if="${user.id == null}">*</span></label>
-                                    <input type="email" name="email" class="form-control" id="email" th:field="*{email}" th:readonly="${user.id != null}">
-                                    <span id="errorEmail" class="text-danger"></span>
-                                </div>
-
-                                <!-- DOB -->
-                                <div class="form-group">
-                                    <label for="dob">DOB<span class="text-danger">*</span></label>
-                                    <input type="date" name="dob" class="form-control" id="dob" th:field="*{dob}">
-                                    <span id="errorDob" class="text-danger"></span>
-                                </div>
-
-                                <!-- Phone -->
-                                <div class="form-group">
-                                    <label for="phone">Phone No.<span class="text-danger">*</span></label>
-                                    <input type="tel" name="phone" class="form-control" id="phone" th:field="*{phone}">
-                                    <span id="errorPhone" class="text-danger"></span>
-                                </div>
-
-                                <!-- Role -->
-                                <div class="form-group">
-                                    <label for="role">Role<span class="text-danger">*</span></label>
-                                    <select name="role" class="form-control" id="role" th:field="*{role}">
-                                        <option th:each="role : ${roles}" th:value="${role.typeValue}" th:text="${role.typeValue}"></option>
-                                    </select>
-                                    <span id="errorRole" class="text-danger"></span>
-                                </div>
-
-                                <!-- Status -->
-                                <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <select name="status" class="form-control" id="status" th:if="${user.id == null}" th:field="*{status}">
-                                        <option th:each="sta : ${status}" th:value="${sta.typeValue}" th:text="${sta.typeValue}"></option>
-                                    </select>
-                                    <input type="text" name="status" class="form-control" th:field="*{status}" readonly th:unless="${user.id == null}"/>
-                                    <span id="errorStatus" class="text-danger"></span>
-                                </div>
-
-                                <!-- Buttons -->
-                                <div class="form-group text-right mb-0">
-                                    <a th:href="@{/admin/user-list}" class="btn btn-danger waves-effect">Cancel</a>
-                                    <button type="submit" id="save-user"
-                                            class="btn btn-primary waves-effect waves-light mr-1"
-                                            th:text="${user.id != null ? 'Save' : 'Add User'}"></button>
-                                </div>
-                            </form>
-                        </div>
+                    <!-- Success Message -->
+                    <div th:if="${message}" class="alert alert-success mt-3">
+                        <strong>Success!</strong> <span th:text="${message}"></span>
                     </div>
+
+                    <!-- Error Message -->
+                    <div th:if="${error}" class="alert alert-danger mt-3">
+                        <strong>Error!</strong> <span th:text="${error}"></span>
+                    </div>
+
+
+                    <form th:action="@{${user.id != null ? '/admin/edit-user/' + user.id : '/admin/add-user'}}"
+                          method="post" th:object="${user}">
+
+                        <input type="hidden" th:field="*{id}">
+
+
+                        <!-- Full Name -->
+                        <div class="mb-3">
+                            <label class="form-label">Full Name <span class="text-danger">*</span> </label>
+                            <input type="text" class="form-control" required th:field="*{fullName}" id="fullName" th:readonly="${user.id != null}" >
+                            <div class="text-danger" id="errorFullName"></div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label">Email<span class="text-danger">*</span> </label>
+                            <input type="email" class="form-control" required th:field="*{email}" id="email" th:readonly="${user.id != null}">
+                            <div class="text-danger" id="errorEmail"></div>
+                        </div>
+
+                        <!-- DOB -->
+                        <div class="mb-3" >
+                            <label class="form-label">D.O.B<span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" required th:field="*{dob}" id="dob" th:readonly="${user.id != null}">
+                            <div class="text-danger" id="errorDob"></div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="mb-3">
+                            <label class="form-label">Phone No.<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" required th:field="*{phone}" id="phone" th:readonly="${user.id != null}">
+                            <div class="text-danger" id="errorPhone"></div>
+                        </div>
+
+                        <!-- Role (Chỉ hiển thị nếu là ADMIN) -->
+                        <div class="mb-3" th:if="${role == 'Admin'}">
+                            <label class="form-label">Role<span class="text-danger">*</span></label>
+                            <select name="role" class="form-control" th:field="*{role}" id="role">
+                                <option th:each="role : ${roles}" th:value="${role.typeValue}" th:text="${role.typeValue}"></option>
+                            </select>
+                            <div class="text-danger" id="errorRole"></div>
+                        </div>
+
+                        <!-- Status (Chỉ hiển thị nếu là ADMIN) -->
+                        <div class="mb-3" th:if="${role == 'Admin'}">
+                            <label class="form-label">Status<span class="text-danger">*</span></label>
+                            <select name="status" class="form-control" th:field="*{status}" id ="status">
+                                <option th:each="sta : ${status}" th:value="${sta.typeValue}" th:text="${sta.typeValue}"></option>
+                            </select>
+                            <div class="text-danger" id="errorStatus"></div>
+                        </div>
+
+                        <!-- Success Message -->
+                        <div th:if="${successMessage}" class="alert alert-success mt-3">
+                            <strong>Success!</strong> <span th:text="${successMessage}"></span>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="text-center">
+                            <button type="button" class="btn btn-danger" id="cancel-button">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="save-user" th:text="${role == 'Admin' ? 'Save' : 'Update'}"></button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
+
 <!-- END wrapper -->
 
 
-<!-- Vendor js -->
-<script src="/admin_side/js/vendor.min.js"></script>
-<script src="/admin_side/libs/moment/moment.min.js"></script>
-<script src="/admin_side/libs/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
-<script src="/admin_side/libs/switchery/switchery.min.js"></script>
-<script src="/admin_side/libs/select2/select2.min.js"></script>
-<script src="/admin_side/libs/parsleyjs/parsley.min.js"></script>
-<script src="/admin_side/libs/bootstrap-filestyle2/bootstrap-filestyle.min.js"></script>
-<script src="/admin_side/libs/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
-<script src="/admin_side/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js"></script>
-<script src="/admin_side/libs/clockpicker/bootstrap-clockpicker.min.js"></script>
-<script src="/admin_side/libs/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
-<script src="/admin_side/libs/bootstrap-daterangepicker/daterangepicker.js"></script>
-<!-- Summernote js -->
-<script src="/admin_side/libs/summernote/summernote-bs4.min.js"></script>
+<script>
+    document.getElementById("cancel-button").addEventListener("click", function() {
+        window.history.back();
+    });
+</script>
 
-<!-- Init js-->
-<script src="/admin_side/js/pages/form-advanced.init.js"></script>
 
-<!-- App js -->
-<script src="/admin_side/js/app.min.js"></script>
-<script src="/admin_side/js/EditUser.js"></script>
+<!---------------------------------------- Admin -------------------------------------->
+<th:block th:if="${#strings.equalsIgnoreCase(role, 'Admin')}" >
+    <!-- Vendor js -->
+    <script src="/admin_side/js/vendor.min.js"></script>
+    <script src="/admin_side/libs/moment/moment.min.js"></script>
+    <script src="/admin_side/libs/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
+    <script src="/admin_side/libs/switchery/switchery.min.js"></script>
+    <script src="/admin_side/libs/select2/select2.min.js"></script>
+    <script src="/admin_side/libs/parsleyjs/parsley.min.js"></script>
+    <script src="/admin_side/libs/bootstrap-filestyle2/bootstrap-filestyle.min.js"></script>
+    <script src="/admin_side/libs/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
+    <script src="/admin_side/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js"></script>
+    <script src="/admin_side/libs/clockpicker/bootstrap-clockpicker.min.js"></script>
+    <script src="/admin_side/libs/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    <script src="/admin_side/libs/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!-- Summernote js -->
+    <script src="/admin_side/libs/summernote/summernote-bs4.min.js"></script>
+
+    <!-- Init js-->
+    <script src="/admin_side/js/pages/form-advanced.init.js"></script>
+
+    <!-- App js -->
+    <script src="/admin_side/js/app.min.js"></script>
+    <script src="/admin_side/js/EditUser.js"></script>
+
+</th:block>
+<th:block th:if="${!#strings.equalsIgnoreCase(role, 'Admin')}" >
+    <script th:src="@{/user_side/js/plugins.js}"></script>
+    <script th:src="@{/user_side/js/designesia.js}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js">
+    </script>
+    <script th:src="@{/user_side/js/address-load.js}"></script>
+</th:block>
+
 </body>
-
-
 </html>

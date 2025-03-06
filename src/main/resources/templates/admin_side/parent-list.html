@@ -85,10 +85,10 @@
         }
 
         .btn-closed {
-            font-size: 12px; /* Giảm kích thước chữ */
-            padding: 3px 10px; /* Giảm padding */
-            border-radius: 15px; /* Giảm độ bo tròn */
-            min-width: 70px; /* Đặt chiều rộng tối thiểu */
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 15px;
+            min-width: 70px;
             text-align: center;
         }
     </style>
@@ -101,40 +101,13 @@
 
 
     <!-- Topbar Start -->
-    <div class="navbar-custom">
-        <div class="logo-box">
-            <a href="index.html" class="logo text-center logo-dark">
-                <span class="logo-lg">
-                    <img th:src="@{/admin_side/images/logo-dark.png}" alt="" height="26">
-                </span>
-            </a>
-        </div>
-        <div class="logout-container">
-            <a href="#" class="logout-btn">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </a>
-        </div>
-    </div>
+    <!-- Topbar Start -->
+    <div th:replace="~{admin_side/top-sidebar :: topSidebar}"></div>
     <!-- end Topbar -->
 
     <!-- Left Sidebar Start -->
-    <div class="left-side-menu">
-        <div id="sidebar-menu">
-            <ul class="metismenu" id="side-menu">
-                <li><a th:href="@{/manager/request-list}"><i class="ti-home"></i> <span> School Management </span></a>
-                </li>
-                <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-user"></i>
-                    <span> User Management </span></a></li>
-                <li><a th:href="@{/manager/request-reminder}"><i class="fa-regular fa-bell"></i> <span> Reminder </span></a>
-                </li>
-                <li><a th:href="@{/manager/parent-list}"><i class="fa-solid fa-user-tie"></i>
-                    <span> Parent Management </span></a></li>
-                <li><a th:href="@{/manager/request-list}"><i class="fa-regular fa-clipboard"></i> <span> Request Management </span></a>
-                </li>
-            </ul>
-        </div>
-    </div>
+    <div th:replace="~{admin_side/left-sidebar :: leftSidebar}"></div>
+    <!-- End Sidebar -->
     <!-- End Sidebar -->
 
     <!-- ============================================================== -->
@@ -148,22 +121,28 @@
             <div class="container-fluid" id="main-contentBROS">
 
                 <!-- start  -->
-                <div class="row">
-                    <div class="col-12">
-                        <div>
-                            <h4 class="header-title mb-3"><a href="/manager/parent-list">Parent List</a></h4>
-                        </div>
-                    </div>
-                </div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/manager/parent-list}">Parent Management</a></li>
+                        <li class="breadcrumb-item">Parent List</li>
+                    </ol>
+                </nav>
                 <!-- end row -->
 
                 <div class="row">
                     <div class="col-12">
                         <div class="table-responsive">
+                            <div th:if="${message != null}"
+                                 class="alert alert-danger text-danger alert-dismissible fade show" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong th:text="${action}">!</strong> <span th:text="${message}"></span>
+                            </div>
                             <!--                            <form action="/admin/parent-list" method="get">-->
                             <div class="input-group" style="padding: 0px 0px 15px 0px;">
                                             <span class="input-group-prepend">
-                                                        <button id="searchButtonParent" type="submit"
+                                                        <button id="searchButtonParent" type="button"
                                                                 class="btn btn-primary"><i
                                                                 class="fa fa-search"></i></button>
                                             </span>
@@ -196,9 +175,12 @@
                                         <th th:text="${parent.parentEmail}"></th>
                                         <th th:text="${parent.parentPhone}"></th>
                                         <th>
-                                            <span th:if="${parent.enrollStatus == 'Enrolled'}" class="stylebadge badge bg-success">Enrolled</span>
-                                            <span th:if="${parent.enrollStatus == 'Wait approve'}" class="stylebadge badge bg-warning">Waiting Request Approve</span>
-                                            <span th:if="${parent.enrollStatus == 'Not Enroll'}" class="stylebadge badge bg-secondary">Not Enrolled</span>
+                                            <span th:if="${parent.enrollStatus == 'Enrolled'}"
+                                                  class="stylebadge badge bg-success">Enrolled</span>
+                                            <span th:if="${parent.enrollStatus == 'Wait approve'}"
+                                                  class="stylebadge badge bg-warning">Waiting Request Approve</span>
+                                            <span th:if="${parent.enrollStatus == 'Not Enroll'}"
+                                                  class="stylebadge badge bg-secondary">Not Enrolled</span>
                                         </th>
                                         <td>
                                             <form th:action="@{'/manager/parent-list/parent-details/'+${parent.parentId}} "
@@ -217,9 +199,9 @@
                                     <li class="page-item parent-page-item disabled" th:if="${currentPage==0}"><a
                                             class="page-link" type="button">Previous</a></li>
                                     <li th:unless="${currentPage==0}" class="page-item parent-page-item"
-                                        th:data-page="${currentPage - 1}"
-                                        th:classappend="${currentPage == 0} ? 'disabled'">
-                                        <a class="page-link" type="button" th:aria-disabled="${currentPage == 0}">Previous</a>
+                                        th:data-page="${currentPage - 1}" th:classappend="${currentPage == 0} ? 'disabled'">
+                                        <a class="page-link" type="button"
+                                           th:aria-disabled="${currentPage == 0}">Previous</a>
                                     </li>
 
                                     <!-- Page Numbers -->
@@ -231,9 +213,9 @@
 
                                     <!-- Next Button -->
                                     <li class="page-item parent-page-item disabled"
-                                        th:if="${currentPage == numberPage - 1}"><a class="page-link"
-                                                                                    type="button">Next</a></li>
-                                    <li th:unless="${currentPage == numberPage - 1}" class="page-item parent-page-item"
+                                        th:if="${currentPage == numberPage - 1 || numberPage==0}"><a class="page-link" type="button">Next</a>
+                                    </li>
+                                    <li th:unless="${currentPage == numberPage - 1 || numberPage==0}" class="page-item parent-page-item"
                                         th:data-page="${currentPage + 1}"
                                         th:classappend="${currentPage == numberPage - 1} ? 'disabled'">
                                         <a class="page-link" type="button"
@@ -277,14 +259,8 @@
 <script th:src="@{/admin_side/js/app.min.js}"></script>
 
 
+</body>
 <style>
-    .asText {
-        background: none;
-        border: none;
-        margin: 0;
-        padding: 0;
-    }
-
     .stylebadge {
         font-size: 0.8rem; /* Adjust as needed */
         display: inline-block;
@@ -292,6 +268,4 @@
         text-align: center;
     }
 </style>
-</body>
-
 </html>

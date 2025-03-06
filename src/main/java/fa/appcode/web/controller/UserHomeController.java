@@ -4,6 +4,7 @@ import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.CityVo;
 import fa.appcode.common.vo.DistrictVo;
 import fa.appcode.common.vo.MasterDataVo;
+import fa.appcode.config.GlobalConfig;
 import fa.appcode.services.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ public class UserHomeController {
     private final CityService cityService;
     private final DistrictService districtService;
     private final MasterDatumService masterDatumService;
+    private final GlobalConfig globalConfig;
 
     @GetMapping(Constant.HOME_PAGE_URL)
     public String parentHome(Model model) {
@@ -58,6 +60,9 @@ public class UserHomeController {
         model.addAttribute("data_age", listDataAge);
         model.addAttribute("utilities", listUtilities);
         model.addAttribute("listCity", listCity1);
+        model.addAttribute("emailErrorMessage", globalConfig.getInValidEmail());
+        model.addAttribute("mobileErrorMessage", globalConfig.getInvalidPhoneNumber());
+        model.addAttribute("requiredFieldMessage", globalConfig.getRequiredMessage());
         return "user_side/search-school";
     }
     @GetMapping("/public/search/results")
@@ -65,12 +70,30 @@ public class UserHomeController {
                                     @RequestParam(required = false) Integer cityId,
                                     @RequestParam(required = false) Integer districtId,
                                     Model model) {
-
-        // Thêm dữ liệu vào model để hiển thị trên trang
+        loadCommonData(model);
         model.addAttribute("keyword", keyword);
         model.addAttribute("cityId", cityId);
         model.addAttribute("districtId", districtId);
+        model.addAttribute("emailErrorMessage", globalConfig.getInValidEmail());
+        model.addAttribute("mobileErrorMessage", globalConfig.getInvalidPhoneNumber());
 
-        return "user_side/search-school"; 
+        return "user_side/search-school";
     }
+
+    private void loadCommonData(Model model) {
+        List<CityVo> listCity = cityService.findAllByNoDelete();
+        List<MasterDataVo> listFacilities = masterDatumService.findAllByTypeNameNoDelete("FACILITIES");
+        List<MasterDataVo> listTypeSchool = masterDatumService.findAllByTypeNameNoDelete("SCHOOL TYPE");
+        List<MasterDataVo> listDataAge = masterDatumService.findAllByTypeNameNoDelete("CHILD RECEIVING AGE");
+        List<MasterDataVo> listUtilities = masterDatumService.findAllByTypeNameNoDelete("UTILITIES");
+
+        model.addAttribute("facilities", listFacilities);
+        model.addAttribute("type_school", listTypeSchool);
+        model.addAttribute("data_age", listDataAge);
+        model.addAttribute("utilities", listUtilities);
+        model.addAttribute("listCity", listCity);
+        model.addAttribute("emailErrorMessage", globalConfig.getInvalidPhoneNumber());
+        model.addAttribute("mobileErrorMessage", globalConfig.getInvalidPhoneNumber());
+    }
+
 }

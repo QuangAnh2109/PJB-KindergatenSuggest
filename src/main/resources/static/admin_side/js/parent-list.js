@@ -1,43 +1,50 @@
 $(document).ready(function () {
-
-    var num = $('#parentSearchField').val();
+    var lastSearch = ""; // Store the last valid search
 
 // Trigger search on Enter key
-    $("body").on("keydown", "input#parentSearchField", function (event) {
+    $("body").on("keyup", "input#parentSearchField", function (event) {
         if (event.key === "Enter") {
-            findAll($(this).val(), 0);
+            lastSearch = $(this).val();
+            findAll(lastSearch, 0, true);
         }
     });
 
 // Trigger search on button click
-    $("body").on("click", "#searchButtonParent", function (event) {
-        findAll($('#parentSearchField').val(), 0);
+    $("body").on("click", "button#searchButtonParent", function () {
+        lastSearch = $('#parentSearchField').val();
+        findAll(lastSearch, 0, true);
     });
 
-// Keep previous value on focus
-    $('#parentSearchField').focus().val('').val(num);
+// Pagination click event (use lastSearch)
     $("body").on("click", "li.parent-page-item", function () {
-        if ($(this).data("page") != null) {
-            console.log($(this).data("page"))
-            findAll($("#parentSearchField").val(), $(this).data("page"));
+        let page = $(this).data("page");
+        if (page != null) {
+            console.log(page);
+            findAll(lastSearch, page, true);
         }
-    })
+    });
 
-    function findAll(search, currentPage) {
+    function findAll(search, currentPage, updateUrl = false) {
+        if (updateUrl) {
+            updateUrlParams(search, currentPage);
+        }
+
         $.get({
             url: "/manager/parent-list",
-            data: {
-                search: search,
-                currentPage: currentPage,
-            },
+            data: { search: search, currentPage: currentPage },
             success: function (responseData) {
                 console.log("LOADED!");
-                $("#main-content").html(responseData);
+                document.getElementById("main-content").outerHTML = responseData;
             },
-            error: function (responseData) {
-                // Hiển thị thông báo lỗi
-                alert("Failed to Search user: " +$('#parentSearchField').val() );
+            error: function () {
+                alert("Failed to Search user: " + search);
             }
         });
-    };
+    }
+
+    function updateUrlParams(search, currentPage) {
+        let newUrl = window.location.pathname + "?search=" + encodeURIComponent(search) + "&currentPage=" + currentPage;
+        window.history.pushState({ path: newUrl }, "", newUrl);
+    }
+
 });

@@ -1,5 +1,5 @@
-function redirectToDetail(id) {
-    window.location.href = "/manager/request-list-detail?id="+id;
+function redirectToDetail(id,currentPage) {
+    window.location.href = "/manager/request-list-detail?id="+id+"&currentPage="+currentPage;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
