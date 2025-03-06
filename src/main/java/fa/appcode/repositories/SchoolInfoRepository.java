@@ -5,7 +5,6 @@ import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.common.vo.SchoolListManager;
 import fa.appcode.common.vo.SchoolStatusUpdateRequest;
 import fa.appcode.entities.SchoolInfo;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -66,34 +65,35 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
             "AND si.recordNo = :#{#request.recordNo} " +
             "AND si.deleteFlg = :#{#request.deleteFlg} " +
             "AND (:#{#request.email} IS NULL OR si.account.id = (SELECT ai.id FROM AccountInfo ai WHERE ai.email = :#{#request.email})) " +
-            "AND si.statusId NOT IN (:#{#request.statusList})")
-    int updateSchoolStatusByRequest(@Valid @Param("request") SchoolStatusUpdateRequest request);
+            "AND si.statusId IN (:#{#request.statusList})")
+    int updateSchoolStatusByRequest(@Param("request") SchoolStatusUpdateRequest request);
 
-    @Query("SELECT new fa.appcode.common.vo.SchoolFormManager(si.id, si.schoolName, si.typeId, si.schoolAddress, si.city.id, si.district.id, si.ward.id, si.schoolPhone, si.schoolEmail, si.childReceivingAgeId, si.educationMethodId, si.feeTo, si.feeFrom, si.schoolIntroduction, si.updateTime, si.updateId, si.recordNo, si.deleteFlg, si.account.email) " +
+    @Query("SELECT new fa.appcode.common.vo.SchoolFormManager(si.id, si.schoolName, si.typeId, si.schoolAddress, si.city.id, si.district.id, si.ward.id, si.schoolEmail, si.schoolPhone, si.childReceivingAgeId, si.educationMethodId, si.feeTo, si.feeFrom, si.schoolIntroduction, si.updateTime, si.updateId, si.recordNo, si.deleteFlg, si.account.email, si.statusId) " +
             "FROM SchoolInfo si " +
             "WHERE si.id = ?1 AND si.deleteFlg = ?2")
     SchoolFormManager getSchoolFormByIdAndDeleteFlg(int id, boolean deleteFlg);
 
     @Modifying
-    @Query("UPDATE SchoolInfo si SET si.schoolName = :#{#schoolInfo.schoolName} " +
+    @Query("UPDATE SchoolInfo si SET si.schoolName = :#{#schoolInfo.name} " +
             ",si.typeId = :#{#schoolInfo.typeId} " +
-            ",si.schoolAddress = :#{#schoolInfo.schoolAddress} " +
-            ",si.city = :#{#schoolInfo.city} " +
-            ",si.district = :#{#schoolInfo.district} " +
-            ",si.ward = :#{#schoolInfo.ward} " +
-            ",si.schoolEmail = :#{#schoolInfo.schoolEmail} " +
-            ",si.schoolPhone = :#{#schoolInfo.schoolPhone} " +
+            ",si.schoolAddress = :#{#schoolInfo.address} " +
+            ",si.city.id = :#{#schoolInfo.cityId} " +
+            ",si.district.id = :#{#schoolInfo.districtId} " +
+            ",si.ward.id = :#{#schoolInfo.wardId} " +
+            ",si.schoolEmail = :#{#schoolInfo.email} " +
+            ",si.schoolPhone = :#{#schoolInfo.phone} " +
             ",si.childReceivingAgeId = :#{#schoolInfo.childReceivingAgeId} " +
             ",si.educationMethodId = :#{#schoolInfo.educationMethodId} " +
             ",si.feeTo = :#{#schoolInfo.feeTo} " +
             ",si.feeFrom = :#{#schoolInfo.feeFrom} " +
-            ",si.schoolIntroduction = :#{#schoolInfo.schoolIntroduction} " +
+            ",si.schoolIntroduction = :#{#schoolInfo.introduction} " +
             ",si.updateTime = :#{#schoolInfo.updateTime} " +
             ",si.updateId = :#{#schoolInfo.updateId} " +
             ",si.recordNo = si.recordNo + 1 " +
+            ",si.statusId = :#{#schoolInfo.statusId} " +
             "WHERE si.id = :#{#schoolInfo.id} " +
             "AND si.recordNo = :#{#schoolInfo.recordNo} " +
             "AND si.deleteFlg = :#{#schoolInfo.deleteFlg} " +
-            "AND (:#{#schoolInfo.account.email} IS NULL OR si.account.id = (SELECT ai.id FROM AccountInfo ai WHERE ai.email = :#{#schoolInfo.account.email})) ")
-    int updateSchoolInfo(@Valid @Param("schoolInfo") SchoolInfo schoolInfo);
+            "AND (:#{#schoolInfo.schoolOwnerEmail} IS NULL OR si.account.id = (SELECT ai.id FROM AccountInfo ai WHERE ai.email = :#{#schoolInfo.schoolOwnerEmail})) ")
+    int updateSchoolInfoBySchoolFormManager(@Param("schoolInfo") SchoolFormManager schoolFormManager);
 }

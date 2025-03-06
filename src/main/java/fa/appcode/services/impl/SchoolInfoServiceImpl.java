@@ -68,7 +68,6 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     @Override
     @Transactional
     public int updateSchoolStatusByRequest(int id, int recordNo, int schoolStatus, String updateId, List<Integer> list) {
-        list.add(schoolStatus);
         return schoolInfoRepository.updateSchoolStatusByRequest(SchoolStatusUpdateRequest.builder().id(id).recordNo(recordNo).schoolStatus(schoolStatus).statusList(list).updateId(updateId).updateTime(Instant.now()).build());
     }
 
@@ -83,5 +82,10 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     @Override
     public SchoolFormManager getSchoolFormByIdAndNoDelete(int id) {
         return schoolInfoRepository.getSchoolFormByIdAndDeleteFlg(id, false);
+    }
+
+    @Override
+    public int updateSchoolInfoBySchoolFormManager(SchoolFormManager schoolFormManager) {
+        return schoolInfoRepository.updateSchoolInfoBySchoolFormManager(schoolFormManager);
     }
 }
