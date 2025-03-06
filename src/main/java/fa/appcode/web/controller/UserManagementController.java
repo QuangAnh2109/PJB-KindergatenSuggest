@@ -10,6 +10,7 @@ import fa.appcode.services.AccountService;
 import fa.appcode.services.EmailService;
 import fa.appcode.services.impl.MasterDatumServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,16 +27,17 @@ import java.util.UUID;
 
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/admin/")
 public class UserManagementController {
-    @Autowired
-    private GlobalConfig globalConfig;
-    @Autowired
-    AccountService accountService;
-    @Autowired
-    private MasterDatumServiceImpl masterDatumService;
-    @Autowired
-    private EmailService emailService;
+
+    private final GlobalConfig globalConfig;
+
+    private final AccountService accountService;
+
+    private final MasterDatumServiceImpl masterDatumService;
+
+    private final EmailService emailService;
 
     /**
      * Pagination, search, show list of movies
@@ -93,7 +95,7 @@ public class UserManagementController {
      */
 
     @PostMapping("add-user")
-    public String addUser(@ModelAttribute("user") AccountVo accountVo, RedirectAttributes redirectAttributes) {
+    public String addUser(@ModelAttribute("user") AccountVo accountVo, Principal principal, RedirectAttributes redirectAttributes) {
         try {
 
             // Auto-generated password
@@ -112,7 +114,7 @@ public class UserManagementController {
                     .detail(Map.of(Placeholder.USER_NAME, accountVo.getEmail(),
                             Placeholder.EMAIL, accountVo.getEmail(),
                             Placeholder.PASSWORD, randomPassword,
-                            Placeholder.OWNER_ACCOUNT, "SYSTEM_ADMIN"))
+                            Placeholder.OWNER_ACCOUNT, accountService.getAccountInfo(principal).getFullName()))
                     .build());
 
             redirectAttributes.addFlashAttribute("message", "User added successfully.");
@@ -140,7 +142,7 @@ public class UserManagementController {
             List<MasterDatum> roles = masterDatumService.getListByTypeName("ROLE");
             List<MasterDatum> status = masterDatumService.getListByTypeName("ACCOUNT STATUS");
             // Lấy danh sách roles từ service
-            model.addAttribute("role",role);
+            model.addAttribute("role", role);
             model.addAttribute("user", user);
             model.addAttribute("roles", roles);
             model.addAttribute("status", status);

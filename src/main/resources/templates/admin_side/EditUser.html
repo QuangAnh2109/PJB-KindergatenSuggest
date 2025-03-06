@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
-    <title th:text="${role == 'Admin' ? 'Edit User' : 'User Profile'}"></title>
+    <title th:text="${role == 'ADMIN' ? 'Edit User' : 'User Profile'}"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Responsive bootstrap 4 admin template" name="description"/>
     <meta content="Coderthemes" name="author"/>
@@ -98,7 +98,9 @@
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="card shadow p-4 rounded-5">
-                    <h2 class="text-center mb-4" th:text="${user.id != null ? 'Edit User' : 'Add User'}"></h2>
+                    <h2 class="text-center mb-4"
+                        th:text="${role == 'Admin' ? (user.id != null ? 'Edit User' : 'Add User') : 'User Profile'}">
+                    </h2>
 
                     <!-- Success Message -->
                     <div th:if="${message}" class="alert alert-success mt-3">
@@ -111,7 +113,7 @@
                     </div>
 
 
-                    <form th:action="@{${user.id != null ? '/admin/edit-user/' + user.id : '/admin/add-user'}}"
+                    <form th:action="@{${role == 'Admin' ? (user.id != null ? '/admin/edit-user/' + user.id : '/admin/add-user') : '/auth/update-account'}}"
                           method="post" th:object="${user}">
 
                         <input type="hidden" th:field="*{id}">
@@ -120,29 +122,56 @@
                         <!-- Full Name -->
                         <div class="mb-3">
                             <label class="form-label">Full Name <span class="text-danger">*</span> </label>
-                            <input type="text" class="form-control" required th:field="*{fullName}" id="fullName" th:readonly="${user.id != null}" >
+                            <input type="text" class="form-control" required th:field="*{fullName}" id="fullName"  th:readonly="${!(role != 'Admin' or user.id == null)}">
                             <div class="text-danger" id="errorFullName"></div>
                         </div>
 
                         <!-- Email -->
                         <div class="mb-3">
                             <label class="form-label">Email<span class="text-danger">*</span> </label>
-                            <input type="email" class="form-control" required th:field="*{email}" id="email" th:readonly="${user.id != null}">
+                            <input type="email" class="form-control" required th:field="*{email}" id="email"  th:readonly="${user.id != null}">
                             <div class="text-danger" id="errorEmail"></div>
                         </div>
 
                         <!-- DOB -->
                         <div class="mb-3" >
                             <label class="form-label">D.O.B<span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" required th:field="*{dob}" id="dob" th:readonly="${user.id != null}">
+                            <input type="date" class="form-control" required th:field="*{dob}" id="dob"  th:readonly="${!(role != 'Admin' or user.id == null)}">
                             <div class="text-danger" id="errorDob"></div>
                         </div>
 
                         <!-- Phone -->
                         <div class="mb-3">
                             <label class="form-label">Phone No.<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" required th:field="*{phone}" id="phone" th:readonly="${user.id != null}">
+                            <input type="text" class="form-control" required th:field="*{phone}" id="phone"  th:readonly="${!(role != 'Admin' or user.id == null)}">
                             <div class="text-danger" id="errorPhone"></div>
+                        </div>
+
+                        <!-- Address (Chỉ hiển thị nếu là USER) -->
+                        <div th:if="${role != 'Admin'}">
+                            <h5>Address</h5>
+                            <div class="mb-3">
+                                <select onchange="loadDistrict(this.value)" name="city" class="form-control">
+                                    <option th:text="${user.city != null ? user.city.cityName : 'Province/City'}"
+                                            disabled selected></option>
+                                    <option th:each="city : ${citys}" th:value="${city.id}" th:text="${city.cityName}"></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <select onchange="loadWard(this.value)" name="district" id="district" class="form-control" required disabled>
+                                    <option value="" disabled selected th:text="${user.district != null ? user.district.districtName : 'District'}"></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <select onchange="enableParam('address')" name="ward" id="ward" class="form-control" required disabled>
+                                    <option value="" disabled selected th:text="${user.ward != null ? user.ward.wardName : 'Ward'}"></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" name="address" id="address" class="form-control"
+                                       th:value="${user.address}" placeholder="Enter your address..." maxlength="255"
+                                       required disabled>
+                            </div>
                         </div>
 
                         <!-- Role (Chỉ hiển thị nếu là ADMIN) -->
@@ -183,13 +212,18 @@
 
 <!-- END wrapper -->
 
-
 <script>
     document.getElementById("cancel-button").addEventListener("click", function() {
-        window.history.back();
+        var previousUrl = localStorage.getItem('previousUrl');
+        if (previousUrl) {
+            window.location.href = previousUrl;
+            localStorage.removeItem('previousUrl');
+        } else {
+            window.history.back();
+        }
     });
-</script>
 
+</script>
 
 <!---------------------------------------- Admin -------------------------------------->
 <th:block th:if="${#strings.equalsIgnoreCase(role, 'Admin')}" >
