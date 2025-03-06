@@ -39,10 +39,10 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         //create instant enroll School
         EnrollSchool schoolEnroll = new EnrollSchool();
         //AParent that enroll
-        if(account.getDeleteFlg() || account.getStatusId().equals(Constant.STATUS_INACTIVE) ){
+        if (account.getDeleteFlg() || account.getStatusId().equals(Constant.STATUS_INACTIVE)) {
             throw new IllegalStateException("Account is not active Or No Longer Available Please Try Again!");
         }
-        if(school.getDeleteFlg() || !school.getStatusId().equals(Constant.SCHOOL_PUBLISH_STATUS) ){
+        if (school.getDeleteFlg() || !school.getStatusId().equals(Constant.SCHOOL_PUBLISH_STATUS)) {
             throw new IllegalStateException("School is not published Or No Longer Available Please Try Again!");
         }
         schoolEnroll.setAccount(account);
@@ -103,18 +103,20 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         enrollSchoolRepository.save(enrollSchool);
     }
 
+    @Override
     public String execute(String action, EnrollSchool enrollSchool, LocalDate date, String role, Principal principal) throws Exception {
-        if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ","_"))) {
-            List<Integer> schoolIdList = schoolInfoService.getAllSchoolIdsForUnenrollParentByAccountEmail(principal.getName());
-            if (!schoolIdList.contains(enrollSchool.getSchool().getId())) {
-                throw new IllegalAccessException("Unauthorized action for this school.");
-            }
+        if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_"))) {
+            validateAccess(enrollSchool, principal);
         }
         EnrollSchoolService self = applicationContext.getBean(EnrollSchoolService.class);
+        validateEnrollStatus(enrollSchool);
         switch (action) {
-            case Constant.UNENROLL_PARENT_SCHOOL -> self.evaluateParentEnroll(enrollSchool, date, role, 4); //execute unenroll parent
-            case Constant.APPROVE_ENROLL_REQUEST -> self.evaluateParentEnroll(enrollSchool, date, role, 3); //execute approve enroll parent
-            case Constant.REJECT_ENROLL_REQUEST -> self.evaluateParentEnroll(enrollSchool, date, role, 2); //execute reject enroll parent
+            case Constant.UNENROLL_PARENT_SCHOOL ->
+                    self.evaluateParentEnroll(enrollSchool, date, role, 4); //execute unenroll parent
+            case Constant.APPROVE_ENROLL_REQUEST ->
+                    self.evaluateParentEnroll(enrollSchool, date, role, 3); //execute approve enroll parent
+            case Constant.REJECT_ENROLL_REQUEST ->
+                    self.evaluateParentEnroll(enrollSchool, date, role, 2); //execute reject enroll parent
         }
         return action;
     }
@@ -128,9 +130,23 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     public List<EnrolledSchoolVo> findParentRequestEnrolledSchoolByParentId(int id) {
         return enrollSchoolRepository.findParentRequestEnrolledSchoolByParentId(id);
     }
+
     //check if parent is already enrolled or not
     @Override
     public boolean isParentEnrollingToSchool(Integer accountId, Integer schoolId) {
         return enrollSchoolRepository.isParentEnrollingToSchool(accountId, schoolId);
+    }
+
+    private void validateAccess(EnrollSchool enrollSchool, Principal principal) throws Exception {
+        List<Integer> schoolIdList = schoolInfoService.getAllSchoolIdsForUnenrollParentByAccountEmail(principal.getName());
+        if (!schoolIdList.contains(enrollSchool.getSchool().getId())) {
+            throw new Exception("Unauthorized action for this school.");
+        }
+    }
+
+    private void validateEnrollStatus(EnrollSchool enrollSchool) throws Exception {
+        if (enrollSchool.getDeleteFlg()) {
+            throw new Exception("This Enroll Status is Deleted, Please Try Again!");
+        }
     }
 }
