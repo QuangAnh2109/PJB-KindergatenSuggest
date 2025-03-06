@@ -4,13 +4,10 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <title>Rentaly - Multipurpose Vehicle Car Rental Website Template</title>
+    <title>Search School</title>
     <link rel="icon" th:href="@{/user_side/images/icon.png}" type="image/gif" sizes="16x16">
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Rentaly - Multipurpose Vehicle Car Rental Website Template" name="description">
-    <meta content="" name="keywords">
-    <meta content="" name="author">
 
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -292,6 +289,7 @@
 
     <!-- header begin -->
     <header class="transparent scroll-light has-topbar">
+
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -300,7 +298,7 @@
                             <div class="de-flex-col">
                                 <!-- logo begin -->
                                 <div id="logo">
-                                    <a th:href="@{/public/home}">
+                                    <a th:href="@{/home}">
                                         <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
                                         <img class="logo-2" src="/user_side/images/logo1.png" alt="">
                                     </a>
@@ -310,7 +308,7 @@
                         </div>
                         <div class="de-flex-col header-col-mid">
                             <ul id="mainmenu">
-                                <li><a class="menu-item" href="/search">School Search</a>
+                                <li><a class="menu-item" href="/public/search">School Search</a>
                                 </li>
                                 <li><a class="menu-item" href="#">Community</a>
                                 </li>
@@ -331,16 +329,19 @@
                                 <div class="dropdown">
                                     <button class="dropdown-toggle" onclick="toggleDropdown()">
                                         <span><i class="fa fa-user-o" aria-hidden="true" style="margin-right: 5px"></i></span>
-                                        Welcome! <i class="arrow-down"></i>
+                                        Welcome, <span th:text="${session.nameAccount}"></span>
+                                        <i class="arrow-down"></i>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" id="featuresDropdown">
                                         <a href="/feature1"><span><i class="fa-solid fa-school"></i></span> My
                                             School</a>
                                         <div class="dropdown-divider"></div>
-                                        <a href="/feature2"><span><i class="fas fa-clipboard-list"></i></span> My
+                                        <a href="/parent/my-request"><span><i class="fas fa-clipboard-list"></i></span>
+                                            My
                                             Request</a>
                                         <div class="dropdown-divider"></div>
-                                        <a href="/feature3"><span><i class="fa-solid fa-user"></i></span> My Profile</a>
+                                        <a href="/auth/view-account"><span><i class="fa-solid fa-user"></i></span> My
+                                            Profile</a>
                                         <div class="dropdown-divider"></div>
                                         <a href="#" onclick="showPopup()"><span><i
                                                 class="fa-solid fa-right-from-bracket"></i></span> Logout</a>
