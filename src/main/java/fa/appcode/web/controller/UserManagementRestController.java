@@ -2,6 +2,7 @@ package fa.appcode.web.controller;
 
 import fa.appcode.services.AccountService;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/admin/api")
 public class UserManagementRestController {
 
-    @Autowired
-    private AccountService accountService;
+    private final AccountService accountService;
 
     // Delete logic user account (set deleteFlg = true)
     @GetMapping(value = "/user/{userId}")

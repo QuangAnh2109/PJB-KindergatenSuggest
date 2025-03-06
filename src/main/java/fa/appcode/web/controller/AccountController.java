@@ -4,6 +4,7 @@ import fa.appcode.common.utils.Constant;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.services.AccountService;
+import fa.appcode.services.MasterDatumService;
 import fa.appcode.services.impl.CityServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class AccountController {
     private final AccountService accountService;
     private final CityServiceImpl cityService;
     private final GlobalConfig globalConfig;
-
+    private final MasterDatumService masterDatumService;
     @GetMapping("/view-account")
     public String viewAccount(Model model, @RequestParam(value = "successMessage", required = false) String successMessage) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -32,6 +33,7 @@ public class AccountController {
 
         if (accountInfo != null) {
             model.addAttribute("accountInfo", accountInfo);
+            model.addAttribute("role", masterDatumService.getMasterByTypeNameAndTypeKey("ROLE",accountInfo.getRoleId()));
         } else {
             model.addAttribute("error", globalConfig.getNotFound());
         }
@@ -45,7 +47,7 @@ public class AccountController {
     }
 
     @PostMapping("/update-account")
-    public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo, Model model, RedirectAttributes redirectAttributes) {
+    public String updateAccount(@ModelAttribute("user") AccountInfo accountInfo, Model model, RedirectAttributes redirectAttributes) {
         model.addAttribute("citys", cityService.findAllByNoDelete());
         try {
             if (!Pattern.matches(Constant.PHONE_REGEX, accountInfo.getPhone())) {
