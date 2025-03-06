@@ -73,6 +73,8 @@ public class GlobalConfig {
     private String verifiedAccount;
     @Value("${ME_027}")
     private String loginFailed;
+    @Value("${ME_028}")
+    private String notVerified;
     @Value("${page.size}")
     private Integer sizeOfPage;
     @Value("${server.link}")

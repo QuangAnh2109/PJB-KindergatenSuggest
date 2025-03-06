@@ -44,16 +44,13 @@ public class RegisterController {
     @PostMapping
     public String processRegister(@ModelAttribute("accountVo") @Valid AccountVo accountVo,
                                   BindingResult bindingResult,
-                                  Model model,
-                                  RedirectAttributes redirectAttributes) {
+                                  Model model) {
         if (bindingResult.hasErrors()) {
             return Constant.REGISTER_PAGE;
-        }
-        if (accountService.findByEmail(accountVo.getEmail()) != null) {
+        } else if (accountService.findByEmail(accountVo.getEmail()) != null) {
             model.addAttribute("emailError", globalConfig.getEmailExist());
             return Constant.REGISTER_PAGE;
-        }
-        if (!accountVo.getPassword().equals(accountVo.getConfirmPassword())) {
+        } else if (!accountVo.getPassword().equals(accountVo.getConfirmPassword())) {
             model.addAttribute("confirmPasswordError", globalConfig.getPasswordNotMatch());
             return Constant.REGISTER_PAGE;
         }
@@ -69,13 +66,14 @@ public class RegisterController {
                     .detail(link)
                     .build();
             emailService.sendEmailToMany(sendMailInfo);
-            redirectAttributes.addFlashAttribute("message", globalConfig.getVerifyLinkSend());
-            return "redirect:/public/register";
+
+            model.addAttribute("message", globalConfig.getVerifyLinkSend());
         } catch (Exception e) {
             log.error("Error during registration", e);
             model.addAttribute(ERROR_ATTRIBUTE, globalConfig.getAnErrorOccur());
-            return Constant.REGISTER_PAGE;
         }
+        return Constant.REGISTER_PAGE;
+
     }
 
     @GetMapping("/verify")
