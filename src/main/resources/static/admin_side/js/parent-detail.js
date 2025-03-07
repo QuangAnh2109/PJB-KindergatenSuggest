@@ -11,7 +11,7 @@ $(document).ready(function (){
     var parentId =$("#parentId").val();
     function findAll(currentPage,updateUrl = false) {
         if (updateUrl) {
-            updateUrlParams(search, currentPage);
+            updateUrlParams(currentPage);
         }
         $.get({
             url: "/manager/parent-list/parent-details/" + parentId,
@@ -26,16 +26,10 @@ $(document).ready(function (){
         });
     };
 
-    function updateUrlParams(search, currentPage) {
+    function updateUrlParams(currentPage) {
         let newUrl = window.location.pathname + "?currentPage=" + currentPage;
         window.history.pushState({ path: newUrl }, "", newUrl);
     }
 
-    // Load correct search & page from URL on page reload
-    let urlParams = new URLSearchParams(window.location.search);
-    let currentPage = parseInt(urlParams.get("currentPage")) || 0;
-
-    $("#parentSearchField").val(search); // Restore search field value
-    findAll(currentPage, false);
 
 });

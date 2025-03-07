@@ -20,7 +20,7 @@ public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Inte
     EnrollSchool findEnrollSchoolById(Integer id);
 
     //    Find All enrolled School for specific School Owner
-    @Query("SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName,CAST(ceiling(((f.extracurricularActivities + f.facilitiesUtilities + f.hygieneNutrition + f.learningProgram + f.teacherStaff) / 5) * 2) / 2 AS FLOAT),f.feedbackMessage)" +
+    @Query("SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName,CAST(ceiling(((f.extracurricularActivities + f.facilitiesUtilities + f.hygieneNutrition + f.learningProgram + f.teacherStaff) / 5) * 2) / 2 AS FLOAT),f.feedbackMessage,e.recordNo)" +
             "FROM AccountInfo ai " +
             "JOIN MasterDatum ma ON ai.roleId=ma.id " +
             "JOIN  EnrollSchool e ON e.account.id=ai.id " +
@@ -35,7 +35,7 @@ public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Inte
     Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId, Pageable pageable);
 
     //    Find All enrolled School for admin
-    @Query("SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName,CAST(ceiling(((f.extracurricularActivities + f.facilitiesUtilities + f.hygieneNutrition + f.learningProgram + f.teacherStaff) / 5) * 2) / 2 AS FLOAT),f.feedbackMessage)" +
+    @Query("SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName,CAST(ceiling(((f.extracurricularActivities + f.facilitiesUtilities + f.hygieneNutrition + f.learningProgram + f.teacherStaff) / 5) * 2) / 2 AS FLOAT),f.feedbackMessage,e.recordNo)" +
             "FROM AccountInfo ai " +
             "JOIN MasterDatum ma ON ai.roleId=ma.id " +
             "JOIN  EnrollSchool e ON e.account.id=ai.id " +
@@ -50,7 +50,7 @@ public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Inte
     Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable);
 
     //    Find All Request enroll School for specific School Owner
-    @Query("SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName)" +
+    @Query("SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName,e.recordNo)" +
             "FROM AccountInfo ai " +
             "JOIN MasterDatum ma ON ai.roleId=ma.id " +
             "JOIN  EnrollSchool e ON e.account.id=ai.id " +
@@ -59,7 +59,7 @@ public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Inte
     List<EnrolledSchoolVo> findParentRequestEnrollSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId);
 
     //    Find All enrolled School for admin
-    @Query("SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName)" +
+    @Query("SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName,e.recordNo)" +
             "FROM AccountInfo ai " +
             "JOIN MasterDatum ma ON ai.roleId=ma.id " +
             "JOIN  EnrollSchool e ON e.account.id=ai.id " +

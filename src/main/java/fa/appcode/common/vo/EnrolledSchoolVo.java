@@ -15,10 +15,12 @@ public class EnrolledSchoolVo {
     private String enrolledName;
     private Float latestRate;
     private String latestFeedback;
+    private Integer recordNo;
 
-    public EnrolledSchoolVo(Integer enrollId,String enrolledName){
+    public EnrolledSchoolVo(Integer enrollId,String enrolledName,Integer recordNo){
         this.enrollId = enrollId;
         this.enrolledName = enrolledName;
+        this.recordNo = recordNo;
     }
     @Override
     public String toString() {

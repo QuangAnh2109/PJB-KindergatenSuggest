@@ -9,7 +9,7 @@ public class Constant {
     public static final String INIT_PAGE = "0";
     public static final String PAGE_SIZE = "10";
     public static final String KEY_WORD_DEFAULT = "";
-    public static final String VIEW_ACCOUNT_PAGE = "user_side/view-account";
+    public static final String VIEW_ACCOUNT_PAGE = "admin_side/EditUser";
     public static final String FORGOT_PASSWORD_PAGE = "user_side/forgot-password";
     public static final String RESET_PASSWORD_PAGE = "user_side/reset-password";
     public static final String TOKEN_INVALID_PAGE = "user_side/token-invalid";
