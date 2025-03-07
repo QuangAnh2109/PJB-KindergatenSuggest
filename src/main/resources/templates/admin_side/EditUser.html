@@ -13,8 +13,8 @@
         <!-- App favicon -->
         <link rel="shortcut icon" th:href="@{/admin_side/images/favicon.ico}">
         <!-- Plugin css -->
-        <link th:href="@{/admin_side/libs/bootstrap-tagsinput/bootstrap-tagsinput.css}" rel="stylesheet" />
-        <link th:href="@{/admin_side/libs/switchery/switchery.min.css}" rel="stylesheet" type="text/css" />
+        <link th:href="@{/admin_side/libs/bootstrap-tagsinput/bootstrap-tagsinput.css}" rel="stylesheet"/>
+        <link th:href="@{/admin_side/libs/switchery/switchery.min.css}" rel="stylesheet" type="text/css"/>
         <link th:href="@{/admin_side/libs/select2/select2.min.css}" rel="stylesheet" type="text/css"/>
         <link th:href="@{/admin_side/libs/clockpicker/bootstrap-clockpicker.min.css}" rel="stylesheet">
         <link th:href="@{/admin_side/libs/bootstrap-timepicker/bootstrap-timepicker.min.css}" rel="stylesheet"
@@ -26,11 +26,12 @@
         <!-- Summernote css -->
         <link th:href="@{/admin_side/libs/summernote/summernote-bs4.css}" rel="stylesheet" type="text/css"/>
         <!-- App css -->
-        <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css" id="bootstrap-stylesheet"/>
+        <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css"
+              id="bootstrap-stylesheet"/>
         <link th:href="@{/admin_side/css/icons.min.css}" rel="stylesheet" type="text/css"/>
         <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css" id="app-stylesheet"/>
         <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
-        <link rel="stylesheet"  th:href="@{/admin_side/css/EditUser.css}" type="text/css"/>
+        <link rel="stylesheet" th:href="@{/admin_side/css/EditUser.css}" type="text/css"/>
     </th:block>
 
     <!-------------------------------- User Screen---------------------------------------------------->
@@ -113,37 +114,43 @@
                     </div>
 
 
-                    <form th:action="@{${role == 'Admin' ? (user.id != null ? '/admin/edit-user/' + user.id : '/admin/add-user') : '/auth/update-account'}}"
-                          method="post" th:object="${user}">
+                    <form id="userForm"
+                          th:action="@{${role == 'Admin' ? '/admin/api/save-user' : '/auth/update-account'}}"
+                          method="post"
+                          th:object="${user}">
 
-                        <input type="hidden" th:field="*{id}">
+                        <input type="hidden" th:field="*{id}" id="userID">
 
 
                         <!-- Full Name -->
                         <div class="mb-3">
                             <label class="form-label">Full Name <span class="text-danger">*</span> </label>
-                            <input type="text" class="form-control" required th:field="*{fullName}" id="fullName"  th:readonly="${!(role != 'Admin' or user.id == null)}">
+                            <input type="text" class="form-control"  th:field="*{fullName}" id="fullName"
+                                   th:readonly="${!(role != 'Admin' or user.id == null)}">
                             <div class="text-danger" id="errorFullName"></div>
                         </div>
 
                         <!-- Email -->
                         <div class="mb-3">
                             <label class="form-label">Email<span class="text-danger">*</span> </label>
-                            <input type="email" class="form-control" required th:field="*{email}" id="email"  th:readonly="${user.id != null}">
+                            <input type="email" class="form-control"  th:field="*{email}" id="email"
+                                   th:readonly="${user.id != null}">
                             <div class="text-danger" id="errorEmail"></div>
                         </div>
 
                         <!-- DOB -->
-                        <div class="mb-3" >
+                        <div class="mb-3">
                             <label class="form-label">D.O.B<span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" required th:field="*{dob}" id="dob"  th:readonly="${!(role != 'Admin' or user.id == null)}">
+                            <input type="date" class="form-control"  th:field="*{dob}" id="dob"
+                                   th:readonly="${!(role != 'Admin' or user.id == null)}">
                             <div class="text-danger" id="errorDob"></div>
                         </div>
 
                         <!-- Phone -->
                         <div class="mb-3">
                             <label class="form-label">Phone No.<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" required th:field="*{phone}" id="phone"  th:readonly="${!(role != 'Admin' or user.id == null)}">
+                            <input type="text" class="form-control" th:field="*{phone}" id="phone"
+                                   th:readonly="${!(role != 'Admin' or user.id == null)}">
                             <div class="text-danger" id="errorPhone"></div>
                         </div>
 
@@ -154,17 +161,22 @@
                                 <select onchange="loadDistrict(this.value)" name="city" class="form-control">
                                     <option th:text="${user.city != null ? user.city.cityName : 'Province/City'}"
                                             disabled selected></option>
-                                    <option th:each="city : ${citys}" th:value="${city.id}" th:text="${city.cityName}"></option>
+                                    <option th:each="city : ${citys}" th:value="${city.id}"
+                                            th:text="${city.cityName}"></option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <select onchange="loadWard(this.value)" name="district" id="district" class="form-control" required disabled>
-                                    <option value="" disabled selected th:text="${user.district != null ? user.district.districtName : 'District'}"></option>
+                                <select onchange="loadWard(this.value)" name="district" id="district"
+                                        class="form-control" required disabled>
+                                    <option value="" disabled selected
+                                            th:text="${user.district != null ? user.district.districtName : 'District'}"></option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <select onchange="enableParam('address')" name="ward" id="ward" class="form-control" required disabled>
-                                    <option value="" disabled selected th:text="${user.ward != null ? user.ward.wardName : 'Ward'}"></option>
+                                <select onchange="enableParam('address')" name="ward" id="ward" class="form-control"
+                                        required disabled>
+                                    <option value="" disabled selected
+                                            th:text="${user.ward != null ? user.ward.wardName : 'Ward'}"></option>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -178,7 +190,8 @@
                         <div class="mb-3" th:if="${role == 'Admin'}">
                             <label class="form-label">Role<span class="text-danger">*</span></label>
                             <select name="role" class="form-control" th:field="*{role}" id="role">
-                                <option th:each="role : ${roles}" th:value="${role.typeValue}" th:text="${role.typeValue}"></option>
+                                <option th:each="role : ${roles}" th:value="${role.typeValue}"
+                                        th:text="${role.typeValue}"></option>
                             </select>
                             <div class="text-danger" id="errorRole"></div>
                         </div>
@@ -186,8 +199,9 @@
                         <!-- Status (Chỉ hiển thị nếu là ADMIN) -->
                         <div class="mb-3" th:if="${role == 'Admin'}">
                             <label class="form-label">Status<span class="text-danger">*</span></label>
-                            <select name="status" class="form-control" th:field="*{status}" id ="status">
-                                <option th:each="sta : ${status}" th:value="${sta.typeValue}" th:text="${sta.typeValue}"></option>
+                            <select name="status" class="form-control" th:field="*{status}" id="status">
+                                <option th:each="sta : ${status}" th:value="${sta.typeValue}"
+                                        th:text="${sta.typeValue}"></option>
                             </select>
                             <div class="text-danger" id="errorStatus"></div>
                         </div>
@@ -199,8 +213,14 @@
 
                         <!-- Buttons -->
                         <div class="text-center">
-                            <button type="button" class="btn btn-danger" id="cancel-button">Cancel</button>
-                            <button type="submit" class="btn btn-primary" id="save-user" th:text="${role == 'Admin' ? 'Save' : 'Update'}"></button>
+                            <button
+                                    th:attr="type=${role == 'Admin' ? 'button' : 'reset'}"
+                                    class="btn btn-danger"
+                                    id="cancel-button">
+                                Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary" id="save-user" data-role="${role}"
+                                    th:text="${role == 'Admin' ? 'Save' : 'Update'}"></button>
                         </div>
                     </form>
                 </div>
@@ -212,21 +232,9 @@
 
 <!-- END wrapper -->
 
-<script>
-    document.getElementById("cancel-button").addEventListener("click", function() {
-        var previousUrl = localStorage.getItem('previousUrl');
-        if (previousUrl) {
-            window.location.href = previousUrl;
-            localStorage.removeItem('previousUrl');
-        } else {
-            window.history.back();
-        }
-    });
-
-</script>
 
 <!---------------------------------------- Admin -------------------------------------->
-<th:block th:if="${#strings.equalsIgnoreCase(role, 'Admin')}" >
+<th:block th:if="${#strings.equalsIgnoreCase(role, 'Admin')}">
     <!-- Vendor js -->
     <script src="/admin_side/js/vendor.min.js"></script>
     <script src="/admin_side/libs/moment/moment.min.js"></script>
@@ -251,7 +259,7 @@
     <script src="/admin_side/js/EditUser.js"></script>
 
 </th:block>
-<th:block th:if="${!#strings.equalsIgnoreCase(role, 'Admin')}" >
+<th:block th:if="${!#strings.equalsIgnoreCase(role, 'Admin')}">
     <script th:src="@{/user_side/js/plugins.js}"></script>
     <script th:src="@{/user_side/js/designesia.js}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js">
