@@ -75,7 +75,7 @@ public class AccountController {
             }
             accountService.updateAccountInfo(currentAccount, accountInfo);
             redirectAttributes.addFlashAttribute("successMessage", globalConfig.getUpdateSuccess());
-            return "redirect:" + Constant.VIEW_ACCOUNT_URL;
+            return "redirect:" + Constant.VIEW_ACCOUNT_PAGE;
         } catch (Exception e) {
             log.error("Error while updating account", e);
             model.addAttribute("error", globalConfig.getAnErrorOccur());

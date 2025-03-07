@@ -1,23 +1,36 @@
 package fa.appcode.web.controller;
 
+import fa.appcode.common.logging.Log4jUtils;
+import fa.appcode.common.utils.Placeholder;
+import fa.appcode.common.utils.SendMailInfo;
+import fa.appcode.common.vo.AccountVo;
 import fa.appcode.services.AccountService;
+import fa.appcode.services.EmailService;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
+
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/admin/api")
 public class UserManagementRestController {
+    @Autowired
+    private AccountService accountService;
 
-    private final AccountService accountService;
+    @Autowired
+    private EmailService emailService;
 
     // Delete logic user account (set deleteFlg = true)
     @GetMapping(value = "/user/{userId}")
@@ -31,31 +44,52 @@ public class UserManagementRestController {
     }
 
 
-//    @PostMapping(value = "/edit-user", consumes = "application/json")
-//    public ResponseEntity<Map<String, String>> updateUser(@RequestBody Map<String, String> userData) {
-//
-//        Integer id = Integer.parseInt(userData.get("id"));  // Lấy ID từ body
-//        System.out.println("Received request to update user with ID: " + id);
-//
-//        Map<String, String> response = new HashMap<>();
-//        try {
-//            String fullName = userData.get("fullName");
-//            String phone = userData.get("phone");
-//            String dob = userData.get("dob");
-//            Integer roleId = Integer.parseInt(userData.get("roleId"));
-//
-//            accountService.updateUser(id, fullName, phone, dob, roleId);
-//            response.put("message", "Change has been successfully updated.");
-//            return new ResponseEntity<>(response, HttpStatus.OK);
-//        } catch (EntityNotFoundException e) {
-//            response.put("error", "User not found.");
-//            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-//        } catch (NumberFormatException e) {
-//            response.put("error", "Invalid role ID.");
-//            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-//        } catch (Exception e) {
-//            response.put("error", "An error occurred: " + e.getMessage());
-//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @PostMapping("/save-user")
+    public ResponseEntity<?> saveUser(@RequestBody @Valid AccountVo accountVo, BindingResult result, Principal principal) {
+        Map<String, String> errors = new HashMap<>();
+
+        boolean isAdding = accountVo.getId() == null ; // Kiểm tra thêm mới hay chỉnh sửa
+
+        Log4jUtils.getLogger().info("AccountID :" + accountVo.getId());
+        if (result.hasErrors()) {
+            result.getFieldErrors().forEach(error -> {
+                // Bỏ qua kiểm tra password và confirmPassword
+                if (!error.getField().equals("password") && !error.getField().equals("confirmPassword")) {
+                    errors.put(error.getField(), error.getDefaultMessage());
+                }
+            });
+
+            if (!errors.isEmpty()) {
+                return ResponseEntity.badRequest().body(errors);
+            }
+        }
+
+        try {
+            if (isAdding) {
+                String randomPassword = UUID.randomUUID().toString();
+                accountVo.setPassword(randomPassword);
+                accountVo.setConfirmPassword(randomPassword);
+                accountService.addUserFromAdmin(accountVo);
+
+                // Gửi email
+                emailService.sendEmailToMany(SendMailInfo.builder()
+                        .toMail(List.of(accountVo.getEmail()))
+                        .ccMail(List.of())
+                        .mailId(2)
+                        .detail(Map.of(Placeholder.USER_NAME, accountVo.getEmail(),
+                                Placeholder.EMAIL, accountVo.getEmail(),
+                                Placeholder.PASSWORD, randomPassword,
+                                Placeholder.OWNER_ACCOUNT, accountService.getAccountInfo(principal).getFullName()))
+                        .build());
+            } else {
+                accountService.updateUser(accountVo);
+            }
+
+            return ResponseEntity.ok(Map.of("message", isAdding ? "User added successfully." : "User updated successfully."));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "An error occurred: " + e.getMessage()));
+        }
+    }
 }
