@@ -10,13 +10,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
 @Repository("enrollSchoolRepository")
 public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Integer> {
+    @Query("""
+            SELECT e FROM EnrollSchool e WHERE e.id = ?1 AND e.deleteFlg=false AND e.status != 4
+            """)
     EnrollSchool findEnrollSchoolById(Integer id);
 
     //    Find All enrolled School for specific School Owner
@@ -75,4 +80,17 @@ public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Inte
             AND e.deleteFlg=false
             """)
     boolean isParentEnrollingToSchool(Integer accountId, Integer schoolId);
+
+    @Modifying
+    @Query("UPDATE EnrollSchool e SET e.enrollEndDate = :enrollEndDate, " +
+            "e.updateId = :updateId, e.updateTime = :updateTime, e.status = :status, " +
+            "e.recordNo = e.recordNo + 1 " +
+            "WHERE e.id = :id AND e.recordNo = :currentRecordNo AND e.deleteFlg=false")
+    @Transactional
+    int evaluateParentEnroll(@Param("id") Integer id,
+                           @Param("enrollEndDate") LocalDate enrollEndDate,
+                           @Param("updateId") String updateId,
+                           @Param("updateTime") Instant updateTime,
+                           @Param("status") Integer status,
+                           @Param("currentRecordNo") Integer currentRecordNo);
 }
