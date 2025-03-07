@@ -21,7 +21,7 @@ $(document).ready(function (){
             },
             success: function(responseData) {
                 console.log("LOADED!");
-                document.getElementById("main-content").outerHTML = responseData;
+                $("#main-content").html($(responseData).find("#main-content").html());
             },
         });
     };

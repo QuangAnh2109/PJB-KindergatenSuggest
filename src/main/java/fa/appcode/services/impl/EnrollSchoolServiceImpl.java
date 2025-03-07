@@ -1,14 +1,12 @@
 package fa.appcode.services.impl;
 
-import fa.appcode.common.logging.Log4jUtils;
 import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.EnrolledSchoolVo;
+import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.entities.EnrollSchool;
 import fa.appcode.entities.SchoolInfo;
-import fa.appcode.repositories.AccountRepository;
 import fa.appcode.repositories.EnrollSchoolRepository;
-import fa.appcode.repositories.SchoolInfoRepository;
 import fa.appcode.services.EnrollSchoolService;
 import fa.appcode.services.SchoolInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,18 +31,25 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
 
     @Autowired
     private EnrollSchoolRepository enrollSchoolRepository;
+    @Autowired
+    private GlobalConfig globalConfig;
 
-    @Transactional
-    public void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role) throws IllegalStateException {
-
+    @Transactional(rollbackFor = Exception.class)
+    public void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role, Principal principal) throws Exception {
         //create instant enroll School
         EnrollSchool schoolEnroll = new EnrollSchool();
         //AParent that enroll
         if (account.getDeleteFlg() || account.getStatusId().equals(Constant.STATUS_INACTIVE)) {
-            throw new IllegalStateException("Account is not active Or No Longer Available Please Try Again!");
+            throw new IllegalAccessException("Account is not active Or No Longer Available Please Try Again!");
         }
         if (school.getDeleteFlg() || !school.getStatusId().equals(Constant.SCHOOL_PUBLISH_STATUS)) {
-            throw new IllegalStateException("School is not published Or No Longer Available Please Try Again!");
+            throw new IllegalAccessException("School is not published Or No Longer Available Please Try Again!");
+        }
+        if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_"))&& !validateAccess(school.getId(), principal).equals(Constant.SUCCESS)) {
+            throw new IllegalAccessException(validateAccess(school.getId(), principal));
+        }
+        if (!isEnrolled(account.getId(), school.getId()).equals(Constant.SUCCESS)) {
+            throw new IllegalAccessException(isEnrolled(account.getId(), school.getId()));
         }
         schoolEnroll.setAccount(account);
         //School that Parent will enroll
@@ -53,8 +59,6 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         //Start of Enroll is Always true
         schoolEnroll.setStatus(3);
         //change with LocalDate time zone
-//                schoolEnroll.setCreateTime(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
-//                schoolEnroll.setUpdateTime(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
         //set Create ID
         schoolEnroll.setCreateId(role);
         //set Create time
@@ -83,42 +87,19 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     }
 
 
-    @Transactional
-    public void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status) {
-        //set enroll Date
-        if (status == 3) {
-            enrollSchool.setEnrollDate(approvalEnrollDate);
+    @Transactional(rollbackFor = Exception.class)
+    public void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status, Principal principal, Integer recordNo) throws Exception {
+        if(enrollSchool==null){
+            throw new IllegalAccessException("Illegal Unenroll school on your action");
         }
-        //set Update ID
-        if (status == 4) {
-            enrollSchool.setEnrollEndDate(approvalEnrollDate);
+        if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_")) && !validateAccess(enrollSchool.getSchool().getId(), principal).equals(Constant.SUCCESS)) {
+            throw new IllegalAccessException(validateAccess(enrollSchool.getSchool().getId(), principal));
         }
-        enrollSchool.setUpdateId(role);
-        //set Update Time
-        enrollSchool.setUpdateTime(Instant.now());
-        //set status of enroll parent school /reject,approve -> enrolled/ unenroll
-        enrollSchool.setStatus(status);
-        //set Record data +1
-        enrollSchool.setRecordNo(enrollSchool.getRecordNo() + 1);
-        enrollSchoolRepository.save(enrollSchool);
-    }
 
-    @Override
-    public String execute(String action, EnrollSchool enrollSchool, LocalDate date, String role, Principal principal) throws Exception {
-        if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_"))) {
-            validateAccess(enrollSchool, principal);
+        int updateRows = enrollSchoolRepository.evaluateParentEnroll(enrollSchool.getId(), LocalDate.now(), role, Instant.now(), status, recordNo);
+        if (updateRows == 0) {
+            throw new IllegalAccessException("This Record is Already Edited. Please Try Again!");
         }
-        EnrollSchoolService self = applicationContext.getBean(EnrollSchoolService.class);
-        validateEnrollStatus(enrollSchool);
-        switch (action) {
-            case Constant.UNENROLL_PARENT_SCHOOL ->
-                    self.evaluateParentEnroll(enrollSchool, date, role, 4); //execute unenroll parent
-            case Constant.APPROVE_ENROLL_REQUEST ->
-                    self.evaluateParentEnroll(enrollSchool, date, role, 3); //execute approve enroll parent
-            case Constant.REJECT_ENROLL_REQUEST ->
-                    self.evaluateParentEnroll(enrollSchool, date, role, 2); //execute reject enroll parent
-        }
-        return action;
     }
 
     @Override
@@ -131,22 +112,24 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         return enrollSchoolRepository.findParentRequestEnrolledSchoolByParentId(id);
     }
 
-    //check if parent is already enrolled or not
+    //check for validation methods
+
+    //check for authorized school owner school
     @Override
-    public boolean isParentEnrollingToSchool(Integer accountId, Integer schoolId) {
-        return enrollSchoolRepository.isParentEnrollingToSchool(accountId, schoolId);
-    }
-
-    private void validateAccess(EnrollSchool enrollSchool, Principal principal) throws Exception {
+    public String validateAccess(Integer schoolId, Principal principal) {
         List<Integer> schoolIdList = schoolInfoService.getAllSchoolIdsForUnenrollParentByAccountEmail(principal.getName());
-        if (!schoolIdList.contains(enrollSchool.getSchool().getId())) {
-            throw new Exception("Unauthorized action for this school.");
+        if (!schoolIdList.contains(schoolId)) {
+            return "School Onwer Does Not Have Access To This School";
         }
+        return Constant.SUCCESS;
     }
 
-    private void validateEnrollStatus(EnrollSchool enrollSchool) throws Exception {
-        if (enrollSchool.getDeleteFlg()) {
-            throw new Exception("This Enroll Status is Deleted, Please Try Again!");
+    //check if Parent is Enrolled to school or not
+    @Override
+    public String isEnrolled(Integer parentId, Integer schoolId) {
+        if (enrollSchoolRepository.isParentEnrollingToSchool(parentId, schoolId)) {
+            return "Parent is currently already Enrolling to this School";
         }
+        return Constant.SUCCESS;
     }
 }
