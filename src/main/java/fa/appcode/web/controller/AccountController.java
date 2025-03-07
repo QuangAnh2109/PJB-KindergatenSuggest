@@ -4,6 +4,7 @@ import fa.appcode.common.utils.Constant;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.services.AccountService;
+import fa.appcode.services.CityService;
 import fa.appcode.services.impl.CityServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ import java.util.regex.Pattern;
 @RequestMapping("/auth")
 public class AccountController {
     private final AccountService accountService;
-    private final CityServiceImpl cityService;
+    private final CityService cityService;
     private final GlobalConfig globalConfig;
 
     @GetMapping("/view-account")
