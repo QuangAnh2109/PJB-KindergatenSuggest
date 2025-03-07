@@ -7,7 +7,10 @@ import fa.appcode.entities.Request;
 import fa.appcode.repositories.RequestRepository;
 import fa.appcode.services.EmailService;
 import fa.appcode.services.RequestService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,10 +26,10 @@ public class RequestServiceImpl implements RequestService {
 
     @Autowired
     private RequestRepository requestRepository;
-
     @Autowired
     private EmailService emailService;
 
+    private static final Logger logger = LoggerFactory.getLogger(RequestServiceImpl.class);
 
     @Override
     public Page<RequestVo> findAll(Pageable pageable) {
@@ -74,8 +77,16 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Page<Request> findRequestByAccountIdAndDeleteFlg(Integer accountId) {
-        return (Page<Request>) requestRepository.findRequestByAccountIdAndDeleteFlgIsFalse(accountId);
+    public Page<Request> findRequestByAccountIdAndDeleteFlg(Integer accountId, Pageable pageable) {
+        logger.info("Fetching requests by accountId and deleteFlg");
+        try{
+            Page<Request> result = requestRepository.findRequestByAccountIdAndDeleteFlgIsFalse(accountId, pageable);
+            logger.info("Found {} requests for account ID: {}", result.getTotalElements(), accountId);
+            return result;
+        }catch (DataAccessException e){
+            logger.error("Database error when fetching requests for account ID: {}", accountId, e);
+            return Page.empty();
+        }
     }
 
     @Override

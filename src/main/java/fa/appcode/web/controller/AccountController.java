@@ -6,7 +6,7 @@ import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.MasterDatumService;
-import fa.appcode.services.impl.CityServiceImpl;
+import fa.appcode.services.CityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 @RequestMapping("/auth")
 public class AccountController {
     private final AccountService accountService;
-    private final CityServiceImpl cityService;
+    private final CityService cityService;
     private final GlobalConfig globalConfig;
     private final MasterDatumService masterDatumService;
     @GetMapping("/view-account")

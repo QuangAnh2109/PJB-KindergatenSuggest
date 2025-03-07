@@ -31,7 +31,7 @@ public class SchoolAdminController {
 
     private final GlobalConfig globalConfig;
 
-    private final int APPROVE_MAIL_ID = 4;
+    private static final int APPROVE_MAIL_ID = 4;
 
     @ResponseBody
     @PostMapping("/school/delete/{id}&{recordNo}")
