@@ -1,5 +1,6 @@
 package fa.appcode.exceptions;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -33,4 +34,12 @@ public class GlobalHandlerException {
         logger.error("SQL Failed: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("SQL Failed:  " + e.getMessage());
     }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException e) {
+        logger.error("Entity not found: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entity not found: " + e.getMessage());
+    }
+
+
 }
