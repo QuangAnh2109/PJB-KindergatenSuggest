@@ -43,7 +43,7 @@ public interface AccountService {
      * @param pageable t
      * @return a page of AccountVo containing user account details
      */
-    Page<AccountVo> getAllAccounts(String search, Pageable pageable);
+    Page<AccountVo> getAllAccounts(String search, Pageable pageable) throws Exception;
 
     /**
      * Retrieves a user account based on the provided ID.
@@ -54,18 +54,11 @@ public interface AccountService {
     AccountVo getAccountById(Integer id);
 
     /**
-     * Changes the status of a user account (e.g., activates or deactivates the account).
-     *
-     * @param id
-     */
-    void toggleUserStatus(Integer id);
-
-    /**
-     * Updates the details of an existing user account.
+     * Updates the status or role of an existing user account.
      *
      * @param accountVo
      */
-    void updateUser(AccountVo accountVo);
+    void updateAccount(AccountVo accountVo);
 
     /**
      * Deletes logic a user account based on the provided ID. (set deleteFlg=1)
@@ -79,7 +72,7 @@ public interface AccountService {
      *
      * @param accountVo
      */
-    void addUserFromAdmin(AccountVo accountVo);
+    void addUserFromAdmin(AccountVo accountVo, Principal principal);
 
 
     Page<AccountInfo> findAll(Pageable pageable);

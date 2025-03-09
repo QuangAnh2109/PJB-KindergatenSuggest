@@ -20,13 +20,18 @@ $("body").on("submit", "#userForm", function (event) {
         count++;
     }
     var dob = $("#dob").val();
-    if (dob.trim() === '') {
-        $("#errorDob").html('Please enter date of birth');
-        count++;
-    } else if (dob >= today) {
-        $("#errorDob").html('Date of birth must be in the past');
-        count++;
+    var userId = $("#userID").val();
+
+    if (!userId) { // Nếu ID rỗng -> Đang Add User
+        if (dob === '') {
+            $("#errorDob").html('Please enter date of birth');
+            count++;
+        } else if (dob >= today) {
+            $("#errorDob").html('Date of birth must be in the past');
+            count++;
+        }
     }
+
     var phone = $("#phone").val().trim();
     if (phone === '') {
         $("#errorPhone").html('Please enter phone number');

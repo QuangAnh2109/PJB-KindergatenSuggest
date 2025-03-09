@@ -1,17 +1,12 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.common.utils.Constant;
-import fa.appcode.common.utils.Placeholder;
-import fa.appcode.common.utils.SendMailInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.MasterDatum;
 import fa.appcode.services.AccountService;
-import fa.appcode.services.EmailService;
 import fa.appcode.services.MasterDatumService;
-import fa.appcode.services.impl.MasterDatumServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,12 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 
 @Controller
@@ -51,7 +43,7 @@ public class UserManagementController {
     @GetMapping("user-list")
     public String getUserList(@RequestParam(defaultValue = Constant.KEY_WORD_DEFAULT) String search,
                               @RequestParam(defaultValue = Constant.USER_INIT_PAGE) int currentPage,
-                              Model model, Principal principal) {
+                              Model model, Principal principal) throws Exception {
 
         Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage());
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
@@ -64,34 +56,22 @@ public class UserManagementController {
         model.addAttribute("numberPage", accounts.getTotalPages());
         model.addAttribute("role", role);
 
-        return "admin_side/UserList";
+        return "admin_side/user-list";
     }
 
     /**
-     * Edit or Add user account
+     * Edit or Add user account Screen
      *
      * @param id
      * @param principal
      * @param model
      * @return
      */
-
-
     @GetMapping({"add-user", "edit-user/{id}"})
     public String showUserForm(@PathVariable(name = "id", required = false) Integer id, Model model, Principal principal) {
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
 
-        AccountVo user;
-        if (id != null) {
-            try {
-                user = accountService.getAccountById(id);
-            } catch (EntityNotFoundException e) {
-                model.addAttribute("error", "User not found.");
-                return Constant.VIEW_ACCOUNT_PAGE;
-            }
-        } else {
-            user = new AccountVo(); // Nếu là thêm mới, tạo đối tượng rỗng
-        }
+        AccountVo user = (id != null) ? accountService.getAccountById(id) : new AccountVo();
 
         List<MasterDatum> roles = masterDatumService.getListByTypeName("ROLE");
         List<MasterDatum> status = masterDatumService.getListByTypeName("ACCOUNT STATUS");
@@ -103,7 +83,6 @@ public class UserManagementController {
 
         return Constant.VIEW_ACCOUNT_PAGE;
     }
-
 
 
 }
