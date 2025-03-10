@@ -27,7 +27,6 @@
 </head>
 
 <body>
-
 <!-- Begin page -->
 <div id="wrapper">
 
@@ -439,7 +438,7 @@
                 </div>
             </div>
             <!-- end row -->
-            <form th:action="@{/school-owner/school/add}" method="post" enctype="multipart/form-data" th:object="${sc}">
+            <form th:action="@{/school-owner/school/add}" method="post" enctype="multipart/form-data" th:object="${school}">
                 <table class="col-12 school-form">
                     <tr>
                         <td>School Name</td>
@@ -451,8 +450,7 @@
                         <td>
                             <select name="type" class="form-control" required>
                                 <option value="" disabled selected>Select a school type</option>
-                                <option th:each="schoolType:${schoolTypes}" th:value="${schoolType.typeKey}"
-                                        th:text="${schoolType.typeValue}">
+                                <option th:each="schoolType:${schoolTypes}" th:value="${schoolType.typeKey}" th:text="${schoolType.typeValue}"></option>
                             </select>
                         </td>
                     </tr>
@@ -461,7 +459,7 @@
                         <td>
                             <select onchange="loadDistrict(this.value)" name="city" class="form-control" required>
                                 <option value="" disabled selected>Province/City</option>
-                                <option th:each="city:${citys}" th:value="${city.id}" th:text="${city.cityName}">
+                                <option th:each="city:${citys}" th:value="${city.id}" th:text="${city.cityName}"></option>
                             </select>
                         </td>
                     </tr>
@@ -572,18 +570,15 @@
                         </td>
                     </tr>
                 </table>
-                <button id="cancel" class="btn btn-primary" style="background-color: white;color: #458bc4;">Cancel
-                </button>
-                <input type="submit" class="btn btn-primary" value="Save draft">
-                <input type="submit" class="btn btn-primary" value="Submit">
-                <input type="submit" class="btn btn-danger" value="Delete">
-                <input type="submit" class="btn btn-primary" value="Edit">
-                <button id="edit" class="btn btn-primary">Edit</button>
-                <input type="submit" class="btn btn-danger" value="Reject">
-                <input type="submit" class="btn btn-primary" value="Approve">
-                <input type="submit" class="btn btn-primary" value="Publish">
-                <input type="submit" class="btn btn-primary" style="background-color: white;color: #458bc4;"
-                       value="Unpublish">
+                <button th:hidden="${!edit}" id="cancel" class="btn btn-primary" style="background-color: white;color: #458bc4;">Cancel</button>
+                <button th:if="${canEdit}" th:hidden="${edit}" id="edit" class="btn btn-primary">Edit</button>
+                <button th:if="${saveDraft}" id="save" class="btn btn-primary">Save draft</button>
+                <button th:if="${submit}" id="submit" class="btn btn-primary">Submit</button>
+                <button th:if="${delete}" id="delete" class="btn btn-danger">Delete</button>
+                <button th:if="${reject}" class="btn btn-danger">Reject</button>
+                <button th:if="${approve}" id="approve" class="btn btn-primary">Approve</button>
+                <button th:if="${publish}" id="publish" class="btn btn-primary">Publish</button>
+                <button th:if="${unpublish}" id="unpublish" class="btn btn-primary" style="background-color: white;color: #458bc4;">Unpublish</button>
             </form>
 
             <!-- end row -->

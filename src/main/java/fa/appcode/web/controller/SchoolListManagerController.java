@@ -25,30 +25,30 @@ public class SchoolListManagerController {
 
     private final String SEARCH_ALL = "";
 
-    @GetMapping("/schol-list")
+    @GetMapping("/manager/school-list")
     public String getSchoolListManager() {
         if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray()[0] == "Admin"){
-            return "redirect:/admin/school-list";
-        }else return "redirect:/school-owner/school-list";
+            return "redirect:/admin/school-list?search=" + SEARCH_ALL + "&page=" + PAGE_DEFAULT;
+        }else return "redirect:/school-owner/school-list?search=" + SEARCH_ALL + "&page=" + PAGE_DEFAULT;
     }
 
     @GetMapping("/admin/school-list")
-    public String getSchoolListManagerByAdmin(Model model) {
-        model.addAttribute("schoolList", schoolInfoService.searchAllByNameAndPagingAndDeleteFlg(PAGE_DEFAULT, SEARCH_ALL));
+    public String getSchoolListManagerByAdmin(Model model, @RequestParam(value="search") String search, @RequestParam(value="page") int page) {
+        model.addAttribute("schoolList", schoolInfoService.searchAllByNameAndPagingAndDeleteFlg(page, search));
         model.addAttribute("isAdmin", true);
         return "school-list-manager";
     }
 
     @GetMapping("/school-owner/school-list")
-    public String getSchoolListManagerBySchoolOwner(Model model) {
+    public String getSchoolListManagerBySchoolOwner(Model model, @RequestParam(value="search") String search, @RequestParam(value="page") int page) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        model.addAttribute("schoolList", schoolInfoService.searchAllByNameAndAccountAndPagingAndDeleteFlg(PAGE_DEFAULT, SEARCH_ALL, email));
+        model.addAttribute("schoolList", schoolInfoService.searchAllByNameAndAccountAndPagingAndDeleteFlg(page, search, email));
         model.addAttribute("isAdmin", false);
         return "school-list-manager";
     }
 
     @ResponseBody
-    @GetMapping("/admin/school-list/{page}")
+    @GetMapping("/admin/school-list/get/{page}")
     public List<SchoolListManager> getSchoolListPageManagerByAdmin(@PathVariable("page") int pageNumber, @RequestParam(name="search") String search) {
         return schoolInfoService.searchAllByNameAndPagingAndDeleteFlg(pageNumber, search);
     }

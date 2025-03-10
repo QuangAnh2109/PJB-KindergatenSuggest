@@ -75,6 +75,8 @@ public class GlobalConfig {
     private String loginFailed;
     @Value("${page.size}")
     private Integer sizeOfPage;
+    @Value("${page.school_rating_feedback.size}")
+    private Integer sizeOfPageSchoolRatingFeedback;
     @Value("${server.link}")
     private String serverLink;
     @Value("${ME_028}")

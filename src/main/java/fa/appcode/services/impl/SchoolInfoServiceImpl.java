@@ -71,11 +71,9 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
         return schoolInfoRepository.updateSchoolStatusByRequest(SchoolStatusUpdateRequest.builder().id(id).recordNo(recordNo).schoolStatus(schoolStatus).statusList(list).updateId(updateId).updateTime(Instant.now()).build());
     }
 
-    //update school status by school id and account and record no and no delete
     @Override
     @Transactional
     public int updateSchoolStatusByRequestAndAccount(int id, String email, int recordNo, int schoolStatus, String updateId, List<Integer> list) {
-        list.add(schoolStatus);
         return schoolInfoRepository.updateSchoolStatusByRequest(SchoolStatusUpdateRequest.builder().id(id).recordNo(recordNo).email(email).schoolStatus(schoolStatus).statusList(list).updateId(updateId).updateTime(Instant.now()).build());
     }
 

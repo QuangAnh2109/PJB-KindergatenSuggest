@@ -21,9 +21,15 @@ public class SchoolFormManager {
 
     private int cityId;
 
+    private String cityName;
+
     private int districtId;
 
+    private String districtName;
+
     private int wardId;
+
+    private String wardName;
 
     private String email;
 
