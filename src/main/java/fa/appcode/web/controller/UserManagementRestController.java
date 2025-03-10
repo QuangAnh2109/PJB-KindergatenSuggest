@@ -1,6 +1,7 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.common.logging.Log4jUtils;
+import fa.appcode.common.utils.ValidateUtils;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.services.AccountService;
 
@@ -12,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,11 +55,29 @@ public class UserManagementRestController {
                     errors.put(error.getField(), error.getDefaultMessage());
                 }
             });
+        }
+            if (!ValidateUtils.isValidFullName(accountVo.getFullName())) {
+                errors.put("fullName", "Full name cannot be empty");
+            }
+            if (!ValidateUtils.isValidEmail(accountVo.getEmail())) {
+                errors.put("email", "Invalid email format");
+            }
+            if (!ValidateUtils.isValidDob(LocalDate.parse(accountVo.getDob()))) {
+                errors.put("dob", "Date of birth must be in the past");
+            }
+            if (!ValidateUtils.validatePhone(accountVo.getPhone())) {
+                errors.put("phone", "Invalid phone number format");
+            }
+            if (!ValidateUtils.isValidRole(accountVo.getRole())) {
+                errors.put("role", "Role cannot be empty");
+            }
+            if (!ValidateUtils.isValidStatus(accountVo.getStatus())) {
+                errors.put("status", "Status cannot be empty");
+            }
 
             if (!errors.isEmpty()) {
                 return ResponseEntity.badRequest().body(errors);
             }
-        }
 
         Log4jUtils.getLogger().info("AccountID :" + accountVo.getId());
 
@@ -74,8 +94,9 @@ public class UserManagementRestController {
                         "recordNo", newRecordNo // Trả về recordNo mới
                 ));
             }
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
+
     }
 }

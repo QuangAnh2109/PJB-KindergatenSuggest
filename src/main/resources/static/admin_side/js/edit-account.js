@@ -84,6 +84,8 @@ $("body").on("submit", "#userForm", function (event) {
                         $("#errorPhone").html(errors.phone);
                         $("#errorRole").html(errors.role);
                         $("#errorStatus").html(errors.status);
+                    } else {
+                        alert("An error occurred: " + xhr.responseText);
                     }
                 }
             }

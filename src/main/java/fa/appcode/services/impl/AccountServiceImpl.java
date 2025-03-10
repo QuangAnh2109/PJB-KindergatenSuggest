@@ -5,6 +5,7 @@ import fa.appcode.common.utils.Constant;
 
 import fa.appcode.common.utils.Placeholder;
 import fa.appcode.common.utils.SendMailInfo;
+import fa.appcode.common.utils.ValidateUtils;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -195,6 +197,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void addUserFromAdmin(AccountVo accountVo, Principal principal) {
+
         // Generate password by system
         String randomPassword = UUID.randomUUID().toString();
         accountVo.setPassword(randomPassword);
