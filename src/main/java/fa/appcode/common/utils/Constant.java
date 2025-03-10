@@ -65,6 +65,8 @@ public class Constant {
 
 
     public static final String SUCCESS = "success";
+    public static final String DANGER = "danger";
     public static final int ENROLL_STATUS_ENROLL=3;
     public static final int ENROLL_STATUS_UNENROLL=4;
+
 }

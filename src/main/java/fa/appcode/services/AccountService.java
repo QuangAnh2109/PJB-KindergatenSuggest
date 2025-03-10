@@ -90,7 +90,7 @@ public interface AccountService {
      * @param id
      * @return String role
      */
-    ParentVo findParentById(int id);
+    ParentVo findParentById(int id) throws IllegalAccessException;
     /**
      * This method if used to find role of account by using account email
      *
