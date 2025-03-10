@@ -41,6 +41,15 @@ public class RequestController {
     private final SchoolInfoService schoolInfoService;
     private final GlobalConfig globalConfig;
 
+    /**
+     * Display request list
+     *
+     * @param currentPage current page number
+     * @param model
+     * @param principal   current logged-in user
+     * @param session
+     * @return view name "admin_side/request-list"
+     */
     @GetMapping("/manager/request-list")
     public String showRequestList(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                   Model model, Principal principal, HttpSession session) {
@@ -64,6 +73,15 @@ public class RequestController {
         return "admin_side/request-list";
     }
 
+    /**
+     * Display request reminders
+     *
+     * @param currentPage current page number
+     * @param model
+     * @param principal   current logged-in user
+     * @param session
+     * @return view name "admin_side/request-reminder"
+     */
     @GetMapping("/manager/request-reminder")
     public String showRequestReminder(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                       Model model, Principal principal, HttpSession session) {
@@ -87,6 +105,16 @@ public class RequestController {
         return "admin_side/request-reminder";
     }
 
+    /**
+     * Show request detail by request ID
+     *
+     * @param id          request ID
+     * @param page        previous page
+     * @param currentPage current page number
+     * @param model
+     * @param principal   current logged-in user
+     * @return view name "admin_side/request-list-detail"
+     */
     @GetMapping("/manager/request-list-detail")
     public String requestListDetail(@RequestParam Integer id,
                                     @RequestParam(name = "page", required = false) String page,
@@ -101,6 +129,18 @@ public class RequestController {
         return "admin_side/request-list-detail";
     }
 
+    /**
+     * Update the request status based on the user's role.
+     *
+     * @param id                 the request ID
+     * @param page               the previous page
+     * @param currentPage        the current page number
+     * @param model
+     * @param principal          the current-loged user
+     * @param redirectAttributes
+     * @param session
+     * @return the redirection path
+     */
     @GetMapping("/manager/updateRequest")
     public String updateRequest(@RequestParam Integer id,
                                 @RequestParam String page,
@@ -124,6 +164,15 @@ public class RequestController {
         return "redirect:/manager/request-list";
     }
 
+    /**
+     * Search for requests base on keyword
+     *
+     * @param currentPage the current page number
+     * @param keyword     the search keyword
+     * @param model
+     * @param principal   the currently logged-in user
+     * @return a ResponseEntity containing a page of RequestVo
+     */
     @GetMapping("/manager/searchRequestList")
     public ResponseEntity<Page<RequestVo>> searchRequestList(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                                              @RequestParam(name = "keyword", required = false) String keyword,
@@ -144,6 +193,15 @@ public class RequestController {
         return ResponseEntity.ok(requestList);
     }
 
+    /**
+     * Search for unresolved request reminders based on keyword
+     *
+     * @param currentPage the current page number
+     * @param keyword     the search keyword
+     * @param model
+     * @param principal   the currently logged-in user
+     * @return a ResponseEntity containing a page of RequestVo
+     */
     @GetMapping("/manager/searchRequestReminder")
     public ResponseEntity<Page<RequestVo>> searchRequestReminder(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                                                  @RequestParam(name = "keyword", required = false) String keyword,
@@ -163,6 +221,17 @@ public class RequestController {
         model.addAttribute("role", role);
         return ResponseEntity.ok(requestList);
     }
+
+    /**
+     * Create a new counseling request.
+     *
+     * @param fullName           the full name of the requester
+     * @param email              the email of the requester
+     * @param phone              the phone number of the requester
+     * @param inquiries          the inquiries or questions from the requester
+     * @param principal          the currently logged-in user
+     * @return the redirection path to "/public/search"
+     */
     @PostMapping("/public/createRequest")
     public String createRequestCounseling(@RequestParam String fullName,
                                           @RequestParam String email,
