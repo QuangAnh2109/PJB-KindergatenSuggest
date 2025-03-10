@@ -45,7 +45,7 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         if (school.getDeleteFlg() || !school.getStatusId().equals(Constant.SCHOOL_PUBLISH_STATUS)) {
             throw new IllegalAccessException("School is not published Or No Longer Available Please Try Again!");
         }
-        if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_"))&& !validateAccess(school.getId(), principal).equals(Constant.SUCCESS)) {
+        if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_")) && !validateAccess(school.getId(), principal).equals(Constant.SUCCESS)) {
             throw new IllegalAccessException(validateAccess(school.getId(), principal));
         }
         if (!isEnrolled(account.getId(), school.getId()).equals(Constant.SUCCESS)) {
@@ -89,7 +89,7 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
 
     @Transactional(rollbackFor = Exception.class)
     public void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status, Principal principal, Integer recordNo) throws Exception {
-        if(enrollSchool==null){
+        if (enrollSchool == null) {
             throw new IllegalAccessException("Illegal Unenroll school on your action");
         }
         if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_")) && !validateAccess(enrollSchool.getSchool().getId(), principal).equals(Constant.SUCCESS)) {
@@ -100,16 +100,6 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         if (updateRows == 0) {
             throw new IllegalAccessException("This Record is Already Edited. Please Try Again!");
         }
-    }
-
-    @Override
-    public List<EnrolledSchoolVo> findParentRequestEnrollSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId) {
-        return enrollSchoolRepository.findParentRequestEnrollSchoolByParentIdAndSchoolOwner(parentId, schoolOwnerId);
-    }
-
-    @Override
-    public List<EnrolledSchoolVo> findParentRequestEnrolledSchoolByParentId(int id) {
-        return enrollSchoolRepository.findParentRequestEnrolledSchoolByParentId(id);
     }
 
     //check for validation methods

@@ -221,15 +221,6 @@ public class AccountServiceImpl implements AccountService {
 
 
     // ========================================================
-    @Override
-    public Page<AccountInfo> findAll(Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public List<AccountInfo> findAllRoles() {
-        return List.of();
-    }
 
 
     @Override

@@ -110,23 +110,19 @@ public class ParentController {
             String role = accountService.findAccountRoleString(principal.getName());
             Page<EnrolledSchoolVo> listParentEnroll;
             List<SchoolInfo> schoolInfoList;
-            List<EnrolledSchoolVo> requestList;
 
             if (Constant.ADMIN_ROLE.equals(role)) {
                 //get Data for Admin Role
                 listParentEnroll = enrollSchoolService.findParentEnrolledSchoolByParentId(id, pageable);
                 schoolInfoList = schoolInfoService.findAllSchoolPublished();
-                requestList = enrollSchoolService.findParentRequestEnrolledSchoolByParentId(id);
             } else if (Constant.SCHOOL_OWNER_ROLE.equals(role)) {
                 //get Data for School Owner Role
                 listParentEnroll = enrollSchoolService.findParentEnrolledSchoolByParentIdAndSchoolOwner(id, principal.getName(), pageable);
                 schoolInfoList = schoolInfoService.findSchoolInfoListByAccountEmail(principal.getName());
-                requestList = enrollSchoolService.findParentRequestEnrollSchoolByParentIdAndSchoolOwner(id, principal.getName());
             } else {
                 Log4jUtils.getLogger().warn("There No Role, the List is empty");
                 listParentEnroll = Page.empty();
                 schoolInfoList = Collections.emptyList();
-                requestList = Collections.emptyList();
             }
 
             //Get List of Enroll School and get Parent Data
@@ -141,7 +137,6 @@ public class ParentController {
             model.addAttribute("enrolledSchools", enrolledSchools);
             model.addAttribute("accountInfo", accountInfo);
             model.addAttribute("currentPage", currentPage);
-            model.addAttribute("requestList", requestList);
             model.addAttribute("numberPage", listParentEnroll.getTotalPages());
             model.addAttribute("role", role);
             if (accountInfo == null) {
