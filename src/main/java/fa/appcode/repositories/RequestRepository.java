@@ -145,8 +145,28 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             """)
     List<EmailContentVo> findAccountForEmail();
 
-    //Find all request of parent
-    Page<Request> findRequestByAccountIdAndDeleteFlgIsFalse(Integer accountId,Pageable pageable);
+    //Find all request of parent by acccountId
+    @Query("""
+        SELECT new fa.appcode.common.vo.RequestDetailVo(
+                        r.id,r.fullName,r.requestEmail,r.requestPhone,
+                        s.schoolAddress,s.schoolName,r.inquiries,m.typeValue)
+            FROM  Request r
+            JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS"
+            JOIN SchoolInfo s ON r.school.id=s.id
+            JOIN AccountInfo a ON a.id=s.account.id 
+            WHERE r.account.id=?1 AND r.deleteFlg = false
+    """)
+    Page<RequestDetailVo> findRequestByAccountId(Integer accountId,Pageable pageable);
+
+//    @Query("""
+//                SELECT new fa.appcode.common.vo.MyRequestVo(r.id,r.fullName,r.requestEmail,r.requestPhone,s.schoolName,s.schoolAddress,r.inquiries,m.typeValue,r.createTime,s.schoolEmail)
+//                From Request r
+//                JOIN SchoolInfo s ON r.school.id=s.id
+//                JOIN AccountInfo a ON a.id=r.account.id
+//                JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS"
+//                WHERE r.account.id=?1 AND r.deleteFlg = false
+//            """)
+//    Page<RequestDetailVo> findRequestByAccountId1(Integer accountId,Pageable pageable);
 
 
 }

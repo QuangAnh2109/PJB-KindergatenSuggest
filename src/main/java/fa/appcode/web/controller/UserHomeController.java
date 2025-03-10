@@ -86,6 +86,8 @@ public class UserHomeController {
         List<MasterDataVo> listTypeSchool = masterDatumService.findAllByTypeNameNoDelete("SCHOOL TYPE");
         List<MasterDataVo> listDataAge = masterDatumService.findAllByTypeNameNoDelete("CHILD RECEIVING AGE");
         List<MasterDataVo> listUtilities = masterDatumService.findAllByTypeNameNoDelete("UTILITIES");
+//        List<MasterDataVo> listMasterData = masterDatumService.
+
 
         model.addAttribute("facilities", listFacilities);
         model.addAttribute("type_school", listTypeSchool);

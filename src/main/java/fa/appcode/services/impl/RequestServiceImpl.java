@@ -77,10 +77,10 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Page<Request> findRequestByAccountIdAndDeleteFlg(Integer accountId, Pageable pageable) {
+    public Page<RequestDetailVo> findRequestByAccountId(Integer accountId, Pageable pageable) {
         logger.info("Fetching requests by accountId and deleteFlg");
         try{
-            Page<Request> result = requestRepository.findRequestByAccountIdAndDeleteFlgIsFalse(accountId, pageable);
+            Page<RequestDetailVo> result = requestRepository.findRequestByAccountId(accountId,pageable);
             logger.info("Found {} requests for account ID: {}", result.getTotalElements(), accountId);
             return result;
         }catch (DataAccessException e){

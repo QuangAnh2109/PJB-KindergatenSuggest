@@ -8,7 +8,7 @@ import java.util.List;
 public interface MasterDatumService {
     String findNameById(int id);
 
-    List<MasterDataVo> findAllByTypeNameNoDelete(String typeName);
+    List<MasterDataVo>   findAllByTypeNameNoDelete(String typeName);
 
     List<MasterDataVo> findAllByTypeNameInNoDelete(List<String> typeName);
 

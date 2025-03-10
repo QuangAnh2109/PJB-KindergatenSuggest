@@ -30,7 +30,7 @@ public interface RequestService {
 
     Page<RequestVo> searchRequestReminderWithSchoolOwner(String keyword, Integer accountID, Pageable pageable);
 
-    Page<Request> findRequestByAccountIdAndDeleteFlg(Integer accountId,Pageable pageable);
+    Page<RequestDetailVo> findRequestByAccountId(Integer accountId,Pageable pageable);
 
     void updateRequest(String update_id, int id);
 

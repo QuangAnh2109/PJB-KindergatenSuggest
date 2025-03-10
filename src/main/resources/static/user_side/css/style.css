@@ -5882,27 +5882,27 @@ i.font60 {
 
 /* ======================================== */
 
-.pagination {
-    margin: 0 auto;
-    font-weight: 500;
-    border-radius: 3px;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-}
+/*.pagination {*/
+/*    margin: 0 auto;*/
+/*    font-weight: 500;*/
+/*    border-radius: 3px;*/
+/*    -moz-border-radius: 3px;*/
+/*    -webkit-border-radius: 3px;*/
+/*}*/
 
-.pagination li a {
-    font-size: 14px;
-    color: #888;
-    border: solid 1px #d2d2d2;
-    border-right: none;
-    background: none;
-    padding: 15px 20px 15px 20px;
-    border-radius: 0;
-    -moz-border-radius: 0;
-    -webkit-border-radius: 0;
+/*.pagination li a {*/
+/*    font-size: 14px;*/
+/*    color: #888;*/
+/*    border: solid 1px #d2d2d2;*/
+/*    border-right: none;*/
+/*    background: none;*/
+/*    padding: 15px 20px 15px 20px;*/
+/*    border-radius: 0;*/
+/*    -moz-border-radius: 0;*/
+/*    -webkit-border-radius: 0;*/
 
-    background: #ffffff;
-}
+/*    background: #ffffff;*/
+/*}*/
 
 .dark-scheme .pagination li:not(.active) a{
     border-color: rgba(255, 255, 255, .1);
@@ -5910,17 +5910,17 @@ i.font60 {
     color: #ffffff;
 }
 
-.pagination li:last-child a {
-    border-right: solid 1px #d2d2d2;
-}
+/*.pagination li:last-child a {*/
+/*    border-right: solid 1px #d2d2d2;*/
+/*}*/
 
 .dark-scheme .pagination li:last-child a {
     border-right-color: rgba(255, 255, 255, .1);
 }
 
-.pagination>.active>a {
-    color: #ffffff;
-}
+/*.pagination>.active>a {*/
+/*    color: #ffffff;*/
+/*}*/
 
 /* pricing table */
 
