@@ -12,18 +12,20 @@ import java.util.List;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.entities.AccountInfo;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 public interface AccountService {
-    AccountInfo getAccountById(int id);
-
-    boolean existsByEmail(String email);
 
     String encodePassword(String password);
 
     void save(AccountInfo accountInfo);
 
-    AccountVo findAccountByEmail(String email);
+    String processRegister(AccountVo accountVo, BindingResult bindingResult, Model model);
+
+    String verifyAccount(String token, Model model);
 
     AccountInfo findByEmail(String email);
 
@@ -98,7 +100,6 @@ public interface AccountService {
 
     Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id, Pageable pageable);
 
-    AccountVo findAccountByPhone(String phone);
 
     Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email, String search, Pageable pageable);
 
@@ -109,4 +110,17 @@ public interface AccountService {
     String getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(int id);
 
     void updateAccountInfo(AccountInfo existing, AccountInfo formData);
+
+    void saveAccountInfo(AccountInfo accountInfo);
+
+    String changePasswordProcess(String oldPassword, String newPassword, String confirmPassword, Model model);
+
+    String forgotPasswordProcess(String email, Model model);
+
+    String resetPasswordProcess(String token, String newPassword, String confirmPassword, Model model);
+    AccountInfo validateResetToken(String token, Model model);
+    String resetPassword(String token, String newPassword, String confirmPassword, Model model);
+    public String updateAccountDetails(AccountInfo accountInfo, Model model);
+    AccountInfo getCurrentAccountInfo();
+
 }

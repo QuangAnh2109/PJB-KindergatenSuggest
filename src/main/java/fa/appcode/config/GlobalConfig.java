@@ -85,4 +85,6 @@ public class GlobalConfig {
     private String invalidPhoneNumber;
     @Value("${ME_030}")
     private String requiredMessage;
+    @Value("${ME_035}")
+    private String invalidDate;
 }
