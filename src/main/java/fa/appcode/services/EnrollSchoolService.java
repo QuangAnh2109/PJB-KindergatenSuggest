@@ -13,20 +13,69 @@ import java.util.List;
 
 public interface EnrollSchoolService {
     EnrollSchool findEnrollSchoolById(Integer id);
+
     //Find All School that parent Enrolled with ParentID
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable);
-    //Find All Enrolled School Of School Owner That Parent Enrolled with Parent ID and SchoolOwner email
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId, Pageable pageable);
-    //Execute Update Approve Reject Unenroll Parent to school
-    void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status);
-    //Call to Update Approve, Reject, Unenroll
-    String execute(String action, EnrollSchool enrollSchool, LocalDate date, String role, Principal principal) throws Exception;
-    //find All Parent Request Enroll for Specific School Owner
-    List<EnrolledSchoolVo> findParentRequestEnrollSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId);
-    //find All Parent Request Enroll for Admin
-    List<EnrolledSchoolVo> findParentRequestEnrolledSchoolByParentId(int id);
+    /**
+     * This method to Find All Every Enrolled school with ParentID nad paging them
+     *
+     * @param parentId
+     * @param pageable
+     * @return Page<EnrolledSchoolVo>
+     */
+    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int parentId, Pageable pageable);
+
+    /**
+     * This method to Find All Enrolled School Of School Owner That Parent Enrolled with Parent ID and SchoolOwner email
+     *
+     * @param parentId
+     * @param schoolOwnerEmail
+     * @param pageable
+     * @return Page<EnrolledSchoolVo>
+     */
+    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerEmail, Pageable pageable);
+
+    //Execute Unenroll Parent to school
+    /**
+     * This method to evaluate to unenroll parent to school
+     *
+     * @param enrollSchool
+     * @param approvalEnrollDate
+     * @param role
+     * @param status
+     * @param principal
+     * @param recordNo
+     */
+    void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status, Principal principal, Integer recordNo) throws Exception;
+
     //Enroll Parent School
-    void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role);
+    /**
+     * This method to enroll Parent to school
+     *
+     * @param account
+     * @param school
+     * @param enrollDate
+     * @param principal
+     */
+    void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role, Principal principal) throws Exception;
+
     //check if parent is already enrolled or not
-    boolean isParentEnrollingToSchool(Integer accountId, Integer schoolId);
+    /**
+     * This method to check if parent is already enrolled to school or not
+     *
+     * @param parentId
+     * @param schoolId
+     * @return true/false
+     */
+    boolean isEnrolled(Integer parentId, Integer schoolId);
+
+    //validate school Owner Access
+    /**
+     * This method to check if school owner have access to school
+     *
+     * @param schoolId
+     * @param principal
+     * @return true/false
+     */
+    boolean validateAccess(Integer schoolId, Principal principal);
+
 }

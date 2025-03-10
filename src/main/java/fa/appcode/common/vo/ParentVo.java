@@ -42,6 +42,11 @@ public class ParentVo {
     }
 
     public String getParentAddress() {
-        return this.parentAddress.replace("   "," - ");
+        if(parentAddress!=null) {
+            return this.parentAddress.replace("   ", " - ");
+        }
+        else {
+            return null;
+        }
     }
 }

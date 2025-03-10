@@ -32,13 +32,8 @@ public class RequestServiceImpl implements RequestService {
     private static final Logger logger = LoggerFactory.getLogger(RequestServiceImpl.class);
 
     @Override
-    public Page<RequestVo> findAll(Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.listAllRequest(pageable);
-    }
-
-    @Override
-    public Page<RequestVo> listAllRequestWithSchoolOwner(Integer accountID, Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.listAllRequestWithSchoolOwner(accountID, pageable);
+    public Page<RequestVo> listAllRequest(Integer accountID,Integer requestMasterID,Pageable pageable) {
+        return (Page<RequestVo>) requestRepository.listAllRequest(accountID,requestMasterID,pageable);
     }
 
     @Override
@@ -47,34 +42,10 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Page<RequestVo> findOpenedRequest(Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.findOpenedRequest(pageable);
+    public Page<RequestVo> searchRequest(String keyword, Integer accountID, Integer requestMasterID, Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.searchRequest(keyword,accountID,requestMasterID,pageable);
     }
 
-    @Override
-    public Page<RequestVo> findOpenedRequestWithSchoolOwner(Integer accountID, Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.findOpenedRequestWithSchoolOwner(accountID, pageable);
-    }
-
-    @Override
-    public Page<RequestVo> searchRequest(String keyword, Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.searchRequest(keyword, pageable);
-    }
-
-    @Override
-    public Page<RequestVo> searchRequestWithSchoolOwner(String keyword, Integer accountID, Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.searchRequestWithSchoolOwner(keyword, accountID, pageable);
-    }
-
-    @Override
-    public Page<RequestVo> searchRequestReminder(String keyword, Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.searchRequestReminder(keyword, pageable);
-    }
-
-    @Override
-    public Page<RequestVo> searchRequestReminderWithSchoolOwner(String keyword, Integer accountID, Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.searchRequestReminderWithSchoolOwner(keyword, accountID, pageable);
-    }
 
     @Override
     public Page<RequestDetailVo> findRequestByAccountId(Integer accountId, Pageable pageable) {

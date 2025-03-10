@@ -34,7 +34,7 @@ $(document).ready(function () {
             data: { search: search, currentPage: currentPage },
             success: function (responseData) {
                 console.log("LOADED!");
-                document.getElementById("main-content").outerHTML = responseData;
+                $("#main-content").html($(responseData).find("#main-content").html());
             },
             error: function () {
                 alert("Failed to Search user: " + search);
@@ -46,5 +46,5 @@ $(document).ready(function () {
         let newUrl = window.location.pathname + "?search=" + encodeURIComponent(search) + "&currentPage=" + currentPage;
         window.history.pushState({ path: newUrl }, "", newUrl);
     }
-
+    window.onload = function() { console.log("Full page loaded!"); };
 });

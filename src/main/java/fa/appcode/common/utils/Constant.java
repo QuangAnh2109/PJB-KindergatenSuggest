@@ -9,7 +9,7 @@ public class Constant {
     public static final String INIT_PAGE = "0";
     public static final String PAGE_SIZE = "10";
     public static final String KEY_WORD_DEFAULT = "";
-    public static final String VIEW_ACCOUNT_PAGE = "admin_side/EditUser";
+    public static final String VIEW_ACCOUNT_PAGE = "admin_side/edit-account";
     public static final String FORGOT_PASSWORD_PAGE = "user_side/forgot-password";
     public static final String RESET_PASSWORD_PAGE = "user_side/reset-password";
     public static final String TOKEN_INVALID_PAGE = "user_side/token-invalid";
@@ -29,6 +29,9 @@ public class Constant {
     public static final String PARENT_LIST_URL = "/manager/parent-list";
 
     //ADMIN SIDE
+    public static final String SCHOOL_FEEDBACK_RATING_MANAGER_PAGE = "admin_side/school-feedback-rating";
+    public static final String SCHOOL_DETAIL_MANAGER_PAGE = "admin_side/school-form";
+    public static final String SCHOOL_LIST_MANAGER_PAGE = "admin_side/school-list-manager";
 
     //REGEX
     public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{12,}$";
@@ -58,17 +61,12 @@ public class Constant {
     public static final String ENROLL_PARENT_SCHOOL ="enroll";
     public static final Integer SCHOOL_PUBLISH_STATUS = 5;
 
-    public static final String ADMIN = "USER_ADMIN";
-    public static final String SCHOOL_OWNER = "USER_SCHOOL_OWNER";
-    public static final String PARENT = "USER_PARENT";
-    public static final String GUEST = "USER_GUEST";
 
-    public static final int SCHOOL_STATUS_SAVED_ID = 1;
-    public static final int SCHOOL_STATUS_SUBMITTED_ID = 2;
-    public static final int SCHOOL_STATUS_APPROVED_ID = 3;
-    public static final int SCHOOL_STATUS_REJECTED_ID = 4;
-    public static final int SCHOOL_STATUS_PUBLISHED_ID = 5;
-    public static final int SCHOOL_STATUS_UNPUBLISHED_ID = 6;
-    public static final int SCHOOL_STATUS_DELETED_ID = 7;
+
+
+    public static final String SUCCESS = "success";
+    public static final String DANGER = "danger";
+    public static final int ENROLL_STATUS_ENROLL=3;
+    public static final int ENROLL_STATUS_UNENROLL=4;
 
 }

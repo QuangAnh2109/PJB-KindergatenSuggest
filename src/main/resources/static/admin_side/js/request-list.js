@@ -1,79 +1,100 @@
-function redirectToDetail(id,currentPage) {
-    window.location.href = "/manager/request-list-detail?id="+id+"&currentPage="+currentPage;
+function redirectToDetail(id, currentPage) {
+    window.location.href = "/manager/request-list-detail?id=" + id + "&currentPage=" + currentPage;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const searchForm = document.querySelector('.app-search');
-    const tbody = document.querySelector('tbody');
-    const pagination = document.querySelector('.pagination');
-    let debounceTimer;
+$(document).ready(function () {
+    let currentPage = new URLSearchParams(window.location.search).get('currentPage');
+    currentPage = currentPage ? parseInt(currentPage) : 0;
 
-    searchForm.addEventListener('submit', function(e) {
-        e.preventDefault(); // Chặn load lại trang
-        clearTimeout(debounceTimer);
+    fetchData(currentPage);  // Load trang đầu tiên mặc định
 
-        debounceTimer = setTimeout(() => {
-            fetchData(0);
-        }, 10); // Debounce 300ms
+    // Gọi API và lấy dữ liệu
+    function fetchData(page = 0) {
+        currentPage = page;
+        const keyword = $("input[name='keyword']").val();
+        $.ajax({
+            url: `/manager/searchRequestList?currentPage=${page}&keyword=${encodeURIComponent(keyword)}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                renderRequestList(data.content);
+                renderPagination(data);
+            },
+            error: function (xhr) {
+                console.error('Lỗi khi tải dữ liệu:', xhr.responseText);
+            }
+        });
+    }
+
+    // Submit form tìm kiếm
+    $('.app-search').on('submit', function (e) {
+        e.preventDefault();
+        fetchData(0); // Reset về trang đầu tiên khi tìm kiếm
     });
 
-    async function fetchData(page) {
-        const keyword = document.querySelector('input[name="keyword"]').value;
-        try {
-            const response = await fetch(`/manager/searchRequestList?keyword=${keyword}&page=${page}&size=5`, {
-                method: 'GET',
-                headers: { 'Accept': 'application/json' }
-            });
-            if (!response.ok) throw new Error('Failed to fetch data');
-
-            const data = await response.json();
-            renderRequestList(data.content);
-            renderPagination(data);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
+    // Render danh sách request
     function renderRequestList(requestList) {
-        const fragment = document.createDocumentFragment();
-        tbody.innerHTML = ''; // Xóa nội dung cũ
+        const tbody = $('tbody');
+        tbody.empty(); // Xóa dữ liệu cũ
+
+        if (requestList.length === 0) {
+            tbody.append('<tr><td colspan="6">No requests found.</td></tr>');
+            return;
+        }
 
         requestList.forEach(request => {
-            const row = document.createElement('tr');
-            row.setAttribute('onclick', `redirectToDetail(${request.id})`);
-            row.innerHTML = `
-                <th scope="row">${request.id}</th>
-                <th>${request.fullName}</th>
-                <th>${request.requestEmail}</th>
-                <th>${request.requestPhone}</th>
-                <td><button class="btn btn-closed">${request.requestMasterName}</button></td>
+            const row = `
+                <tr onclick="redirectToDetail(${request.id},${currentPage})">
+                    <th scope="row">${request.id}</th>
+                    <th>${request.fullName || 'N/A'}</th>
+                    <th>${request.requestEmail || 'N/A'}</th>
+                    <th>${request.requestPhone || 'N/A'}</th>
+                    <th><button class="btn btn-closed">${request.requestMasterName || 'N/A'}</button></th>
+                </tr>
             `;
-            fragment.appendChild(row);
+            tbody.append(row);
         });
 
-        tbody.appendChild(fragment); // Chỉ cập nhật DOM 1 lần
     }
 
+    // Render phân trang
     function renderPagination(pageData) {
-        if (!pageData.totalPages) return;
-
-        const fragment = document.createDocumentFragment();
-        pagination.innerHTML = '';
-
-        for (let i = 0; i < pageData.totalPages; i++) {
-            const li = document.createElement('li');
-            li.className = `page-item ${i === pageData.number ? 'active' : ''}`;
-            li.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i + 1}</a>`;
-            fragment.appendChild(li);
-        }
-
-        pagination.appendChild(fragment);
-
-        pagination.querySelectorAll('.page-link').forEach(link => {
-            link.addEventListener('click', (e) => {
+        const pagination = $('.pagination');
+        pagination.empty();
+        const currentPage = pageData.number;
+        if (pageData.totalPages > 0) {
+            if (currentPage > 0) {
+                const prevDisabled = currentPage === 0 ? 'disabled' : '';
+                pagination.append(`
+            <li class="page-item ${prevDisabled}">
+                <a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>
+            </li>
+        `);
+            }
+            for (let i = 0; i < pageData.totalPages; i++) {
+                const activeClass = i === pageData.number ? 'active' : '';
+                const pageItem = `
+                    <li class="page-item ${activeClass}">
+                        <a class="page-link" href="#" data-page="${i}">${i + 1}</a>
+                    </li>
+                `;
+                pagination.append(pageItem);
+            }
+            if (currentPage != pageData.totalPages - 1) {
+                const nextDisabled = currentPage === pageData.totalPages - 1 ? 'disabled' : '';
+                pagination.append(`
+            <li class="page-item ${nextDisabled}">
+                <a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>
+            </li>
+        `);
+            }
+            // Gọi fetchData khi click phân trang
+            $('.page-link').on('click', function (e) {
                 e.preventDefault();
-                fetchData(e.target.dataset.page);
+                const page = $(this).data('page');
+                fetchData(page);
             });
-        });
+        }
     }
 });
+

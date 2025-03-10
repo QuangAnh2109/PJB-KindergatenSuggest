@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,101 +30,34 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             """)
     RequestDetailVo findRequestsById(Integer id);
 
-    @Query("""
-              SELECT new fa.appcode.common.vo.RequestVo(
-                          r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
-              FROM  Request r 
-              JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS" 
-              WHERE r.requestMasterId !=2
-            """)
-    Page<RequestVo> findOpenedRequest(Pageable pageable);
-
-    @Query("""
-            SELECT new fa.appcode.common.vo.RequestVo(
-                r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue) 
-            FROM Request r 
-            JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS"
-            JOIN SchoolInfo s On r.school.id=s.id 
-            JOIN AccountInfo a On a.id=s.account.id 
-            WHERE r.requestMasterId !=2 And a.id = ?1 
-            """)
-    Page<RequestVo> findOpenedRequestWithSchoolOwner(Integer accountID,Pageable pageable);
-
     @Query(""" 
-           SELECT new fa.appcode.common.vo.RequestVo(
-                      r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
-           FROM Request r 
-           JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS" 
-           """)
-    Page<RequestVo> listAllRequest(Pageable pageable);
-
-    @Query("""
-            SELECT new fa.appcode.common.vo.RequestVo(
-                        r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
-            FROM Request r 
-            JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS"
-            JOIN SchoolInfo s ON r.school.id=s.id 
-            JOIN AccountInfo a ON a.id=s.account.id 
-            WHERE a.id = ?1 
-            """)
-    Page<RequestVo>  listAllRequestWithSchoolOwner(Integer accountID,Pageable pageable);
-
-    @Query("""
-          SELECT new fa.appcode.common.vo.RequestVo(
-                    r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
-          FROM  Request r 
-          JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS" 
-          WHERE r.fullName LIKE %?1% 
-             OR r.requestEmail LIKE %?1% 
-             OR r.requestPhone LIKE %?1% 
-             OR m.typeValue LIKE %?1% 
-          """)
-    Page<RequestVo> searchRequest(String keyword,Pageable pageable);
-
-    @Query("""
-            SELECT new fa.appcode.common.vo.RequestVo(
-                        r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
-            FROM  Request r 
-            JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS"
-            JOIN SchoolInfo s ON r.school.id=s.id 
-            JOIN AccountInfo a ON a.id=s.account.id 
-            where (r.fullName LIKE %?1% 
-                OR r.requestEmail LIKE %?1% 
-                OR r.requestPhone LIKE %?1% 
-                OR m.typeValue LIKE %?1%) 
-                AND a.id = ?2 
-            """)
-    Page<RequestVo> searchRequestWithSchoolOwner(String keyword,Integer accountID,Pageable pageable);
-
-    @Query("""
             SELECT new fa.appcode.common.vo.RequestVo(
                        r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
-            FROM  Request r 
+            FROM Request r 
             JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS" 
             JOIN SchoolInfo s ON r.school.id=s.id 
-            JOIN AccountInfo a ON a.id=s.account.id 
-            where (r.fullName LIKE %?1% 
-                OR r.requestEmail LIKE %?1% 
-                Or r.requestPhone LIKE %?1% 
-                OR m.typeValue LIKE %?1%) 
-                AND a.id = ?2 
-                AND r.requestMasterId!=2 
-           """)
-    Page<RequestVo> searchRequestReminderWithSchoolOwner(String keyword,Integer accountID,Pageable pageable);
-
-    @Query(""" 
-            SELECT new fa.appcode.common.vo.RequestVo(
-                        r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
-            FROM  Request r 
-            JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS"
-            WHERE (r.fullName LIKE %?1% 
-                OR r.requestEmail LIKE %?1% 
-                OR r.requestPhone LIKE %?1% 
-                OR m.typeValue LIKE %?1%) 
-                AND r.requestMasterId !=2 
+            JOIN AccountInfo a ON a.id=s.account.id
+            WHERE (:accountID IS NULL OR a.id = :accountID)
+            AND (:requestMasterID IS NULL OR r.requestMasterId != 2)
             """)
-    Page<RequestVo> searchRequestReminder(String keyword,Pageable pageable);
+    Page<RequestVo> listAllRequest(@Param("accountID") Integer accountID,@Param("requestMasterID") Integer requestMasterID, Pageable pageable);
 
+    @Query("""
+                SELECT new fa.appcode.common.vo.RequestVo(
+                           r.id, r.fullName, r.requestEmail, r.requestPhone, m.typeValue)
+                FROM Request r
+                JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName = 'REQUEST STATUS'
+                JOIN SchoolInfo s ON r.school.id = s.id
+                JOIN AccountInfo a ON a.id = s.account.id
+                WHERE (:keyword IS NULL OR :keyword = '' OR 
+                       r.fullName LIKE CONCAT('%', :keyword, '%') OR
+                       r.requestEmail LIKE CONCAT('%', :keyword, '%') OR
+                       r.requestPhone LIKE CONCAT('%', :keyword, '%') OR
+                       m.typeValue LIKE CONCAT('%', :keyword, '%'))
+                      AND (:accountID IS NULL OR a.id = :accountID)
+                      AND (:requestMasterID IS NULL OR r.requestMasterId != 2)
+                      """)
+    Page<RequestVo> searchRequest(@Param("keyword")  String keyword, @Param("accountID")  Integer accountID, @Param("requestMasterID")  Integer requestMasterID, Pageable pageable);
 
     @Modifying
     @Transactional
