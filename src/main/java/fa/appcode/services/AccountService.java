@@ -58,7 +58,7 @@ public interface AccountService {
      *
      * @param accountVo
      */
-    void updateAccount(AccountVo accountVo);
+    int updateAccount(AccountVo accountVo);
 
     /**
      * Deletes logic a user account based on the provided ID. (set deleteFlg=1)

@@ -28,7 +28,7 @@ public class AccountVo {
     private String fullAddress;
     private String role;
     private String status;
-    private String recordNo;
+    private Integer recordNo;
     private String datetimeChangePass;
     @NotNull
     @NotEmpty(message = "This field is required.")

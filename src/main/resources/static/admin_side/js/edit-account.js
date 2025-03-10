@@ -58,8 +58,8 @@ $("body").on("submit", "#userForm", function (event) {
             dob: $("#dob").val().trim(),
             phone: $("#phone").val().trim(),
             role: $('#role').val().trim(),
-            status: $("#status").val().trim()
-
+            status: $("#status").val().trim(),
+            recordNo: $("#recordNo").val()
 
         };
         $.ajax({
@@ -69,16 +69,22 @@ $("body").on("submit", "#userForm", function (event) {
             data: JSON.stringify(user),
             success: function (response) {
                 alert(response.message);
+                $("#recordNo").val(response.recordNo);
             },
             error: function (xhr) {
-                var errors = xhr.responseJSON;
-                if (errors) {
-                    $("#errorFullName").html(errors.fullName);
-                    $("#errorEmail").html(errors.email);
-                    $("#errorDob").html(errors.dob);
-                    $("#errorPhone").html(errors.phone);
-                    $("#errorRole").html(errors.role);
-                    $("#errorStatus").html(errors.status);
+                if (xhr.status === 409) { // Conflict - data has been modified
+                    alert("The data has been modified by someone else. Please reload the page!");
+                    location.reload();
+                } else {
+                    var errors = xhr.responseJSON;
+                    if (errors) {
+                        $("#errorFullName").html(errors.fullName);
+                        $("#errorEmail").html(errors.email);
+                        $("#errorDob").html(errors.dob);
+                        $("#errorPhone").html(errors.phone);
+                        $("#errorRole").html(errors.role);
+                        $("#errorStatus").html(errors.status);
+                    }
                 }
             }
         });

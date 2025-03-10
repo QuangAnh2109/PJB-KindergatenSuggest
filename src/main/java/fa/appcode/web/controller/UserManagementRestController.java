@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
@@ -43,12 +44,8 @@ public class UserManagementRestController {
      * @return
      */
     @PostMapping("/save-user")
-    public ResponseEntity<?> saveUser(@RequestBody @Valid AccountVo accountVo, BindingResult result, Principal principal) throws  Exception {
+    public ResponseEntity<?> saveUser(@RequestBody @Valid AccountVo accountVo, BindingResult result, Principal principal) throws Exception {
         Map<String, String> errors = new HashMap<>();
-
-        Log4jUtils.getLogger().info("AccountID :" + accountVo.getId());
-
-        boolean isAdding = accountVo.getId() == null;
 
         if (result.hasErrors()) {
             result.getFieldErrors().forEach(error -> {
@@ -62,12 +59,23 @@ public class UserManagementRestController {
             }
         }
 
-        if (isAdding) {
-            accountService.addUserFromAdmin(accountVo, principal);
-        } else {
-            accountService.updateAccount(accountVo);
-        }
+        Log4jUtils.getLogger().info("AccountID :" + accountVo.getId());
 
-        return ResponseEntity.ok(Map.of("message", isAdding ? "User added successfully." : "User updated successfully."));
+        boolean isAdding = accountVo.getId() == null;
+
+        try {
+            if (isAdding) {
+                accountService.addUserFromAdmin(accountVo, principal);
+                return ResponseEntity.ok(Map.of("message", "User added successfully."));
+            } else {
+                int newRecordNo = accountService.updateAccount(accountVo); // Trả về recordNo mới
+                return ResponseEntity.ok(Map.of(
+                        "message", "User updated successfully.",
+                        "recordNo", newRecordNo // Trả về recordNo mới
+                ));
+            }
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", e.getMessage()));
+        }
     }
 }
