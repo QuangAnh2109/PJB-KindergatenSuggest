@@ -1,19 +1,22 @@
 package fa.appcode.common.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.Instant;
 
-@AllArgsConstructor
 @Getter
+@ToString
 public class AccountFeedback {
-    private String username;
-    private Instant feedbackTime;
-    private float learningProgram;
-    private float facilitiesAndUtilities;
-    private float extracurricularActivities;
-    private float teachersAndStaff;
-    private float hygieneAndNutrition;
-    private String feedbackMessage;
+    private final String username;
+    private final Instant feedbackTime;
+    private final int avgRating;
+    private final String feedbackMessage;
+
+    public AccountFeedback(String username, Instant feedbackTime, Float avgRating, String feedbackMessage) {
+        this.username = username;
+        this.feedbackTime = feedbackTime;
+        this.avgRating = Math.round(avgRating * 2) * 5;
+        this.feedbackMessage = feedbackMessage;
+    }
 }

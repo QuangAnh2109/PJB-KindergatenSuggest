@@ -48,4 +48,6 @@ public interface SchoolInfoService {
     int updateSchoolStatusByRequestAndAccount(int id, String email, int recordNo, int schoolStatus, String updateId, List<Integer> list);
 
     SchoolFormManager getSchoolFormByIdAndNoDelete(int id);
+
+    int updateSchoolInfoBySchoolFormManager(SchoolFormManager schoolFormManager);
 }
