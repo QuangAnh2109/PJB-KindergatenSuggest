@@ -1,60 +1,73 @@
 package fa.appcode.web.controller;
 
+import fa.appcode.common.logging.Log4jUtils;
+import fa.appcode.common.vo.AccountVo;
 import fa.appcode.services.AccountService;
-import jakarta.persistence.EntityNotFoundException;
+
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @RequestMapping("/admin/api")
 public class UserManagementRestController {
-
     @Autowired
     private AccountService accountService;
 
-    // Delete logic user account (set deleteFlg = true)
+    /**
+     * Delete account
+     *
+     * @param userId
+     * @return ResponseEntity<String>
+     */
     @GetMapping(value = "/user/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Integer userId) {
-        try {
-            accountService.deleteAccount(userId);
-            return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Failed to delete user: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        accountService.deleteAccount(userId);
+        return ResponseEntity.ok("User deleted successfully");
     }
 
+    /**
+     * Edit or Add user account
+     *
+     * @param accountVo
+     * @param principal
+     * @param result
+     * @return
+     */
+    @PostMapping("/save-user")
+    public ResponseEntity<?> saveUser(@RequestBody @Valid AccountVo accountVo, BindingResult result, Principal principal) throws  Exception {
+        Map<String, String> errors = new HashMap<>();
 
-//    @PostMapping(value = "/edit-user", consumes = "application/json")
-//    public ResponseEntity<Map<String, String>> updateUser(@RequestBody Map<String, String> userData) {
-//
-//        Integer id = Integer.parseInt(userData.get("id"));  // Lấy ID từ body
-//        System.out.println("Received request to update user with ID: " + id);
-//
-//        Map<String, String> response = new HashMap<>();
-//        try {
-//            String fullName = userData.get("fullName");
-//            String phone = userData.get("phone");
-//            String dob = userData.get("dob");
-//            Integer roleId = Integer.parseInt(userData.get("roleId"));
-//
-//            accountService.updateUser(id, fullName, phone, dob, roleId);
-//            response.put("message", "Change has been successfully updated.");
-//            return new ResponseEntity<>(response, HttpStatus.OK);
-//        } catch (EntityNotFoundException e) {
-//            response.put("error", "User not found.");
-//            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-//        } catch (NumberFormatException e) {
-//            response.put("error", "Invalid role ID.");
-//            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-//        } catch (Exception e) {
-//            response.put("error", "An error occurred: " + e.getMessage());
-//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+        Log4jUtils.getLogger().info("AccountID :" + accountVo.getId());
+
+        boolean isAdding = accountVo.getId() == null;
+
+        if (result.hasErrors()) {
+            result.getFieldErrors().forEach(error -> {
+                if (!error.getField().equals("password") && !error.getField().equals("confirmPassword")) {
+                    errors.put(error.getField(), error.getDefaultMessage());
+                }
+            });
+
+            if (!errors.isEmpty()) {
+                return ResponseEntity.badRequest().body(errors);
+            }
+        }
+
+        if (isAdding) {
+            accountService.addUserFromAdmin(accountVo, principal);
+        } else {
+            accountService.updateAccount(accountVo);
+        }
+
+        return ResponseEntity.ok(Map.of("message", isAdding ? "User added successfully." : "User updated successfully."));
+    }
 }

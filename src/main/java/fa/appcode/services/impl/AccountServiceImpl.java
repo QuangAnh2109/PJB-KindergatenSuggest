@@ -5,6 +5,8 @@ import fa.appcode.common.logging.Log4jUtils;
 import fa.appcode.common.utils.*;
 
 import fa.appcode.config.GlobalConfig;
+import fa.appcode.common.utils.Placeholder;
+import fa.appcode.common.utils.SendMailInfo;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
@@ -12,9 +14,13 @@ import fa.appcode.common.vo.ParentVo;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.*;
 import jakarta.transaction.Transactional;
+import fa.appcode.services.AccountService;
+import fa.appcode.services.EmailService;
+import fa.appcode.services.MasterDatumService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Logger;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +37,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +54,9 @@ public class AccountServiceImpl implements AccountService {
     private final GlobalConfig globalConfig;
     private final CityService cityService;
     private final EmailService emailService;
+
+
+
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private static final String ERROR_ATTRIBUTE = "error";
 
@@ -75,6 +86,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
+    @Transactional
     @Override
     public boolean updatePassword(String email, String newPassword) {
         AccountInfo account = accountRepository.findByEmail(email);
@@ -111,7 +123,7 @@ public class AccountServiceImpl implements AccountService {
 
     // Get list of user account
     @Override
-    public Page<AccountVo> getAllAccounts(String search, Pageable pageable) {
+    public Page<AccountVo> getAllAccounts(String search, Pageable pageable) throws Exception {
         return accountRepository.findAllWithFullAddress(search, pageable);
     }
 
@@ -153,27 +165,14 @@ public class AccountServiceImpl implements AccountService {
         return accountVo;
     }
 
-    // Change status from active to inactive (and vice versa)
+
+    // Update user account
     @Override
-    public void toggleUserStatus(Integer id) {
-        AccountInfo user = accountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
-        if (user.getStatusId() == 1) {
-            user.setStatusId(2); // Deactivate
-        } else {
-            user.setStatusId(1); // Activate
-        }
-
-        accountRepository.save(user);
-    }
-
-    // Update user account by information get from form
-    @Override
-    public void updateUser(AccountVo accountVo) {
+    public void updateAccount(AccountVo accountVo) {
         AccountInfo user = accountRepository.findById(accountVo.getId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        // Cập nhật các trường được phép chỉnh sửa
+
+        // Update role or status of account
         user.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
         user.setStatusId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
 
@@ -195,7 +194,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void addUserFromAdmin(AccountVo accountVo) {
+    public void addUserFromAdmin(AccountVo accountVo, Principal principal) {
+        // Generate password by system
+        String randomPassword = UUID.randomUUID().toString();
+        accountVo.setPassword(randomPassword);
+        accountVo.setConfirmPassword(randomPassword);
+
         AccountInfo accountInfo = new AccountInfo();
         accountInfo.setFullName(accountVo.getFullName());
         accountInfo.setEmail(accountVo.getEmail());
@@ -211,19 +215,21 @@ public class AccountServiceImpl implements AccountService {
         accountInfo.setCreateTime(Instant.now());
         accountInfo.setUpdateTime(Instant.now());
         accountRepository.save(accountInfo);
+
+        // Send mail
+        emailService.sendEmailToMany(SendMailInfo.builder()
+                .toMail(List.of(accountVo.getEmail()))
+                .ccMail(List.of())
+                .mailId(2)
+                .detail(Map.of(Placeholder.USER_NAME, accountVo.getEmail(),
+                        Placeholder.EMAIL, accountVo.getEmail(),
+                        Placeholder.PASSWORD, randomPassword,
+                        Placeholder.OWNER_ACCOUNT, this.getAccountInfo(principal).getFullName()))
+                .build());
     }
 
 
     // ========================================================
-    @Override
-    public Page<AccountInfo> findAll(Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public List<AccountInfo> findAllRoles() {
-        return List.of();
-    }
 
 
     @Override
@@ -238,8 +244,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ParentVo findParentById(int id) {
-        return accountRepository.findParentById(id);
+    public ParentVo findParentById(int id) throws IllegalAccessException{
+        ParentVo parent= accountRepository.findParentById(id);
+        if (parent == null) {
+            throw new IllegalAccessException("This Parent is current Inactive, Deleted or not Exist");
+        }
+        return parent;
     }
 
     @Override

@@ -77,6 +77,8 @@ public class GlobalConfig {
     private String notVerified;
     @Value("${page.size}")
     private Integer sizeOfPage;
+    @Value("${page.school_rating_feedback.size}")
+    private Integer sizeOfPageSchoolRatingFeedback;
     @Value("${server.link}")
     private String serverLink;
     @Value("${ME_028}")
@@ -85,6 +87,10 @@ public class GlobalConfig {
     private String invalidPhoneNumber;
     @Value("${ME_030}")
     private String requiredMessage;
+    @Value("${ME_031}")
+    private String parentEnrolled;
+    @Value("${ME_032}")
+    private String schoolOwnerAccess;
     @Value("${ME_035}")
     private String invalidDate;
 }

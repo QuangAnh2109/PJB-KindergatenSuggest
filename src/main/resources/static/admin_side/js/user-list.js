@@ -21,8 +21,16 @@ $(document).ready(function () {
     // Khi người dùng xác nhận xóa
     $("#confirmDeleteUser").click(function () {
         if (selectedUserId) {
+            // Lấy CSRF token từ meta tag
+          //  const csrfToken = $("meta[name='_csrf']").attr("content");
+         //   const csrfHeader = $("meta[name='_csrf_header']").attr("content");
+
             $.get({
                 url: "/admin/api/user/" + selectedUserId,
+                // type: "DELETE",
+                // beforeSend: function (xhr) {
+                //     xhr.setRequestHeader(csrfHeader, csrfToken); // Gửi CSRF Token
+                // },
                 success: function (responseData) {
                     $("#deleteUserModal").modal("hide"); // Đóng modal xác nhận
                     $("#deleteResultMessage").text(responseData);

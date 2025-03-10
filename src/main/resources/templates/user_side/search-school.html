@@ -152,13 +152,23 @@
         }
 
         .btn-yes {
+            width: 80px;
             background-color: #d9534f;
             color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
         }
 
         .btn-cancel {
+            width: 80px;
             background-color: #5bc0de;
             color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
         }
 
         .school-card {
@@ -333,7 +343,7 @@
                                         <i class="arrow-down"></i>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" id="featuresDropdown">
-                                        <a href="/feature1"><span><i class="fa-solid fa-school"></i></span> My
+                                        <a href="/parent/my-school"><span><i class="fa-solid fa-school"></i></span> My
                                             School</a>
                                         <div class="dropdown-divider"></div>
                                         <a href="/parent/my-request"><span><i class="fas fa-clipboard-list"></i></span>
@@ -381,7 +391,7 @@
                     <div class="col-md-8">
                         <div class="input-group" style="display: flex;align-items: center">
                             <input type="text" class="form-control" th:value="${keyword}"
-                                   placeholder="Enter a school name">
+                                   placeholder="Enter a school name" style="height: 38px">
                             <select id="citySelect" name="city" class="form-select" onchange="loadDistrict(this.value)"
                                     style="width: 5%;">
                                 <option selected disabled>----Select City/Province-----</option>
@@ -478,8 +488,8 @@
                         <div class="row">
                             <div class="card school-card">
                                 <div class="row g-0">
-                                    <div class="col-md-4">
-                                        <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                                    <div class="col-md-4 ">
+                                        <img src="/user_side/images/school-image/school-1.jpg"
                                              class="img-fluid school-image w-100" alt="School view"
                                              style="padding: 10px">
                                         <div class="rating-stars">
@@ -494,16 +504,15 @@
 
                                     <div class="col-md-8">
                                         <div class="card-body p-4">
-                                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <div class="d-flex mb-3" style="display: flex;justify-content: space-between">
                                                 <a href="#">
                                                     <h4 class="card-title school-title mb-0">Fort Street Public
                                                         School</h4>
                                                 </a>
-                                                <div class="col-md-5">
+                                                <div class="col-md-5" style="align-items: end">
                                                     <button class="request-btn text-white"
                                                             onclick="openCounselingForm()">Request Counseling
                                                     </button>
-                                                    <button class="request-btn text-white">Enroll</button>
                                                 </div>
                                             </div>
 
@@ -748,7 +757,6 @@
         </div>
     </footer>
     <!-- footer close -->
-
 </div>
 
 <script>

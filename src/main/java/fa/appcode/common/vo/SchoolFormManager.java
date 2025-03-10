@@ -2,12 +2,14 @@ package fa.appcode.common.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
 @AllArgsConstructor
 @Getter
+@Setter
 public class SchoolFormManager {
     private int id;
 
@@ -19,9 +21,15 @@ public class SchoolFormManager {
 
     private int cityId;
 
+    private String cityName;
+
     private int districtId;
 
+    private String districtName;
+
     private int wardId;
+
+    private String wardName;
 
     private String email;
 
@@ -46,4 +54,6 @@ public class SchoolFormManager {
     private boolean deleteFlg;
 
     private String schoolOwnerEmail;
+
+    private int statusId;
 }

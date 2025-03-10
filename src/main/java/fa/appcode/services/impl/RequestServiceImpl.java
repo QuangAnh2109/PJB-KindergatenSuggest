@@ -7,7 +7,10 @@ import fa.appcode.entities.Request;
 import fa.appcode.repositories.RequestRepository;
 import fa.appcode.services.EmailService;
 import fa.appcode.services.RequestService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,19 +26,14 @@ public class RequestServiceImpl implements RequestService {
 
     @Autowired
     private RequestRepository requestRepository;
-
     @Autowired
     private EmailService emailService;
 
+    private static final Logger logger = LoggerFactory.getLogger(RequestServiceImpl.class);
 
     @Override
-    public Page<RequestVo> findAll(Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.listAllRequest(pageable);
-    }
-
-    @Override
-    public Page<RequestVo> listAllRequestWithSchoolOwner(Integer accountID, Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.listAllRequestWithSchoolOwner(accountID, pageable);
+    public Page<RequestVo> listAllRequest(Integer accountID,Integer requestMasterID,Pageable pageable) {
+        return (Page<RequestVo>) requestRepository.listAllRequest(accountID,requestMasterID,pageable);
     }
 
     @Override
@@ -44,38 +42,22 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Page<RequestVo> findOpenedRequest(Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.findOpenedRequest(pageable);
+    public Page<RequestVo> searchRequest(String keyword, Integer accountID, Integer requestMasterID, Pageable pageable) {
+        return (Page<RequestVo>)requestRepository.searchRequest(keyword,accountID,requestMasterID,pageable);
     }
 
-    @Override
-    public Page<RequestVo> findOpenedRequestWithSchoolOwner(Integer accountID, Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.findOpenedRequestWithSchoolOwner(accountID, pageable);
-    }
 
     @Override
-    public Page<RequestVo> searchRequest(String keyword, Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.searchRequest(keyword, pageable);
-    }
-
-    @Override
-    public Page<RequestVo> searchRequestWithSchoolOwner(String keyword, Integer accountID, Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.searchRequestWithSchoolOwner(keyword, accountID, pageable);
-    }
-
-    @Override
-    public Page<RequestVo> searchRequestReminder(String keyword, Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.searchRequestReminder(keyword, pageable);
-    }
-
-    @Override
-    public Page<RequestVo> searchRequestReminderWithSchoolOwner(String keyword, Integer accountID, Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.searchRequestReminderWithSchoolOwner(keyword, accountID, pageable);
-    }
-
-    @Override
-    public Page<Request> findRequestByAccountIdAndDeleteFlg(Integer accountId) {
-        return (Page<Request>) requestRepository.findRequestByAccountIdAndDeleteFlgIsFalse(accountId);
+    public Page<Request> findRequestByAccountIdAndDeleteFlg(Integer accountId, Pageable pageable) {
+        logger.info("Fetching requests by accountId and deleteFlg");
+        try{
+            Page<Request> result = requestRepository.findRequestByAccountIdAndDeleteFlgIsFalse(accountId, pageable);
+            logger.info("Found {} requests for account ID: {}", result.getTotalElements(), accountId);
+            return result;
+        }catch (DataAccessException e){
+            logger.error("Database error when fetching requests for account ID: {}", accountId, e);
+            return Page.empty();
+        }
     }
 
     @Override

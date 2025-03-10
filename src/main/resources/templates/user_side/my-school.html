@@ -93,23 +93,12 @@
         }
 
         .btn-primary {
-            height: 38px; /* Match input height */
-            padding: 0 20px;
-            transition: none; /* Disable any transitions */
-            transform: none !important; /* Prevent transformations */
-            width: auto; /* Let it size based on content */
-            white-space: nowrap;
-            border-radius: 4px;
-            margin-left: 5px;
+            width: 100%;
+            max-width: 100%;
+            padding: 10px;
+            border-radius: 10px;
         }
 
-        .btn-primary:hover,
-        .btn-primary:focus,
-        .btn-primary:active {
-            transform: none !important;
-            scale: 1 !important; /* Prevent scaling */
-            zoom: 1 !important; /* Prevent zooming */
-        }
 
         .overlay {
             display: flex;
@@ -147,6 +136,7 @@
         }
 
         .btn-yes {
+            width: 80px;
             background-color: #d9534f;
             color: white;
             padding: 10px 15px;
@@ -156,6 +146,7 @@
         }
 
         .btn-cancel {
+            width: 80px;
             background-color: #5bc0de;
             color: white;
             padding: 10px 15px;
@@ -170,67 +161,11 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .school-image {
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .school-title {
-            color: #0d99ff;
-            font-weight: bold;
-        }
 
         .rating-stars {
             color: #ffc107;
         }
 
-        .badge-light-blue {
-            background-color: #e6f4ff;
-            color: #0d99ff;
-            font-weight: normal;
-        }
-
-        .info-icon {
-            width: 24px;
-            color: #6c757d;
-            margin-right: 10px;
-        }
-
-        .request-btn {
-            background-color: #0d99ff;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 12px;
-        }
-
-
-        .modal-dialog {
-            max-width: 500px;
-        }
-
-        .form-control {
-            background-color: #f5f5f5;
-            border: none;
-        }
-
-        .btn-primary {
-            background-color: #0d9bdb;
-            border-color: #0d9bdb;
-        }
-
-        .btn-primary:hover {
-            background-color: #0b89c3;
-            border-color: #0b89c3;
-        }
-
-        .modal-header {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .hotline {
-            color: #0d9bdb;
-        }
 
         .container {
             margin-top: 50px;
@@ -314,7 +249,6 @@
     </header>
     <!-- header close -->
     <!-- content begin -->
-    <!-- content begin -->
     <div class="no-bottom no-top zebra" id="content">
         <div id="top"></div>
 
@@ -336,6 +270,139 @@
 
         <section id="section-cars">
             <div class="container">
+                <ul class="nav nav-tabs" id="schoolTabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#currentSchools">Current Schools</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#previousSchools">Previous Schools</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content mt-3">
+                    <div class="tab-pane fade show active" id="currentSchools">
+                        <div class="row school">
+                            <div class="col-md-9">
+                                <div class="school-card d-flex">
+                                    <div class="img-school col-md-2">
+                                        <img src="/user_side/images/school-image/school-1.jpg" class="me-3"
+                                             alt="School Image">
+                                        <div class="mt-2 rating-stars">★★★★★ <span
+                                                class="text-dark">5.0/5 (120 ratings)</span></div>
+                                    </div>
+                                    <div class="school-detail ">
+                                        <h5><a href="#" class="text-primary fw-bold">Fort Street Public School</a></h5>
+                                        <ul>
+                                            <li><strong>Address:</strong> 24 Fordham Avenue, CAMBERWELL VIC 3124</li>
+                                            <li><strong>Website:</strong> <a href="#">FortStreet.school.edu</a></li>
+                                            <li><strong>Tuition fee:</strong> From 4,000,000 VND/month</li>
+                                            <li><strong>Admission age:</strong> From 6 months to 5 years</li>
+                                            <li><strong>School type:</strong> Public</li>
+
+                                            <li class="facilities" style="overflow-wrap: break-word">
+                                                <strong>Facilities and Utilities:</strong>
+                                                <span>Cafeteria</span>
+                                                <span>School bus</span>
+                                                <span>After school care</span>
+                                                <span>Saturday class</span>
+                                                <span>Camera</span>
+                                                <span>Picnic activities</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="my-rating">
+                                    <p>Your Average Rating</p>
+                                    <p class="rating-stars">★★★★☆ 4.5/5</p>
+                                    <button class="btn-primary w-100">View Rating Details</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row school">
+                            <div class="col-md-9">
+                                <div class="school-card d-flex">
+                                    <div class="img-school col-md-2">
+                                        <img src="/user_side/images/school-image/school-2.jpg" class="me-3"
+                                             alt="School Image">
+                                        <div class="mt-2 rating-stars">★★★★★ <span
+                                                class="text-dark">5.0/5 (120 ratings)</span></div>
+                                    </div>
+                                    <div class="school-detail ">
+                                        <h5><a href="#" class="text-primary fw-bold">Fort Street Public School</a></h5>
+                                        <ul>
+                                            <li><strong>Address:</strong> 24 Fordham Avenue, CAMBERWELL VIC 3124</li>
+                                            <li><strong>Website:</strong> <a href="#">FortStreet.school.edu</a></li>
+                                            <li><strong>Tuition fee:</strong> From 4,000,000 VND/month</li>
+                                            <li><strong>Admission age:</strong> From 6 months to 5 years</li>
+                                            <li><strong>School type:</strong> Public</li>
+
+                                            <li class="facilities" style="overflow-wrap: break-word">
+                                                <strong>Facilities and Utilities:</strong>
+                                                <span>Cafeteria</span>
+                                                <span>School bus</span>
+                                                <span>After school care</span>
+                                                <span>Saturday class</span>
+                                                <span>Camera</span>
+                                                <span>Picnic activities</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="p-3 my-rating mb-3">
+                                    <p>Your haven’t rated the school yet. Please share with us your feedback</p>
+                                    <button class="btn-primary w-100">Rate School</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="previousSchools">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="school-card d-flex">
+                                    <div class="img-school">
+                                        <img src="/user_side/images/school-image/school-1.jpg" class="me-3"
+                                             alt="School Image" style="max-width: 150px;height: auto">
+                                    </div>
+                                    <div>
+                                        <h5><a href="#" class="text-primary fw-bold">Previous School Example</a></h5>
+                                        <p><strong>Address:</strong> 10 Example Street, OLD CITY 1234</p>
+                                        <p><strong>Website:</strong> <a href="#">PreviousSchool.edu</a></p>
+                                        <p><strong>Tuition fee:</strong> From 3,000,000 VND/month</p>
+                                        <p><strong>Admission age:</strong> From 5 to 10 years</p>
+                                        <p><strong>School type:</strong> Private</p>
+                                        <div class="facilities">
+                                            <strong>Facilities and Utilities:</strong>
+                                            <span>Library</span>
+                                            <span>Swimming pool</span>
+                                            <span>Sports complex</span>
+                                            <span>Music classes</span>
+                                            <span>Science lab</span>
+                                        </div>
+                                        <p class="mt-2 rating-stars">★★★★☆ <span
+                                                class="text-dark">4.2/5 (90 ratings)</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <nav>
+                    <ul class="pagination justify-content-center mt-3">
+                        <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">...</a></li>
+                        <li class="page-item"><a class="page-link" href="#">8</a></li>
+                        <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                    </ul>
+                </nav>
 
             </div>
         </section>

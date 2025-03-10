@@ -2,7 +2,7 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 15px;
-    margin-bottom: 20px;
+    margin: 20px;
 }
 .rating-stars {
     color: gold;
@@ -13,4 +13,53 @@
     border-radius: 5px;
     font-size: 0.9rem;
     margin-right: 5px;
+    overflow-wrap: anywhere;
+}
+
+.school{
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+
+.img-school {
+    width: 250px;
+    height: 250px;
+    overflow: hidden; /* Ẩn phần bị cắt */
+    border-radius: 10px; /* Tùy chỉnh bo tròn góc nếu cần */
+}
+
+li.facilities{
+    overflow-wrap: break-word;
+    max-width: 100%;
+    white-space: normal;
+    line-height: 2;
+}
+
+.school-detail ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.my-rating {
+    margin-top: 20px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    display: block;
+    width: 90%; /* Hoặc giá trị phù hợp */
+    max-width: 400px; /* Giới hạn kích thước */
+    padding: 15px; /* Tạo khoảng cách nội dung bên trong */
+    overflow: hidden; /* Ngăn chặn tràn nội dung */
+    background: white; /* Giữ nền trắng nếu cần */
+    border: lightgrey 1px solid;
+}
+
+
+.img-school img {
+    width: 80%;
+    height: 80%;
+    object-fit: cover;
+    display: block;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
 }

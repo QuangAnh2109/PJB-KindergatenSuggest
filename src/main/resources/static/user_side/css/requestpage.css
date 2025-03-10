@@ -1,21 +1,33 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: Roboto, sans-serif;
     padding: 20px;
     background-color: #f8f9fa;
 }
+
+.request-column{
+    border-radius: 10px;
+    margin-bottom: 40px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
 .request-card {
-    border: 1px solid #007bff;
+    overflow-x: auto;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin: 20px;
     padding: 15px;
     background-color: #fff;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
 }
 .school-summary {
-    border: 1px solid #007bff;
+    overflow-x: auto;
     border-radius: 8px;
     padding: 15px;
-    margin-left: 20px;
+    margin: 20px;
     background-color: #fff;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.school-summary p {
+    overflow: auto;
 }
 .status-open {
     background-color: #d4edda;

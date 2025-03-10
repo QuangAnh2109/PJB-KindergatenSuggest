@@ -45,10 +45,10 @@ public class RequestController {
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         Page<RequestVo> requestList;
         if (role.equalsIgnoreCase("Admin")) {
-            requestList = requestService.findAll(pageable);
+            requestList = requestService.listAllRequest(null,null,pageable);
         } else {
             int accountID = accountService.getAccountInfo(principal).getId();
-            requestList = requestService.listAllRequestWithSchoolOwner(accountID, pageable);
+            requestList = requestService.listAllRequest(accountID,null, pageable);
         }
         String message = (String) session.getAttribute("message");
         session.removeAttribute("message");
@@ -68,10 +68,10 @@ public class RequestController {
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         Page<RequestVo> requestList;
         if (role.equalsIgnoreCase("Admin")) {
-            requestList = requestService.findOpenedRequest(pageable);
+            requestList = requestService.listAllRequest(null,2,pageable);
         } else {
             int accountID = accountService.getAccountInfo(principal).getId();
-            requestList = requestService.findOpenedRequestWithSchoolOwner(accountID, pageable);
+            requestList = requestService.listAllRequest(accountID,2, pageable);
         }
         String message = (String) session.getAttribute("message");
         session.removeAttribute("message");
@@ -129,10 +129,10 @@ public class RequestController {
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         Page<RequestVo> requestList;
         if (role.equalsIgnoreCase("Admin")) {
-            requestList = requestService.searchRequest(keyword, pageable);
+            requestList = requestService.searchRequest(keyword,null,null, pageable);
         } else {
             int accountID = accountService.getAccountInfo(principal).getId();
-            requestList = requestService.searchRequestWithSchoolOwner(keyword, accountID, pageable);
+            requestList = requestService.searchRequest(keyword, accountID,null, pageable);
         }
         model.addAttribute("requestList", requestList);
         model.addAttribute("currentPage", currentPage);
@@ -149,10 +149,10 @@ public class RequestController {
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         Page<RequestVo> requestList;
         if (role.equalsIgnoreCase("Admin")) {
-            requestList = requestService.searchRequestReminder(keyword, pageable);
+            requestList = requestService.searchRequest(keyword,null,2, pageable);
         } else {
             int accountID = accountService.getAccountInfo(principal).getId();
-            requestList = requestService.searchRequestReminderWithSchoolOwner(keyword, accountID, pageable);
+            requestList = requestService.searchRequest(keyword, accountID,2, pageable);
         }
         model.addAttribute("requestList", requestList);
         model.addAttribute("currentPage", currentPage);
