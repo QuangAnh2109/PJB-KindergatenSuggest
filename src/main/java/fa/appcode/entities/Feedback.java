@@ -20,6 +20,11 @@ public class Feedback {
     @JoinColumn(name = "school_id", nullable = false)
     private SchoolInfo school;
 
+    @MapsId("accountId")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "account_id", nullable = false)
+    private AccountInfo accountInfo;
+
     @Column(name = "learning_program", nullable = false)
     private Float learningProgram;
 
