@@ -235,8 +235,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ParentVo findParentById(int id) {
-        return accountRepository.findParentById(id);
+    public ParentVo findParentById(int id) throws IllegalAccessException{
+        ParentVo parent= accountRepository.findParentById(id);
+        if (parent == null) {
+            throw new IllegalAccessException("This Parent is current Inactive, Deleted or not Exist");
+        }
+        return parent;
     }
 
     @Override

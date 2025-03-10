@@ -85,4 +85,8 @@ public class GlobalConfig {
     private String invalidPhoneNumber;
     @Value("${ME_030}")
     private String requiredMessage;
+    @Value("${ME_031}")
+    private String parentEnrolled;
+    @Value("${ME_032}")
+    private String schoolOwnerAccess;
 }

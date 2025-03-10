@@ -64,9 +64,9 @@ public interface EnrollSchoolService {
      *
      * @param parentId
      * @param schoolId
-     * @return String
+     * @return true/false
      */
-    String isEnrolled(Integer parentId, Integer schoolId);
+    boolean isEnrolled(Integer parentId, Integer schoolId);
 
     //validate school Owner Access
     /**
@@ -74,8 +74,8 @@ public interface EnrollSchoolService {
      *
      * @param schoolId
      * @param principal
-     * @return String
+     * @return true/false
      */
-    String validateAccess(Integer schoolId, Principal principal);
+    boolean validateAccess(Integer schoolId, Principal principal);
 
 }
