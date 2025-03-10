@@ -9,6 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link th:href="@{/user_side/css/plugins.css}" rel="stylesheet" type="text/css">
     <link th:href="@{/user_side/css/coloring.css}" rel="stylesheet" type="text/css">
+
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
@@ -131,6 +132,7 @@
 <body>
 <!-- header begin -->
 <header class="transparent scroll-light has-topbar">
+
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -149,7 +151,7 @@
                     </div>
                     <div class="de-flex-col header-col-mid">
                         <ul id="mainmenu">
-                            <li><a class="menu-item" th:href="@{/public/search}">School Search</a>
+                            <li><a class="menu-item" href="/public/search">School Search</a>
                             </li>
                             <li><a class="menu-item" href="#">Community</a>
                             </li>
@@ -168,19 +170,24 @@
                         </div>
                         <div class="logout-container" sec:authorize="isAuthenticated()">
                             <div class="dropdown">
-                                <button type="button" class="dropdown-toggle" onclick="toggleDropdown(event)">
-                                    <span><i class="fa fa-user" aria-hidden="true" style="margin-right: 5px"></i></span>
+                                <button class="dropdown-toggle" onclick="toggleDropdown()">
+                                    <span><i class="fa fa-user-o" aria-hidden="true" style="margin-right: 5px"></i></span>
                                     Welcome, <span th:text="${session.nameAccount}"></span>
                                     <i class="arrow-down"></i>
                                 </button>
-                                <div class="dropdown-menu" id="featuresDropdown">
-                                    <a href="/feature1"><i class="fa-solid fa-school"></i> My School</a>
+                                <div class="dropdown-menu dropdown-menu-right" id="featuresDropdown">
+                                    <a href="/parent/my-school"><span><i class="fa-solid fa-school"></i></span> My
+                                        School</a>
                                     <div class="dropdown-divider"></div>
-                                    <a href="/feature2"><i class="fas fa-clipboard-list"></i> My Request</a>
+                                    <a href="/parent/my-request"><span><i class="fas fa-clipboard-list"></i></span>
+                                        My
+                                        Request</a>
                                     <div class="dropdown-divider"></div>
-                                    <a href="/feature3"><i class="fa-solid fa-user"></i> My Profile</a>
+                                    <a href="/auth/view-account"><span><i class="fa-solid fa-user"></i></span> My
+                                        Profile</a>
                                     <div class="dropdown-divider"></div>
-                                    <a href="#" onclick="showPopup()"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                                    <a href="#" onclick="showPopup()"><span><i
+                                            class="fa-solid fa-right-from-bracket"></i></span> Logout</a>
                                 </div>
                             </div>
                         </div>
@@ -190,6 +197,7 @@
         </div>
     </div>
 </header>
+<!-- header close -->
 <!--Log out-->
 <div id="logoutPopup" class="overlay">
     <div class="popup">

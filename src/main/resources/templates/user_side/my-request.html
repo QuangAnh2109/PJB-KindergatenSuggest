@@ -20,23 +20,23 @@
     <p>You have 2 open requests</p>
 
     <!-- Request 1 -->
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row request-column">
+        <div class="col-md-7">
             <div class="request-card">
-                <h5>Request Number: #1234567</h5>
+                <div style="display: flex;justify-content: space-between">
+                    <h5>Request Number: #1234567</h5>
+                    <span class="status-open">Open</span>
+                </div>
                 <p><strong>Request Information:</strong></p>
                 <p>Full Name: Nguyễn Hoàng Anh</p>
                 <p>Email address: info.parent@gmail.com</p>
                 <p>Phone number: 09123456789</p>
-                <p>Inquiry: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                <p style="overflow: auto">Inquiry: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
                     labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
                     nisi ut aliquip ex commodo consequat.</p>
-                <p class="status-open">Open</p>
-                <p>Our staff will contact you within 24 hrs. If you need urgent assistance, please contact us via our
-                    hotline 0123456789</p>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
             <div class="school-summary">
                 <h5>School Summary</h5>
                 <h3>Fort Street Public School</h3>
@@ -47,26 +47,28 @@
                 <div class="star-rating">★★★★★ 5.0/5 (20 ratings)</div>
             </div>
         </div>
+        <p style="font-size: 13px;font-style: italic;color: darkgrey"> *Our staff will contact you within 24 hrs. If you need urgent assistance, please contact us via our
+            hotline 0123456789</p>
     </div>
 
-    <!-- Request 2 -->
-    <div class="row">
-        <div class="col-md-6">
+    <!-- Request 1 -->
+    <div class="row request-column">
+        <div class="col-md-7">
             <div class="request-card">
-                <h5>Request Number: #1234567</h5>
+                <div style="display: flex;justify-content: space-between">
+                    <h5>Request Number: #1234567</h5>
+                    <span class="status-open">Open</span>
+                </div>
                 <p><strong>Request Information:</strong></p>
                 <p>Full Name: Nguyễn Hoàng Anh</p>
                 <p>Email address: info.parent@gmail.com</p>
                 <p>Phone number: 09123456789</p>
-                <p>Inquiry: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                <p style="overflow: auto">Inquiry: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
                     labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
                     nisi ut aliquip ex commodo consequat.</p>
-                <p class="status-open">Open</p>
-                <p>Our staff will contact you within 24 hrs. If you need urgent assistance, please contact us via our
-                    hotline 0123456789</p>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
             <div class="school-summary">
                 <h5>School Summary</h5>
                 <h3>Fort Street Public School</h3>
@@ -77,52 +79,13 @@
                 <div class="star-rating">★★★★★ 5.0/5 (20 ratings)</div>
             </div>
         </div>
+        <p style="font-size: 13px;font-style: italic;color: darkgrey"> *Our staff will contact you within 24 hrs. If you need urgent assistance, please contact us via our
+            hotline 0123456789</p>
     </div>
 
-    <!-- Closed Request -->
-    <div class="row">
-        <div class="col-md-6">
-            <div class="request-card">
-                <h5>Request Number: #1234567</h5>
-                <p><strong>Request Information:</strong></p>
-                <p>Full Name: Nguyễn Hoàng Anh</p>
-                <p>Email address: info.parent@gmail.com</p>
-                <p>Phone number: 09123456789</p>
-                <p>Inquiry: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                    labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                    nisi ut aliquip ex commodo consequat.</p>
-                <p class="status-closed">Closed</p>
-                <p>Our staff will contact you within 24 hrs. If you need urgent assistance, please contact us via our
-                    hotline 0123456789</p>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="school-summary">
-                <h5>School Summary</h5>
-                <h3>Fort Street Public School</h3>
-                <p>Ⓒ Address: 24 Fordham Avenue CAMBERWELL VIC 3124</p>
-                <p>Ⓒ Website: FortStreet.school.edu</p>
-                <p>Ⓒ Tuition fee: From 4,000,000 VND/month</p>
-                <p>Ⓒ Admission age: From 6 months to 5 years</p>
-                <div class="star-rating">★★★★★ 5.0/5 (20 ratings)</div>
-            </div>
-        </div>
-    </div>
-    <!--Log out-->
-    <div id="logoutPopup" class="overlay">
-        <div class="popup">
-            <h2>Are you leaving?</h2>
-            <p>Are you sure you want to logout? All your unsaved data will be lost.</p>
-            <div class="button-container">
-                <button class="btn btn-yes" onclick="confirmLogout()">Yes</button>
-                <button class="btn btn-cancel" onclick="hidePopup()">Cancel</button>
-            </div>
-        </div>
-    </div>
 
-    <form id="logoutForm" th:action="@{/logout}" method="post"></form>
-    <!-- Pagination -->
-    <div aria-label="Page navigation" style="display: flex;justify-content: center">
+
+    <div aria-label="Page navigation" style="display: flex;justify-content: center; margin-top: 20px">
         <ul class="pagination">
             <li class="page-item"><a class="page-link" href="#">«</a></li>
             <li class="page-item active"><a class="page-link" href="#">1</a></li>

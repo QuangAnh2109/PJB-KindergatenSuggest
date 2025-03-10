@@ -13,6 +13,7 @@ import fa.appcode.services.MasterDatumService;
 import fa.appcode.services.RequestService;
 import fa.appcode.services.SchoolInfoService;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,19 +33,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class RequestController {
-    @Autowired
-    private RequestService requestService;
-    @Autowired
-    private MasterDatumService masterDatumService;
-    @Autowired
-    private AccountService accountService;
-
-    @Autowired
-    private SchoolInfoService schoolInfoService;
-
-    @Autowired
-    private GlobalConfig globalConfig;
+    private final RequestService requestService;
+    private final MasterDatumService masterDatumService;
+    private final AccountService accountService;
+    private final SchoolInfoService schoolInfoService;
+    private final GlobalConfig globalConfig;
 
     @GetMapping("/manager/request-list")
     public String showRequestList(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
@@ -53,10 +48,10 @@ public class RequestController {
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         Page<RequestVo> requestList;
         if (role.equalsIgnoreCase("Admin")) {
-            requestList = requestService.findAll(pageable);
+            requestList = requestService.listAllRequest(null,null,pageable);
         } else {
             int accountID = accountService.getAccountInfo(principal).getId();
-            requestList = requestService.listAllRequestWithSchoolOwner(accountID, pageable);
+            requestList = requestService.listAllRequest(accountID,null, pageable);
         }
         String message = (String) session.getAttribute("message");
         session.removeAttribute("message");
@@ -76,10 +71,10 @@ public class RequestController {
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         Page<RequestVo> requestList;
         if (role.equalsIgnoreCase("Admin")) {
-            requestList = requestService.findOpenedRequest(pageable);
+            requestList = requestService.listAllRequest(null,2,pageable);
         } else {
             int accountID = accountService.getAccountInfo(principal).getId();
-            requestList = requestService.findOpenedRequestWithSchoolOwner(accountID, pageable);
+            requestList = requestService.listAllRequest(accountID,2, pageable);
         }
         String message = (String) session.getAttribute("message");
         session.removeAttribute("message");
@@ -95,18 +90,21 @@ public class RequestController {
     @GetMapping("/manager/request-list-detail")
     public String requestListDetail(@RequestParam Integer id,
                                     @RequestParam(name = "page", required = false) String page,
+                                    @RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                     Model model, Principal principal) {
         RequestDetailVo requestDetail = requestService.findById(id);
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         model.addAttribute("requestDetail", requestDetail);
         model.addAttribute("page", page);
         model.addAttribute("role", role);
+        model.addAttribute("currentPage", currentPage);
         return "admin_side/request-list-detail";
     }
 
     @GetMapping("/manager/updateRequest")
     public String updateRequest(@RequestParam Integer id,
                                 @RequestParam String page,
+                                @RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                 Model model, Principal principal,
                                 RedirectAttributes redirectAttributes,
                                 HttpSession session) {
@@ -120,6 +118,7 @@ public class RequestController {
         RequestDetailVo requestDetail = requestService.findById(id);
         model.addAttribute("requestDetail", requestDetail);
         model.addAttribute("role", role);
+        redirectAttributes.addAttribute("currentPage", currentPage);
         session.setAttribute("message", "Update successfully!");
         if (page.equals("Detail")) return "redirect:/manager/request-reminder";
         return "redirect:/manager/request-list";
@@ -133,10 +132,10 @@ public class RequestController {
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         Page<RequestVo> requestList;
         if (role.equalsIgnoreCase("Admin")) {
-            requestList = requestService.searchRequest(keyword, pageable);
+            requestList = requestService.searchRequest(keyword,null,null, pageable);
         } else {
             int accountID = accountService.getAccountInfo(principal).getId();
-            requestList = requestService.searchRequestWithSchoolOwner(keyword, accountID, pageable);
+            requestList = requestService.searchRequest(keyword, accountID,null, pageable);
         }
         model.addAttribute("requestList", requestList);
         model.addAttribute("currentPage", currentPage);
@@ -153,10 +152,10 @@ public class RequestController {
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
         Page<RequestVo> requestList;
         if (role.equalsIgnoreCase("Admin")) {
-            requestList = requestService.searchRequestReminder(keyword, pageable);
+            requestList = requestService.searchRequest(keyword,null,2, pageable);
         } else {
             int accountID = accountService.getAccountInfo(principal).getId();
-            requestList = requestService.searchRequestReminderWithSchoolOwner(keyword, accountID, pageable);
+            requestList = requestService.searchRequest(keyword, accountID,2, pageable);
         }
         model.addAttribute("requestList", requestList);
         model.addAttribute("currentPage", currentPage);

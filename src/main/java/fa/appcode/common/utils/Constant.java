@@ -7,8 +7,9 @@ public class Constant {
     public static final String USER_INIT_PAGE = "0";
     public static final String SCHOOL_AND_ENROLL_INIT_PAGE = "0";
     public static final String INIT_PAGE = "0";
+    public static final String PAGE_SIZE = "10";
     public static final String KEY_WORD_DEFAULT = "";
-    public static final String VIEW_ACCOUNT_PAGE = "user_side/view-account";
+    public static final String VIEW_ACCOUNT_PAGE = "admin_side/edit-account";
     public static final String FORGOT_PASSWORD_PAGE = "user_side/forgot-password";
     public static final String RESET_PASSWORD_PAGE = "user_side/reset-password";
     public static final String TOKEN_INVALID_PAGE = "user_side/token-invalid";
@@ -63,4 +64,7 @@ public class Constant {
 
 
 
+    public static final String SUCCESS = "success";
+    public static final int ENROLL_STATUS_ENROLL=3;
+    public static final int ENROLL_STATUS_UNENROLL=4;
 }

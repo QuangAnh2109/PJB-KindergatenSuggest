@@ -24,14 +24,13 @@
             <h1>Register</h1>
         </div>
     </section>
-
     <section class="py-5">
         <div class="container">
-            <div class="row justify-content-center">
+            <div class="row justify-content-center register">
                 <div class="col-md-6">
                     <h3 class="text-center mb-4">Create a new account</h3>
                     <form th:action="@{/public/register}" th:object="${accountVo}" method="post"
-                          class="p-4 shadow rounded bg-white">
+                        name="registerForm"  class="p-4 shadow rounded bg-white">
                         <div class="mb-3">
                             <label class="form-label">Full Name</label>
                             <input type="text" th:field="*{fullName}" class="form-control"
@@ -39,7 +38,6 @@
                             <span th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"
                                   class="text-danger"></span>
                         </div>
-
                         <div class="mb-3">
                             <label class="form-label">Email Address</label>
                             <input type="email" th:field="*{email}" class="form-control" placeholder="info@xyz.com">
@@ -52,7 +50,6 @@
                             <input type="text" th:field="*{phone}" class="form-control" placeholder="099999999">
                             <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger"></span>
                         </div>
-
                         <div class="mb-3">
                             <label class="form-label">Password</label>
                             <input type="password" th:field="*{password}" class="form-control"
@@ -60,7 +57,6 @@
                             <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
                                   class="text-danger"></span>
                         </div>
-
                         <div class="mb-3">
                             <label class="form-label">Confirm Password</label>
                             <input type="password" th:field="*{confirmPassword}" class="form-control"
@@ -73,9 +69,9 @@
                         <div>
                             <p th:if="${message}" th:text="${message}" style="color: green;"></p>
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <input type="reset" value="Cancel" class="btn btn-outline-secondary w-45">
-                            <input type="submit" value="Sign Up" class="btn btn-primary w-45">
+                        <div class="d-flex justify-content-center gap-2">
+                            <input type="reset" value="Cancel" class="btn btn-warning w-45">
+                            <input type="submit" id="registerButton" value="Sign Up" class="btn btn-primary w-45">
                         </div>
                     </form>
                 </div>
@@ -86,5 +82,7 @@
 
 <script th:src="@{/user_side/js/plugins.js}"></script>
 <script th:src="@{/user_side/js/designesia.js}"></script>
+<script th:src="@{/user_side/js/register.js}"></script>
+
 </body>
 </html>
