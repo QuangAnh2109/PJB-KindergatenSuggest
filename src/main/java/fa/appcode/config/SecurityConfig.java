@@ -49,8 +49,7 @@ public class SecurityConfig {
                                 .loginPage("/public/showMyLoginPage")
                                 .loginProcessingUrl("/authenticateTheUser")
                                 .successHandler(successHandler)
-                                .failureHandler(authenticationHandler)
-                                .permitAll())
+                                .failureHandler(authenticationHandler))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .invalidateHttpSession(true)
