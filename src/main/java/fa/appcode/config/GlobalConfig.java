@@ -91,4 +91,6 @@ public class GlobalConfig {
     private String parentEnrolled;
     @Value("${ME_032}")
     private String schoolOwnerAccess;
+    @Value("${ME_035}")
+    private String invalidDate;
 }

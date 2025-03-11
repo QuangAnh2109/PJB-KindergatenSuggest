@@ -8,7 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
+import fa.appcode.common.utils.Constant;
+import org.springframework.ui.Model;
 import java.sql.SQLException;
 
 @ControllerAdvice
@@ -41,5 +42,15 @@ public class GlobalHandlerException {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entity not found: " + e.getMessage());
     }
 
-
+    @ExceptionHandler(Exception.class)
+    public String handleException(Exception ex, Model model) {
+        logger.error("Unhandled exception occurred", ex);
+        model.addAttribute("globalError", "An unexpected error occurred. Please try again later.");
+        return Constant.ERROR_PAGE;
+    }
+    @ExceptionHandler(TokenException.class)
+    public ResponseEntity<String> handleTokenException(TokenException e) {
+        logger.error("Token error: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token error: " + e.getMessage());
+    }
 }

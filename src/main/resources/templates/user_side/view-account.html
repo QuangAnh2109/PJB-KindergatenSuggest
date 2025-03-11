@@ -1,126 +1,156 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:selected="http://www.w3.org/1999/xhtml">
+<html lang="zxx" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>User Profile</title>
     <meta charset="UTF-8">
+    <title>
+        KinderGarten Suggestion</title>
     <link rel="icon" th:href="@{/user_side/images/icon.png}" type="image/gif" sizes="16x16">
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Rentaly - Multipurpose Vehicle Car Rental Website Template" name="description">
+    <meta content="KinderGarten Suggestion" name="description">
+    <meta content="" name="keywords">
+    <meta content="" name="author">
+    <!-- CSS Files
+    ================================================== -->
     <link th:href="@{/user_side/css/bootstrap.min.css}" rel="stylesheet">
     <link th:href="@{/user_side/css/mdb.min.css}" rel="stylesheet">
     <link th:href="@{/user_side/css/plugins.css}" rel="stylesheet">
     <link th:href="@{/user_side/css/style.css}" rel="stylesheet">
     <link th:href="@{/user_side/css/coloring.css}" rel="stylesheet">
     <link id="colors" th:href="@{/user_side/css/colors/scheme-01.css}" rel="stylesheet">
-    <style>
-        .required-label::after {
-            content: " *";
-            color: red;
-            font-weight: bold;
-        }
-
-        .btn-primary {
-            background-color: green !important;
-            border-color: green !important;
-        }
-    </style>
-    <style>
-        body {
-            background-image: url('/user_side/images/background/background3.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
-        }
-    </style>
-
 </head>
+<style>
+    .required-label::after {
+        content: " *";
+        color: red;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: green !important;
+        border-color: green !important;
+    }
+</style>
 <body>
 <div id="wrapper">
+
+    <!-- page preloader begin -->
     <div id="de-preloader"></div>
-    <div th:replace="user_side/header::header"></div>
-
-    <div class="container" style="margin-top: 100px;">
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <div class="card shadow p-4 rounded-5">
-                    <h2 class="text-center mb-4">User Profile</h2>
-                    <form action="#" th:action="@{/auth/update-account}" method="post" th:object="${accountInfo}">
-                        <input type="hidden" th:field="*{email}">
-                        <div class="mb-3">
-                            <label class="form-label required-label">Full Name </label>
-                            <input type="text" class="form-control" required th:field="*{fullName}">
+    <!-- page preloader close -->
+    <!-- header begin -->
+    <div
+            th:insert="user_side/header :: header"></div>
+    <div class="no-bottom no-top zebra" id="content">
+        <div id="top"></div>
+        <!-- section begin -->
+        <section id="subheader" class="jarallax text-light">
+            <img th:src="@{/user_side/images/background/14.jpg}" class="jarallax-img" alt="">
+            <div class="center-y relative text-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <h1>User Profile</h1>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label required-label">Email Address </label>
-                            <input type="email" class="form-control" th:field="*{email}" disabled>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">D.O.B</label>
-                            <input type="date" class="form-control" th:field="*{dob}"/>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label required-label">Mobile No. </label>
-                            <input type="text" class="form-control" required th:field="*{phone}">
-                            <div th:if="${phoneFail}" th:text="${phoneFail}" class="text-danger danger">
-                            </div>
-
-                        </div>
-                        <h5>Address</h5>
-                        <div class="mb-3">
-                            <select onchange="loadDistrict(this.value)" name="city" class="form-control">
-                                <option th:text="${accountInfo != null and accountInfo.city != null ? accountInfo.city.cityName : ''}"
-                                        disabled selected>Province/City
-                                </option>
-                                <option th:each="city : ${citys}" th:value="${city.id}"
-                                        th:text="${city.cityName}"></option>
-                            </select>
-                            <div class="mb-3">
-                                <select onchange="loadWard(this.value)" name="district" id="district"
-                                        class="form-control" required disabled>
-                                    <option value="" disabled selected
-                                            th:text="${accountInfo.district != null ? accountInfo.district.districtName : 'District'}"></option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <select onchange="enableParam('address')" name="ward" id="ward" class="form-control"
-                                        required disabled>
-                                    <option value="" disabled selected
-                                            th:text="${accountInfo.ward != null ? accountInfo.ward.wardName : 'Ward'}"></option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" name="address" id="address" class="form-control"
-                                       th:value="${accountInfo.address != null ? accountInfo.address : ''}"
-                                       placeholder="Enter you address..." maxlength="255" required disabled>
-                            </div>
-
-                            <div th:if="${successMessage}" id="success-alert"
-                                 class="alert alert-success alert-dismissible fade show mt-3"
-                                 role="alert">
-                                <strong>Success!</strong> <span th:text="${successMessage}"></span>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="text-center">
-                                <button type="reset" class="btn btn-primary">Cancel</button>
-                                <button type="submit" class="btn btn-primary">Update</button>
-                            </div>
-                        </div>
-                    </form>
+                        <div class="clearfix"></div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
+        <section id="section-settings" class="bg-gray-100">
+            <div class="container">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-9">
+                        <div class="card padding40 rounded-5 position-relative">
+                            <a th:href="@{/auth/change-password}" class="btn btn-warning position-absolute top-0 end-0 m-3">
+                                Change Password
+                            </a>
+                            <div class="row update-account" >
+                                <form action="#" th:action="@{/auth/view-account}" name="update-form" method="post" th:object="${accountInfo}">
+                                    <input type="hidden" th:field="*{email}" >
+                                    <div class="mb-3">
+                                        <label class="form-label required-label">Full Name </label>
+                                        <input type="text" class="form-control" th:field="*{fullName}">
+                                        <div th:if="${fullNameError}" class="text-danger">
+                                            <span th:text="${fullNameError}"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label required-label">Email Address </label>
+                                        <input type="email" class="form-control" th:field="*{email}" disabled>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">D.O.B</label>
+                                        <input type="date" class="form-control" th:field="*{dob}"/>
+                                        <div th:if="${dobError}" class="text-danger">
+                                            <span th:text="${dobError}"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label required-label">Mobile No. </label>
+                                        <input type="text" class="form-control" th:field="*{phone}">
+                                        <div th:if="${phoneError}" class="text-danger">
+                                            <span th:text="${phoneError}"></span>
+                                        </div>
+                                    </div>
+
+                                    <h5>Address</h5>
+                                    <div class="mb-3">
+                                        <select onchange="loadDistrict(this.value)" name="city" class="form-control">
+                                            <option th:text="${accountInfo != null and accountInfo.city != null ? accountInfo.city.cityName : ''}"
+                                                    disabled selected>Province/City
+                                            </option>
+                                            <option th:each="city : ${cities}" th:value="${city.id}"
+                                                    th:text="${city.cityName}"></option>
+                                        </select>
+                                        <div class="mb-3">
+                                            <select onchange="loadWard(this.value)" name="district" id="district"
+                                                    class="form-control" required disabled>
+                                                <option value="" disabled selected
+                                                        th:text="${accountInfo.district != null ? accountInfo.district.districtName : 'District'}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <select onchange="enableParam('address')" name="ward" id="ward" class="form-control"
+                                                    required disabled>
+                                                <option value="" disabled selected
+                                                        th:text="${accountInfo.ward != null ? accountInfo.ward.wardName : 'Ward'}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <input type="text" name="address" id="address" class="form-control"
+                                                   th:value="${accountInfo.address != null ? accountInfo.address : ''}"
+                                                   placeholder="Enter you address..." maxlength="255" required disabled>
+                                        </div>
+
+                                        <div th:if="${successMessage}" id="success-alert"
+                                             class="alert alert-success alert-dismissible fade show mt-3"
+                                             role="alert">
+                                            <strong>Success!</strong> <span th:text="${successMessage}"></span>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="reset" class="btn btn-primary">Cancel</button>
+                                            <button type="submit" id="updateButton" class="btn btn-primary">Update</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 </div>
+<!-- Javascript Files
+================================================== -->
 <script th:src="@{/user_side/js/plugins.js}"></script>
 <script th:src="@{/user_side/js/designesia.js}"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js">
-</script>
 <script th:src="@{/user_side/js/address-load.js}"></script>
-
+<script th:src="@{/user_side/js/update-account.js}"></script>
 </body>
 </html>

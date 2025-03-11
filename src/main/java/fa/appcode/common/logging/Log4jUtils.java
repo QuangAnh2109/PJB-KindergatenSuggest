@@ -16,4 +16,7 @@ public class Log4jUtils {
         return logger;
     }
 
+    public static Logger getLogger(Class<?> clazz) {
+        return LogManager.getLogger(clazz);
+    }
 }
