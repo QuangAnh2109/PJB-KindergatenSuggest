@@ -1,9 +1,8 @@
 package fa.appcode.exceptions;
 
-import org.slf4j.Logger;
 import fa.appcode.common.logging.Log4jUtils;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataAccessException;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,7 +16,7 @@ import java.sql.SQLException;
 public class GlobalHandlerException {
 
 
-    private static final Logger logger = (Logger) Log4jUtils.getLogger(GlobalHandlerException.class);
+    private static final Logger logger = Log4jUtils.getLogger(GlobalHandlerException.class);
 
     @ExceptionHandler(CustomDataException.class)
     public ResponseEntity<String> handleCustomDataException(CustomDataException ex) {
