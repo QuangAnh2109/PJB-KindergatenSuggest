@@ -1,5 +1,6 @@
 package fa.appcode.web.controller;
 
+import fa.appcode.common.logging.Log4jUtils;
 import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.config.GlobalConfig;
@@ -80,8 +81,10 @@ public class UserManagementController {
         model.addAttribute("user", user);
         model.addAttribute("roles", roles);
         model.addAttribute("status", status);
+        model.addAttribute("recordNo", user.getRecordNo());
 
-        return Constant.VIEW_ACCOUNT_PAGE;
+        Log4jUtils.getLogger().info("recordNo : " + user.getRecordNo());
+        return "admin_side/edit-account";
     }
 
 

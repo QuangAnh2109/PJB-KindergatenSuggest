@@ -19,7 +19,7 @@ public class AccountVo {
     private String fullAddress;
     private String role;
     private String status;
-    private String recordNo;
+    private Integer recordNo;
     private String datetimeChangePass;
     private String fullName;
     private String email;
