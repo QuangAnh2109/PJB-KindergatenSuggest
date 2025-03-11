@@ -102,7 +102,7 @@
                                             <option th:text="${accountInfo != null and accountInfo.city != null ? accountInfo.city.cityName : ''}"
                                                     disabled selected>Province/City
                                             </option>
-                                            <option th:each="city : ${citys}" th:value="${city.id}"
+                                            <option th:each="city : ${cities}" th:value="${city.id}"
                                                     th:text="${city.cityName}"></option>
                                         </select>
                                         <div class="mb-3">

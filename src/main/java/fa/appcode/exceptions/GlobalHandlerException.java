@@ -42,11 +42,15 @@ public class GlobalHandlerException {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entity not found: " + e.getMessage());
     }
 
-
     @ExceptionHandler(Exception.class)
     public String handleException(Exception ex, Model model) {
         logger.error("Unhandled exception occurred", ex);
         model.addAttribute("globalError", "An unexpected error occurred. Please try again later.");
         return Constant.ERROR_PAGE;
+    }
+    @ExceptionHandler(TokenException.class)
+    public ResponseEntity<String> handleTokenException(TokenException e) {
+        logger.error("Token error: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token error: " + e.getMessage());
     }
 }

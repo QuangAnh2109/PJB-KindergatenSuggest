@@ -143,7 +143,6 @@ public class ValidateServiceImpl implements ValidateService {
             result.put(FIELD_ERROR, "form");
             return result;
         }
-
         validateRegisterRequired(accountVo, model);
         validateValidRegister(accountVo, model);
         validateDuplicateRegister(accountVo, model);
@@ -358,6 +357,7 @@ public class ValidateServiceImpl implements ValidateService {
         }
         return false;
     }
+
     @Override
     public boolean validateUpdateAccount(AccountInfo accountInfo, String currentPhone, Model model) {
         LOGGER.debug("Validating update account process");

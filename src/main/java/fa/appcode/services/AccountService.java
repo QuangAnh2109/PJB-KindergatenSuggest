@@ -23,9 +23,9 @@ public interface AccountService {
 
     void save(AccountInfo accountInfo);
 
-    String processRegister(AccountVo accountVo, BindingResult bindingResult, Model model);
+    boolean processRegister(AccountVo accountVo, BindingResult bindingResult, Model model);
 
-    String verifyAccount(String token, Model model);
+    boolean verifyAccount(String token, Model model);
 
     AccountInfo findByEmail(String email);
 
@@ -125,14 +125,14 @@ public interface AccountService {
 
     void saveAccountInfo(AccountInfo accountInfo);
 
-    String changePasswordProcess(String oldPassword, String newPassword, String confirmPassword, Model model);
+    boolean changePasswordProcess(String oldPassword, String newPassword, String confirmPassword, Model model);
 
-    String forgotPasswordProcess(String email, Model model);
+    boolean forgotPasswordProcess(String email, Model model);
 
     String resetPasswordProcess(String token, String newPassword, String confirmPassword, Model model);
     AccountInfo validateResetToken(String token, Model model);
-    String resetPassword(String token, String newPassword, String confirmPassword, Model model);
-    public String updateAccountDetails(AccountInfo accountInfo, Model model);
+    boolean resetPassword(String token, String newPassword, String confirmPassword, Model model);
+    boolean updateAccountDetails(AccountInfo accountInfo, Model model);
     AccountInfo getCurrentAccountInfo();
 
 }

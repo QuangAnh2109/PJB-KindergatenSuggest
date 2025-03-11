@@ -37,7 +37,13 @@ public class ResetPasswordController {
                                        @RequestParam String newPassword,
                                        @RequestParam String confirmPassword,
                                        Model model) {
-        return accountService.resetPassword(token, newPassword, confirmPassword, model);
-    }
+        boolean isReset = accountService.resetPassword(token, newPassword, confirmPassword, model);
 
+        if (isReset) {
+            model.addAttribute("passwordReset", globalConfig.getPasswordResetSuccess());
+        } else {
+            model.addAttribute("globalError", globalConfig.getAnErrorOccur());
+        }
+        return Constant.RESET_PASSWORD_PAGE;
+    }
 }

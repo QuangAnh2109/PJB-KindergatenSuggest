@@ -42,16 +42,11 @@ public class ChangePasswordController {
             @RequestParam("confirmPassword") String confirmPassword,
             HttpServletRequest request,
             Model model) {
-
-        String result = accountService.changePasswordProcess(
-                oldPassword, newPassword, confirmPassword, model);
-
-        // If password change was successful, invalidate the session
-        if (model.containsAttribute("successUpdate")) {
+        boolean isUpdated = accountService.changePasswordProcess(oldPassword, newPassword, confirmPassword, model);
+        if (isUpdated) {
             SecurityContextHolder.clearContext();
             request.getSession().invalidate();
         }
-
-        return result;
+        return Constant.CHANGE_PASSWORD_PAGE;
     }
 }
