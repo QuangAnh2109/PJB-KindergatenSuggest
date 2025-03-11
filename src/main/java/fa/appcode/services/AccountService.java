@@ -29,7 +29,6 @@ public interface AccountService {
 
     AccountInfo findByEmail(String email);
 
-
     AccountInfo findAccountInfoByPhone(String phone);
 
     boolean updatePassword(String email, String newPassword);

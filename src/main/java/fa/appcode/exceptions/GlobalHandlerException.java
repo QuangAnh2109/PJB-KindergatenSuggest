@@ -1,21 +1,23 @@
 package fa.appcode.exceptions;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import fa.appcode.common.logging.Log4jUtils;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import fa.appcode.common.utils.Constant;
-import org.springframework.ui.Model;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
 import java.sql.SQLException;
 
 @ControllerAdvice
 public class GlobalHandlerException {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(GlobalHandlerException.class);
+    private static final Logger logger = (Logger) Log4jUtils.getLogger(GlobalHandlerException.class);
 
     @ExceptionHandler(CustomDataException.class)
     public ResponseEntity<String> handleCustomDataException(CustomDataException ex) {
@@ -41,12 +43,12 @@ public class GlobalHandlerException {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entity not found: " + e.getMessage());
     }
 
-    @ExceptionHandler(Exception.class)
-    public String handleException(Exception ex, Model model) {
-        logger.error("Unhandled exception occurred", ex);
-        model.addAttribute("globalError", "An unexpected error occurred. Please try again later.");
+    @ExceptionHandler(NoResourceFoundException.class)
+    public String handleNoResourceFoundException(NoResourceFoundException e) {
+        logger.error("NoResourceFoundException occurred: {}", e.getMessage(), e);
         return Constant.ERROR_PAGE;
     }
+
     @ExceptionHandler(TokenException.class)
     public ResponseEntity<String> handleTokenException(TokenException e) {
         logger.error("Token error: {}", e.getMessage(), e);

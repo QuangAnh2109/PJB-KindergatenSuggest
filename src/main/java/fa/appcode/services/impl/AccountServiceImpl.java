@@ -18,7 +18,6 @@ import jakarta.transaction.Transactional;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.EmailService;
 import fa.appcode.services.MasterDatumService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Logger;
 import jakarta.transaction.Transactional;

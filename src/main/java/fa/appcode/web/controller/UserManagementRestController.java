@@ -5,6 +5,8 @@ import fa.appcode.common.utils.ValidateUtils;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.services.AccountService;
 
+import fa.appcode.services.ValidateService;
+import fa.appcode.services.impl.ValidateServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,8 @@ import java.util.Map;
 public class UserManagementRestController {
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private ValidateService validateService;
 
     /**
      * Delete account
@@ -56,42 +60,28 @@ public class UserManagementRestController {
                 }
             });
         }
-            if (!ValidateUtils.isValidFullName(accountVo.getFullName())) {
-                errors.put("fullName", "Full name cannot be empty");
-            }
-            if (!ValidateUtils.isValidEmail(accountVo.getEmail())) {
-                errors.put("email", "Invalid email format");
-            }
-            if (!ValidateUtils.isValidDob(LocalDate.parse(accountVo.getDob()))) {
-                errors.put("dob", "Date of birth must be in the past");
-            }
-            if (!ValidateUtils.validatePhone(accountVo.getPhone())) {
-                errors.put("phone", "Invalid phone number format");
-            }
-            if (!ValidateUtils.isValidRole(accountVo.getRole())) {
-                errors.put("role", "Role cannot be empty");
-            }
-            if (!ValidateUtils.isValidStatus(accountVo.getStatus())) {
-                errors.put("status", "Status cannot be empty");
-            }
-
-            if (!errors.isEmpty()) {
-                return ResponseEntity.badRequest().body(errors);
-            }
 
         Log4jUtils.getLogger().info("AccountID :" + accountVo.getId());
 
         boolean isAdding = accountVo.getId() == null;
+
+        if (isAdding && validateService.checkDuplicateEmail(accountVo.getEmail())) {
+            errors.put("email", "Email already exists. Please use a different email.");
+        }
+
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
 
         try {
             if (isAdding) {
                 accountService.addUserFromAdmin(accountVo, principal);
                 return ResponseEntity.ok(Map.of("message", "User added successfully."));
             } else {
-                int newRecordNo = accountService.updateAccount(accountVo); // Trả về recordNo mới
+                int newRecordNo = accountService.updateAccount(accountVo);
                 return ResponseEntity.ok(Map.of(
                         "message", "User updated successfully.",
-                        "recordNo", newRecordNo // Trả về recordNo mới
+                        "recordNo", newRecordNo
                 ));
             }
         } catch (IllegalArgumentException e) {

@@ -115,12 +115,11 @@
 
 
                     <form id="userForm"
-                          th:action="@{${role == 'Admin' ? '/admin/api/save-user' : '/auth/update-account'}}"
+                          th:action="@{${role == 'Admin' ? '/admin/api/save-user' : '/auth/view-account'}}"
                           method="post"
                           th:object="${user}">
 
                         <input type="hidden" th:field="*{id}" id="userID">
-                        <input type="hidden" id="recordNo" name="recordNo" th:value="${recordNo}" />
 
 
                         <!-- Full Name -->

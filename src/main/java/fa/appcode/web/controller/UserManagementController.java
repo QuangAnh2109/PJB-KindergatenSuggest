@@ -84,7 +84,7 @@ public class UserManagementController {
         model.addAttribute("recordNo", user.getRecordNo());
 
         Log4jUtils.getLogger().info("recordNo : " + user.getRecordNo());
-        return Constant.VIEW_ACCOUNT_PAGE;
+        return "admin_side/edit-account";
     }
 
 
