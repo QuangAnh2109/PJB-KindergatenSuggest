@@ -13,21 +13,6 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
-/**
- * Returns an Image object that can then be painted on the screen.
- * The url argument must specify an absolute <a href="#{@link}">{@link URL}</a>. The name
- * argument is a specifier that is relative to the url argument.
- * <p>
- * This method always returns immediately, whether or not the
- * image exists. When this applet attempts to draw the image on
- * the screen, the data will be loaded. The graphics primitives
- * that draw the image will incrementally paint on the screen.
- *
- * @param  url  an absolute URL giving the base location of the image
- * @param  name the location of the image, relative to the url argument
- * @return      the image at the specified URL
- * @see         Image
- */
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -49,7 +34,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(configurer ->
                         configurer
-                                .requestMatchers("/general/**").anonymous()
+                                .requestMatchers("/public/showMyLoginPage", "/public/forgot-password", "public/register", "public/reset-password").anonymous()
                                 .requestMatchers("/", "/user_side/**", "/public/**").permitAll()
                                 .requestMatchers("/user/**").not().hasAnyAuthority(Constant.SCHOOL_OWNER_ROLE, Constant.ADMIN_ROLE)
                                 .requestMatchers("/auth/**").hasAnyAuthority(Constant.PARENT_ROLE, Constant.SCHOOL_OWNER_ROLE, Constant.ADMIN_ROLE)

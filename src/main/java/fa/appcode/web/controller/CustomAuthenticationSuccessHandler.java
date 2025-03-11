@@ -41,7 +41,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 redirectUrl = "/manager/request-list";
                 break;
             } else if (role.equals(Constant.SCHOOL_OWNER_ROLE)) {
-                redirectUrl = "/manager/home";
+                redirectUrl = "/manager/school-list";
                 break;
             } else if (role.equals(Constant.PARENT_ROLE)) {
                 redirectUrl = "/public/home";

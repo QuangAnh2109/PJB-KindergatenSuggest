@@ -1,6 +1,7 @@
-function reloadReset() {
-    const form = document.querySelector('form[name="contactForm"]');
-    const submitBtn = document.getElementById('reset-button');
+function reloadHande() {
+    const form = document.querySelector('form[name="changePass"]');
+    const submitBtn = document.getElementById('submitButton');
+
     if (form) {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -8,15 +9,17 @@ function reloadReset() {
 
             fetch(form.action, {
                 method: 'POST',
-                body: new FormData(form)
+                body: new FormData(form),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             })
                 .then(response => response.text())
                 .then(html => {
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = html;
-                    document.querySelector('.padding').innerHTML =
-                        tempDiv.querySelector('.padding').innerHTML;
-
+                    document.querySelector('.padding40').innerHTML =
+                        tempDiv.querySelector('.padding40').innerHTML;
                     if (tempDiv.querySelector('.alert-success')) {
                         const successModal = new bootstrap.Modal(document.getElementById('successModal'));
                         successModal.show();
@@ -24,17 +27,16 @@ function reloadReset() {
                             window.location.href = "/public/showMyLoginPage";
                         });
                     }
-                    reloadReset();
+                    reloadHande();
                 })
                 .catch(error => {
-                    console.log('error', error);
-                    alert('An error has occurred. Please try again.');
+                    console.error('error:', error);
+                    alert('An error occur. PLease try again.');
                 })
-                .finalaly(() => {
+                .finally(() => {
                     submitBtn.disabled = false;
                 });
         });
     }
 }
-
-document.addEventListener('DOMContentLoaded', reloadReset);
+document.addEventListener('DOMContentLoaded', reloadHande);

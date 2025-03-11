@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>
+    KinderGarten Suggestion</title>
+  <link rel="icon" th:href="@{/user_side/images/icon.png}" type="image/gif" sizes="16x16">
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="KinderGarten Suggestion" name="description">
+  <meta content="" name="keywords">
+  <meta content="" name="author">
+  <!-- CSS Files
+  ================================================== -->
+  <link th:href="@{/user_side/css/bootstrap.min.css}" rel="stylesheet">
+  <link th:href="@{/user_side/css/mdb.min.css}" rel="stylesheet">
+  <link th:href="@{/user_side/css/plugins.css}" rel="stylesheet">
+  <link th:href="@{/user_side/css/style.css}" rel="stylesheet">
+  <link th:href="@{/user_side/css/coloring.css}" rel="stylesheet">
+  <link id="colors" th:href="@{/user_side/css/colors/scheme-01.css}" rel="stylesheet">
+</head>
+<style>
+  .required-label::after {
+    content: " *";
+    color: red;
+    font-weight: bold;
+  }
+
+  .btn-primary {
+    background-color: green !important;
+    border-color: green !important;
+  }
+</style>
+<body>
+<div id="wrapper">
+
+  <!-- page preloader begin -->
+  <div id="de-preloader"></div>
+  <!-- page preloader close -->
+  <!-- header begin -->
+  <div
+          th:insert="user_side/header :: header"></div>
+  <div class="no-bottom no-top zebra" id="content">
+    <div id="top"></div>
+    <!-- section begin -->
+    <section id="subheader" class="jarallax text-light">
+      <img th:src="@{/user_side/images/background/14.jpg}" class="jarallax-img" alt="">
+      <div class="center-y relative text-center">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 text-center">
+              <h1>User Profile</h1>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="section-settings" class="bg-gray-100">
+      <div class="container">
+        <div class="row">
+
+          <div class="col-lg-9">
+            <div class="card padding40 rounded-5">
+              <div class="row">
+                <form action="#" th:action="@{/auth/update-account}" method="post" th:object="${accountInfo}">
+                  <input type="hidden" th:field="*{email}">
+                  <div class="mb-3">
+                    <label class="form-label required-label">Full Name </label>
+                    <input type="text" class="form-control" required th:field="*{fullName}">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label required-label">Email Address </label>
+                    <input type="email" class="form-control" th:field="*{email}" disabled>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">D.O.B</label>
+                    <input type="date" class="form-control" th:field="*{dob}"/>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label required-label">Mobile No. </label>
+                    <input type="text" class="form-control" required th:field="*{phone}">
+                    <div th:if="${phoneFail}" th:text="${phoneFail}" class="text-danger danger">
+                    </div>
+                  </div>
+                  <h5>Address</h5>
+                  <div class="mb-3">
+                    <select onchange="loadDistrict(this.value)" name="city" class="form-control">
+                      <option th:text="${accountInfo != null and accountInfo.city != null ? accountInfo.city.cityName : ''}"
+                              disabled selected>Province/City
+                      </option>
+                      <option th:each="city : ${citys}" th:value="${city.id}"
+                              th:text="${city.cityName}"></option>
+                    </select>
+                    <div class="mb-3">
+                      <select onchange="loadWard(this.value)" name="district" id="district"
+                              class="form-control" required disabled>
+                        <option value="" disabled selected
+                                th:text="${accountInfo.district != null ? accountInfo.district.districtName : 'District'}"></option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <select onchange="enableParam('address')" name="ward" id="ward" class="form-control"
+                              required disabled>
+                        <option value="" disabled selected
+                                th:text="${accountInfo.ward != null ? accountInfo.ward.wardName : 'Ward'}"></option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <input type="text" name="address" id="address" class="form-control"
+                             th:value="${accountInfo.address != null ? accountInfo.address : ''}"
+                             placeholder="Enter you address..." maxlength="255" required disabled>
+                    </div>
+
+                    <div th:if="${successMessage}" id="success-alert"
+                         class="alert alert-success alert-dismissible fade show mt-3"
+                         role="alert">
+                      <strong>Success!</strong> <span th:text="${successMessage}"></span>
+                      <button type="button" class="btn-close" data-bs-dismiss="alert"
+                              aria-label="Close"></button>
+                    </div>
+                    <div class="text-center">
+                      <button type="reset" class="btn btn-primary">Cancel</button>
+                      <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg rounded-4 border-0 overflow-hidden">
+      <div class="modal-body text-center p-5">
+        <div class="d-flex justify-content-center mb-3">
+          <div class="success-icon">
+            <i class="bi bi-check-circle-fill text-success fs-1"></i>
+          </div>
+        </div>
+        <h4 class="fw-bold text-success">Password Update Successfully!</h4>
+        <p class="text-muted mb-4">You need to log in again.</p>
+      </div>
+      <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+        <button type="button" class="btn btn-lg btn-success px-5 py-2 fw-bold shadow-sm" id="redirectLogin">Login Now</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Javascript Files
+================================================== -->
+<script th:src="@{/user_side/js/plugins.js}"></script>
+<script th:src="@{/user_side/js/designesia.js}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js">
+</script>
+<script th:src="@{/user_side/js/address-load.js}"></script>
+</body>
+</html>
