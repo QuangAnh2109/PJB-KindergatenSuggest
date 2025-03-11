@@ -92,9 +92,8 @@
                 <!-- start  -->
                 <div style="display: flex; align-items: center;">
                     <h3 style="color: buttontext; margin-right: 20px;">Request details</h3>
-                    <button class="btn btn-closed">
-                        <span th:text="${requestDetail.requestMasterName}">Closed</span>
-                    </button>
+                    <button th:if="${requestDetail.requestMasterName == 'Open'}" class="btn btn-success btn-sm rounded-pill" style="min-width: 80px; font-size: 12px;" th:text="${requestDetail.requestMasterName}"></button>
+                    <button th:if="${requestDetail.requestMasterName != 'Open'}" class="btn btn-danger btn-sm rounded-pill" style="min-width: 80px; font-size: 12px;" th:text="${requestDetail.requestMasterName}"></button>
                 </div>
 
                 <!-- end row -->
