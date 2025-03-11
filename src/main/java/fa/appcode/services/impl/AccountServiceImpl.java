@@ -540,32 +540,7 @@ public class AccountServiceImpl implements AccountService {
         updatePassword(account.getEmail(), newPassword);
         return true;
     }
-
-
-    //    @Override
-//    public String updateAccountDetails(AccountInfo accountInfo, Model model) {
-//        AccountInfo currentAccount = findByEmail(accountInfo.getEmail());
-//        model.addAttribute("cities", cityService.findAllByNoDelete());
-//        if (currentAccount == null) {
-//            model.addAttribute(ERROR_ATTRIBUTE, globalConfig.getUserNotFound());
-//            return Constant.VIEW_ACCOUNT_PAGE;
-//        }
-//        boolean hasError = validateService.validateUpdateAccount(accountInfo, currentAccount.getPhone(), model);
-//        if (StringUtils.isEmpty(accountInfo.getAddress())) {
-//            accountInfo.setCity(currentAccount.getCity());
-//            accountInfo.setWard(currentAccount.getWard());
-//            accountInfo.setDistrict(currentAccount.getDistrict());
-//            accountInfo.setAddress(currentAccount.getAddress());
-//        }
-//        if (hasError) {
-//            model.addAttribute("cities", cityService.findAllByNoDelete());
-//            return Constant.VIEW_ACCOUNT_PAGE;
-//        }
-//            updateAccountInfo(currentAccount, accountInfo);
-//            model.addAttribute("successMessage", globalConfig.getUpdateSuccess());
-//
-//        return Constant.VIEW_ACCOUNT_PAGE;
-//    }
+    
     @Override
     public boolean updateAccountDetails(AccountInfo accountInfo, Model model) {
         AccountInfo currentAccount = findByEmail(accountInfo.getEmail());
