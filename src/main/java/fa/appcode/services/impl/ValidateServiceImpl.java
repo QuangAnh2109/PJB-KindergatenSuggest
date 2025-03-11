@@ -338,7 +338,7 @@ public class ValidateServiceImpl implements ValidateService {
             model.addAttribute(PHONE_ERROR, globalConfig.getPhoneIsNotValid());
             hasError = true;
         }
-        if (!accountInfo.getDob().isBefore(LocalDate.of(2006, 1, 1))) {
+        if (accountInfo.getDob() != null && !accountInfo.getDob().isBefore(LocalDate.of(2006, 1, 1))) {
             LOGGER.warn("Dob  is not valid");
             model.addAttribute("dobError", globalConfig.getInvalidDate());
             hasError = true;

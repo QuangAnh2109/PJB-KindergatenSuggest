@@ -124,6 +124,9 @@
                                                    th:value="${accountInfo.address != null ? accountInfo.address : ''}"
                                                    placeholder="Enter you address..." maxlength="255" required disabled>
                                         </div>
+                                        <div th:if="${param.success}" class="alert alert-success" >
+                                            Update Successfully!
+                                        </div>
 
                                         <div th:if="${successMessage}" id="success-alert"
                                              class="alert alert-success alert-dismissible fade show mt-3"
