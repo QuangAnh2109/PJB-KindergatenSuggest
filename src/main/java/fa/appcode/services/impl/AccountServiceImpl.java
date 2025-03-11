@@ -288,6 +288,11 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(existing);
     }
 
+    @Override
+    public int getAccountIdByEmail(String email) {
+        return accountRepository.findAccountByEmailAndStatusIdAndDeleteFlg(email, 1, false).getId();
+    }
+
     //    @Override
 //    public AccountInfo findWithFullAddressByEmail(String email, boolean deleteFlg) {
 //        return accountRepository.findWithFullAddressByEmail(email, deleteFlg);

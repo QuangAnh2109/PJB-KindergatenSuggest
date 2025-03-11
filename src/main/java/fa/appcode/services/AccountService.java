@@ -121,4 +121,6 @@ public interface AccountService {
     String getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(int id);
 
     void updateAccountInfo(AccountInfo existing, AccountInfo formData);
+
+    public int getAccountIdByEmail(String email);
 }
