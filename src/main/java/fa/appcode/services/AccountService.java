@@ -29,7 +29,6 @@ public interface AccountService {
 
     AccountInfo findByEmail(String email);
 
-
     AccountInfo findAccountInfoByPhone(String phone);
 
     boolean updatePassword(String email, String newPassword);
@@ -67,7 +66,7 @@ public interface AccountService {
      *
      * @param accountVo
      */
-    void updateAccount(AccountVo accountVo);
+    int updateAccount(AccountVo accountVo);
 
     /**
      * Deletes logic a user account based on the provided ID. (set deleteFlg=1)
