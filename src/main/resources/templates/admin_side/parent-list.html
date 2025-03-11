@@ -131,7 +131,7 @@
 
                 <div class="row">
                     <div class="col-12">
-                        <div class="table-responsive">
+                        <div>
                             <div th:if="${message != null}"
                                  class="alert alert-danger text-danger alert-dismissible fade show" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -140,14 +140,19 @@
                                 <strong th:text="${action}">!</strong> <span th:text="${message}"></span>
                             </div>
                             <!--                            <form action="/admin/parent-list" method="get">-->
-                            <div class="input-group" style="padding: 0px 0px 15px 0px;">
-                                            <span class="input-group-prepend">
-                                                        <button id="searchButtonParent" type="button"
-                                                                class="btn btn-primary"><i
-                                                                class="fa fa-search"></i></button>
-                                            </span>
-                                <input type="search" id="parentSearchField" name="search" class="form-control"
-                                       th:placeholder="Search" aria-label="Search" th:value="${search}">
+                            <div class="row">
+                                <div class="col-8">
+                                </div>
+                                <div class="col-4">
+                                    <div class="d-flex justify-content-end align-items-center mb-3">
+
+                                        <input type="search" id="parentSearchField" name="search" class="form-control"
+                                               th:placeholder="Search" aria-label="Search" th:value="${search}">
+                                        <button id="searchButtonParent" type="button"
+                                                class="btn btn-success"><i
+                                                class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
                             </div>
                             <!--                            </form>-->
                             <div style="max-height: 600px; overflow-y: auto;">
@@ -191,7 +196,8 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                                <div id="noResultsMessage" th:if="${accounts.size() == 0 || accounts==null}" class="alert alert-warning"
+                                <div id="noResultsMessage" th:if="${accounts.size() == 0 || accounts==null}"
+                                     class="alert alert-warning"
                                      role="alert">
                                     <span th:text="#{ME_012}">No results found.</span>
                                 </div>
@@ -199,34 +205,38 @@
 
                             <nav aria-label="Page navigation">
                                 <th:block th:if="${numberPage > 1}">
-                                <ul class="pagination justify-content-end">
-                                    <!-- Previous Button -->
-                                    <li class="page-item parent-page-item disabled" th:if="${currentPage==0}"><a
-                                            class="page-link" type="button">Previous</a></li>
-                                    <li th:unless="${currentPage==0}" class="page-item parent-page-item"
-                                        th:data-page="${currentPage - 1}" th:classappend="${currentPage == 0} ? 'disabled'">
-                                        <a class="page-link" type="button"
-                                           th:aria-disabled="${currentPage == 0}">Previous</a>
-                                    </li>
+                                    <ul class="pagination justify-content-end">
+                                        <!-- Previous Button -->
+                                        <li class="page-item parent-page-item disabled" th:if="${currentPage==0}"><a
+                                                class="page-link" type="button">Previous</a></li>
+                                        <li th:unless="${currentPage==0}" class="page-item parent-page-item"
+                                            th:data-page="${currentPage - 1}"
+                                            th:classappend="${currentPage == 0} ? 'disabled'">
+                                            <a class="page-link" type="button"
+                                               th:aria-disabled="${currentPage == 0}">Previous</a>
+                                        </li>
 
-                                    <!-- Page Numbers -->
-                                    <li class="page-item parent-page-item"
-                                        th:each="pageNum : ${numberPage > 0 ? #numbers.sequence(0, numberPage - 1) : #numbers.sequence(0, 0)}"
-                                        th:classappend="${pageNum == currentPage} ? 'active'" th:data-page="${pageNum}">
-                                        <a class="page-link" type="button" th:text="${pageNum + 1}"></a>
-                                    </li>
+                                        <!-- Page Numbers -->
+                                        <li class="page-item parent-page-item"
+                                            th:each="pageNum : ${numberPage > 0 ? #numbers.sequence(0, numberPage - 1) : #numbers.sequence(0, 0)}"
+                                            th:classappend="${pageNum == currentPage} ? 'active'"
+                                            th:data-page="${pageNum}">
+                                            <a class="page-link" type="button" th:text="${pageNum + 1}"></a>
+                                        </li>
 
-                                    <!-- Next Button -->
-                                    <li class="page-item parent-page-item disabled"
-                                        th:if="${currentPage == numberPage - 1 || numberPage==0}"><a class="page-link" type="button">Next</a>
-                                    </li>
-                                    <li th:unless="${currentPage == numberPage - 1 || numberPage==0}" class="page-item parent-page-item"
-                                        th:data-page="${currentPage + 1}"
-                                        th:classappend="${currentPage == numberPage - 1} ? 'disabled'">
-                                        <a class="page-link" type="button"
-                                           th:aria-disabled="${currentPage == numberPage - 1}">Next</a>
-                                    </li>
-                                </ul>
+                                        <!-- Next Button -->
+                                        <li class="page-item parent-page-item disabled"
+                                            th:if="${currentPage == numberPage - 1 || numberPage==0}"><a
+                                                class="page-link" type="button">Next</a>
+                                        </li>
+                                        <li th:unless="${currentPage == numberPage - 1 || numberPage==0}"
+                                            class="page-item parent-page-item"
+                                            th:data-page="${currentPage + 1}"
+                                            th:classappend="${currentPage == numberPage - 1} ? 'disabled'">
+                                            <a class="page-link" type="button"
+                                               th:aria-disabled="${currentPage == numberPage - 1}">Next</a>
+                                        </li>
+                                    </ul>
                                 </th:block>
                             </nav>
                         </div>
