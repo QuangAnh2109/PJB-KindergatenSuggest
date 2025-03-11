@@ -9,7 +9,7 @@ public class Constant {
     public static final String INIT_PAGE = "0";
     public static final String PAGE_SIZE = "10";
     public static final String KEY_WORD_DEFAULT = "";
-    public static final String VIEW_ACCOUNT_PAGE = "admin_side/edit-account";
+    public static final String VIEW_ACCOUNT_PAGE = "user_side/view-account";
     public static final String FORGOT_PASSWORD_PAGE = "user_side/forgot-password";
     public static final String RESET_PASSWORD_PAGE = "user_side/reset-password";
     public static final String TOKEN_INVALID_PAGE = "user_side/token-invalid";
@@ -18,6 +18,8 @@ public class Constant {
     public static final String REGISTER_PAGE = "user_side/register";
     public static final String VERIFY_ACCOUNT_PAGE = "user_side/verify-account";
     public static final String ACCESS_DENIED_PAGE = "user_side/access-denied";
+    public static final String ERROR_PAGE = "user_side/error";
+
     //URL
     public static final String VIEW_ACCOUNT_URL = "/auth/view-account";
     public static final String REGISTER_VERIFY_URL = "http://localhost:8080/public/register/verify?token=";
@@ -27,6 +29,7 @@ public class Constant {
     private static final String MANAGER_REQUEST_LIST_URL = "/manager/request-list";
     public static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
     public static final String PARENT_LIST_URL = "/manager/parent-list";
+    public static final String REQUEST_REMINDER_URL = "http://localhost:8080/manager/request-reminder";
 
     //ADMIN SIDE
     public static final String SCHOOL_FEEDBACK_RATING_MANAGER_PAGE = "admin_side/school-feedback-rating";
@@ -41,6 +44,8 @@ public class Constant {
     public static final String PHONE_REGEX_HTML = "/(84|0)[0-9]{9}/g";
     public static final String EMAIL_REGEX = "^[a-z][a-z0-9]*@gmail.com$";
     public static final String PHONE_REGEX = "^\\+?[0-9]{10,12}$";
+    public static final String MAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+
     //CONSTANT VALUE
     public static final Integer PARENT_ROLE_ID = 3;
     public static final Integer SCHOOL_OWNER_ID = 2;
@@ -53,6 +58,9 @@ public class Constant {
     public static final Integer STATUS_DELETED = 0;
     public static final String WEB_SYSTEM = "WEB_SYSTEM";
     public static final int SEND_EMAIL_FORGOT = 1;
+    public static final int SEND_EMAIL_REGISTER = 1;
+
+    public static final int SEND_REQUEST_REMINDER = 7;
     public static final String INVALID_TOKEN_FORMAT = "Invalid token format";
     public static final String INVALID_TOKEN = "Invalid token structure";
     public static final String APPROVE_ENROLL_REQUEST ="approve";
@@ -65,6 +73,8 @@ public class Constant {
     public static final String SEARCH_ALL = "";
 
     public static final String SUCCESS = "success";
+    public static final String DANGER = "danger";
     public static final int ENROLL_STATUS_ENROLL=3;
     public static final int ENROLL_STATUS_UNENROLL=4;
+
 }

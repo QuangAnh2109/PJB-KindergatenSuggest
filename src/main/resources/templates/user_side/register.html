@@ -24,54 +24,65 @@
             <h1>Register</h1>
         </div>
     </section>
+
     <section class="py-5">
         <div class="container">
             <div class="row justify-content-center register">
                 <div class="col-md-6">
                     <h3 class="text-center mb-4">Create a new account</h3>
+
+                    <!-- Global Error Message -->
+                    <div th:if="${globalError}" class="alert alert-danger">
+                        <span th:text="${globalError}"></span>
+                    </div>
+
+                    <!-- Success Message -->
+                    <div th:if="${message}" class="alert alert-success">
+                        <span th:text="${message}"></span>
+                    </div>
                     <form th:action="@{/public/register}" th:object="${accountVo}" method="post"
-                        name="registerForm"  class="p-4 shadow rounded bg-white">
+                          class="p-4 shadow rounded bg-white" name="registerForm">
+                        <!-- Full Name -->
                         <div class="mb-3">
                             <label class="form-label">Full Name</label>
                             <input type="text" th:field="*{fullName}" class="form-control"
-                                   placeholder="Enter your full name">
-                            <span th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"
-                                  class="text-danger"></span>
+                                   placeholder="e.g., John Doe">
+                            <span class="text-danger" th:if="${fullNameError}" th:text="${fullNameError}"></span>
                         </div>
+                        <!-- Email Address -->
                         <div class="mb-3">
                             <label class="form-label">Email Address</label>
-                            <input type="email" th:field="*{email}" class="form-control" placeholder="info@xyz.com">
-                            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></span>
-                            <span th:if="${emailError}" th:text="${emailError}" class="text-danger"></span>
+                            <input type="email" th:field="*{email}" class="form-control"
+                                   placeholder="e.g., example@gmail.com">
+                            <span class="text-danger" th:if="${emailError}" th:text="${emailError}"></span>
                         </div>
 
+                        <!-- Mobile Number -->
                         <div class="mb-3">
-                            <label class="form-label">Mobile No.</label>
-                            <input type="text" th:field="*{phone}" class="form-control" placeholder="099999999">
-                            <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger"></span>
+                            <label class="form-label">Mobile Number</label>
+                            <input type="text" th:field="*{phone}" class="form-control"
+                                   placeholder="e.g., 0987654321">
+                            <span class="text-danger" th:if="${phoneError}" th:text="${phoneError}"></span>
                         </div>
+
+                        <!-- Password -->
                         <div class="mb-3">
                             <label class="form-label">Password</label>
                             <input type="password" th:field="*{password}" class="form-control"
-                                   placeholder="xxxxxxxxxxxx">
-                            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
-                                  class="text-danger"></span>
+                                   placeholder="Enter your password">
+                            <span class="text-danger" th:if="${passwordError}" th:text="${passwordError}"></span>
                         </div>
+                        <!-- Confirm Password -->
                         <div class="mb-3">
                             <label class="form-label">Confirm Password</label>
                             <input type="password" th:field="*{confirmPassword}" class="form-control"
-                                   placeholder="xxxxxxxxxxxx">
-                            <span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"
-                                  class="text-danger"></span>
-                            <span th:if="${confirmPasswordError}" th:text="${confirmPasswordError}"
-                                  class="text-danger"></span>
-                        </div>
-                        <div>
-                            <p th:if="${message}" th:text="${message}" style="color: green;"></p>
+                                   placeholder="Re-enter your password">
+                            <span class="text-danger" th:if="${confirmPasswordError}"
+                                  th:text="${confirmPasswordError}"></span>
                         </div>
                         <div class="d-flex justify-content-center gap-2">
                             <input type="reset" value="Cancel" class="btn btn-warning w-45">
-                            <input type="submit" id="registerButton" value="Sign Up" class="btn btn-primary w-45">
+                            <input type="submit" value="Sign Up" id="registerButton" class="btn btn-primary w-45">
                         </div>
                     </form>
                 </div>

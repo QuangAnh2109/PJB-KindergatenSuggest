@@ -38,7 +38,7 @@
                                 <div th:if="${param.error}" class="alert alert-danger text-center">
                                     <span th:text="${param.error}"></span>
                                 </div>
-                                <form action="#" th:action="@{/authenticateTheUser}" method="post">
+                                <form action="#" th:action="@{/authenticateTheUser}" method="post" name="loginForm">
                                     <div class="field-set">
                                         <label>Email address</label>
                                         <div class="input-group">
@@ -46,6 +46,7 @@
                                                    placeholder="Enter your email"  />
                                             <span class="input-group-text"><i class="fa fa-envelope"></i></span>
                                         </div>
+                                        <div></div>
                                     </div>
 
                                     <div class="field-set mt-3">
@@ -55,6 +56,7 @@
                                                    placeholder="Enter your password"  />
                                             <span class="input-group-text"><i class="fa fa-lock"></i></span>
                                         </div>
+                                        <div></div>
                                     </div>
 
                                     <div class="text-center mt-3">
@@ -62,11 +64,9 @@
                                     </div>
 
                                     <div class="text-center mt-4">
-                                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                                        <button type="submit" id="loginBtn" class="btn btn-success btn-block">Login</button>
                                     </div>
-
                                     <div class="text-center mt-3">OR</div>
-
 
                                 </form>
                                 <div class="text-center mt-3">
@@ -82,11 +82,11 @@
         </section>
     </div>
 </div>
-
 <!-- Javascript Files -->
 <script th:src="@{/user_side/js/dropdown.js}"></script>
 <script th:src="@{/user_side/js/plugins.js}"></script>
 <script th:src="@{/user_side/js/designesia.js}"></script>
+<script th:src="@{/user_side/js/login.js}"></script>
 
 </body>
 </html>
