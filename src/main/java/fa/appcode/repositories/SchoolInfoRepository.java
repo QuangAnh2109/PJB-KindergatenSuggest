@@ -3,6 +3,7 @@ package fa.appcode.repositories;
 import fa.appcode.common.utils.SchoolConstant;
 import fa.appcode.common.vo.*;
 import fa.appcode.entities.SchoolInfo;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -39,13 +40,13 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
 
     //find all SchoolListManager by paging and search and delete flag
     @Query("SELECT new fa.appcode.common.vo.SchoolListManager(si.id, si.schoolName, si.schoolAddress, si.city.cityName, si.district.districtName, si.ward.wardName, si.schoolPhone, si.schoolEmail, si.postedDate, si.statusId, " +
-            "CASE WHEN si.statusId = " + 1 + " THEN false ELSE true END) " +
+            "CASE WHEN si.statusId = " + SchoolConstant.STATUS_DELETED + " THEN false ELSE true END) " +
             "FROM SchoolInfo si " +
             "WHERE (si.schoolName IS NULL OR si.schoolName LIKE %:search%) AND si.deleteFlg = :deleteFlg " +
             "ORDER BY " +
-            "CASE WHEN si.statusId = " + 1 + " THEN 0 ELSE 1 END, " +
-            "si.postedDate DESC")
-    List<SchoolListManager> searchAllByNameAndPagingAndDeleteFlg(Pageable pageable, @Param("search") String search, @Param("deleteFlg") boolean deleteFlg);
+            "CASE WHEN si.statusId = " + SchoolConstant.STATUS_SUBMITTED + " THEN 0 ELSE 1 END, " +
+            "si.postedDate DESC ")
+    Page<SchoolListManager> searchAllByNameAndPagingAndDeleteFlg(Pageable pageable, @Param("search") String search, @Param("deleteFlg") boolean deleteFlg);
 
     //find all SchoolListManager by paging and search and account id and delete flag
     @Query("SELECT new fa.appcode.common.vo.SchoolListManager(si.id, si.schoolName, si.schoolAddress, si.city.cityName, si.district.districtName, si.ward.wardName, si.schoolPhone, si.schoolEmail, si.postedDate, si.statusId, " +
@@ -55,7 +56,7 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
             "ORDER BY " +
             "CASE WHEN si.statusId = " + SchoolConstant.STATUS_SUBMITTED + " THEN 0 ELSE 1 END, " +
             "si.postedDate DESC")
-    List<SchoolListManager> searchAllByNameAndAccountAndPagingAndDeleteFlg(Pageable pageable, @Param("search") String search, @Param("account") String email, @Param("deleteFlg") boolean deleteFlg);
+    Page<SchoolListManager> searchAllByNameAndAccountAndPagingAndDeleteFlg(Pageable pageable, @Param("search") String search, @Param("account") String email, @Param("deleteFlg") boolean deleteFlg);
 
     //update school status by school id and record no and no delete
     @Modifying
@@ -112,7 +113,8 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
                 "SELECT MAX(f2.id.feedbackTime) " +
                 "FROM Feedback f2 " +
                 "WHERE f2.id.accountId = f.id.accountId " +
-                "GROUP BY f2.id.accountId" +
+                "AND f2.id.schoolId = f.id.schoolId " +
+                "GROUP BY f2.id.accountId " +
             ") " +
             "GROUP BY f.id.schoolId")
     List<SchoolRatingFeedback> getAllSchoolRatingFeedback();
@@ -133,10 +135,10 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
                 "SELECT MAX(f2.id.feedbackTime) " +
                 "FROM Feedback f2 " +
                 "WHERE f2.id.accountId = f.id.accountId " +
-            "AND f2.id.schoolId = :#{#form.schoolId} " +
-            "AND f2.school.account.id = :#{#form.accountId} " +
-            "AND (:#{#form.from} IS NULL OR f.id.feedbackTime >= :#{#form.from}) " +
-            "AND (:#{#form.to} IS NULL OR f.id.feedbackTime <= :#{#form.to})" +
+                "AND f2.id.schoolId = :#{#form.schoolId} " +
+                "AND f2.school.account.id = :#{#form.accountId} " +
+                "AND (:#{#form.from} IS NULL OR f.id.feedbackTime >= :#{#form.from}) " +
+                "AND (:#{#form.to} IS NULL OR f.id.feedbackTime <= :#{#form.to})" +
                 "GROUP BY f2.id.accountId" +
             ") " +
             "GROUP BY f.id.schoolId")

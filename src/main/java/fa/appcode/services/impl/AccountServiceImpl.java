@@ -300,6 +300,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
+    @Override
+    public int getAccountIdByEmail(String email) {
+        return accountRepository.findAccountByEmailAndStatusIdAndDeleteFlg(email, 1, false).getId();
+    }
+
     //    @Override
 //    public AccountInfo findWithFullAddressByEmail(String email, boolean deleteFlg) {
 //        return accountRepository.findWithFullAddressByEmail(email, deleteFlg);
@@ -540,7 +545,7 @@ public class AccountServiceImpl implements AccountService {
         updatePassword(account.getEmail(), newPassword);
         return true;
     }
-    
+
     @Override
     public boolean updateAccountDetails(AccountInfo accountInfo, Model model) {
         AccountInfo currentAccount = findByEmail(accountInfo.getEmail());

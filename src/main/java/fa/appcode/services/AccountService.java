@@ -135,4 +135,6 @@ public interface AccountService {
     boolean updateAccountDetails(AccountInfo accountInfo, Model model);
     AccountInfo getCurrentAccountInfo();
 
+
+    public int getAccountIdByEmail(String email);
 }
