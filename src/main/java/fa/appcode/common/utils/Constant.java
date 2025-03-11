@@ -29,6 +29,8 @@ public class Constant {
     private static final String MANAGER_REQUEST_LIST_URL = "/manager/request-list";
     public static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
     public static final String PARENT_LIST_URL = "/manager/parent-list";
+    public static final String REQUEST_REMINDER_URL = "http://localhost:8080/manager/request-reminder";
+
     //ADMIN SIDE
     public static final String SCHOOL_FEEDBACK_RATING_MANAGER_PAGE = "admin_side/school-feedback-rating";
     public static final String SCHOOL_DETAIL_MANAGER_PAGE = "admin_side/school-form";
@@ -58,6 +60,7 @@ public class Constant {
     public static final int SEND_EMAIL_FORGOT = 1;
     public static final int SEND_EMAIL_REGISTER = 1;
 
+    public static final int SEND_REQUEST_REMINDER = 7;
     public static final String INVALID_TOKEN_FORMAT = "Invalid token format";
     public static final String INVALID_TOKEN = "Invalid token structure";
     public static final String APPROVE_ENROLL_REQUEST ="approve";
