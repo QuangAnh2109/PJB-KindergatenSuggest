@@ -1,5 +1,8 @@
 package fa.appcode.services.impl;
 
+import fa.appcode.common.utils.Constant;
+import fa.appcode.common.utils.Placeholder;
+import fa.appcode.common.utils.SendMailInfo;
 import fa.appcode.common.vo.EmailContentVo;
 import fa.appcode.common.vo.MyRequestVo;
 import fa.appcode.common.vo.RequestDetailVo;
@@ -20,7 +23,9 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class RequestServiceImpl implements RequestService {
@@ -69,12 +74,23 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Scheduled(cron = "0 0 0 */2 * ?")
+    //@Scheduled(cron = "*/5 * * * * ?")
     public void emailRequestReminder() {
         List<EmailContentVo> listSending = requestRepository.findAccountForEmail();
-        for (EmailContentVo emailContentVo : listSending) {
-            emailService.sendEmail(emailContentVo.getEmail(), "Kindergarten",
-                    "You have " + emailContentVo.getNumberOfRequest() + " unresolved requests");
+        List<String> emailList = new ArrayList<>();
+        //emailList.add("dongquang569@gmail.com");
+        for(EmailContentVo email : listSending ){
+            emailList.add(email.getEmail());
         }
+        String reminderLink = Constant.REQUEST_REMINDER_URL;
+        Map<Placeholder, String> link = Map.of(Placeholder.LINK, reminderLink);
+        SendMailInfo sendMailInfo = SendMailInfo.builder()
+                .toMail(emailList)
+                .mailId(Constant.SEND_REQUEST_REMINDER)
+                .ccMail(List.of())
+                .detail(link)
+                .build();
+        emailService.sendEmailToMany(sendMailInfo);
     }
 
     @Override

@@ -43,13 +43,16 @@ $(document).ready(function () {
         }
 
         requestList.forEach(request => {
+            const statusButton = request.requestMasterName === 'Open'
+                ? `<button class="btn btn-success btn-sm rounded-pill" style="min-width: 80px; font-size: 12px;">${request.requestMasterName}</button>`
+                : `<button class="btn btn-danger btn-sm rounded-pill" style="min-width: 80px; font-size: 12px;">${request.requestMasterName}</button>`;
             const row = `
                 <tr onclick="redirectToDetail(${request.id},${currentPage})">
                     <th scope="row">${request.id}</th>
                     <th>${request.fullName || 'N/A'}</th>
                     <th>${request.requestEmail || 'N/A'}</th>
                     <th>${request.requestPhone || 'N/A'}</th>
-                    <th><button class="btn btn-closed">${request.requestMasterName || 'N/A'}</button></th>
+                    <th>${statusButton}</th>
                 </tr>
             `;
             tbody.append(row);

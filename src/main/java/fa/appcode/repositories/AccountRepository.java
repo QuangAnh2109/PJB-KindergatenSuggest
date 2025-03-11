@@ -20,21 +20,10 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
     AccountInfo findByEmail(String email);
 
     @Query("SELECT c FROM AccountInfo c WHERE c.phone = ?1 AND c.deleteFlg = false")
-    AccountVo findByPhone(String phone);
-
-    @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1 AND c.deleteFlg = false")
-    AccountVo findAccountByEmail(String email);
-
-    @Query("SELECT c FROM AccountInfo c WHERE c.phone = ?1 AND c.deleteFlg = false")
-    AccountInfo findAccountByPhone(String email);
+    AccountInfo findAccountByPhone(String phone);
 
     @Query("Select c.recordNo from  AccountInfo c where c.email=?1 and c.deleteFlg=false")
     AccountVo getRecordByEmail(String email);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE AccountInfo a SET a.password = ?1 WHERE a.email = ?2 AND a.deleteFlg=false")
-    int updatePassword(String newPassword, String email);
 
     /**
      * get a list of user accounts along with their full addresses by search criteria by name, email,phone .
@@ -127,4 +116,6 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
     @Query("SELECT si.account.email FROM SchoolInfo si WHERE si.id = :id AND si.account.statusId = :statusId AND si.account.deleteFlg = :deleteFlg")
     String getSchoolOwnerEmailBySchoolIdAndStatusAndDeleteFlg(@Param("id") int id, @Param("statusId") int statusId, @Param("deleteFlg") boolean deleteFlg);
+
+    AccountInfo findAccountByEmailAndStatusIdAndDeleteFlg(String email, int statusId, boolean deleteFlg);
 }
