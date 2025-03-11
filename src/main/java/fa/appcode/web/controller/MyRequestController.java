@@ -1,9 +1,9 @@
 package fa.appcode.web.controller;
 
-
-import fa.appcode.common.vo.RequestDetailVo;
+import fa.appcode.common.vo.MyRequestVo;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.services.RequestService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +28,17 @@ public class MyRequestController {
     @GetMapping("/parent/my-request")
     public String myRequest(@SessionAttribute(name = "idAccount",required = true)Integer id,
                             @RequestParam(defaultValue = Constant.INIT_PAGE) int currentPage,
-                            Model model) {
+                            Model model, HttpServletRequest request) {
         Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage());
-        Page<RequestDetailVo> listRequest = requestService.findRequestByAccountId(id,pageable);
+        Page<MyRequestVo> listRequest = requestService.findRequestByAccountId(id,pageable);
         model.addAttribute("requestList", listRequest);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", listRequest.getTotalPages());
+
+        String header = request.getHeader("X-Requested-With");
+        if ("XMLHttpRequest".equals(header)) {
+            return "user_side/my-request :: requestContent";
+        }
         return "user_side/my-request";
     }
 }

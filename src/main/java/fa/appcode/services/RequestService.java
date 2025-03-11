@@ -1,5 +1,6 @@
 package fa.appcode.services;
 
+import fa.appcode.common.vo.MyRequestVo;
 import fa.appcode.common.vo.RequestDetailVo;
 import fa.appcode.common.vo.RequestVo;
 import fa.appcode.entities.Request;
@@ -17,7 +18,7 @@ public interface RequestService {
 
     Page<RequestVo> searchRequest(String keyword, Integer accountID, Integer requestMasterID, Pageable pageable);
 
-    Page<RequestDetailVo> findRequestByAccountId(Integer accountId,Pageable pageable);
+    Page<MyRequestVo> findRequestByAccountId(Integer accountId, Pageable pageable);
 
     void updateRequest(String update_id, int id);
 

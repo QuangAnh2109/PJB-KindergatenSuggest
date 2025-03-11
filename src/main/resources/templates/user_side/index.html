@@ -86,7 +86,7 @@
             padding: 10px 15px;
             border: none;
             cursor: pointer;
-            border-radius:5px;
+            border-radius: 5px;
         }
 
         /* Drop-down */
@@ -260,7 +260,9 @@
                                                        placeholder="Enter a school name" id="keyword"
                                                        class="form-control"
                                                        style="width: 50%;height: 50px">
-                                                <button class="btn-main" style="margin-left: 15px" onclick="searchRedirect()">Search</button>
+                                                <button class="btn-main" style="margin-left: 15px"
+                                                        onclick="searchRedirect()">Search
+                                                </button>
                                             </div>
                                             <div class="jls-address-preview jls-address-preview--hidden">
                                                 <div class="jls-address-preview__header">
@@ -283,7 +285,8 @@
                                             <select name="district" id="district" class="form-select">
                                                 <option selected disabled value="">Select District</option>
                                             </select>
-                                            <button class="btn-main" style="width: 15%;margin-left: 15px" onclick="searchRedirect()">
+                                            <button class="btn-main" style="width: 15%;margin-left: 15px"
+                                                    onclick="searchRedirect()">
                                                 Search
                                             </button>
                                         </div>
@@ -382,17 +385,20 @@
             <div class="container">
                 <div class="row g-5">
                     <div class="col-lg-6 wow fadeInRight">
-                        <h2>We offer customers a wide range of <span class="id-color">commercial cars</span> and <span
-                                class="id-color">luxury cars</span> for any occasion.</h2>
+                        <h2>We help parents find the perfect<span class="id-color">kindergarten</span> for their child
+                            by <span
+                                    class="id-color">personalized recommendations</span> based on location, facilities,
+                            curriculum, and budget.</h2>
                     </div>
                     <div class="col-lg-6 wow fadeInLeft">
-                        At our car rental agency, we believe that everyone deserves to experience the pleasure of
-                        driving a reliable and comfortable vehicle, regardless of their budget. We have curated a
-                        diverse fleet of well-maintained cars, ranging from sleek sedans to spacious SUVs, all at
-                        competitive prices. With our streamlined rental process, you can quickly and conveniently
-                        reserve your desired vehicle. Whether you need transportation for a business trip, family
-                        vacation, or simply want to enjoy a weekend getaway, we have flexible rental options to
-                        accommodate your schedule.
+                        Our kindergarten suggestion system is designed to help parents find the ideal learning
+                        environment for their child. We understand that every family has unique preferences, so our
+                        system carefully analyzes factors such as location, facilities, curriculum, teaching methods,
+                        and budget to provide personalized recommendations. With a user-friendly interface and a
+                        comprehensive database of kindergartens, we make the search process seamless and stress-free.
+                        Whether parents are looking for a school with a strong academic focus, a nurturing atmosphere,
+                        or specialized programs, our system ensures they find the best possible match for their child’s
+                        early education journey.
                     </div>
                 </div>
                 <div class="spacer-double"></div>
@@ -400,19 +406,19 @@
                     <div class="col-md-3 col-sm-6 mb-sm-30">
                         <div class="de_count bg-dark text-light wow fadeInUp">
                             <h3 class="timer" data-to="15425" data-speed="3000">0</h3>
-                            Completed Orders
+                            School
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6 mb-sm-30">
                         <div class="de_count bg-dark text-light wow fadeInUp">
                             <h3 class="timer" data-to="8745" data-speed="3000">0</h3>
-                            Happy Customers
+                            Happy Parents
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6 mb-sm-30">
                         <div class="de_count bg-dark text-light wow fadeInUp">
                             <h3 class="timer" data-to="235" data-speed="3000">0</h3>
-                            Vehicles Fleet
+                            School with 5 star
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6 mb-sm-30">
@@ -699,7 +705,7 @@
         const cityId = document.getElementById("citySelect").value;
         const district = document.getElementById("district").value;
 
-        const uri = `/public/search/process?keyword=${encodeURIComponent(input)}&cityId=${cityId}&districtId=${district}`;
+        const uri = `/public/school/search?keyword=${encodeURIComponent(input)}&cityId=${cityId}&districtId=${district}`;
 
         window.location.href = uri;
     }

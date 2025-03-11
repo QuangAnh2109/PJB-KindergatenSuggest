@@ -52,9 +52,12 @@ public class MyRequestVo {
         private Integer totalRating;
 
         @NotNull
-        private Integer feeFrom;
+        private Double feeFrom;
 
         @NotNull
         private String ageRange;
+
+        @NotNull
+        private int schoolId;
     }
 

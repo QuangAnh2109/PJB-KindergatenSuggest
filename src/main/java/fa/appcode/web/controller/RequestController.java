@@ -174,6 +174,6 @@ public class RequestController {
         System.out.println("Name: "+school.getSchoolName());
         Request request = new Request(accountID,school,fullName,email,phone,inquiries,1,1,"PARENT",Instant.now());
         requestService.createRequest(request);
-        return "redirect:/public/search";
+        return "redirect:/public/school/search";
     }
 }

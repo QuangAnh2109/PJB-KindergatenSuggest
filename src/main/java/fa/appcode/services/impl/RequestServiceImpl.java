@@ -1,6 +1,7 @@
 package fa.appcode.services.impl;
 
 import fa.appcode.common.vo.EmailContentVo;
+import fa.appcode.common.vo.MyRequestVo;
 import fa.appcode.common.vo.RequestDetailVo;
 import fa.appcode.common.vo.RequestVo;
 import fa.appcode.entities.Request;
@@ -48,10 +49,10 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Override
-    public Page<RequestDetailVo> findRequestByAccountId(Integer accountId, Pageable pageable) {
+    public Page<MyRequestVo> findRequestByAccountId(Integer accountId, Pageable pageable) {
         logger.info("Fetching requests by accountId and deleteFlg");
         try{
-            Page<RequestDetailVo> result = requestRepository.findRequestByAccountId(accountId,pageable);
+            Page<MyRequestVo> result = requestRepository.findRequestByAccountId(accountId,pageable);
             logger.info("Found {} requests for account ID: {}", result.getTotalElements(), accountId);
             return result;
         }catch (DataAccessException e){
