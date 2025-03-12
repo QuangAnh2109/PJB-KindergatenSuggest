@@ -21,10 +21,10 @@ public class FeedbackRatingServiceImpl implements FeedbackRatingService {
     private final GlobalConfig globalConfig;
 
     @Override
-    public void setBaseData(Model model, int schoolId, int accountId) {
-        model.addAttribute("rating", schoolInfoRepository.getSchoolRatingFeedbackBySchoolId(SchoolRatingFeedbackForm.builder().schoolId(schoolId).accountId(accountId).build()));
-        model.addAttribute("feedbackList", schoolInfoRepository.getAllAccountFeedbackBySchoolId(SchoolRatingFeedbackForm.builder().schoolId(schoolId).accountId(accountId).build(), PageRequest.of(Constant.PAGE_DEFAULT, globalConfig.getSizeOfPageSchoolRatingFeedback())));
-        if(!schoolInfoRepository.getAllAccountFeedbackBySchoolId(SchoolRatingFeedbackForm.builder().schoolId(schoolId).accountId(accountId).build(), PageRequest.of(Constant.PAGE_DEFAULT+1, globalConfig.getSizeOfPageSchoolRatingFeedback())).isEmpty()){
+    public void setBaseData(Model model, int schoolId, String accountEmail) {
+        model.addAttribute("rating", schoolInfoRepository.getSchoolRatingFeedbackBySchoolId(SchoolRatingFeedbackForm.builder().schoolId(schoolId).accountEmail(accountEmail).build()));
+        model.addAttribute("feedbackList", schoolInfoRepository.getAllAccountFeedbackBySchoolId(SchoolRatingFeedbackForm.builder().schoolId(schoolId).accountEmail(accountEmail).build(), PageRequest.of(Constant.PAGE_DEFAULT, globalConfig.getSizeOfPageSchoolRatingFeedback())));
+        if(!schoolInfoRepository.getAllAccountFeedbackBySchoolId(SchoolRatingFeedbackForm.builder().schoolId(schoolId).accountEmail(accountEmail).build(), PageRequest.of(Constant.PAGE_DEFAULT+1, globalConfig.getSizeOfPageSchoolRatingFeedback())).isEmpty()){
             model.addAttribute("hasNext", true);
             model.addAttribute("nextPage", Constant.PAGE_DEFAULT+1);
         } else{

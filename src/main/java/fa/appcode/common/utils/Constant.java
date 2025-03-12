@@ -33,7 +33,8 @@ public class Constant {
 
     //ADMIN SIDE
     public static final String SCHOOL_FEEDBACK_RATING_MANAGER_PAGE = "admin_side/school-feedback-rating";
-    public static final String SCHOOL_DETAIL_MANAGER_PAGE = "admin_side/school-form";
+    public static final String SCHOOL_CREATE_PAGE = "admin_side/school-form";
+    public static final String SCHOOL_DETAIL_MANAGER_PAGE = "admin_side/school-detail";
     public static final String SCHOOL_LIST_MANAGER_PAGE = "admin_side/school-list-manager";
 
     //REGEX

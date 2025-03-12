@@ -24,6 +24,5 @@ public class SchoolFormButtonBuild {
         model.addAttribute("publish", publish);
         model.addAttribute("unpublish", unPublish);
         model.addAttribute("canEdit", canEdit);
-        if(!canEdit) model.addAttribute("edit", false);
     }
 }

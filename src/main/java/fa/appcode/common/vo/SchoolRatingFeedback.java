@@ -1,6 +1,5 @@
 package fa.appcode.common.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 

@@ -20,23 +20,17 @@ public class SchoolFeedbackAndRatingController {
 
     private final AccountService accountService;
 
-    @GetMapping("admin/school-list/detail/feedback-rating/{schoolId}&{accountId}")
-    public String getSchoolFeedbackRatingByAdmin(Model model, @PathVariable("schoolId") int schoolId, @PathVariable("accountId") int accountId){
-        feedbackRatingService.setBaseData(model, schoolId, accountId);
+    @GetMapping("admin/school-list/detail/feedback-rating/{schoolId}")
+    public String getSchoolFeedbackRatingByAdmin(Model model, @PathVariable("schoolId") int schoolId){
+        feedbackRatingService.setBaseData(model, schoolId, null);
         return Constant.SCHOOL_FEEDBACK_RATING_MANAGER_PAGE;
     }
 
     @GetMapping("school-owner/school-list/detail/feedback-rating/{schoolId}")
     public String getSchoolFeedbackRatingByManager(Model model, @PathVariable("schoolId") int schoolId){
         System.out.println("run");
-        feedbackRatingService.setBaseData(model, schoolId, accountService.getAccountIdByEmail(SecurityContextHolder.getContext().getAuthentication().getName()));
+        feedbackRatingService.setBaseData(model, schoolId, SecurityContextHolder.getContext().getAuthentication().getName());
         System.out.println("run");
         return Constant.SCHOOL_FEEDBACK_RATING_MANAGER_PAGE;
-    }
-
-    @PostMapping("/school-list/school-rating/time")
-    @ResponseBody
-    public String getRatingByTime(@RequestBody Map<String, String> request){
-        return "sad";
     }
 }
