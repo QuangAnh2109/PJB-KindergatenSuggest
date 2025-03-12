@@ -6,7 +6,6 @@ import fa.appcode.common.vo.AccountVo;
 import fa.appcode.services.AccountService;
 
 import fa.appcode.services.ValidateService;
-import fa.appcode.services.impl.ValidateServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,9 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -37,6 +34,8 @@ public class UserManagementRestController {
      */
     @GetMapping(value = "/user/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Integer userId) {
+
+        Log4jUtils.getLogger().info("Received request to delete user with ID: {}", userId);
         accountService.deleteAccount(userId);
         return ResponseEntity.ok("User deleted successfully");
     }
@@ -51,8 +50,10 @@ public class UserManagementRestController {
      */
     @PostMapping("/save-user")
     public ResponseEntity<?> saveUser(@RequestBody @Valid AccountVo accountVo, BindingResult result, Principal principal) throws Exception {
-        Map<String, String> errors = new HashMap<>();
 
+        Log4jUtils.getLogger().info("Received request to save user: {}", accountVo);
+
+        Map<String, String> errors = new HashMap<>();
         if (result.hasErrors()) {
             result.getFieldErrors().forEach(error -> {
                 if (!error.getField().equals("password") && !error.getField().equals("confirmPassword")) {
@@ -61,9 +62,9 @@ public class UserManagementRestController {
             });
         }
 
-        Log4jUtils.getLogger().info("AccountID :" + accountVo.getId());
 
         boolean isAdding = accountVo.getId() == null;
+        Log4jUtils.getLogger().info("Is new user: {}", isAdding);
 
         if (isAdding && validateService.checkDuplicateEmail(accountVo.getEmail())) {
             errors.put("email", "Email already exists. Please use a different email.");
@@ -84,8 +85,8 @@ public class UserManagementRestController {
                         "recordNo", newRecordNo
                 ));
             }
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", e.getMessage()));
         }
 
     }
