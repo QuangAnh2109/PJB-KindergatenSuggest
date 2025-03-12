@@ -73,13 +73,13 @@ public class ParentController {
             } else {
                 list = Page.empty();
             }
-            List<ParentVo> accounts = list.getContent();
+            List<ParentVo> parents = list.getContent();
             Log4jUtils.getLogger().info("Inside parentList Content : " + list);
             Log4jUtils.getLogger().info("Number Of pages : " + list.getTotalPages());
             /*
              * Put data into Model
              */
-            model.addAttribute("accounts", accounts);
+            model.addAttribute("accounts", parents);
             model.addAttribute("search", search);
             model.addAttribute("currentPage", currentPage);
             model.addAttribute("numberPage", list.getTotalPages());

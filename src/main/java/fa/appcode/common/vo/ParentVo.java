@@ -21,9 +21,6 @@ public class ParentVo {
     private LocalDate DOB;
     private String parentAddress;
     private String enrollStatus;
-    private List<SchoolInfo> enrolledSchoolName;
-    private Float latestRating;
-    private String latestFeedback;
 
     public ParentVo(Integer parentId, String parentName, String parentEmail,String parentPhone, String enrollStatus){
         this.parentId = parentId;
