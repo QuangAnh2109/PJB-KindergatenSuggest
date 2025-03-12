@@ -1,5 +1,6 @@
 package fa.appcode.services;
 
+import fa.appcode.common.vo.EnrollSchoolInfoVo;
 import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.common.vo.SchoolListManager;
 import fa.appcode.entities.SchoolInfo;
@@ -12,14 +13,14 @@ public interface SchoolInfoService {
      *
      * @return a List of SchoolInfo
      */
-    List<SchoolInfo> findSchoolInfoListByAccountEmail(String email);
+    List<EnrollSchoolInfoVo> findSchoolInfoListByAccountEmail(String email);
 
     /**
      * Retrieves a List of Published School
      *
      * @return a List of SchoolInfo
      */
-    List<SchoolInfo> findAllSchoolPublished();
+    List<EnrollSchoolInfoVo> findAllSchoolPublished();
 
     /**
      * This method is used to find School information based on School ID

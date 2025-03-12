@@ -2,6 +2,7 @@ package fa.appcode.web.controller;
 
 import fa.appcode.common.logging.Log4jUtils;
 import fa.appcode.common.utils.Constant;
+import fa.appcode.common.vo.EnrollSchoolInfoVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.config.GlobalConfig;
@@ -109,7 +110,7 @@ public class ParentController {
              */
             String role = accountService.findAccountRoleString(principal.getName());
             Page<EnrolledSchoolVo> listParentEnroll;
-            List<SchoolInfo> schoolInfoList;
+            List<EnrollSchoolInfoVo> schoolInfoList;
 
             if (Constant.ADMIN_ROLE.equals(role)) {
                 //get Data for Admin Role
