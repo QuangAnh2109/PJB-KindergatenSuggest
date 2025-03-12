@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
             <li><a th:href="@{/manager/school-list}"><i class="ti-home"></i>
                 <span> School Management </span></a>
             </li>
-            <li th:if="${#strings.equalsIgnoreCase(role, 'Admin')}">
+            <li sec:authorize="hasAuthority('Admin')">
                 <a th:href="@{/admin/user-list}">
                     <i class="fa-regular fa-user"></i>
                     <span> User Management </span>

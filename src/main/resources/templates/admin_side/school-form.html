@@ -17,6 +17,9 @@
     <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css" id="bootstrap-stylesheet"/>
     <link th:href="@{/admin_side/css/icons.min.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css" id="app-stylesheet"/>
+
+    <link th:href="@{/admin_side/css/request-list.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
     <!-- Include stylesheet -->
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet"/>
     <style>
@@ -54,7 +57,7 @@
                 </div>
             </div>
             <!-- end row -->
-            <form th:action="@{/school-owner/school/add}" method="post" enctype="multipart/form-data" th:object="${school}">
+            <form th:action="@{/school-owner/school/add}" method="post" enctype="multipart/form-data">
                 <table class="col-12 school-form">
                     <tr>
                         <td>School Name</td>
