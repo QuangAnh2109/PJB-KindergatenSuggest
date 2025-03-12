@@ -9,7 +9,7 @@
 <div class="left-side-menu" th:fragment="leftSidebar">
     <div id="sidebar-menu">
         <ul class="metismenu" id="side-menu">
-            <li><a th:href="@{/manager/request-list}"><i class="ti-home"></i>
+            <li><a th:href="@{/manager/school-list}"><i class="ti-home"></i>
                 <span> School Management </span></a>
             </li>
             <li th:if="${#strings.equalsIgnoreCase(role, 'Admin')}">
