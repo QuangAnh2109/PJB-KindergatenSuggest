@@ -61,13 +61,14 @@ public class UserHomeController {
         return "user_side/search-school";
     }
 
+
+
     private void loadCommonData(Model model) {
         List<CityVo> listCity = cityService.findAllByNoDelete();
         List<MasterDataVo> listFacilities = masterDatumService.findAllByTypeNameNoDelete("FACILITIES");
         List<MasterDataVo> listTypeSchool = masterDatumService.findAllByTypeNameNoDelete("SCHOOL TYPE");
         List<MasterDataVo> listDataAge = masterDatumService.findAllByTypeNameNoDelete("CHILD RECEIVING AGE");
         List<MasterDataVo> listUtilities = masterDatumService.findAllByTypeNameNoDelete("UTILITIES");
-
 
         model.addAttribute("facilities", listFacilities);
         model.addAttribute("type_school", listTypeSchool);

@@ -22,172 +22,23 @@
     <link id="colors" th:href="@{/user_side/css/colors/scheme-01.css}" rel="stylesheet" type="text/css">
 
     <style>
-        #messages {
-            display: inline-block;
-            text-align: center;
-            font-style: italic;
-            padding: 0;
-            margin: 30px;
-            border: 6px double #FFFFFF;
-            background-color: green;
-            color: white;
-            padding: 5px 10px;
-        }
-
-        /* Drop-down */
-        .logout-container {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown {
-
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-toggle {
-            background-color: #1ECB15;
-            color: white;
-            padding: 8px 16px;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        .arrow-down {
-            display: inline-block;
-            margin-left: 8px;
-            border: solid #212529;
-            border-width: 0 2px 2px 0;
-            padding: 3px;
-            transform: rotate(45deg);
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            background-color: #fff;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            z-index: 1;
-            border-radius: 4px;
-            margin-top: 2px;
-        }
-
-        .dropdown-menu a {
-            color: #212529;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-
-        .dropdown-menu a:hover {
-            background-color: #f8f9fa;
-        }
-
-        .dropdown-menu-right {
-            right: 0;
-            left: auto;
-        }
-
-        .show {
-            display: block;
-        }
-
-        .btn-primary {
-            width: 100%;
-            max-width: 100%;
-            padding: 10px;
-            border-radius: 10px;
-        }
-
-
-        .overlay {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            visibility: hidden;
-            z-index: 9999;
-            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-        }
-
-
-        .overlay.active {
-            opacity: 1 !important;
-            visibility: visible !important;
-        }
-
-        .popup {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            width: 300px;
-        }
-
-        .button-container {
-            margin-top: 15px;
-        }
-
-        .btn-yes {
-            width: 80px;
-            background-color: #d9534f;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .btn-cancel {
-            width: 80px;
-            background-color: #5bc0de;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .school-card {
-            border-radius: 12px;
+        .content {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
-
-        .rating-stars {
-            color: #ffc107;
+        .see-more {
+            color: blue;
+            cursor: pointer;
+            display: none; /* Hidden by default */
+            margin-top: 5px;
         }
 
-
-        .container {
-            margin-top: 50px;
-        }
-
-        .star-filled {
-            color: gold;
-        }
-
-        .star-half {
-            background: linear-gradient(90deg, gold 50%, #ccc 50%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .star-empty {
-            color: #ccc;
+        .expanded {
+            display: block;
         }
     </style>
 </head>
@@ -290,7 +141,7 @@
                 <div id="messages">You have total <span th:text="${requestCount}"></span> request!</div>
             </div>
             <!-- Request 2 -->
-            <div style="overflow-y:auto;height:1000px;width: auto;padding: 20px">
+            <div style="overflow-y:auto;height:1000px;width: auto;padding: 0px 20px">
                 <div class="row request-column" th:each="request : ${requestList}">
                     <div class="col-md-7">
                         <div class="request-card">
@@ -302,14 +153,17 @@
                                     <span th:if="${status == 'Open'}" class="status-open">Open</span>
                                 </div>
                             </div>
-                            <div >
+                            <div>
                                 <h5>Request Number: #<span th:text="${request.getId()}"></span></h5>
                             </div>
                             <p><strong>Request Information:</strong></p>
                             <p>Full Name: <span th:text="${request.getFullName()}"></span></p>
                             <p>Email address: <span th:text="${request.getRequestEmail()}"></span></p>
                             <p>Phone number: <span th:text="${request.getRequestPhone()}"></span></p>
-                            <p style="overflow: auto"><span th:text="${request.getInquires()}"></span></p>
+                            <p class="content" id="textContent">
+                                <span th:text="${request.getInquires()}"></span>
+                            </p>
+                            <a class="see-more" id="seeMoreBtn" onclick="toggleContent()">See more...</a>
                         </div>
                     </div>
                     <div class="col-md-5">
@@ -346,29 +200,27 @@
 
             </div>
 
+            <!-- Add a hidden span to store total pages -->
+            <span style="display: none;" th:data-total-pages="${totalPages}"></span>
 
-            <div style="overflow-y:auto;height:1000px;width: auto;padding: 20px" th:fragment="requestContent">
-                <!-- Add a hidden span to store total pages -->
-                <span style="display: none;" th:data-total-pages="${totalPages}"></span>
+            <div class="row request-column" th:each="request : ${requestList}">
+                <!-- Your existing request card markup here -->
+            </div>
 
-                <div class="row request-column" th:each="request : ${requestList}">
-                    <!-- Your existing request card markup here -->
-                </div>
-
-                <div aria-label="Page navigation" style="display: flex;justify-content: center; margin-top: 20px">
-                    <ul class="pagination">
-                        <li class="page-item" th:class="${currentPage == 0 ? 'page-item disabled' : 'page-item'}">
-                            <a class="page-link" href="#">«</a>
-                        </li>
-                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                            th:class="${i == currentPage ? 'page-item active' : 'page-item'}">
-                            <a class="page-link" href="#" th:text="${i + 1}"></a>
-                        </li>
-                        <li class="page-item" th:class="${currentPage == totalPages - 1 ? 'page-item disabled' : 'page-item'}">
-                            <a class="page-link" href="#">»</a>
-                        </li>
-                    </ul>
-                </div>
+            <div aria-label="Page navigation" style="display: flex;justify-content: center;">
+                <ul class="pagination">
+                    <li class="page-item" th:class="${currentPage == 0 ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" href="#">«</a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:class="${i == currentPage ? 'page-item active' : 'page-item'}">
+                        <a class="page-link" href="#" th:text="${i + 1}"></a>
+                    </li>
+                    <li class="page-item"
+                        th:class="${currentPage == totalPages - 1 ? 'page-item disabled' : 'page-item'}">
+                        <a class="page-link" href="#">»</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -487,13 +339,43 @@
         document.getElementById("logoutForm").submit();
     }
 
+    function toggleContent() {
+        var content = document.getElementById("textContent");
+        var seeMoreBtn = document.getElementById("seeMoreBtn");
+
+        if (content.classList.contains("expanded")) {
+            content.classList.remove("expanded");
+            content.style.webkitLineClamp = "3";
+            content.style.overflow = "hidden";
+            seeMoreBtn.textContent = "See more...";
+        } else {
+            content.classList.add("expanded");
+            content.style.webkitLineClamp = "unset";
+            content.style.overflow = "visible";
+            seeMoreBtn.textContent = "See less";
+        }
+    }
+
+    function checkOverflow() {
+        var content = document.getElementById("textContent");
+        var seeMoreBtn = document.getElementById("seeMoreBtn");
+        var computedStyle = window.getComputedStyle(content);
+        var lineHeight = parseFloat(computedStyle.lineHeight);
+        var maxHeight = lineHeight * 3; // 3 lines max
+
+        if (content.scrollHeight > maxHeight) {
+            seeMoreBtn.style.display = "inline"; // Show "See more..."
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", checkOverflow);
+
 </script>
 <!-- Javascript Files
 ================================================== -->
 <script src="/user_side/js/plugins.js"></script>
 <script src="/user_side/js/designesia.js"></script>
 <script src="/user_side/js/dropdown.js"></script>
-<script src="/user_side/js/ajax-pagination.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

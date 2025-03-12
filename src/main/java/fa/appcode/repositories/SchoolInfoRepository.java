@@ -164,4 +164,18 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
                 "AND (:#{#form.five} = false OR (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 = 5) " +
             "GROUP BY f.id.accountId ")
     List<AccountFeedback> getAllAccountFeedbackBySchoolId(@Param("form") SchoolRatingFeedbackForm schoolRatingFeedbackForm, Pageable pageable);
+
+    //find all SchoolListManager by paging and search and account id and delete flag
+    @Query("SELECT new fa.appcode.common.vo.SchoolListManager(si.id, si.schoolName, si.schoolAddress, si.city.cityName, si.district.districtName, si.ward.wardName, si.schoolPhone, si.schoolEmail, si.postedDate, si.statusId, " +
+            "CASE WHEN si.statusId = " + SchoolConstant.STATUS_DELETED + " OR si.statusId = " + SchoolConstant.STATUS_APPROVED + " THEN false ELSE true END) " +
+            "FROM SchoolInfo si " +
+            "WHERE (si.schoolName IS NULL OR si.schoolName LIKE %:search%) AND si.deleteFlg = :deleteFlg AND si.account.email = :account " +
+            "ORDER BY " +
+            "CASE WHEN si.statusId = " + SchoolConstant.STATUS_SUBMITTED + " THEN 0 ELSE 1 END, " +
+            "si.postedDate DESC")
+    Page<SchoolListManager> searchAllByNameAndPaging(Pageable pageable, @Param("search") String search, @Param("account") String email, @Param("deleteFlg") boolean deleteFlg);
+
+
+
+
 }

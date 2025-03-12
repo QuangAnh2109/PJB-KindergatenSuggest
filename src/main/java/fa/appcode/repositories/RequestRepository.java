@@ -137,8 +137,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
         GROUP BY f2.id.accountId
     )
     WHERE r.account.id = :accountId AND r.deleteFlg = false
-    GROUP BY r.id, r.fullName, r.requestEmail, r.requestPhone, 
-             s.schoolName, s.schoolAddress, r.inquiries, m1.typeValue, 
+    GROUP BY  r.inquiries, m1.typeValue, 
              r.createTime, s.schoolEmail, s.feeFrom, m2.typeValue
 """)
     Page<MyRequestVo> findRequestByAccountId(Integer accountId, Pageable pageable);

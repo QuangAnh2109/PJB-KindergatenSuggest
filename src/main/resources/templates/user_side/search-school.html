@@ -414,7 +414,7 @@
                     <div>There are 10 schools that match your search criteria</div>
                 </div>
                 <div style="display: flex;justify-content: end;margin-bottom: 10px" ;>
-                    <select name="sortBy" class="form-select" id="sortBy" style="width: auto;">
+                    <select name="sortBy" class="form-select" id="sortBy" onchange="" style="width: auto;">
                         <option selected disabled value="">Sort By</option>
                         <option>By Rating</option>
                         <option>Newest to Oldest</option>
@@ -566,7 +566,6 @@
                                                     </div>
                                                     <div>Facilities and Utilities:</div>
                                                 </div>
-
                                                 <div class="facilities mt-2">
                                                     <span class="badge badge-light-blue me-2 mb-2 py-2 px-3 rounded-pill">Cafeteria</span>
                                                     <span class="badge badge-light-blue me-2 mb-2 py-2 px-3 rounded-pill">School bus</span>
@@ -762,7 +761,7 @@
 <script>
 
 
-    // Hàm hiển thị thông báo lỗi
+    // Show error message
     function showErrorMessage(inputId, message) {
         let inputElement = document.getElementById(inputId);
         let errorElement = document.createElement("div");
@@ -853,7 +852,7 @@
 
         let isValid = true;
 
-        // Kiểm tra các trường không được để trống
+        // Check null
         if (!fullName) {
             showErrorMessage("fullName", requiredFieldMessage);
             isValid = false;
@@ -871,7 +870,7 @@
             isValid = false;
         }
 
-        // Kiểm tra email và mobile
+        // check email format and phone format
         if (email && !emailRegex.test(email)) {
             showErrorMessage("email", emailErrorMessage);
             isValid = false;
@@ -881,7 +880,7 @@
             isValid = false;
         }
 
-        // Nếu tất cả đều hợp lệ, submit form
+        // if validate, submit form
         if (isValid) {
             let formData = new FormData(document.getElementById("counselingForm"));
 
