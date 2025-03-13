@@ -6,6 +6,7 @@ import fa.appcode.common.vo.SchoolListManager;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.MasterDatumService;
 import fa.appcode.services.SchoolInfoService;
+import fa.appcode.services.SchoolListManagerService;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +29,7 @@ import java.util.Map;
 @RequestMapping("/")
 public class SchoolListManagerController {
 
-    private final SchoolInfoService schoolInfoService;
-
-    private final MasterDatumService masterDatumService;
+    private final SchoolListManagerService schoolListManagerService;
 
     @GetMapping("/manager/school-list")
     public String getSchoolListManager() {
@@ -46,53 +45,22 @@ public class SchoolListManagerController {
     }
 
     @GetMapping("/admin/school-list")
-    public String getSchoolListManagerByAdmin(Model model) {
-        model.addAttribute("schoolList", schoolInfoService.searchAllByNameAndPagingAndDeleteFlg(Constant.PAGE_DEFAULT, Constant.SEARCH_ALL));
-        model.addAttribute("isAdmin", true);
-        model.addAttribute("status", masterDatumService.findAllByTypeNameNoDelete(SchoolConstant.SCHOOL_STATUS));
-        return Constant.SCHOOL_LIST_MANAGER_PAGE;
+    public String getSchoolListManagerByAdmin(@RequestParam(value = "search", required = false, defaultValue = "") String search, @RequestParam(value = "page", required = false, defaultValue = "0") int page, Model model) {
+        return schoolListManagerService.setSchoolDataToModelBySearchAndPage(search, page, true, false, model);
     }
 
     @GetMapping("/admin/school-list/searchAndPaging")
     public String getSchoolListManagerByAdminSearch(@RequestParam("search") String search, @RequestParam("page") int page, Model model) {
-        model.addAttribute("schoolList", schoolInfoService.searchAllByNameAndPagingAndDeleteFlg(page, search));
-        model.addAttribute("isAdmin", true);
-        model.addAttribute("status", masterDatumService.findAllByTypeNameNoDelete(SchoolConstant.SCHOOL_STATUS));
-        return Constant.SCHOOL_LIST_MANAGER_PAGE + " :: main-content";
-    }
-
-    @GetMapping("/admin/school-list/second")
-    public String getSchoolListManagerByAdminSearchReload(@RequestParam("search") String search, @RequestParam("page") int page, Model model) {
-        model.addAttribute("schoolList", schoolInfoService.searchAllByNameAndPagingAndDeleteFlg(page, search));
-        model.addAttribute("isAdmin", true);
-        model.addAttribute("status", masterDatumService.findAllByTypeNameNoDelete(SchoolConstant.SCHOOL_STATUS));
-        return Constant.SCHOOL_LIST_MANAGER_PAGE + " :: main-content";
+        return schoolListManagerService.setSchoolDataToModelBySearchAndPage(search, page, true, true, model);
     }
 
     @GetMapping("/school-owner/school-list")
-    public String getSchoolListManagerBySchoolOwner(Model model) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        model.addAttribute("schoolList", schoolInfoService.searchAllByNameAndAccountAndPagingAndDeleteFlg(Constant.PAGE_DEFAULT, Constant.SEARCH_ALL, email));
-        model.addAttribute("isAdmin", false);
-        model.addAttribute("status", masterDatumService.findAllByTypeNameNoDelete(SchoolConstant.SCHOOL_STATUS));
-        return Constant.SCHOOL_LIST_MANAGER_PAGE;
+    public String getSchoolListManagerBySchoolOwner(@RequestParam(value = "search", required = false, defaultValue = "") String search, @RequestParam(value = "page", required = false, defaultValue = "0") int page, Model model) {
+        return schoolListManagerService.setSchoolDataToModelBySearchAndPage(search, page, false, false, model);
     }
 
     @GetMapping("/school-owner/school-list/searchAndPaging")
     public String getSchoolListManagerBySchoolOwnerSearch(@RequestParam("search") String search, @RequestParam("page") int page, Model model) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        model.addAttribute("schoolList", schoolInfoService.searchAllByNameAndAccountAndPagingAndDeleteFlg(page, search, email));
-        model.addAttribute("isAdmin", true);
-        model.addAttribute("status", masterDatumService.findAllByTypeNameNoDelete(SchoolConstant.SCHOOL_STATUS));
-        return Constant.SCHOOL_LIST_MANAGER_PAGE + " :: main-content";
-    }
-
-    @GetMapping("/school-owner/school-list/second")
-    public String getSchoolListManagerBySchoolOwnerSearchReload(@RequestParam("search") String search, @RequestParam("page") int page, Model model) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        model.addAttribute("schoolList", schoolInfoService.searchAllByNameAndAccountAndPagingAndDeleteFlg(page, search, email));
-        model.addAttribute("isAdmin", true);
-        model.addAttribute("status", masterDatumService.findAllByTypeNameNoDelete(SchoolConstant.SCHOOL_STATUS));
-        return Constant.SCHOOL_LIST_MANAGER_PAGE + " :: main-content";
+        return schoolListManagerService.setSchoolDataToModelBySearchAndPage(search, page, false, true, model);
     }
 }

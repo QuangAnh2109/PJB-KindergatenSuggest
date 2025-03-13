@@ -1,15 +1,15 @@
 package fa.appcode.common.vo;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class SchoolFormManager {
     private int id;
 
@@ -44,6 +44,8 @@ public class SchoolFormManager {
     private BigDecimal feeFrom;
 
     private String introduction;
+
+    private String imgageUrl;
 
     private Instant updateTime;
 

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <!-- Mirrored from coderthemes.com/simple/layouts/vertical/tables-basic.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 28 Aug 2024 07:26:12 GMT -->
 <head>
@@ -16,12 +15,15 @@
     <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css" id="bootstrap-stylesheet" />
     <link th:href="@{/admin_side/css/icons.min.css}" rel="stylesheet" type="text/css" />
     <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css" id="app-stylesheet" />
-<style>
-    .button-search{
-        pointer-events: auto;
-        cursor: pointer;
-    }
-</style>
+
+    <link th:href="@{/admin_side/css/request-list.css}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
+    <style>
+        .button-search{
+            pointer-events: auto;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
@@ -42,19 +44,21 @@
     <!-- Start Page Content here -->
     <!-- ============================================================== -->
 
+    <input id="isAdmin" th:value="${isAdmin}" hidden>
     <div class="content-page">
-        <div class="content" th:fragment="main-content" id="main-content-school-table">
+        <div class="content">
 
             <!-- Start container-fluid -->
             <div class="container-fluid">
 
                 <!-- start  -->
-                <div class="row">
-                    <div class="col-12">
-                        <div>
-                            <h4 class="header-title mb-3">School Management > School List</h4>
-                        </div>
-                    </div>
+                <div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item" style="color: black">School Management</li>
+                            <li class="breadcrumb-item" style="color: black">School List</li>
+                        </ol>
+                    </nav>
                 </div>
                 <!-- end row -->
 
@@ -65,69 +69,70 @@
                             <h5 style="font-size: 25px;">School list</h5>
                         </div>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-lg-4">
 
                     </div>
-                    <div class="col-lg-4" style="padding-right: 0px;">
-                        <form class="app-search" onsubmit="loadSchoolListForSearch()">
-                            <div class="app-search-box">
-                                <div class="input-group">
-                                    <input id="search" type="text" class="form-control" placeholder="Search...">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary" type="submit">
-                                            <i class="fas fa-search"></i>
-                                        </button>
-                                    </div>
+                    <div class="col-lg-2" style="padding-right: 0px;">
+                        <div class="app-search-box" style="max-width: 100%">
+                            <div class="input-group">
+                                <input id="enter-search" type="text" class="form-control" placeholder="Search..."  style="max-width: 100%">
+                                <input id="search" value="" hidden>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" id="search-button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
                     <div class="col-lg-11">
                     </div>
-                    <button class="col-lg-1 btn btn-primary">Add school</button>
+                    <a class="col-lg-1" sec:authorize="hasAuthority('School owner')" th:href="${serverLink+'/school-owner/school/form'}"><button class="col-12 btn btn-primary">Add school</button></a>
                 </div>
                 <!-- end row -->
-                <div class="table-responsive">
-                    <table class="table table-striped m-0">
-                        <thead>
-                        <tr>
-                            <th>School Name</th>
-                            <th>Address</th>
-                            <th>Phone No.</th>
-                            <th>Email</th>
-                            <th>Posted Date</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody id="school-table">
-                        <tr th:each="school:${schoolList}" style="height: 80px">
-                            <th scope="row" th:text="${school.schoolName}"></th>
-                            <td th:text="${school.schoolAddress}"></td>
-                            <td th:text="${school.schoolPhone}"></td>
-                            <td th:text="${school.schoolEmail}"></td>
-                            <td th:text="${#temporals.format(school.postedDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
-                            <td th:each="sta:${status}" th:if="${sta.typeKey == school.getStatusId()}" th:text="${sta.getTypeValue()}"></td>
-                            <td class="row">
-                                <a th:if="${school.statusId != 7}" href="#" ><h4 class="col mdi mdi-file-document-edit-outline"></h4></a>
-                                <a th:if="${school.canDelete}" href="#" ><h4 class="col mdi mdi-delete-outline"></h4></a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div id="page-bar">
-                    <th:block th:if="${schoolList.getTotalPages() > 0}">
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-end">
-                                <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, schoolList.getTotalPages() - 1)}" th:id="${'page'+pageNum}"
-                                    th:classappend="${pageNum == 0} ? 'active'">
-                                    <a class="page-link button-search" th:onclick="'loadSchoolInPage('+${pageNum}+','+${isAdmin}+')'"
-                                       th:text="${pageNum + 1}"></a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </th:block>
+                <div th:fragment="main-content" id="main-content-school-table">
+                    <div class="table-responsive">
+                        <table class="table table-striped m-0">
+                            <thead>
+                            <tr>
+                                <th>School Name</th>
+                                <th>Address</th>
+                                <th>Phone No.</th>
+                                <th>Email</th>
+                                <th>Posted Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody id="school-table">
+                            <tr th:each="school:${schoolList}" style="height: 80px">
+                                <th scope="row" th:text="${school.schoolName}"></th>
+                                <td th:text="${school.schoolAddress}"></td>
+                                <td th:text="${school.schoolPhone}"></td>
+                                <td th:text="${school.schoolEmail}"></td>
+                                <td th:text="${#temporals.format(school.postedDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:each="sta:${status}" th:if="${sta.typeKey == school.getStatusId()}" th:text="${sta.getTypeValue()}"></td>
+                                <td class="row">
+                                    <a th:if="${school.statusId != 7}" th:href="${serverLink+'/manager/school/view-detail?id=' + school.schoolId}"><h4 class="col mdi mdi-file-document-edit-outline"></h4></a>
+                                    <a th:if="${school.canDelete}" class="button-search" th:onclick="'deleteSchool('+${school.schoolId}+')'"><h4 class="col mdi mdi-delete-outline"></h4></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="page-bar">
+                        <th:block th:if="${schoolList.getTotalPages() > 0}">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination justify-content-end">
+                                    <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, schoolList.getTotalPages() - 1)}" th:id="${'page'+pageNum}"
+                                        th:classappend="${pageNum == currentPage} ? 'active'">
+                                        <a class="page-link button-search" th:onclick="'loadSchoolInPage('+${pageNum}+','+${isAdmin}+')'"
+                                           th:text="${pageNum + 1}"></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </th:block>
+                    </div>
                 </div>
             </div>
             <!-- end container-fluid -->
@@ -155,65 +160,25 @@
 </div>
 <!-- END wrapper -->
 
-
-<!-- Right Sidebar -->
-<div class="right-bar">
-    <div class="rightbar-title">
-        <a href="javascript:void(0);" class="right-bar-toggle float-right">
-            <i class="mdi mdi-close"></i>
-        </a>
-        <h5 class="font-16 m-0 text-white">Theme Customizer</h5>
-    </div>
-    <div class="slimscroll-menu">
-
-        <div class="p-4">
-            <div class="alert alert-warning" role="alert">
-                <strong>Customize </strong> the overall color scheme, layout, etc.
-            </div>
-            <div class="mb-2">
-                <img src="/admin_side/images/layouts/light.png" class="img-fluid img-thumbnail" alt="">
-            </div>
-            <div class="custom-control custom-switch mb-3">
-                <input type="checkbox" class="custom-control-input theme-choice" id="light-mode-switch" checked />
-                <label class="custom-control-label" for="light-mode-switch">Light Mode</label>
-            </div>
-
-            <div class="mb-2">
-                <img src="/admin_side/images/layouts/dark.png" class="img-fluid img-thumbnail" alt="">
-            </div>
-            <div class="custom-control custom-switch mb-3">
-                <input type="checkbox" class="custom-control-input theme-choice" id="dark-mode-switch" data-bsStyle="/admin_side/css/bootstrap-dark.min.css"
-                       data-appStyle="/admin_side/css/app-dark.min.css" />
-                <label class="custom-control-label" for="dark-mode-switch">Dark Mode</label>
-            </div>
-
-            <div class="mb-2">
-                <img src="/admin_side/images/layouts/rtl.png" class="img-fluid img-thumbnail" alt="">
-            </div>
-            <div class="custom-control custom-switch mb-5">
-                <input type="checkbox" class="custom-control-input theme-choice" id="rtl-mode-switch" data-appStyle="/admin_side/css/app-rtl.min.css" />
-                <label class="custom-control-label" for="rtl-mode-switch">RTL Mode</label>
-            </div>
-
-            <a href="https://1.envato.market/EK71X" class="btn btn-danger btn-block mt-3" target="_blank"><i class="mdi mdi-download mr-1"></i> Download Now</a>
-        </div>
-    </div> <!-- end slimscroll-menu-->
-</div>
-<!-- /Right-bar -->
-
-<!-- Right bar overlay-->
-<div class="rightbar-overlay"></div>
-
-<a href="javascript:void(0);" class="right-bar-toggle demos-show-btn">
-    <i class="mdi mdi-settings-outline mdi-spin"></i> &nbsp;Choose Demos
-</a>
-
 <!-- Vendor js -->
 <script src="/admin_side/js/vendor.min.js"></script>
 
 <!-- App js -->
 <script src="/admin_side/js/app.min.js"></script>
 <script src="/admin_side/js/school-load.js"></script>
+<script>
+    document.getElementById("enter-search").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            document.getElementById("search").value = document.getElementById("enter-search").value;
+            loadSchoolInPage(0, document.getElementById("isAdmin").value);
+        }
+    });
+
+    document.getElementById("search-button").addEventListener("click", function (){
+        document.getElementById("search").value = document.getElementById("enter-search").value;
+        loadSchoolInPage(0, document.getElementById("isAdmin").value);
+    });
+</script>
 </body>
 
 

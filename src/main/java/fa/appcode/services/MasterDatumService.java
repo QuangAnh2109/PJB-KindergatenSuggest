@@ -2,6 +2,7 @@ package fa.appcode.services;
 
 import fa.appcode.common.vo.MasterDataVo;
 import fa.appcode.entities.MasterDatum;
+import org.springframework.ui.Model;
 
 import java.util.List;
 
@@ -37,4 +38,10 @@ public interface MasterDatumService {
      * @return
      */
      Integer getMasterKeyByTypeNameAndTypeValue(String typeName, String typeValue);
+
+    /**
+     * Set the master data to the model based on the provided type name.
+     * @param model
+     */
+     public void setMasterDataToModel(Model model);
 }

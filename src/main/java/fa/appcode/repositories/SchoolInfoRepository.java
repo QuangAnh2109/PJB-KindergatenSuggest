@@ -40,7 +40,7 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
 
     //find all SchoolListManager by paging and search and delete flag
     @Query("SELECT new fa.appcode.common.vo.SchoolListManager(si.id, si.schoolName, si.schoolAddress, si.city.cityName, si.district.districtName, si.ward.wardName, si.schoolPhone, si.schoolEmail, si.postedDate, si.statusId, " +
-            "CASE WHEN si.statusId = " + SchoolConstant.STATUS_DELETED + " THEN false ELSE true END) " +
+            "CASE WHEN si.statusId = " + SchoolConstant.STATUS_DELETED + " THEN false ELSE true END, si.recordNo) " +
             "FROM SchoolInfo si " +
             "WHERE (si.schoolName IS NULL OR si.schoolName LIKE %:search%) AND si.deleteFlg = :deleteFlg " +
             "ORDER BY " +
@@ -50,7 +50,7 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
 
     //find all SchoolListManager by paging and search and account id and delete flag
     @Query("SELECT new fa.appcode.common.vo.SchoolListManager(si.id, si.schoolName, si.schoolAddress, si.city.cityName, si.district.districtName, si.ward.wardName, si.schoolPhone, si.schoolEmail, si.postedDate, si.statusId, " +
-            "CASE WHEN si.statusId = " + SchoolConstant.STATUS_DELETED + " OR si.statusId = " + SchoolConstant.STATUS_APPROVED + " THEN false ELSE true END) " +
+            "CASE WHEN si.statusId = " + SchoolConstant.STATUS_DELETED + " OR si.statusId = " + SchoolConstant.STATUS_APPROVED + " THEN false ELSE true END, si.recordNo) " +
             "FROM SchoolInfo si " +
             "WHERE (si.schoolName IS NULL OR si.schoolName LIKE %:search%) AND si.deleteFlg = :deleteFlg AND si.account.email = :account " +
             "ORDER BY " +
@@ -68,7 +68,7 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
             "AND si.statusId IN (:#{#request.statusList})")
     int updateSchoolStatusByRequest(@Param("request") SchoolStatusUpdateRequest request);
 
-    @Query("SELECT new fa.appcode.common.vo.SchoolFormManager(si.id, si.schoolName, si.typeId, si.schoolAddress, si.city.id, si.city.cityName, si.district.id, si.district.districtName, si.ward.id, si.ward.wardName, si.schoolEmail, si.schoolPhone, si.childReceivingAgeId, si.educationMethodId, si.feeTo, si.feeFrom, si.schoolIntroduction, si.updateTime, si.updateId, si.recordNo, si.deleteFlg, si.account.email, si.statusId) " +
+    @Query("SELECT new fa.appcode.common.vo.SchoolFormManager(si.id, si.schoolName, si.typeId, si.schoolAddress, si.city.id, si.city.cityName, si.district.id, si.district.districtName, si.ward.id, si.ward.wardName, si.schoolEmail, si.schoolPhone, si.childReceivingAgeId, si.educationMethodId, si.feeTo, si.feeFrom, si.schoolIntroduction, si.imageUrl, si.updateTime, si.updateId, si.recordNo, si.deleteFlg, si.account.email, si.statusId) " +
             "FROM SchoolInfo si " +
             "WHERE si.id = ?1 AND si.deleteFlg = ?2")
     SchoolFormManager getSchoolFormByIdAndDeleteFlg(int id, boolean deleteFlg);
@@ -87,6 +87,7 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
             ",si.feeTo = :#{#schoolInfo.feeTo} " +
             ",si.feeFrom = :#{#schoolInfo.feeFrom} " +
             ",si.schoolIntroduction = :#{#schoolInfo.introduction} " +
+            ",si.imageUrl = :#{#schoolInfo.imgageUrl} " +
             ",si.updateTime = :#{#schoolInfo.updateTime} " +
             ",si.updateId = :#{#schoolInfo.updateId} " +
             ",si.recordNo = si.recordNo + 1 " +
@@ -136,7 +137,8 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
                 "FROM Feedback f2 " +
                 "WHERE f2.id.accountId = f.id.accountId " +
                 "AND f2.id.schoolId = :#{#form.schoolId} " +
-                "AND f2.school.account.id = :#{#form.accountId} " +
+                "AND (:#{#form.accountEmail} IS NULL OR f2.school.account.email = :#{#form.accountEmail}) " +
+//                "AND f2.school.account.id = :#{#form.accountId} " +
                 "AND (:#{#form.from} IS NULL OR f.id.feedbackTime >= :#{#form.from}) " +
                 "AND (:#{#form.to} IS NULL OR f.id.feedbackTime <= :#{#form.to})" +
                 "GROUP BY f2.id.accountId" +
@@ -153,7 +155,8 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
             ") " +
             "FROM Feedback f " +
             "WHERE f.id.schoolId = :#{#form.schoolId} " +
-                "AND f.school.account.id = :#{#form.accountId} " +
+                "AND (:#{#form.accountEmail} IS NULL OR f.school.account.email = :#{#form.accountEmail}) " +
+//                "AND f.school.account.id = :#{#form.accountId} " +
                 "AND f.deleteFlg = :#{#form.deleteFlg} " +
                 "AND (:#{#form.from} IS NULL OR f.id.feedbackTime >= :#{#form.from}) " +
                 "AND (:#{#form.to} IS NULL OR f.id.feedbackTime <= :#{#form.to}) " +
@@ -163,5 +166,5 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
                 "AND (:#{#form.four} = false OR (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 >= 4 AND (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 < 5) " +
                 "AND (:#{#form.five} = false OR (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 = 5) " +
             "GROUP BY f.id.accountId ")
-    List<AccountFeedback> getAllAccountFeedbackBySchoolId(@Param("form") SchoolRatingFeedbackForm schoolRatingFeedbackForm, Pageable pageable);
+    Page<AccountFeedback> getAllAccountFeedbackBySchoolId(@Param("form") SchoolRatingFeedbackForm schoolRatingFeedbackForm, Pageable pageable);
 }

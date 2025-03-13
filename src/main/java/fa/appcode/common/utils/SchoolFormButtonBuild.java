@@ -6,7 +6,6 @@ import org.springframework.ui.Model;
 
 @Builder
 public class SchoolFormButtonBuild {
-    boolean saveDraft;
     boolean submit;
     boolean delete;
     boolean reject;
@@ -16,7 +15,6 @@ public class SchoolFormButtonBuild {
     boolean canEdit;
 
     public void setButton(Model model) {
-        model.addAttribute("saveDraft", saveDraft);
         model.addAttribute("submit", submit);
         model.addAttribute("delete", delete);
         model.addAttribute("reject", reject);
@@ -24,6 +22,5 @@ public class SchoolFormButtonBuild {
         model.addAttribute("publish", publish);
         model.addAttribute("unpublish", unPublish);
         model.addAttribute("canEdit", canEdit);
-        if(!canEdit) model.addAttribute("edit", false);
     }
 }
