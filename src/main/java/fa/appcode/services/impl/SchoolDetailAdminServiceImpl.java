@@ -55,18 +55,17 @@ public class SchoolDetailAdminServiceImpl implements SchoolDetailAdminService {
     public String getSchoolDetail(Model model, int schoolId) {
 
         SchoolFormManager school = schoolInfoRepository.getSchoolFormByIdAndDeleteFlg(schoolId, false);
-        SchoolFormButton.valueOf("admin"+school.getStatusId());
+        SchoolFormButton.valueOf("admin"+school.getStatusId()).getSchoolFormButtonBuild().setButton(model);
         model.addAttribute("school", school);
         schoolDetailManagerService.setSchoolViewDetailFormToModel(model, school.getCityId(), school.getDistrictId());
 
-        // Add regex to model
-        model.addAttribute("emailRegex", EMAIL_REGEX_HTML);
-        model.addAttribute("phoneRegex", PHONE_REGEX_HTML);
 
         model.addAttribute("statusName", masterDatumRepository.getMasterByTypeNameAndTypeKey(SchoolConstant.SCHOOL_STATUS, school.getStatusId()));
 
         model.addAttribute("schoolFacilities", schoolFacilityRepository.getAllSchoolFacilityIdBySchoolId(school.getId(), false));
         model.addAttribute("schoolUtilities", schoolUtilityRepository.getAllSchoolUtilityIdBySchoolId(school.getId(), false));
+
+        model.addAttribute("isAdmin", true);
 
         // Add city list to model
         model.addAttribute("citys", cityRepository.findAllByDeleteFlg(false));

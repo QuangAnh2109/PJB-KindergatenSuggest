@@ -50,7 +50,7 @@ public class SchoolDetailByAdminController {
 
     @ResponseBody
     @PostMapping("/delete")
-    public ResponseEntity deleteSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
+    public ResponseEntity deleteSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
         if (schoolDetailAdminService.deleteSchoolByStatus(id, recordNo)) {
             return ResponseEntity.accepted().body(SchoolConstant.MESSAGE_DELETE_SUCCESS);
         } else return ResponseEntity.badRequest().body(SchoolConstant.MESSAGE_DELETE_FAIL);
@@ -87,7 +87,7 @@ public class SchoolDetailByAdminController {
 
     @ResponseBody
     @PostMapping("/submit")
-    public ResponseEntity submitSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
+    public ResponseEntity submitSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
         // Check school status is saved or submitted
         List<Integer> inStatus = List.of(SchoolConstant.STATUS_SAVED, SchoolConstant.STATUS_SUBMITTED);
 

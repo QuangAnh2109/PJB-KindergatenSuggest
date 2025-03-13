@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <!-- Mirrored from coderthemes.com/simple/layouts/vertical/tables-basic.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 28 Aug 2024 07:26:12 GMT -->
 <head>
@@ -88,7 +87,7 @@
                     </div>
                     <div class="col-lg-11">
                     </div>
-                    <button class="col-lg-1 btn btn-primary">Add school</button>
+                    <a class="col-lg-1" sec:authorize="hasAuthority('School owner')" th:href="${serverLink+'/school-owner/school/form'}"><button class="col-12 btn btn-primary">Add school</button></a>
                 </div>
                 <!-- end row -->
                 <div th:fragment="main-content" id="main-content-school-table">

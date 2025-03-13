@@ -198,7 +198,7 @@
                         <div class="col-6">
                             <div class="rating-box">
                                 <p>No. of feedbacks</p>
-                                <b th:text="${rating.totalFeedbacks}"></b>
+                                <b style="font-size: 30px;" th:text="${rating.totalFeedbacks}"></b>
                             </div>
                         </div>
                     </div>
@@ -225,8 +225,8 @@
                             </div>
                             <div class="col-12 feedback-content" th:text="${feedback.feedbackMessage}"></div>
                         </div>
-                        <div style="padding-top: 30px;" th:if="${hasNext}">
-                            <a style="padding-left: 50px;text-decoration: underline;" th:attr="onclick='viewMoreFeedback(' + ${nextPage} + ')'">View more feedbacks</a>
+                        <div style="padding-top: 30px;" th:if="${feedbackList.getNumber() < feedbackList.getTotalPages()}">
+                            <a class="button-search" style="padding-left: 50px;text-decoration: underline;color: dodgerblue;" th:attr="onclick='viewMoreFeedback(' + ${feedbackList.getNumber() + 1} + ')'">View more feedbacks</a>
                         </div>
                     </div>
                     <div class="col text-end">

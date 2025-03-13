@@ -22,14 +22,14 @@ public class SchoolFeedbackAndRatingController {
 
     @GetMapping("admin/school-list/detail/feedback-rating/{schoolId}")
     public String getSchoolFeedbackRatingByAdmin(Model model, @PathVariable("schoolId") int schoolId){
-        feedbackRatingService.setBaseData(model, schoolId, null);
+        feedbackRatingService.setBaseData(model, schoolId, "owner1@example.com");
         return Constant.SCHOOL_FEEDBACK_RATING_MANAGER_PAGE;
     }
 
     @GetMapping("school-owner/school-list/detail/feedback-rating/{schoolId}")
     public String getSchoolFeedbackRatingByManager(Model model, @PathVariable("schoolId") int schoolId){
-        System.out.println("run");
-        feedbackRatingService.setBaseData(model, schoolId, SecurityContextHolder.getContext().getAuthentication().getName());
+        System.out.println("run");//SecurityContextHolder.getContext().getAuthentication().getName()
+        feedbackRatingService.setBaseData(model, schoolId, "owner1@example.com");
         System.out.println("run");
         return Constant.SCHOOL_FEEDBACK_RATING_MANAGER_PAGE;
     }

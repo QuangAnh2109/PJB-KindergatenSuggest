@@ -66,17 +66,17 @@
                 </div>
             </div>
             <!-- end row -->
-            <form th:action="@{/school-owner/school/add}" method="post" enctype="multipart/form-data">
+            <div id="form-data">
                 <table class="col-12 school-form">
                     <tr>
                         <td>School Name</td>
-                        <td><input type="text" name="name" class="form-control" placeholder="Enter School Name Here..."
-                                   maxlength="255" required></td>
+                        <td><input type="text" name="name" id="schoolName" class="form-control" placeholder="Enter School Name Here..."
+                                   maxlength="255" ></td>
                     </tr>
                     <tr>
                         <td>School Type</td>
                         <td>
-                            <select name="type" class="form-control" required>
+                            <select name="type" id="typeId" class="form-control" >
                                 <option value="" disabled selected>Select a school type</option>
                                 <option th:each="schoolType:${schoolTypes}" th:value="${schoolType.typeKey}" th:text="${schoolType.typeValue}"></option>
                             </select>
@@ -85,7 +85,7 @@
                     <tr>
                         <td>Address</td>
                         <td>
-                            <select onchange="loadDistrict(this.value)" name="city" class="form-control" required>
+                            <select onchange="loadDistrict(this.value)" id="city" name="city" class="form-control" >
                                 <option value="" disabled selected>Province/City</option>
                                 <option th:each="city:${citys}" th:value="${city.id}" th:text="${city.cityName}"></option>
                             </select>
@@ -95,7 +95,7 @@
                         <td></td>
                         <td>
                             <select onchange="loadWard(this.value)" name="district" id="district" class="form-control"
-                                    required disabled>
+                                     disabled>
                                 <option value="" disabled selected>District</option>
                             </select>
                         </td>
@@ -104,7 +104,7 @@
                         <td></td>
                         <td>
                             <select onchange="enableParam('address')" name="ward" id="ward" class="form-control"
-                                    required disabled>
+                                     disabled>
                                 <option value="" disabled selected>Ward</option>
                             </select>
                         </td>
@@ -114,22 +114,22 @@
 
                         </td>
                         <td><input type="text" name="address" id="address" class="form-control"
-                                   placeholder="Enter School Address Here..." maxlength="255" required disabled></td>
+                                   placeholder="Enter School Address Here..." maxlength="255"  disabled></td>
                     </tr>
                     <tr>
                         <td>Email</td>
-                        <td><input type="email" name="email" class="form-control"
-                                   placeholder="Enter School Email Here..." th:pattern="${emailRegex}" required></td>
+                        <td><input id="email" type="email" name="email" class="form-control"
+                                   placeholder="Enter School Email Here..." th:pattern="${emailRegex}" ></td>
                     </tr>
                     <tr>
                         <td>Phone No.</td>
-                        <td><input type="text" name="phone" class="form-control"
-                                   placeholder="Enter Phone Number Here..." th:pattern="${phoneRegex}" required></td>
+                        <td><input id="phone" type="text" name="phone" class="form-control"
+                                   placeholder="Enter Phone Number Here..." th:pattern="${phoneRegex}" ></td>
                     </tr>
                     <tr>
                         <td>Child-receiving age</td>
                         <td>
-                            <select class="form-control" name="age" required>
+                            <select id="childReceivingAge" class="form-control" name="age" >
                                 <option value="" disabled selected>Select Child-Receiving Age</option>
                                 <option th:each="age:${childReceivingAges}" th:value="${age.typeKey}"
                                         th:text="${age.typeValue}">
@@ -139,7 +139,7 @@
                     <tr>
                         <td>Education method</td>
                         <td>
-                            <select class="form-control" name="educationMethod" required>
+                            <select id="educationMethod" class="form-control" name="educationMethod" >
                                 <option value="" disabled selected>Select Education Method</option>
                                 <option th:each="method:${educationMethods}" th:value="${method.typeKey}"
                                         th:text="${method.typeValue}">
@@ -150,9 +150,9 @@
                         <td>Fee/month(VND)</td>
                         <td class="row">
                             <label class="col-1 col-form-label">From</label>
-                            <input name="feeFrom" class="col-3 form-control" type="text" pattern="[0-9]+" required>
+                            <input id="feeFrom" name="feeFrom" class="col-3 form-control" type="text" pattern="[0-9]+" >
                             <label class="col-1 col-form-label">To</label>
-                            <input name="feeTo" class="col-3 form-control" type="text" pattern="[0-9]+" required>
+                            <input id="feeTo" name="feeTo" class="col-3 form-control" type="text" pattern="[0-9]+" >
                         </td>
                     </tr>
                     <tr>
@@ -184,7 +184,6 @@
                     <tr>
                         <td>School Introduction</td>
                         <td>
-                            <input id="school-intro" type="text" hidden>
                             <div id="editor"></div>
                         </td>
                     </tr>
@@ -197,12 +196,11 @@
                     </tr>
                 </table>
                 <div style="margin-top: 30px; padding-bottom: 30px">
-                    <button id="cancel" class="btn btn-primary" style="background-color: white;color: #458bc4;">Cancel</button>
-                    <button id="save" class="btn btn-primary">Save draft</button>
-                    <button id="submit" class="btn btn-primary">Submit</button>
+                    <a th:href="${serverLink + '/manager/school-list'}"><button id="cancel" class="btn btn-primary" style="background-color: white;color: #458bc4;">Cancel</button></a>
+                    <button id="save" class="btn btn-primary" onclick="addNewSchool(1, 'save-draft-new')">Save draft</button>
+                    <button id="submit" class="btn btn-primary" onclick="addNewSchool(2, 'submit-new')">Submit</button>
                 </div>
-            </form>
-
+            </div>
             <!-- end row -->
 
 
@@ -241,18 +239,12 @@
         theme: 'snow',
         placeholder: 'Write something...',
     });
-
-    quill.on('text-change', function(delta, oldDelta, source) {
-        if (source === 'user') {
-            let content = quill.root.innerHTML;
-            document.getElementById("school-intro").innerHTML = content;
-        }
-    });
 </script>
 
 <!-- Jquery js -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="/admin_side/js/address-load.js"></script>
+<script src="/admin_side/js/create-new-school.js"></script>
 </body>
 
 
