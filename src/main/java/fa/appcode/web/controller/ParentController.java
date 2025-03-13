@@ -140,9 +140,6 @@ public class ParentController {
             model.addAttribute("currentPage", currentPage);
             model.addAttribute("numberPage", listParentEnroll.getTotalPages());
             model.addAttribute("role", role);
-        } catch (CustomDataException e) {
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
-            return "redirect:" + Constant.VIEW_PARENT_DETAIL_URL + id;
         } catch (IllegalAccessException e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
             return "redirect:" + Constant.PARENT_LIST_URL;
@@ -182,6 +179,7 @@ public class ParentController {
                 redirectAttributes.addFlashAttribute("alertType", Constant.DANGER);
                 Log4jUtils.getLogger().info("Unenroll Parent Success");
             } else {
+                redirectAttributes.addFlashAttribute("alertType", Constant.DANGER);
                 redirectAttributes.addFlashAttribute("message", "Invalid action Type");
             }
         } catch (Exception e) {
