@@ -54,6 +54,7 @@ public class AccountServiceImpl implements AccountService {
     private final GlobalConfig globalConfig;
     private final CityService cityService;
     private final EmailService emailService;
+    private Map<String, Object> lastValidationResult;
 
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -314,49 +315,19 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.getSchoolOwnerEmailBySchoolIdAndStatusAndDeleteFlg(id, 1, false);
     }
 
-//    @Override
-//    public String processRegister(AccountVo accountVo, BindingResult bindingResult, Model model) {
-//        try {
-//            if (bindingResult.hasErrors()) {
-//                LOGGER.warn("Form validation failed - email: {}", accountVo.getEmail());
-//                return Constant.REGISTER_PAGE;
-//            }
-//
-//            if (accountRepository.findByEmail(accountVo.getEmail()) != null) {
-//                LOGGER.warn("Email already exists - email: {}", accountVo.getEmail());
-//                model.addAttribute("emailError", globalConfig.getEmailExist());
-//                return Constant.REGISTER_PAGE;
-//            }
-//            if(accountRepository.findAccountByPhone(accountVo.getPhone()) != null) {
-//                LOGGER.warn("Phone already exists - phone: {}", accountVo.getPhone());
-//                model.addAttribute("phoneExist", globalConfig.getPhoneIsExist());
-//                return Constant.REGISTER_PAGE;
-//            }
-//            if (!accountVo.isPasswordConfirmed()) {
-//                LOGGER.warn("Password and confirm password do not match - email: {}", accountVo.getEmail());
-//                model.addAttribute("confirmPasswordError", globalConfig.getPasswordNotMatch());
-//                return Constant.REGISTER_PAGE;
-//            }
-//            createAccount(accountVo);
-//            LOGGER.info("Account created successfully - email: {}", accountVo.getEmail());
-//            SendMailInfo registrationMail = EmailBuilder.buildRegistrationMail(accountVo.getEmail());
-//            emailService.sendEmailToMany(registrationMail);
-//
-//            model.addAttribute("message", globalConfig.getVerifyLinkSend());
-//            return Constant.REGISTER_PAGE;
-//
-//        } catch (Exception e) {
-//            LOGGER.error("Unexpected error during registration process - email: {}", accountVo.getEmail(), e);
-//            throw e;
-//        }
-//    }
 
-    public boolean processRegister(AccountVo accountVo, BindingResult bindingResult, Model model) {
+    @Override
+    public Map<String, Object> getValidationResult() {
+        return lastValidationResult;
+    }
+
+    @Override
+    public boolean processRegister(AccountVo accountVo) {
         try {
-            Map<String, Object> validationResult = validateService.validateRegistration(accountVo, bindingResult, model);
-
-            if (!(boolean) validationResult.get("isValid")) {
-                LOGGER.warn("Validation failed: {} - email: {}", validationResult.get("errorField"), accountVo.getEmail());
+            lastValidationResult = validateService.validateRegistration(accountVo);
+            if (!(boolean) lastValidationResult.get("isValid")) {
+                String validationLevel = (String) lastValidationResult.get("validationLevel");
+                LOGGER.warn("Validation failed at level: {} - email: {}", validationLevel, accountVo.getEmail());
                 return false;
             }
             createAccount(accountVo);
@@ -366,23 +337,22 @@ public class AccountServiceImpl implements AccountService {
             return true;
         } catch (Exception e) {
             LOGGER.error("Unexpected error during registration process - email: {}", accountVo.getEmail(), e);
-            model.addAttribute("globalError", globalConfig.getAnErrorOccur());
             return false;
         }
     }
 
-    public boolean verifyAccount(String token, Model model) {
+    @Override
+    public boolean verifyAccount(String token) {
         try {
             String email = TokenUtils.getEmailFromToken(token);
             AccountInfo accountInfo = findByEmail(email);
             if (accountInfo == null) {
                 LOGGER.warn("Account verification failed - email not found: {}", email);
-                model.addAttribute(ERROR_ATTRIBUTE, globalConfig.getVerifiedAccount());
                 return false;
             }
+
             if (accountInfo.getDatetimeChangePass() != null) {
                 LOGGER.warn("Account already verified - email: {}", email);
-                model.addAttribute(ERROR_ATTRIBUTE, globalConfig.getVerifiedAccount());
                 return false;
             }
             accountInfo.setStatusId(Constant.STATUS_ACTIVE);
@@ -395,35 +365,6 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    //
-//    @Override
-//    public String changePasswordProcess(String oldPassword, String newPassword, String confirmPassword, Model model) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String email = authentication.getName();
-//        try {
-//            // Use validation service to validate the password change
-//            Map<String, Object> validationResult = validateService.validateChangePassword(
-//                    oldPassword, newPassword, confirmPassword, model);
-//            if (!(boolean) validationResult.get("isValid")) {
-//                LOGGER.warn("Password change validation failed for user: {}", email);
-//                return Constant.CHANGE_PASSWORD_PAGE;
-//            }
-//            // Update password
-//            boolean updated = updatePassword(email, newPassword);
-//            if (updated) {
-//                LOGGER.info("Password successfully updated for user: {}", email);
-//                model.addAttribute("successUpdate", globalConfig.getUpdateSuccess());
-//            } else {
-//                LOGGER.error("Failed to update password for user: {}", email);
-//                model.addAttribute("exceptionError", globalConfig.getAnErrorOccur());
-//            }
-//            return Constant.CHANGE_PASSWORD_PAGE;
-//        } catch (Exception e) {
-//            LOGGER.error("Exception during password change for user: {}", email, e);
-//            model.addAttribute("exceptionError", globalConfig.getAnErrorOccur());
-//            return Constant.CHANGE_PASSWORD_PAGE;
-//        }
-//    }
     @Override
     public boolean changePasswordProcess(String oldPassword, String newPassword, String confirmPassword, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -540,7 +481,7 @@ public class AccountServiceImpl implements AccountService {
         updatePassword(account.getEmail(), newPassword);
         return true;
     }
-    
+
     @Override
     public boolean updateAccountDetails(AccountInfo accountInfo, Model model) {
         AccountInfo currentAccount = findByEmail(accountInfo.getEmail());

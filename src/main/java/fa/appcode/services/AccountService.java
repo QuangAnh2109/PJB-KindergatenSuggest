@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
@@ -22,10 +23,6 @@ public interface AccountService {
     String encodePassword(String password);
 
     void save(AccountInfo accountInfo);
-
-    boolean processRegister(AccountVo accountVo, BindingResult bindingResult, Model model);
-
-    boolean verifyAccount(String token, Model model);
 
     AccountInfo findByEmail(String email);
 
@@ -134,5 +131,7 @@ public interface AccountService {
     boolean resetPassword(String token, String newPassword, String confirmPassword, Model model);
     boolean updateAccountDetails(AccountInfo accountInfo, Model model);
     AccountInfo getCurrentAccountInfo();
-
+    boolean processRegister(AccountVo accountVo);
+    boolean verifyAccount(String token);
+    Map<String, Object> getValidationResult();
 }
