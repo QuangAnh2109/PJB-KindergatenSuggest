@@ -1,8 +1,10 @@
 package fa.appcode.services;
 
+import fa.appcode.common.vo.EnrollSchoolInfoVo;
 import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.common.vo.SchoolListManager;
 import fa.appcode.entities.SchoolInfo;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -12,14 +14,14 @@ public interface SchoolInfoService {
      *
      * @return a List of SchoolInfo
      */
-    List<SchoolInfo> findSchoolInfoListByAccountEmail(String email);
+    List<EnrollSchoolInfoVo> findSchoolInfoListByAccountEmail(String email);
 
     /**
      * Retrieves a List of Published School
      *
      * @return a List of SchoolInfo
      */
-    List<SchoolInfo> findAllSchoolPublished();
+    List<EnrollSchoolInfoVo> findAllSchoolPublished();
 
     /**
      * This method is used to find School information based on School ID
@@ -39,9 +41,9 @@ public interface SchoolInfoService {
      */
     List<Integer> getAllSchoolIdsForUnenrollParentByAccountEmail(String email);
 
-    List<SchoolListManager> searchAllByNameAndPagingAndDeleteFlg(int page, String search);
+    Page<SchoolListManager> searchAllByNameAndPagingAndDeleteFlg(int page, String search);
 
-    List<SchoolListManager> searchAllByNameAndAccountAndPagingAndDeleteFlg(int page, String search, String email);
+    Page<SchoolListManager> searchAllByNameAndAccountAndPagingAndDeleteFlg(int page, String search, String email);
 
     int updateSchoolStatusByRequest(int id, int recordNo, int schoolStatus, String updateId, List<Integer> list);
 

@@ -26,7 +26,6 @@ public interface AccountService {
 
     AccountInfo findByEmail(String email);
 
-
     AccountInfo findAccountInfoByPhone(String phone);
 
     boolean updatePassword(String email, String newPassword);
@@ -64,7 +63,7 @@ public interface AccountService {
      *
      * @param accountVo
      */
-    void updateAccount(AccountVo accountVo);
+    int updateAccount(AccountVo accountVo);
 
     /**
      * Deletes logic a user account based on the provided ID. (set deleteFlg=1)
@@ -83,6 +82,7 @@ public interface AccountService {
     AccountInfo createAccount(AccountVo accountVo);
 
     Page<ParentVo> findAllParent(Pageable pageable);
+
     /**
      * This method is used to find Parent based on their ID
      *
@@ -90,6 +90,7 @@ public interface AccountService {
      * @return String role
      */
     ParentVo findParentById(int id) throws IllegalAccessException;
+
     /**
      * This method if used to find role of account by using account email
      *
@@ -127,11 +128,20 @@ public interface AccountService {
     boolean forgotPasswordProcess(String email, Model model);
 
     String resetPasswordProcess(String token, String newPassword, String confirmPassword, Model model);
+
     AccountInfo validateResetToken(String token, Model model);
+
     boolean resetPassword(String token, String newPassword, String confirmPassword, Model model);
+
     boolean updateAccountDetails(AccountInfo accountInfo, Model model);
+
     AccountInfo getCurrentAccountInfo();
+
     boolean processRegister(AccountVo accountVo);
+
     boolean verifyAccount(String token);
+
     Map<String, Object> getValidationResult();
+
+    public int getAccountIdByEmail(String email);
 }

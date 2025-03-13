@@ -1,7 +1,9 @@
 package fa.appcode.services;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 
 public interface SchoolDetailManagerService {
-    public void setSchoolUpdateFormToModel(Model model, boolean edit, String title1, String title2);
+    public String getSchoolCreateFormToModel(Model model);
+    public void setSchoolViewDetailFormToModel(Model model, int cityId, int districtId);
 }

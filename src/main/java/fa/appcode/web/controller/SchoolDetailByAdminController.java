@@ -1,8 +1,10 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.common.utils.*;
+import fa.appcode.common.vo.MasterDataVo;
 import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.config.GlobalConfig;
+import fa.appcode.repositories.MasterDatumRepository;
 import fa.appcode.services.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,18 +13,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.relation.Role;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static fa.appcode.common.utils.Constant.EMAIL_REGEX_HTML;
+import static fa.appcode.common.utils.Constant.PHONE_REGEX_HTML;
+
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/school")
 @RequiredArgsConstructor
-public class SchoolAdminController {
+public class SchoolDetailByAdminController {
 
     private final SchoolInfoService schoolInfoService;
 
     private final MasterDatumService masterDatumService;
+
+    private final MasterDatumRepository masterDatumRepository;
 
     private final EmailService emailService;
 
@@ -30,29 +37,28 @@ public class SchoolAdminController {
 
     private final GlobalConfig globalConfig;
 
-    private final CityService cityService;
-
     private final SchoolDetailAdminService schoolDetailAdminService;
 
+    private final SchoolDetailManagerService schoolDetailManagerService;
+
+    private final CityService cityService;
+
+    @GetMapping("/view-detail")
+    public String getSchoolDetail(@RequestParam("id") int id, Model model) {
+        return schoolDetailAdminService.getSchoolDetail(model, id);
+    }
 
     @ResponseBody
-    @PostMapping("/school/delete/{id}&{recordNo}")
-    public ResponseEntity deleteSchoolByAdmin(@PathVariable("id") int id, @PathVariable("recordNo") int recordNo) {
+    @PostMapping("/delete")
+    public ResponseEntity deleteSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
         if (schoolDetailAdminService.deleteSchoolByStatus(id, recordNo)) {
             return ResponseEntity.accepted().body(SchoolConstant.MESSAGE_DELETE_SUCCESS);
         } else return ResponseEntity.badRequest().body(SchoolConstant.MESSAGE_DELETE_FAIL);
     }
 
-    @GetMapping("/school/detail/{id}&{edit}")
-    public String getSchoolDetailByAdmin(@PathVariable("id") int id, @PathVariable("edit") boolean edit, Model model) {
-        SchoolFormManager school = schoolInfoService.getSchoolFormByIdAndNoDelete(id);
-        model.addAttribute("school", school);
-        return "admin_side/school-form";
-    }
-
     @ResponseBody
-    @PostMapping("/school/update")
-    public ResponseEntity updateSchoolByAdmin(@Valid @RequestBody SchoolFormManager schoolFormManager) {
+    @PostMapping("/update")
+    public ResponseEntity updateSchool(@Valid @RequestBody SchoolFormManager schoolFormManager) {
         // Get school info by id
         SchoolFormManager schoolInfo = schoolInfoService.getSchoolFormByIdAndNoDelete(schoolFormManager.getId());
 
@@ -80,8 +86,8 @@ public class SchoolAdminController {
     }
 
     @ResponseBody
-    @PostMapping("/school/submit/{id}&{recordNo}")
-    public ResponseEntity submitSchoolByAdmin(@PathVariable("id") int id, @PathVariable("recordNo") int recordNo) {
+    @PostMapping("/submit")
+    public ResponseEntity submitSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
         // Check school status is saved or submitted
         List<Integer> inStatus = List.of(SchoolConstant.STATUS_SAVED, SchoolConstant.STATUS_SUBMITTED);
 
@@ -100,8 +106,8 @@ public class SchoolAdminController {
     }
 
     @ResponseBody
-    @PostMapping("/school/reject/{id}&{recordNo}")
-    public ResponseEntity rejectSchoolByAdmin(@PathVariable("id") int id, @PathVariable("recordNo") int recordNo) {
+    @PostMapping("/reject")
+    public ResponseEntity rejectSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
         // Check school status is submitted
         List<Integer> inStatus = List.of(SchoolConstant.STATUS_SUBMITTED);
 
@@ -120,8 +126,8 @@ public class SchoolAdminController {
 
 
     @ResponseBody
-    @PostMapping("/school/approve/{id}&{recordNo}")
-    public ResponseEntity approveSchoolByAdmin(@PathVariable("id") int id, @PathVariable("recordNo") int recordNo) {
+    @PostMapping("/approve")
+    public ResponseEntity approveSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
         // Check school status is submitted
         List<Integer> inStatus = List.of(SchoolConstant.STATUS_SUBMITTED);
 
@@ -137,6 +143,5 @@ public class SchoolAdminController {
             return ResponseEntity.accepted().body("Approve success");
         } else return ResponseEntity.badRequest().body("Approve failed");
     }
-
 
 }

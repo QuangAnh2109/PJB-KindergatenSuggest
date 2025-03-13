@@ -1,16 +1,21 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.common.logging.Log4jUtils;
+import fa.appcode.common.utils.ValidateUtils;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.services.AccountService;
 
+import fa.appcode.services.ValidateService;
+import fa.appcode.services.impl.ValidateServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +26,8 @@ import java.util.Map;
 public class UserManagementRestController {
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private ValidateService validateService;
 
     /**
      * Delete account
@@ -43,12 +50,8 @@ public class UserManagementRestController {
      * @return
      */
     @PostMapping("/save-user")
-    public ResponseEntity<?> saveUser(@RequestBody @Valid AccountVo accountVo, BindingResult result, Principal principal) throws  Exception {
+    public ResponseEntity<?> saveUser(@RequestBody @Valid AccountVo accountVo, BindingResult result, Principal principal) throws Exception {
         Map<String, String> errors = new HashMap<>();
-
-        Log4jUtils.getLogger().info("AccountID :" + accountVo.getId());
-
-        boolean isAdding = accountVo.getId() == null;
 
         if (result.hasErrors()) {
             result.getFieldErrors().forEach(error -> {
@@ -56,18 +59,34 @@ public class UserManagementRestController {
                     errors.put(error.getField(), error.getDefaultMessage());
                 }
             });
+        }
 
-            if (!errors.isEmpty()) {
-                return ResponseEntity.badRequest().body(errors);
+        Log4jUtils.getLogger().info("AccountID :" + accountVo.getId());
+
+        boolean isAdding = accountVo.getId() == null;
+
+        if (isAdding && validateService.checkDuplicateEmail(accountVo.getEmail())) {
+            errors.put("email", "Email already exists. Please use a different email.");
+        }
+
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        try {
+            if (isAdding) {
+                accountService.addUserFromAdmin(accountVo, principal);
+                return ResponseEntity.ok(Map.of("message", "User added successfully."));
+            } else {
+                int newRecordNo = accountService.updateAccount(accountVo);
+                return ResponseEntity.ok(Map.of(
+                        "message", "User updated successfully.",
+                        "recordNo", newRecordNo
+                ));
             }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
 
-        if (isAdding) {
-            accountService.addUserFromAdmin(accountVo, principal);
-        } else {
-            accountService.updateAccount(accountVo);
-        }
-
-        return ResponseEntity.ok(Map.of("message", isAdding ? "User added successfully." : "User updated successfully."));
     }
 }

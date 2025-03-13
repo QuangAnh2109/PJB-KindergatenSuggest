@@ -10,79 +10,93 @@ $("body").on("submit", "#userForm", function (event) {
     var count = 0;
     var phoneRegex = /^[0-9]{10,15}$/;
     var today = new Date().toISOString().split("T")[0];
+    var emailRegex =/^[a-z][a-z0-9]*@gmail.com$/
 
     if ($("#fullName").val().trim() === '') {
         $("#errorFullName").html('Please enter full name');
         count++;
     }
-    if ($("#email").val().trim() === '') {
+    var email = $("#email").val().trim();
+    if (email === '') {
         $("#errorEmail").html('Please enter email');
         count++;
-    }
-    var dob = $("#dob").val();
-    var userId = $("#userID").val();
-
-    if (!userId) { // Nếu ID rỗng -> Đang Add User
-        if (dob === '') {
-            $("#errorDob").html('Please enter date of birth');
-            count++;
-        } else if (dob >= today) {
-            $("#errorDob").html('Date of birth must be in the past');
+         }else if(!emailRegex.test(email)){
+             $("#errorEmail").html('Invalid email format');
             count++;
         }
-    }
 
-    var phone = $("#phone").val().trim();
-    if (phone === '') {
-        $("#errorPhone").html('Please enter phone number');
-        count++;
-    } else if (!phoneRegex.test(phone)) {
-        $("#errorPhone").html('Invalid phone number format');
-        count++;
-    }
-    if ($('#role').val() === '') {
-        $("#errorRole").html('Please select a role');
-        count++;
-    }
-    if ($('#status').val() === '') {
-        $("#errorStatus").html('Please select a status');
-        count++;
-    }
+        var dob = $("#dob").val();
+        var userId = $("#userID").val();
 
-
-    if (count === 0) {
-        var user = {
-            id: $("#userID").val() || null,
-            fullName: $("#fullName").val().trim(),
-            email: $("#email").val().trim(),
-            dob: $("#dob").val().trim(),
-            phone: $("#phone").val().trim(),
-            role: $('#role').val().trim(),
-            status: $("#status").val().trim()
-
-
-        };
-        $.ajax({
-            url: "/admin/api/save-user",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(user),
-            success: function (response) {
-                alert(response.message);
-            },
-            error: function (xhr) {
-                var errors = xhr.responseJSON;
-                if (errors) {
-                    $("#errorFullName").html(errors.fullName);
-                    $("#errorEmail").html(errors.email);
-                    $("#errorDob").html(errors.dob);
-                    $("#errorPhone").html(errors.phone);
-                    $("#errorRole").html(errors.role);
-                    $("#errorStatus").html(errors.status);
-                }
+        if (!userId) { // Nếu ID rỗng -> Đang Add User
+            if (dob === '') {
+                $("#errorDob").html('Please enter date of birth');
+                count++;
+            } else if (dob >= today) {
+                $("#errorDob").html('Date of birth must be in the past');
+                count++;
             }
-        });
-    }
+        }
+
+        var phone = $("#phone").val().trim();
+        if (phone === '') {
+            $("#errorPhone").html('Please enter phone number');
+            count++;
+        } else if (!phoneRegex.test(phone)) {
+            $("#errorPhone").html('Invalid phone number format');
+            count++;
+        }
+        if ($('#role').val() === '') {
+            $("#errorRole").html('Please select a role');
+            count++;
+        }
+        if ($('#status').val() === '') {
+            $("#errorStatus").html('Please select a status');
+            count++;
+        }
+
+
+        if (count === 0) {
+            var user = {
+                id: $("#userID").val() || null,
+                fullName: $("#fullName").val().trim(),
+                email: $("#email").val().trim(),
+                dob: $("#dob").val().trim(),
+                phone: $("#phone").val().trim(),
+                role: $('#role').val().trim(),
+                status: $("#status").val().trim(),
+                recordNo: $("#recordNo").val()
+
+            };
+            $.ajax({
+                url: "/admin/api/save-user",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(user),
+                success: function (response) {
+                    alert(response.message);
+                    $("#recordNo").val(response.recordNo);
+                },
+                error: function (xhr) {
+                    if (xhr.status === 409) { // Conflict - data has been modified
+                        alert("The data has been modified by someone else. Please reload the page!");
+                        location.reload();
+                    } else {
+                        var errors = xhr.responseJSON;
+                        if (errors) {
+                            $("#errorFullName").html(errors.fullName);
+                            $("#errorEmail").html(errors.email);
+                            $("#errorDob").html(errors.dob);
+                            $("#errorPhone").html(errors.phone);
+                            $("#errorRole").html(errors.role);
+                            $("#errorStatus").html(errors.status);
+                        } else {
+                            alert("An error occurred: " + xhr.responseText);
+                        }
+                    }
+                }
+            });
+        }
 });
 
 document.getElementById("cancel-button").addEventListener("click", function () {
@@ -94,4 +108,6 @@ document.getElementById("cancel-button").addEventListener("click", function () {
         window.history.back();
     }
 });
+
+
 

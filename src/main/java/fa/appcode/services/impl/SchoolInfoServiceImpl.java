@@ -1,5 +1,6 @@
 package fa.appcode.services.impl;
 
+import fa.appcode.common.vo.EnrollSchoolInfoVo;
 import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.common.vo.SchoolListManager;
 import fa.appcode.common.vo.SchoolStatusUpdateRequest;
@@ -10,6 +11,7 @@ import fa.appcode.services.SchoolInfoService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,11 +31,11 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     private EntityManager entityManager;
 
     @Override
-    public List<SchoolInfo> findSchoolInfoListByAccountEmail(String email) {
+    public List<EnrollSchoolInfoVo> findSchoolInfoListByAccountEmail(String email) {
         return schoolInfoRepository.findSchoolInfoByAccountEmail(email);
     }
     @Override
-    public List<SchoolInfo> findAllSchoolPublished() {
+    public List<EnrollSchoolInfoVo> findAllSchoolPublished() {
         return schoolInfoRepository.findAllSchoolPublished();
     }
 
@@ -54,13 +56,13 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
 
     //find all SchoolListManager by paging and search and delete flag
     @Override
-    public List<SchoolListManager> searchAllByNameAndPagingAndDeleteFlg(int page, String search) {
+    public Page<SchoolListManager> searchAllByNameAndPagingAndDeleteFlg(int page, String search) {
         return schoolInfoRepository.searchAllByNameAndPagingAndDeleteFlg(PageRequest.of(page, globalConfig.getSizeOfPage()), search, false);
     }
 
     //find all SchoolListManager by paging and search and account and delete flag
     @Override
-    public List<SchoolListManager> searchAllByNameAndAccountAndPagingAndDeleteFlg(int page, String search, String email) {
+    public Page<SchoolListManager> searchAllByNameAndAccountAndPagingAndDeleteFlg(int page, String search, String email) {
         return schoolInfoRepository.searchAllByNameAndAccountAndPagingAndDeleteFlg(PageRequest.of(page, globalConfig.getSizeOfPage()), search, email, false);
     }
 

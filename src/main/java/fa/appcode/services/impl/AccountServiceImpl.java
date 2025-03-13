@@ -11,13 +11,13 @@ import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
+import fa.appcode.exceptions.EntityNotFoundException;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.*;
 import jakarta.transaction.Transactional;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.EmailService;
 import fa.appcode.services.MasterDatumService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Logger;
 import jakarta.transaction.Transactional;
@@ -35,14 +35,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.Map;
+
 
 @Service
 @RequiredArgsConstructor
-
 public class AccountServiceImpl implements AccountService {
     @Autowired
     private MasterDatumService masterDatumService;
@@ -161,26 +161,34 @@ public class AccountServiceImpl implements AccountService {
         // Resolve role and status names
         accountVo.setRole(masterDatumService.getMasterByTypeNameAndTypeKey("ROLE", accountInfo.getRoleId()));
         accountVo.setStatus(masterDatumService.getMasterByTypeNameAndTypeKey("ACCOUNT STATUS", accountInfo.getStatusId()));
-
+        accountVo.setRecordNo(accountInfo.getRecordNo());
         return accountVo;
     }
 
 
     // Update user account
     @Override
-    public void updateAccount(AccountVo accountVo) {
+    public int updateAccount(AccountVo accountVo) {
         AccountInfo user = accountRepository.findById(accountVo.getId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
+        Log4jUtils.getLogger().info("recordNo get in DB : {}", user.getRecordNo());
+
+        if (!user.getRecordNo().equals(accountVo.getRecordNo())) {
+            throw new IllegalStateException("Data has been modified by someone else!"); // Xử lý lỗi ở Service
+        }
         // Update role or status of account
         user.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
         user.setStatusId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
 
-        user.setRecordNo(user.getRecordNo() + 1);
+        int newRecordNo = user.getRecordNo() + 1;
+        user.setRecordNo(newRecordNo);
         user.setUpdateId("SYSTEM_ADMIN");
         user.setUpdateTime(Instant.now());
 
         accountRepository.save(user);
+
+        return newRecordNo;
     }
 
 
@@ -195,6 +203,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void addUserFromAdmin(AccountVo accountVo, Principal principal) {
+
         // Generate password by system
         String randomPassword = UUID.randomUUID().toString();
         accountVo.setPassword(randomPassword);
@@ -300,6 +309,11 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(accountInfo);
     }
 
+
+    @Override
+    public int getAccountIdByEmail(String email) {
+        return accountRepository.findAccountByEmailAndStatusIdAndDeleteFlg(email, 1, false).getId();
+    }
 
     //    @Override
 //    public AccountInfo findWithFullAddressByEmail(String email, boolean deleteFlg) {

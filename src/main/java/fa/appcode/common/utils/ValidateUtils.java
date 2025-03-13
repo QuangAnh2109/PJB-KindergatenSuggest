@@ -1,5 +1,6 @@
 package fa.appcode.common.utils;
 
+import java.time.LocalDate;
 import java.util.regex.Pattern;
 
 public class ValidateUtils {
@@ -18,13 +19,6 @@ public class ValidateUtils {
             return false;
         }
         return Pattern.matches(Constant.PASSWORD_REGEX, password);
-    }
-
-    public static boolean isValidEmail(String email) {
-        if(email == null) {
-            return false;
-        }
-        return Pattern.matches(Constant.EMAIL_REGEX, email);
     }
 
 }

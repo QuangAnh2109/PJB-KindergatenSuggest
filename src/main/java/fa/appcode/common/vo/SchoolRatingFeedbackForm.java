@@ -10,7 +10,7 @@ import java.time.Instant;
 @Builder
 public class SchoolRatingFeedbackForm {
     private int schoolId;
-    private int accountId;
+    private String accountEmail;
     private Instant from;
     private Instant to;
     private boolean one;
