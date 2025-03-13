@@ -39,13 +39,13 @@ public interface EnrollSchoolService {
      * This method to evaluate to unenroll parent to school
      *
      * @param enrollSchool
-     * @param approvalEnrollDate
+     * @param enrollEndDate
      * @param role
      * @param status
      * @param principal
      * @param recordNo
      */
-    void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status, Principal principal, Integer recordNo) throws Exception;
+    void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate enrollEndDate, String role, Integer status, Principal principal, Integer recordNo) throws Exception;
 
     //Enroll Parent School
     /**
