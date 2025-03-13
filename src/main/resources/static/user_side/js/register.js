@@ -10,6 +10,7 @@ function reloadHande() {
             fetch(form.action, {
                 method: 'POST',
                 body: new FormData(form)
+
             })
                 .then(response => response.text())
                 .then(html => {

@@ -115,7 +115,7 @@
 
 
                     <form id="userForm"
-                          th:action="@{${role == 'Admin' ? '/admin/api/save-user' : '/auth/update-account'}}"
+                          th:action="@{${role == 'Admin' ? '/admin/api/save-user' : '/auth/view-account'}}"
                           method="post"
                           th:object="${user}">
 

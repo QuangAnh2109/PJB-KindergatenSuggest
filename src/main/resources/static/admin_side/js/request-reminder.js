@@ -39,13 +39,16 @@ $(document).ready(function () {
         }
 
         requestList.forEach(request => {
+            const statusButton = request.requestMasterName === 'Open'
+                ? `<button class="btn btn-success btn-sm rounded-pill" style="min-width: 80px; font-size: 12px;">${request.requestMasterName}</button>`
+                : `<button class="btn btn-danger btn-sm rounded-pill" style="min-width: 80px; font-size: 12px;">${request.requestMasterName}</button>`;
             const row = `
                 <tr >
                     <th scope="row">${request.id}</th>
                     <th>${request.fullName || 'N/A'}</th>
                     <th>${request.requestEmail || 'N/A'}</th>
                     <th>${request.requestPhone || 'N/A'}</th>
-                    <th><button class="btn btn-closed">${request.requestMasterName || 'N/A'}</button></th>
+                    <th>${statusButton}</th>
                     <td>
                         <a href="/manager/request-list-detail?id=${request.id}&page=Detail&currentPage=${currentPage}" style="text-decoration: underline">
                             Go to review

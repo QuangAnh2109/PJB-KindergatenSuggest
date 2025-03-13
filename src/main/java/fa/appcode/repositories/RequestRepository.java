@@ -19,6 +19,12 @@ import java.util.List;
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Integer> {
 
+    /**
+     * Find request details by request ID
+     *
+     * @param id the request ID
+     * @return a RequestDetailVo containing request details
+     */
     @Query("""
             SELECT new fa.appcode.common.vo.RequestDetailVo(
                         r.id,r.fullName,r.requestEmail,r.requestPhone,
@@ -30,6 +36,14 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             """)
     RequestDetailVo findRequestsById(Integer id);
 
+    /**
+     * List all requests, optionally filtered by account ID and request master ID
+     *
+     * @param accountID the account ID (nullable)
+     * @param requestMasterID the request master ID (nullable)
+     * @param pageable pagination information
+     * @return a page of RequestVo
+     */
     @Query(""" 
             SELECT new fa.appcode.common.vo.RequestVo(
                        r.id,r.fullName,r.requestEmail,r.requestPhone,m.typeValue)
@@ -42,6 +56,15 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             """)
     Page<RequestVo> listAllRequest(@Param("accountID") Integer accountID,@Param("requestMasterID") Integer requestMasterID, Pageable pageable);
 
+    /**
+     * Search for requests based on a keyword, optionally filtered by account ID and request master ID
+     *
+     * @param keyword the search keyword (nullable)
+     * @param accountID the account ID (nullable)
+     * @param requestMasterID the request master ID (nullable)
+     * @param pageable pagination information
+     * @return a page of RequestVo
+     */
     @Query("""
                 SELECT new fa.appcode.common.vo.RequestVo(
                            r.id, r.fullName, r.requestEmail, r.requestPhone, m.typeValue)
@@ -59,6 +82,13 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
                       """)
     Page<RequestVo> searchRequest(@Param("keyword")  String keyword, @Param("accountID")  Integer accountID, @Param("requestMasterID")  Integer requestMasterID, Pageable pageable);
 
+    /**
+     * Update the status of a request
+     *
+     * @param update_id the ID of the user updating the request
+     * @param id the request ID
+     * @param updateTime the time of the update
+     */
     @Modifying
     @Transactional
     @Query(""" 
@@ -68,6 +98,11 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             """)
     void updateRequestStatus(String update_id, int id, Instant updateTime);
 
+    /**
+     * Find accounts for sending email notifications
+     *
+     * @return a list of EmailContentVo containing account ID, email, and request count
+     */
     @Query(""" 
             SELECT  new fa.appcode.common.vo.EmailContentVo(
                         a.id,a.email,count(a.id))

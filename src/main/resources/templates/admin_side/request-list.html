@@ -89,7 +89,8 @@
                                     <th th:text="${request.requestEmail}"/>
                                     <th th:text="${request.requestPhone}"/>
                                     <td>
-                                        <button class="btn btn-closed" th:text="${request.requestMasterName}"/>
+                                        <button th:if="${request.requestMasterName == 'Open'}" class="btn btn-success btn-sm rounded-pill" style="min-width: 80px; font-size: 12px;" th:text="${request.requestMasterName}"></button>
+                                        <button th:if="${request.requestMasterName != 'Open'}" class="btn btn-danger btn-sm rounded-pill" style="min-width: 80px; font-size: 12px;" th:text="${request.requestMasterName}"></button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -119,7 +120,7 @@
                     </nav>
                 </th:block>
 
-                <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+                <div aria-live="polite" aria-atomic="true" style="position: fixed; bottom: 100px; right: 20px; z-index: 1050; width: 350px;">
                     <div id="myToast" class="toast" style="position: absolute; top: 0; right: 0;" data-delay="5000"
                          th:if="${message}">
                         <div class="toast-header">

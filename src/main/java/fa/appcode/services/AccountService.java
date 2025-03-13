@@ -12,21 +12,22 @@ import java.util.List;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.entities.AccountInfo;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 public interface AccountService {
-    AccountInfo getAccountById(int id);
-
-    boolean existsByEmail(String email);
 
     String encodePassword(String password);
 
     void save(AccountInfo accountInfo);
 
-    AccountVo findAccountByEmail(String email);
+    boolean processRegister(AccountVo accountVo, BindingResult bindingResult, Model model);
+
+    boolean verifyAccount(String token, Model model);
 
     AccountInfo findByEmail(String email);
-
 
     AccountInfo findAccountInfoByPhone(String phone);
 
@@ -65,7 +66,7 @@ public interface AccountService {
      *
      * @param accountVo
      */
-    void updateAccount(AccountVo accountVo);
+    int updateAccount(AccountVo accountVo);
 
     /**
      * Deletes logic a user account based on the provided ID. (set deleteFlg=1)
@@ -103,7 +104,6 @@ public interface AccountService {
 
     Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id, Pageable pageable);
 
-    AccountVo findAccountByPhone(String phone);
     /**
      * Retrieves a paginated list of user accounts based on search and email of School Owner criteria.
      *
@@ -121,4 +121,19 @@ public interface AccountService {
     String getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(int id);
 
     void updateAccountInfo(AccountInfo existing, AccountInfo formData);
+
+    void saveAccountInfo(AccountInfo accountInfo);
+
+    boolean changePasswordProcess(String oldPassword, String newPassword, String confirmPassword, Model model);
+
+    boolean forgotPasswordProcess(String email, Model model);
+
+    String resetPasswordProcess(String token, String newPassword, String confirmPassword, Model model);
+    AccountInfo validateResetToken(String token, Model model);
+    boolean resetPassword(String token, String newPassword, String confirmPassword, Model model);
+    boolean updateAccountDetails(AccountInfo accountInfo, Model model);
+    AccountInfo getCurrentAccountInfo();
+
+
+    public int getAccountIdByEmail(String email);
 }

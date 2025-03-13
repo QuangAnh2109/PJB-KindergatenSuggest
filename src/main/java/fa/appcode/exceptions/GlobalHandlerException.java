@@ -1,13 +1,14 @@
 package fa.appcode.exceptions;
 
-import jakarta.persistence.EntityNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import fa.appcode.common.logging.Log4jUtils;
 import org.springframework.dao.DataAccessException;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import fa.appcode.common.utils.Constant;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.sql.SQLException;
 
@@ -15,7 +16,7 @@ import java.sql.SQLException;
 public class GlobalHandlerException {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(GlobalHandlerException.class);
+    private static final Logger logger = Log4jUtils.getLogger(GlobalHandlerException.class);
 
     @ExceptionHandler(CustomDataException.class)
     public ResponseEntity<String> handleCustomDataException(CustomDataException ex) {
@@ -41,5 +42,15 @@ public class GlobalHandlerException {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entity not found: " + e.getMessage());
     }
 
+    @ExceptionHandler(NoResourceFoundException.class)
+    public String handleNoResourceFoundException(NoResourceFoundException e) {
+        logger.error("NoResourceFoundException occurred: {}", e.getMessage(), e);
+        return Constant.ERROR_PAGE;
+    }
 
+    @ExceptionHandler(TokenException.class)
+    public ResponseEntity<String> handleTokenException(TokenException e) {
+        logger.error("Token error: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token error: " + e.getMessage());
+    }
 }

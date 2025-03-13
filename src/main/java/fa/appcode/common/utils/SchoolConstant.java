@@ -8,6 +8,7 @@ public class SchoolConstant {
     public static final String EDUCATION_METHOD = "EDUCATION METHOD";
     public static final String FACILITIES = "FACILITIES";
     public static final String UTILITIES = "UTILITIES";
+    public static final String SCHOOL_STATUS = "SCHOOL STATUSES";
 
     public static final int STATUS_SAVED = 1;
     public static final int STATUS_SUBMITTED = 2;
