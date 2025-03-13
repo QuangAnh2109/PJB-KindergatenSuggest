@@ -91,7 +91,7 @@ public class ParentController {
         /*
          * Return view name
          */
-        return "admin_side/parent-list";
+        return Constant.PARENT_LIST_PAGE;
     }
 
     @GetMapping("parent-list/parent-details/{id}")
@@ -144,7 +144,7 @@ public class ParentController {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
             return "redirect:" + Constant.PARENT_LIST_URL;
         }
-        return "admin_side/parent-details";
+        return Constant.PARENT_DETAIL_PAGE;
     }
 
     @PostMapping({"parent-list/parent-details/{id}"})
