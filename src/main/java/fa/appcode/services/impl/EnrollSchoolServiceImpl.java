@@ -35,6 +35,7 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     @Autowired
     private GlobalConfig globalConfig;
 
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role, Principal principal) throws Exception {
         //create instant enroll School
@@ -93,7 +94,7 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         return enrollSchoolRepository.findParentEnrolledSchoolByParentIdAndSchoolOwner(parentId, schoolOwnerId, pageable);
     }
 
-
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status, Principal principal, Integer recordNo) throws Exception {
         if (enrollSchool == null) {

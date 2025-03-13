@@ -1,9 +1,8 @@
 package fa.appcode.exceptions;
 
 import fa.appcode.common.logging.Log4jUtils;
-import jakarta.persistence.EntityNotFoundException;
-import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DataAccessException;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
