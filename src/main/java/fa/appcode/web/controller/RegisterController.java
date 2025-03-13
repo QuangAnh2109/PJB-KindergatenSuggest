@@ -13,6 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+import java.util.Optional;
+
 @Controller
 @RequestMapping("public/register")
 @RequiredArgsConstructor
@@ -31,14 +34,18 @@ public class RegisterController {
 
     @PostMapping
     public String processRegister(@ModelAttribute("accountVo") @Valid AccountVo accountVo,
-                                  BindingResult bindingResult,
                                   Model model) {
-        LOGGER.info("Processing registration for account: {}", accountVo.getEmail());
-
-        boolean isSuccess = accountService.processRegister(accountVo, bindingResult, model);
-
+        LOGGER.info("Processing registration for email: {}", accountVo.getEmail());
+        boolean isSuccess = accountService.processRegister(accountVo);
         if (isSuccess) {
-            model.addAttribute("message", globalConfig.getVerifyLinkSend());
+            model.addAttribute("successMessage", globalConfig.getVerifyLinkSend());
+        } else {
+            Map<String, Object> validationResult = accountService.getValidationResult();
+            Optional.ofNullable(validationResult)
+                    .map(result -> result.get("errors"))
+                    .filter(Map.class::isInstance)
+                    .map(map -> (Map<String, String>) map)
+                    .ifPresent(errors -> errors.forEach(model::addAttribute));
         }
         return Constant.REGISTER_PAGE;
     }
@@ -46,11 +53,11 @@ public class RegisterController {
     @GetMapping("/verify")
     public String verifyAccount(@RequestParam String token, Model model) {
         LOGGER.info("Verifying account with token: {}", token);
-        boolean isVerified = accountService.verifyAccount(token, model);
+        boolean isVerified = accountService.verifyAccount(token);
         if (!isVerified) {
             return Constant.TOKEN_INVALID_PAGE;
         }
-        model.addAttribute("message", globalConfig.getActiveSuccess());
+        model.addAttribute("activeSuccess", globalConfig.getActiveSuccess());
         return Constant.VERIFY_ACCOUNT_PAGE;
     }
 }

@@ -1,35 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Logout</title>
+    <style>
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .popup {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .button-container {
+            margin-top: 10px;
+        }
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-yes {
+            background-color: red;
+            color: white;
+        }
+        .btn-cancel {
+            background-color: gray;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-<button type="button" onclick="showPopup()">Logout</button>
 
-<div id="logoutPopup" class="overlay">
-  <div class="popup">
-    <h2>Are you sure you want to logout?</h2>
-    <div class="button-container">
-      <button class="btn btn-yes" onclick="confirmLogout()">Yes</button>
-      <button class="btn btn-cancel" onclick="hidePopup()">Cancel</button>
+<div th:fragment="logoutPopupFragment">
+    <button type="button" onclick="showPopup()">Logout</button>
+
+    <div id="logoutPopup" class="overlay">
+        <div class="popup">
+            <h2>Are you sure you want to logout?</h2>
+            <div class="button-container">
+                <button class="btn btn-yes" onclick="confirmLogout()">Yes</button>
+                <button class="btn btn-cancel" onclick="hidePopup()">Cancel</button>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <form id="logoutForm" th:action="@{/logout}" method="post"></form>
+
+    <script>
+        function showPopup() {
+            document.getElementById("logoutPopup").style.display = "flex";
+        }
+        function hidePopup() {
+            document.getElementById("logoutPopup").style.display = "none";
+        }
+        function confirmLogout() {
+            document.getElementById("logoutForm").submit();
+        }
+    </script>
 </div>
-
-<form id="logoutForm" action="#" th:action="@{/logout}" method="post"></form>
-
-<script>
-  function showPopup() {
-    document.getElementById("logoutPopup").style.display = "block";
-  }
-  function hidePopup() {
-    document.getElementById("logoutPopup").style.display = "none";
-  }
-  function confirmLogout() {
-    document.getElementById("logoutForm").submit();
-  }
-</script>
 
 </body>
 </html>

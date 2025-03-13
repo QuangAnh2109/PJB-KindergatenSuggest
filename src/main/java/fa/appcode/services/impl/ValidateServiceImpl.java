@@ -42,6 +42,7 @@ public class ValidateServiceImpl implements ValidateService {
     static final String CONFIRM_PASSWORD_ERROR = "confirmPasswordError";
     static final String FIELD_ERROR = "errorField";
     static final String IS_VALID = "isValid";
+    static final String VALIDATION_LEVEL = "validationLevel";
 
     /**
      * Checks if a field is required (null or empty)
@@ -122,38 +123,22 @@ public class ValidateServiceImpl implements ValidateService {
         return isDuplicate;
     }
 
-    /**
-     * Validates a registration form
-     *
-     * @param accountVo     The account view object containing registration data
-     * @param bindingResult The binding result containing validation errors
-     * @param model         The model to add attribute errors to
-     * @return A map containing validation results
-     */
     @Override
-    public Map<String, Object> validateRegistration(AccountVo accountVo, BindingResult bindingResult, Model model) {
+    public Map<String, Object> validateRegistration(AccountVo accountVo) {
         LOGGER.debug("Validating registration for email: {}", accountVo.getEmail());
-
         Map<String, Object> result = new HashMap<>();
         result.put(IS_VALID, true);
-
-        if (bindingResult.hasErrors()) {
-            LOGGER.warn("Form validation failed - email: {}", accountVo.getEmail());
-            result.put(IS_VALID, false);
-            result.put(FIELD_ERROR, "form");
-            return result;
-        }
-        validateRegisterRequired(accountVo, model);
-        validateValidRegister(accountVo, model);
-        validateDuplicateRegister(accountVo, model);
-
-        if (model.containsAttribute(FULL_NAME_ERROR) ||
-                model.containsAttribute(EMAIL_ERROR) ||
-                model.containsAttribute(PHONE_ERROR) ||
-                model.containsAttribute(PASSWORD_ERROR) ||
-                model.containsAttribute(CONFIRM_PASSWORD_ERROR)) {
-            LOGGER.warn("Registration validation failed for email: {}", accountVo.getEmail());
-            result.put(IS_VALID, false);
+        Map<String, String> errors = new HashMap<>();
+        Map<String, String> requiredErrors = validateRegisterRequired(accountVo);
+        errors.putAll(requiredErrors);
+        validateFullName(accountVo.getFullName(), requiredErrors.containsKey(FULL_NAME_ERROR), errors);
+        validateEmail(accountVo.getEmail(), requiredErrors.containsKey(EMAIL_ERROR), errors);
+        validatePhone(accountVo.getPhone(), requiredErrors.containsKey(PHONE_ERROR), errors);
+        validatePasswords(accountVo.getPassword(), accountVo.getConfirmPassword(),
+                requiredErrors.containsKey(PASSWORD_ERROR) || requiredErrors.containsKey(CONFIRM_PASSWORD_ERROR),
+                errors);
+        if (!errors.isEmpty()) {
+            setValidationResult(result, errors, requiredErrors.isEmpty());
         } else {
             LOGGER.info("Registration validation successful for email: {}", accountVo.getEmail());
         }
@@ -162,99 +147,116 @@ public class ValidateServiceImpl implements ValidateService {
     }
 
     /**
-     * Validates that all required fields are provided
-     *
-     * @param accountVo The account view object
-     * @param model     The model to add attribute errors to
-     * @return true if there are errors, false otherwise
+     * Validates email format and checks for duplicates
      */
-    @Override
-    public boolean validateRegisterRequired(AccountVo accountVo, Model model) {
-        LOGGER.debug("Validating required fields for registration");
+    private void validateEmail(String email, boolean hasRequiredError, Map<String, String> errors) {
+        if (hasRequiredError) {
+            return;
+        }
+        if (!validEmail(email)) {
+            LOGGER.warn("Invalid email format: {}", email);
+            errors.put(EMAIL_ERROR, globalConfig.getValidEmail());
+        } else if (checkDuplicateEmail(email)) {
+            LOGGER.warn("Email already exists: {}", email);
+            errors.put(EMAIL_ERROR, globalConfig.getEmailExist());
+        }
+    }
 
-        boolean hasError = false;
-
-        if (requiredField(accountVo.getFullName()) && !model.containsAttribute(FULL_NAME_ERROR)) {
-            LOGGER.warn("Full name is required but not provided");
-            model.addAttribute(FULL_NAME_ERROR, globalConfig.getRequiredField());
-            hasError = true;
+    private void validateFullName(String fullName, boolean hasRequiredError, Map<String, String> errors) {
+        if (hasRequiredError) {
+            return;
         }
-        if (requiredField(accountVo.getEmail()) && !model.containsAttribute(EMAIL_ERROR)) {
-            LOGGER.warn("Email is required but not provided");
-            model.addAttribute(EMAIL_ERROR, globalConfig.getRequiredField());
-            hasError = true;
+        if (fullName.length() > 100) {
+            LOGGER.warn("Invalid full name format: {}", fullName);
+            errors.put(FULL_NAME_ERROR, globalConfig.getInvalidFullName());
         }
-        if (requiredField(accountVo.getPhone()) && !model.containsAttribute(PHONE_ERROR)) {
-            LOGGER.warn("Phone is required but not provided");
-            model.addAttribute(PHONE_ERROR, globalConfig.getRequiredField());
-            hasError = true;
-        }
-        if (requiredField(accountVo.getPassword()) && !model.containsAttribute(PASSWORD_ERROR)) {
-            LOGGER.warn("Password is required but not provided");
-            model.addAttribute(PASSWORD_ERROR, globalConfig.getRequiredField());
-            hasError = true;
-        }
-        if (requiredField(accountVo.getConfirmPassword()) && !model.containsAttribute(CONFIRM_PASSWORD_ERROR)) {
-            LOGGER.warn("Confirm password is required but not provided");
-            model.addAttribute(CONFIRM_PASSWORD_ERROR, globalConfig.getRequiredField());
-            hasError = true;
-        }
-
-        return hasError;
     }
 
     /**
-     * Validates that all fields have valid data
-     *
-     * @param accountVo The account view object
-     * @param model     The model to add attribute errors to
-     * @return true if there are errors, false otherwise
+     * Validates phone format and checks for duplicates
      */
-    @Override
-    public boolean validateValidRegister(AccountVo accountVo, Model model) {
-        LOGGER.debug("Validating field formats for registration");
-        boolean hasError = false;
-        if (!model.containsAttribute(EMAIL_ERROR) && !validEmail(accountVo.getEmail())) {
-            LOGGER.warn("Invalid email format: {}", accountVo.getEmail());
-            model.addAttribute(EMAIL_ERROR, globalConfig.getValidEmail());
-            hasError = true;
+    private void validatePhone(String phone, boolean hasRequiredError, Map<String, String> errors) {
+        if (hasRequiredError) {
+            return;
         }
-        if (!model.containsAttribute(PASSWORD_ERROR) && !validPassword(accountVo.getPassword())) {
+        if (!validPhoneNumber(phone)) {
+            LOGGER.warn("Invalid phone format: {}", phone);
+            errors.put(PHONE_ERROR, globalConfig.getPhoneIsNotValid());
+        } else if (checkDuplicatePhone(phone)) {
+            LOGGER.warn("Phone already exists: {}", phone);
+            errors.put(PHONE_ERROR, globalConfig.getPhoneIsExist());
+        }
+    }
+
+    /**
+     * Validates password format and confirms passwords match
+     */
+    private void validatePasswords(String password, String confirmPassword, boolean hasRequiredError, Map<String, String> errors) {
+        if (hasRequiredError) {
+            return;
+        }
+        if (!validPassword(password)) {
             LOGGER.warn("Invalid password format");
-            model.addAttribute(PASSWORD_ERROR, globalConfig.getValidatePassword());
-            hasError = true;
+            errors.put(PASSWORD_ERROR, globalConfig.getValidatePassword());
         }
-        if (!model.containsAttribute(PHONE_ERROR) && !validPhoneNumber(accountVo.getPhone())) {
-            LOGGER.warn("Invalid phone format: {}", accountVo.getPhone());
-            model.addAttribute(PHONE_ERROR, globalConfig.getPhoneIsNotValid());
-            hasError = true;
-        }
-        if (!model.containsAttribute(CONFIRM_PASSWORD_ERROR) &&
-                !checkPasswordsMatch(accountVo.getPassword(), accountVo.getConfirmPassword())) {
+
+        if (!checkPasswordsMatch(password, confirmPassword)) {
             LOGGER.warn("Passwords do not match");
-            model.addAttribute(CONFIRM_PASSWORD_ERROR, globalConfig.getPasswordNotMatch());
-            hasError = true;
+            errors.put(CONFIRM_PASSWORD_ERROR, globalConfig.getPasswordNotMatch());
         }
-        return hasError;
     }
 
     /**
-     * Checks for duplicate email or phone in registration
-     *
-     * @param accountVo The account view object
-     * @param model     The model to add attribute errors to
+     * Sets the validation result with appropriate validation level
      */
+    private void setValidationResult(Map<String, Object> result, Map<String, String> errors, boolean passedRequiredCheck) {
+        result.put(IS_VALID, false);
+        result.put("errors", errors);
+        if (!passedRequiredCheck) {
+            result.put(VALIDATION_LEVEL, "required");
+        } else if (hasFormatErrors(errors)) {
+            result.put(VALIDATION_LEVEL, "format");
+        } else {
+            result.put(VALIDATION_LEVEL, "duplicate");
+        }
+    }
+
+    /**
+     * Determines if there are format validation errors
+     */
+    private boolean hasFormatErrors(Map<String, String> errors) {
+        return errors.containsKey(PASSWORD_ERROR) ||
+                errors.containsKey(CONFIRM_PASSWORD_ERROR) ||
+                errors.get(EMAIL_ERROR) != null && errors.get(EMAIL_ERROR).equals(globalConfig.getValidEmail()) ||
+                errors.get(PHONE_ERROR) != null && errors.get(PHONE_ERROR).equals(globalConfig.getPhoneIsNotValid());
+    }
+
     @Override
-    public void validateDuplicateRegister(AccountVo accountVo, Model model) {
-        LOGGER.debug("Checking for duplicate email/phone during registration");
-        if (!model.containsAttribute(EMAIL_ERROR) && checkDuplicateEmail(accountVo.getEmail())) {
-            LOGGER.warn("Email already exists: {}", accountVo.getEmail());
-            model.addAttribute(EMAIL_ERROR, globalConfig.getEmailExist());
+    public Map<String, String> validateRegisterRequired(AccountVo accountVo) {
+        LOGGER.debug("Validating required fields for registration");
+        Map<String, String> errors = new HashMap<>();
+
+        if (requiredField(accountVo.getFullName())) {
+            LOGGER.warn("Full name is required but not provided");
+            errors.put(FULL_NAME_ERROR, globalConfig.getRequiredField());
         }
-        if (!model.containsAttribute(PHONE_ERROR) && checkDuplicatePhone(accountVo.getPhone())) {
-            LOGGER.warn("Phone already exists: {}", accountVo.getPhone());
-            model.addAttribute(PHONE_ERROR, globalConfig.getPhoneIsExist());
+        if (requiredField(accountVo.getEmail())) {
+            LOGGER.warn("Email is required but not provided");
+            errors.put(EMAIL_ERROR, globalConfig.getRequiredField());
         }
+        if (requiredField(accountVo.getPhone())) {
+            LOGGER.warn("Phone is required but not provided");
+            errors.put(PHONE_ERROR, globalConfig.getRequiredField());
+        }
+        if (requiredField(accountVo.getPassword())) {
+            LOGGER.warn("Password is required but not provided");
+            errors.put(PASSWORD_ERROR, globalConfig.getRequiredField());
+        }
+        if (requiredField(accountVo.getConfirmPassword())) {
+            LOGGER.warn("Confirm password is required but not provided");
+            errors.put(CONFIRM_PASSWORD_ERROR, globalConfig.getRequiredField());
+        }
+        return errors;
     }
 
     /**
@@ -338,7 +340,7 @@ public class ValidateServiceImpl implements ValidateService {
             model.addAttribute(PHONE_ERROR, globalConfig.getPhoneIsNotValid());
             hasError = true;
         }
-        if (accountInfo.getDob()!=null &&!accountInfo.getDob().isBefore(LocalDate.of(2006, 1, 1))) {
+        if (accountInfo.getDob() != null && !accountInfo.getDob().isBefore(LocalDate.of(2006, 1, 1))) {
             LOGGER.warn("Dob  is not valid");
             model.addAttribute("dobError", globalConfig.getInvalidDate());
             hasError = true;
