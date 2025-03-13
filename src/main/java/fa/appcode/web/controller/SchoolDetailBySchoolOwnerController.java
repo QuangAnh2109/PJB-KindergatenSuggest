@@ -5,7 +5,7 @@ import fa.appcode.common.utils.SchoolConstant;
 import fa.appcode.common.utils.SchoolFormButton;
 import fa.appcode.common.vo.MasterDataVo;
 import fa.appcode.common.vo.SchoolFormManager;
-import fa.appcode.entities.SchoolInfo;
+import fa.appcode.entities.*;
 import fa.appcode.services.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
+import java.security.Principal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +37,15 @@ public class SchoolDetailBySchoolOwnerController {
 
     private final SchoolDetailOwnerService schoolDetailOwnerService;
 
+    private final AccountService accountService;
+
+    private final WardService wardService;
+
+    private final DistrictService districtService;
+
+    private final SchoolInfoService schoolInfoService;
+
+
     @GetMapping("/form")
     public String getSchoolForm(Model model) {
         return schoolDetailManagerService.getSchoolCreateFormToModel(model);
@@ -40,8 +53,47 @@ public class SchoolDetailBySchoolOwnerController {
 
     @ResponseBody
     @PostMapping("/save-draft-new")
-    public String saveDraft() {
-        return "ok";
+    public ResponseEntity<?> saveDraft(
+            @RequestParam("name") String name,
+            @RequestParam("typeId") Integer typeKey,
+            @RequestParam("cityId") Integer cityID,
+            @RequestParam("districtId") Integer districtID,
+            @RequestParam("wardId") Integer wardID,
+            @RequestParam("address") String address,
+            @RequestParam("email") String email,
+            @RequestParam("phone") String phone,
+            @RequestParam("childReceivingAgeId") Integer ageTypeKey,
+            @RequestParam("educationMethodId") Integer educationTypeKey,
+            @RequestParam("feeFrom") BigDecimal feeFrom,
+            @RequestParam("feeTo") BigDecimal feeTo,
+            @RequestParam("introduction") String schoolIntroduction,
+            @RequestParam("statusId") Integer statusId,
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "schoolFacilities",required = false) List<Integer> schoolFacilities,
+            @RequestParam(value = "schoolUtilities",required = false) List<Integer> schoolUtilities,
+            Principal principal
+    ) {
+        // Get current account
+        AccountInfo currentAccount = accountService.getAccountInfo(principal);
+
+        // Get location info
+        Ward ward = wardService.findByIdAndNoDeleteFlg(wardID);
+        District district = districtService.findByIdAndNoDeleteFlag(districtID);
+        City city = cityService.findByIdAndNoDeleteFlg(cityID);
+
+        // Create SchoolInfo object
+        SchoolInfo schoolInfo = new SchoolInfo(
+                currentAccount, name, email, image.toString(), phone, feeFrom, feeTo,
+                address, ward, district, city, schoolIntroduction, Instant.now(),
+                ageTypeKey, educationTypeKey, 1, statusId, 0,
+                "SYSTEM_ADMIN", Instant.now(), " ", Instant.now(), false
+        );
+
+        // Save school
+        schoolInfoService.createNewSchool(schoolInfo,image);
+
+        //SchoolFacility schoolFacility = new SchoolFacility(schoolInfo,0,"test",Instant.now()," ",Instant.now(),false);
+        return ResponseEntity.ok().body(Map.of("message", "School saved successfully!"));
     }
 
     @ResponseBody

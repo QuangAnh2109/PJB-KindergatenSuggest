@@ -2,6 +2,7 @@ package fa.appcode.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -11,9 +12,11 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
+@RequiredArgsConstructor
 @Table(name = "school_info", schema = "instance_kintergarden_db")
 public class SchoolInfo {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "school_id", nullable = false)
     private Integer id;
 
@@ -91,4 +94,30 @@ public class SchoolInfo {
 
     @Column(name = "delete_flg", nullable = false)
     private Boolean deleteFlg = false;
+
+    public SchoolInfo(AccountInfo account, String schoolName, String schoolEmail, String imageUrl, String schoolPhone, BigDecimal feeFrom, BigDecimal feeTo, String schoolAddress, Ward ward, District district, City city, String schoolIntroduction, Instant postedDate, Integer childReceivingAgeId, Integer educationMethodId, Integer typeId, Integer statusId, Integer recordNo, String createId, Instant createTime, String updateId, Instant updateTime, Boolean deleteFlg) {
+        this.account = account;
+        this.schoolName = schoolName;
+        this.schoolEmail = schoolEmail;
+        this.imageUrl = imageUrl;
+        this.schoolPhone = schoolPhone;
+        this.feeFrom = feeFrom;
+        this.feeTo = feeTo;
+        this.schoolAddress = schoolAddress;
+        this.ward = ward;
+        this.district = district;
+        this.city = city;
+        this.schoolIntroduction = schoolIntroduction;
+        this.postedDate = postedDate;
+        this.childReceivingAgeId = childReceivingAgeId;
+        this.educationMethodId = educationMethodId;
+        this.typeId = typeId;
+        this.statusId = statusId;
+        this.recordNo = recordNo;
+        this.createId = createId;
+        this.createTime = createTime;
+        this.updateId = updateId;
+        this.updateTime = updateTime;
+        this.deleteFlg = deleteFlg;
+    }
 }

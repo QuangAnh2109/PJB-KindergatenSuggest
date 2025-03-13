@@ -5,6 +5,7 @@ import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.common.vo.SchoolListManager;
 import fa.appcode.entities.SchoolInfo;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -52,4 +53,6 @@ public interface SchoolInfoService {
     SchoolFormManager getSchoolFormByIdAndNoDelete(int id);
 
     int updateSchoolInfoBySchoolFormManager(SchoolFormManager schoolFormManager);
+
+    void createNewSchool(SchoolInfo schoolInfo, MultipartFile image);
 }

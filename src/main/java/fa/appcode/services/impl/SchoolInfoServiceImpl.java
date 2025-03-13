@@ -15,7 +15,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.util.List;
 
@@ -87,5 +94,30 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     @Override
     public int updateSchoolInfoBySchoolFormManager(SchoolFormManager schoolFormManager) {
         return schoolInfoRepository.updateSchoolInfoBySchoolFormManager(schoolFormManager);
+    }
+    @Override
+    public void createNewSchool(SchoolInfo schoolInfo, MultipartFile image) {
+        try {
+            // Get current account
+            String uploadDir = "src/main/resources/static/admin_side/images";
+            String imagePath = "default.png";
+
+            if (image != null && !image.isEmpty()) {
+                File uploadFolder = new File(uploadDir);
+                if (!uploadFolder.exists() && !uploadFolder.mkdirs()) {
+                    throw new IOException("Failed to create directory: " + uploadDir);
+                }
+
+                String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename().replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+                Path filePath = Paths.get(uploadDir).resolve(fileName);
+                Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                imagePath = fileName; // Save file name to DB
+            }
+            // Lưu vào DB
+            schoolInfo.setImageUrl(imagePath);
+            schoolInfoRepository.save(schoolInfo);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save school due to file upload error.", e);
+        }
     }
 }
