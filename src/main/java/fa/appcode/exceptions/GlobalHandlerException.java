@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import fa.appcode.common.utils.Constant;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.sql.SQLException;
@@ -52,5 +53,18 @@ public class GlobalHandlerException {
     public ResponseEntity<String> handleTokenException(TokenException e) {
         logger.error("Token error: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token error: " + e.getMessage());
+    }
+
+    @ExceptionHandler(ValidateParentException.class)
+    public String handleInvalidParentIdException(ValidateParentException e,RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("message", e.getMessage());
+        redirectAttributes.addFlashAttribute("alertType", Constant.DANGER);
+        return "redirect:" + Constant.PARENT_LIST_URL;
+    }
+    @ExceptionHandler(EnrollUnenrollParentException.class)
+    public String handleValidateEnrollUnenrollParent(EnrollUnenrollParentException e,RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("message", e.getMessage());
+        redirectAttributes.addFlashAttribute("alertType", Constant.DANGER);
+        return "redirect:" + Constant.VIEW_PARENT_DETAIL_URL + e.getParentId();
     }
 }

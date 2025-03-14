@@ -45,7 +45,7 @@ public interface EnrollSchoolService {
      * @param principal
      * @param recordNo
      */
-    void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate enrollEndDate, String role, Integer status, Principal principal, Integer recordNo) throws Exception;
+    void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate enrollEndDate, String role, Integer status, Principal principal, Integer recordNo, Integer parentId);
 
     //Enroll Parent School
     /**
@@ -56,7 +56,7 @@ public interface EnrollSchoolService {
      * @param enrollDate
      * @param principal
      */
-    void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role, Principal principal) throws Exception;
+    void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role, Principal principal);
 
     //check if parent is already enrolled or not
     /**
