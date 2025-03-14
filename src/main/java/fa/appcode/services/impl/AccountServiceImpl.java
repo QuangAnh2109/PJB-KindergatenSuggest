@@ -12,6 +12,7 @@ import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.exceptions.EntityNotFoundException;
+import fa.appcode.exceptions.ValidateParentException;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.*;
 import jakarta.transaction.Transactional;
@@ -253,10 +254,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ParentVo findParentById(int id) throws IllegalAccessException {
+    public ParentVo findParentById(int id) throws ValidateParentException {
         ParentVo parent = accountRepository.findParentById(id);
         if (parent == null) {
-            throw new IllegalAccessException("This Parent is current Inactive, Deleted or not Exist");
+            throw new ValidateParentException("This Parent is current Inactive, Deleted or not Exist");
         }
         return parent;
     }

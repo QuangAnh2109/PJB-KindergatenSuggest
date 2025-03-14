@@ -1,6 +1,7 @@
 package fa.appcode.services;
 
 import fa.appcode.common.vo.AccountVo;
+import fa.appcode.exceptions.ValidateParentException;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -89,8 +90,7 @@ public interface AccountService {
      * @param id
      * @return String role
      */
-    ParentVo findParentById(int id) throws IllegalAccessException;
-
+    ParentVo findParentById(int id) throws ValidateParentException;
     /**
      * This method if used to find role of account by using account email
      *

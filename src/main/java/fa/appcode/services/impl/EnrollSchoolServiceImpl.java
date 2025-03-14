@@ -7,6 +7,7 @@ import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.entities.EnrollSchool;
 import fa.appcode.entities.SchoolInfo;
+import fa.appcode.exceptions.EnrollUnenrollParentException;
 import fa.appcode.repositories.EnrollSchoolRepository;
 import fa.appcode.services.EnrollSchoolService;
 import fa.appcode.services.SchoolInfoService;
@@ -37,26 +38,26 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role, Principal principal) throws Exception {
+    public void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role, Principal principal){
         //create instant enroll School
         Log4jUtils.getLogger().info("Inside Enroll Method");
         EnrollSchool schoolEnroll = new EnrollSchool();
         //AParent that enroll
         if (account==null||account.getDeleteFlg() || account.getStatusId().equals(Constant.STATUS_INACTIVE)) {
             Log4jUtils.getLogger().info("Enroll Failed, account not active or no longer available");
-            throw new IllegalAccessException("Account is not active Or No Longer Available Or not Exists Please Try Again!");
+            throw new EnrollUnenrollParentException("Account is not active Or No Longer Available Or not Exists Please Try Again!",account.getId());
         }
         if (school==null||school.getDeleteFlg() || !school.getStatusId().equals(Constant.SCHOOL_PUBLISH_STATUS)) {
             Log4jUtils.getLogger().info("Enroll Failed, school not published or no longer available");
-            throw new IllegalAccessException("School is not published Or No Longer Available Or not Exists Please Try Again!");
+            throw new EnrollUnenrollParentException("School is not published Or No Longer Available Or not Exists Please Try Again!",account.getId());
         }
         if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_")) && !validateAccess(school.getId(), principal)) {
             Log4jUtils.getLogger().info("Enroll Failed, school owner does not have access to SchoolID: " + school.getId());
-            throw new IllegalAccessException(globalConfig.getSchoolOwnerAccess());
+            throw new EnrollUnenrollParentException(globalConfig.getSchoolOwnerAccess(),account.getId());
         }
         if (isEnrolled(account.getId(), school.getId())) {
             Log4jUtils.getLogger().info("Enroll Failed, Parent "+ account.getId()+" is already enrolling to school: " + school.getId());
-            throw new IllegalAccessException(globalConfig.getParentEnrolled());
+            throw new EnrollUnenrollParentException(globalConfig.getParentEnrolled(),account.getId());
         }
         schoolEnroll.setAccount(account);
         //School that Parent will enroll
@@ -96,20 +97,20 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status, Principal principal, Integer recordNo) throws Exception {
+    public void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status, Principal principal, Integer recordNo, Integer parentId){
         if (enrollSchool == null) {
             Log4jUtils.getLogger().info("Enroll Failed, unenroll school is null");
-            throw new IllegalAccessException("Illegal Unenroll school on your action");
+            throw new EnrollUnenrollParentException("Illegal Unenroll school on your action",parentId);
         }
         if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_")) && !validateAccess(enrollSchool.getSchool().getId(), principal)) {
             Log4jUtils.getLogger().info("School Owner does not have Access to school: "+enrollSchool.getSchool().getId());
-            throw new IllegalAccessException(globalConfig.getSchoolOwnerAccess());
+            throw new EnrollUnenrollParentException(globalConfig.getSchoolOwnerAccess(),parentId);
         }
 
         int updateRows = enrollSchoolRepository.evaluateParentEnroll(enrollSchool.getId(), LocalDate.now(), role, Instant.now(), status, recordNo);
         if (updateRows == 0) {
             Log4jUtils.getLogger().info("Unenroll Fail, The Record has changed");
-            throw new IllegalAccessException("This Record is Already Edited. Please Try Again!");
+            throw new EnrollUnenrollParentException("This Record is Already Edited. Please Try Again!",parentId);
         }
     }
 
