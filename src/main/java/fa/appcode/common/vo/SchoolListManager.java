@@ -19,4 +19,5 @@ public class SchoolListManager {
     private Instant postedDate;
     private int statusId;
     private boolean canDelete;
+    private int recordNo;
 }

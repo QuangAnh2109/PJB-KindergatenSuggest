@@ -95,4 +95,6 @@ public class GlobalConfig {
     private String invalidDate;
     @Value("${ME_036}")
     private String unenrollSuccess;
+    @Value("${ME_040}")
+    private String invalidFullName;
 }

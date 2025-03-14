@@ -10,7 +10,7 @@ $("body").on("submit", "#userForm", function (event) {
     var count = 0;
     var phoneRegex = /^[0-9]{10,15}$/;
     var today = new Date().toISOString().split("T")[0];
-    var emailRegex =/^[a-z][a-z0-9]*@gmail.com$/
+    var emailRegex =/\w[\w0-9]*@gmail.com/
 
     if ($("#fullName").val().trim() === '') {
         $("#errorFullName").html('Please enter full name');

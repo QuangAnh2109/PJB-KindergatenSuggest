@@ -21,9 +21,6 @@ $(document).ready(function () {
     // Khi người dùng xác nhận xóa
     $("#confirmDeleteUser").click(function () {
         if (selectedUserId) {
-            // Lấy CSRF token từ meta tag
-          //  const csrfToken = $("meta[name='_csrf']").attr("content");
-         //   const csrfHeader = $("meta[name='_csrf_header']").attr("content");
 
             $.get({
                 url: "/admin/api/user/" + selectedUserId,

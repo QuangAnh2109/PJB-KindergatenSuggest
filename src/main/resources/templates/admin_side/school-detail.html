@@ -26,6 +26,19 @@
         .school-form tr {
             height: 60px;
         }
+
+        .school-status {
+            display: inline-block;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #6c757d;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            cursor: not-allowed;
+            user-select: none;
+        }
     </style>
 </head>
 
@@ -52,60 +65,62 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item" style="color: black">School Management</li>
-                        <li class="breadcrumb-item" style="color: black">Add new school</li>
+                        <li class="breadcrumb-item" style="color: black">School List</li>
+                        <li class="breadcrumb-item" style="color: black">School detail</li>
                     </ol>
                 </nav>
             </div>
 
             <div class="row">
                 <div class="col-12">
-                    <div>
-                        <h5 class="header-title mb-3" style="font-size: 25px;">Add new school</h5>
-
+                    <div class="header-title d-flex align-items-center gap-2">
+                        <h4 class="mb-3" style="font-size: 25px;padding-right: 20px">School details</h4>
+                        <h1 class="school-status" th:text="${statusName}"></h1>
                     </div>
                 </div>
             </div>
             <!-- end row -->
-            <div id="form-data">
+            <input id="schoolId" th:value="${school.id}" hidden>
+            <input id="recordNo" th:value="${school.recordNo}" hidden>
+            <div>
                 <table class="col-12 school-form">
                     <tr>
                         <td>School Name</td>
-                        <td><input type="text" name="name" id="schoolName" class="form-control" placeholder="Enter School Name Here..."
-                                   maxlength="255" ></td>
+                        <td><input type="text" name="name" class="form-control" placeholder="Enter School Name Here..." disabled></td>
                     </tr>
                     <tr>
                         <td>School Type</td>
                         <td>
-                            <select name="type" id="typeId" class="form-control" >
+                            <select name="type" class="form-control" disabled>
                                 <option value="" disabled selected>Select a school type</option>
-                                <option th:each="schoolType:${schoolTypes}" th:value="${schoolType.typeKey}" th:text="${schoolType.typeValue}"></option>
+                                <option th:each="schoolType:${schoolTypes}" th:value="${schoolType.typeKey}" th:text="${schoolType.typeValue}" th:selected="${school.typeId == schoolType.typeKey}"></option>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <td>Address</td>
                         <td>
-                            <select onchange="loadDistrict(this.value)" id="city" name="city" class="form-control" >
+                            <select onchange="loadDistrict(this.value)" name="city" class="form-control" disabled>
                                 <option value="" disabled selected>Province/City</option>
-                                <option th:each="city:${citys}" th:value="${city.id}" th:text="${city.cityName}"></option>
+                                <option th:each="city:${citys}" th:value="${city.id}" th:text="${city.cityName}" th:selected="${school.cityName == city.cityName}"></option>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <td></td>
                         <td>
-                            <select onchange="loadWard(this.value)" name="district" id="district" class="form-control"
-                                     disabled>
+                            <select onchange="loadWard(this.value)" name="district" id="district" class="form-control" disabled>
                                 <option value="" disabled selected>District</option>
+                                <option th:each="district:${districts}" th:value="${district.id}" th:text="${district.districtName}" th:selected="${school.districtName == district.districtName}"></option>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <td></td>
                         <td>
-                            <select onchange="enableParam('address')" name="ward" id="ward" class="form-control"
-                                     disabled>
+                            <select onchange="enableParam('address')" name="ward" id="ward" class="form-control" disabled>
                                 <option value="" disabled selected>Ward</option>
+                                <option th:each="ward:${wards}" th:value="${ward.id}" th:text="${ward.wardName}" th:selected="${school.wardName == ward.wardName}"></option>
                             </select>
                         </td>
                     </tr>
@@ -113,36 +128,33 @@
                         <td>
 
                         </td>
-                        <td><input type="text" name="address" id="address" class="form-control"
-                                   placeholder="Enter School Address Here..." maxlength="255"  disabled></td>
+                        <td><input type="text" name="address" id="address" class="form-control" placeholder="Enter School Address Here..." th:value="${school.address}" disabled></input></td>
                     </tr>
                     <tr>
                         <td>Email</td>
-                        <td><input id="email" type="email" name="email" class="form-control"
-                                   placeholder="Enter School Email Here..." th:pattern="${emailRegex}" ></td>
+                        <td><input type="email" name="email" class="form-control" placeholder="Enter School Email Here..." th:value="${school.email}" disabled></td>
                     </tr>
                     <tr>
                         <td>Phone No.</td>
-                        <td><input id="phone" type="text" name="phone" class="form-control"
-                                   placeholder="Enter Phone Number Here..." th:pattern="${phoneRegex}" ></td>
+                        <td><input type="text" name="phone" class="form-control" placeholder="Enter Phone Number Here..." th:value="${school.phone}" disabled></td>
                     </tr>
                     <tr>
                         <td>Child-receiving age</td>
                         <td>
-                            <select id="childReceivingAge" class="form-control" name="age" >
+                            <select class="form-control" name="age" disabled>
                                 <option value="" disabled selected>Select Child-Receiving Age</option>
                                 <option th:each="age:${childReceivingAges}" th:value="${age.typeKey}"
-                                        th:text="${age.typeValue}">
+                                        th:text="${age.typeValue}" th:selected="${school.childReceivingAgeId == age.typeKey}">
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <td>Education method</td>
                         <td>
-                            <select id="educationMethod" class="form-control" name="educationMethod" >
+                            <select class="form-control" name="educationMethod" disabled>
                                 <option value="" disabled selected>Select Education Method</option>
                                 <option th:each="method:${educationMethods}" th:value="${method.typeKey}"
-                                        th:text="${method.typeValue}">
+                                        th:text="${method.typeValue}" th:selected="${school.typeId == method.typeKey}">
                             </select>
                         </td>
                     </tr>
@@ -150,9 +162,9 @@
                         <td>Fee/month(VND)</td>
                         <td class="row">
                             <label class="col-1 col-form-label">From</label>
-                            <input id="feeFrom" name="feeFrom" class="col-3 form-control" type="text" pattern="[0-9]+" >
+                            <input name="feeFrom" class="col-3 form-control" type="text" th:value="${school.feeFrom}" disabled>
                             <label class="col-1 col-form-label">To</label>
-                            <input id="feeTo" name="feeTo" class="col-3 form-control" type="text" pattern="[0-9]+" >
+                            <input name="feeTo" class="col-3 form-control" type="text" th:value="${school.feeTo}" disabled>
                         </td>
                     </tr>
                     <tr>
@@ -161,7 +173,7 @@
                             <div th:each="facility:${facilities}" class="checkbox checkbox-success"
                                  style="margin-left: 12px;">
                                 <input th:id="'facility-checkbox' + ${facility.typeKey}"
-                                       th:value="${facility.typeKey}" name="schoolFacilities" type="checkbox">
+                                       th:value="${facility.typeKey}" name="schoolFacilities" type="checkbox" disabled th:checked="${schoolFacilities.contains(facility.typeKey)}">
                                 <label th:for="'facility-checkbox' + ${facility.typeKey}"
                                        th:text="${facility.typeValue}">
                                 </label>
@@ -174,7 +186,7 @@
                             <div th:each="utility:${utilities}" class="checkbox checkbox-success"
                                  style="margin-left: 12px;">
                                 <input th:id="'utility-checkbox' + ${utility.typeKey}" th:value="${utility.typeKey}"
-                                       name="schoolUtilities" type="checkbox">
+                                       name="schoolUtilities" type="checkbox" disabled>
                                 <label th:for="'utility-checkbox' + ${utility.typeKey}"
                                        th:text="${utility.typeValue}">
                                 </label>
@@ -184,23 +196,29 @@
                     <tr>
                         <td>School Introduction</td>
                         <td>
-                            <div id="editor"></div>
+                            <div id="editor" style="background-color: #f5f5f5;"></div>
                         </td>
                     </tr>
                     <tr>
                         <td>School Image</td>
                         <td>
                             <input name="image" type="file" class="form-control" id="image"
-                                   accept="image/gif, image/jpeg, image/png"/>
+                                   accept="image/gif, image/jpeg, image/png" disabled/>
                         </td>
                     </tr>
                 </table>
                 <div style="margin-top: 30px; padding-bottom: 30px">
-                    <a th:href="${serverLink + '/manager/school-list'}"><button id="cancel" class="btn btn-primary" style="background-color: white;color: #458bc4;">Cancel</button></a>
-                    <button id="save" class="btn btn-primary" onclick="addNewSchool(1, 'save-draft-new')">Save draft</button>
-                    <button id="submit" class="btn btn-primary" onclick="addNewSchool(2, 'submit-new')">Submit</button>
+                    <button th:if="${canEdit}" hidden id="cancel" class="btn btn-primary" style="background-color: white;color: #458bc4;">Cancel</button>
+                    <button th:if="${canEdit}" id="edit" class="btn btn-primary" onclick="openEdit()">Edit</button>
+                    <button th:if="${canEdit}" th:hidden="${!submit}" id="submit" class="btn btn-primary" th:onclick="'submitSchool('+${isAdmin}+')'">Submit</button>
+                    <button th:if="${delete}" id="delete" class="btn btn-danger" onclick="deleteSchool()">Delete</button>
+                    <button th:if="${reject}" id="reject" class="btn btn-danger" onclick="rejectSchool()">Reject</button>
+                    <button th:if="${approve}" id="approve" class="btn btn-primary" onclick="approveSchool()">Approve</button>
+                    <button th:if="${publish}" id="publish" class="btn btn-primary" onclick="publishSchool()">Publish</button>
+                    <button th:if="${unpublish}" id="unpublish" class="btn btn-primary" onclick="unpublishSchool()" style="background-color: white;color: #458bc4;">Unpublish</button>
                 </div>
             </div>
+
             <!-- end row -->
 
 
@@ -237,14 +255,15 @@
 <script>
     var quill = new Quill('#editor', {
         theme: 'snow',
-        placeholder: 'Write something...',
+        placeholder: 'Write school introduce here',
+        readOnly: true
     });
 </script>
 
 <!-- Jquery js -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="/admin_side/js/address-load.js"></script>
-<script src="/admin_side/js/create-new-school.js"></script>
+<script src="/admin_side/js/school-detail-update.js"></script>
 </body>
 
 

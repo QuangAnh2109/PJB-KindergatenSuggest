@@ -39,20 +39,31 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
      * @return
      */
     @Query("""
-            SELECT new fa.appcode.common.vo.AccountVo(
-                ai.id, ai.fullName, ai.email, ai.phone, ai.dob, 
-                CONCAT(ai.address, ', ', w.wardName, ', ', d.districtName, ', ', c.cityName), 
-                ma.typeValue, ms.typeValue)
-            FROM AccountInfo ai
-            LEFT JOIN ai.ward w
-            LEFT JOIN ai.district d
-            LEFT JOIN ai.city c     
-            LEFT JOIN MasterDatum ma ON ai.roleId = ma.typeKey AND ma.typeName = "ROLE"
-            LEFT JOIN MasterDatum ms ON ai.statusId = ms.typeKey AND ms.typeName="ACCOUNT STATUS"
-            WHERE ai.deleteFlg = false
-            AND (:search IS NULL OR ai.fullName LIKE %:search% OR ai.email LIKE %:search% OR ai.phone LIKE %:search%)
-            """)
+    SELECT new fa.appcode.common.vo.AccountVo(
+        ai.id, ai.fullName, ai.email, ai.phone, ai.dob, 
+        CONCAT(ai.address, ', ', w.wardName, ', ', d.districtName, ', ', c.cityName), 
+        ma.typeValue, ms.typeValue)
+    FROM AccountInfo ai
+    LEFT JOIN ai.ward w
+    LEFT JOIN ai.district d
+    LEFT JOIN ai.city c     
+    LEFT JOIN MasterDatum ma ON ai.roleId = ma.typeKey AND ma.typeName = 'ROLE'
+    LEFT JOIN MasterDatum ms ON ai.statusId = ms.typeKey AND ms.typeName = 'ACCOUNT STATUS'
+    WHERE ai.deleteFlg = false
+    AND (
+        :search IS NULL OR 
+        ai.fullName LIKE %:search% OR 
+        ai.email LIKE %:search% OR 
+        ai.phone LIKE %:search% OR 
+        ai.address LIKE %:search% OR 
+        ma.typeValue LIKE %:search% OR 
+        ms.typeValue LIKE %:search% OR
+        CAST(ai.dob AS string) LIKE %:search%
+    )
+    ORDER BY ai.updateTime DESC, ai.fullName ASC, ai.email ASC
+""")
     Page<AccountVo> findAllWithFullAddress(@Param("search") String search, Pageable pageable);
+
 
     // Find Parent data by parent Id
     @Query("""

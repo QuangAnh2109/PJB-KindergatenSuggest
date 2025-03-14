@@ -26,4 +26,15 @@ public class SchoolRatingFeedback {
         this.avgHygieneNutrition = Math.round(avgHygieneNutrition * 2) * 5;
         this.totalFeedbacks = totalFeedbacks;
     }
+
+    public SchoolRatingFeedback(int schoolId) {
+        this.schoolId = schoolId;
+        this.avgRating = 0;
+        this.avgLearningProgram = 0;
+        this.avgFacilitiesUtilities = 0;
+        this.avgExtracurricularActivities = 0;
+        this.avgTeacherStaff = 0;
+        this.avgHygieneNutrition = 0;
+        this.totalFeedbacks = 0;
+    }
 }

@@ -7,22 +7,22 @@ import lombok.Getter;
 @Getter
 public enum SchoolFormButton {
     // Button for admin
-    adminSaved(SchoolFormButtonBuild.builder().submit(true).delete(true).canEdit(true).build()),
-    adminSubmitted(SchoolFormButtonBuild.builder().delete(true).reject(true).approve(true).build()),
-    adminApproved(SchoolFormButtonBuild.builder().delete(true).publish(true).unPublish(true).canEdit(true).build()),
-    adminRejected(SchoolFormButtonBuild.builder().delete(true).build()),
-    adminPublished(SchoolFormButtonBuild.builder().delete(true).unPublish(true).canEdit(true).build()),
-    adminUnpublished(SchoolFormButtonBuild.builder().publish(true).delete(true).canEdit(true).build()),
-    adminDeleted(SchoolFormButtonBuild.builder().build()),
+    admin1(SchoolFormButtonBuild.builder().submit(true).delete(true).canEdit(true).build()),
+    admin2(SchoolFormButtonBuild.builder().delete(true).reject(true).approve(true).build()),
+    admin3(SchoolFormButtonBuild.builder().delete(true).publish(true).unPublish(true).canEdit(true).build()),
+    admin4(SchoolFormButtonBuild.builder().delete(true).build()),
+    admin5(SchoolFormButtonBuild.builder().delete(true).unPublish(true).canEdit(true).build()),
+    admin6(SchoolFormButtonBuild.builder().publish(true).delete(true).canEdit(true).build()),
+    admin7(SchoolFormButtonBuild.builder().build()),
 
     // Button for owner
-    ownerSaved(SchoolFormButtonBuild.builder().submit(true).delete(true).canEdit(true).build()),
-    ownerSubmitted(SchoolFormButtonBuild.builder().delete(true).build()),
-    ownerApproved(SchoolFormButtonBuild.builder().canEdit(true).delete(true).publish(true).build()),
-    ownerRejected(SchoolFormButtonBuild.builder().delete(true).build()),
-    ownerPublished(SchoolFormButtonBuild.builder().unPublish(true).delete(true).canEdit(true).build()),
-    ownerUnpublished(SchoolFormButtonBuild.builder().publish(true).delete(true).canEdit(true).build()),
-    ownerDeleted(SchoolFormButtonBuild.builder().build());
+    owner1(SchoolFormButtonBuild.builder().submit(true).delete(true).canEdit(true).build()),
+    owner2(SchoolFormButtonBuild.builder().delete(true).build()),
+    owner3(SchoolFormButtonBuild.builder().canEdit(true).delete(true).publish(true).build()),
+    owner4(SchoolFormButtonBuild.builder().delete(true).build()),
+    owner5(SchoolFormButtonBuild.builder().unPublish(true).delete(true).canEdit(true).build()),
+    owner6(SchoolFormButtonBuild.builder().publish(true).delete(true).canEdit(true).build()),
+    owner7(SchoolFormButtonBuild.builder().build());
 
     private final SchoolFormButtonBuild schoolFormButtonBuild;
 }
