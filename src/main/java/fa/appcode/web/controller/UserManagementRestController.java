@@ -62,17 +62,12 @@ public class UserManagementRestController {
             });
         }
 
-
-        boolean isAdding = accountVo.getId() == null;
-        Log4jUtils.getLogger().info("Is new user: {}", isAdding);
-
-        if (isAdding && validateService.checkDuplicateEmail(accountVo.getEmail())) {
-            errors.put("email", "Email already exists. Please use a different email.");
-        }
-
         if (!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors);
         }
+
+        boolean isAdding = accountVo.getId() == null;
+        Log4jUtils.getLogger().info("Is new user: {}", isAdding);
 
         try {
             if (isAdding) {

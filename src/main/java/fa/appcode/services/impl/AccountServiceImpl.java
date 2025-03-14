@@ -11,6 +11,7 @@ import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
+import fa.appcode.exceptions.DuplicateException;
 import fa.appcode.exceptions.EntityNotFoundException;
 import fa.appcode.exceptions.ValidateParentException;
 import fa.appcode.repositories.AccountRepository;
@@ -204,6 +205,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void addUserFromAdmin(AccountVo accountVo, Principal principal) {
+        //Validate accountVo
+        if(accountRepository.findByEmail(accountVo.getEmail()) != null) {
+            throw new DuplicateException("Email already exists. Please use a different email.");
+        }
 
         // Generate password by system
         String randomPassword = UUID.randomUUID().toString();

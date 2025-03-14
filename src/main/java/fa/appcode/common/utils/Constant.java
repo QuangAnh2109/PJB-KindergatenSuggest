@@ -38,7 +38,8 @@ public class Constant {
     public static final String SCHOOL_LIST_MANAGER_PAGE = "admin_side/school-list-manager";
     public static final String PARENT_DETAIL_PAGE = "admin_side/parent-details";
     public static final String PARENT_LIST_PAGE = "admin_side/parent-list";
-
+    public static final String USER_LIST_PAGE = "admin_side/user-list";
+    public static final String USER_DETAIL_PAGE = "admin_side/edit-account";
     //REGEX
     public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{12,100}$";
     public static final String HOME_PAGE = "user_side/index";

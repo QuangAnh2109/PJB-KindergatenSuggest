@@ -2,8 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
-    <title th:text="${user.id == null ? 'Add User' : 'Edit User Account'}"></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${user.id == null ? 'Add User' : (viewMode ? 'User Details' : 'Edit User Account')}"></title>    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Responsive bootstrap 4 admin template" name="description"/>
     <meta content="Coderthemes" name="author"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -54,7 +53,7 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a th:href="@{/admin/user-list}">User Management</a></li>
-                            <li class="breadcrumb-item active" aria-current="page" th:text="${user.id == null ? 'Add User' : 'Edit User Account'}"></li>
+                            <li class="breadcrumb-item active" aria-current="page" th:text="${user.id == null ? 'Add User' : (viewMode ? 'User Details' : 'Edit User Account')}"></li>
                         </ol>
                     </nav>
                 </div>
@@ -64,7 +63,7 @@
             <div class="col-lg-6">
                 <div class="card shadow p-4 rounded-5">
                     <h2 class="text-center mb-4"
-                        th:text="${user.id != null ? 'Edit User' : 'Add User'}">
+                        th:text="${user.id == null ? 'Add User' : (viewMode ? 'User Details' : 'Edit User Account')}">
                     </h2>
 
                     <!-- Success Message -->
@@ -121,34 +120,41 @@
                         <!-- Role (Chỉ hiển thị nếu là ADMIN) -->
                         <div class="mb-3">
                             <label class="form-label">Role<span class="text-danger">*</span></label>
+                            <div th:if="${!viewMode}">
                             <select name="role" class="form-control" th:field="*{role}" id="role">
                                 <option th:each="role : ${roles}" th:value="${role.typeValue}"
                                         th:text="${role.typeValue}"></option>
                             </select>
+                            </div>
+                            <div th:if="${viewMode}">
+                                <input name="role" class="form-control" th:field="*{role}"/>
+                            </div>
                             <div class="text-danger" id="errorRole"></div>
                         </div>
 
                         <!-- Status (Chỉ hiển thị nếu là ADMIN) -->
                         <div class="mb-3">
                             <label class="form-label">Status<span class="text-danger">*</span></label>
+                            <div th:if="${!viewMode}">
                             <select name="status" class="form-control" th:field="*{status}" id="status">
                                 <option th:each="sta : ${status}" th:value="${sta.typeValue}"
                                         th:text="${sta.typeValue}"></option>
                             </select>
+                            </div>
+                            <div th:if="${viewMode}">
+                                <input name="status" class="form-control" th:field="*{status}"/>
+                            </div>
                             <div class="text-danger" id="errorStatus"></div>
                         </div>
 
 
                         <!-- Buttons -->
-                        <div class="text-center">
-                            <button
-                                    type="button"
-                                    class="btn btn-danger"
-                                    id="cancel-button">
-                                Cancel
-                            </button>
-                            <button type="submit" class="btn btn-primary" id="save-user" data-role="${role}"
-                                    th:text="${user.id == null ? 'Create' : 'Save'}"></button>
+                        <div class="text-center" th:if="${!viewMode}">
+                            <button type="button" class="btn btn-danger" id="cancel-button">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="save-user" th:text="${user.id == null ? 'Create' : 'Save'}"></button>
+                        </div>
+                        <div class="text-center" th:if="${viewMode}">
+                            <a th:href="@{/admin/user-list}" class="btn btn-primary">Back</a>
                         </div>
                     </form>
                 </div>
