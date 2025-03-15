@@ -95,4 +95,10 @@ public class GlobalConfig {
     private String invalidDate;
     @Value("${ME_040}")
     private String invalidFullName;
+    @Value("${ME_070}")
+    private String logoutSuccessFully;
+    @Value("${ME_071}")
+    private String loginSuccessFully;
+    @Value("${ME_072}")
+    private String accountDisabled;
 }

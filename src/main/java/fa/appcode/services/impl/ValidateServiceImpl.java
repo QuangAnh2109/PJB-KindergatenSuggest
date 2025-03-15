@@ -5,6 +5,7 @@ import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
+import fa.appcode.exceptions.ExceptionCustom;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.ValidateService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -40,7 +40,6 @@ public class ValidateServiceImpl implements ValidateService {
     static final String PASSWORD_ERROR = "passwordError";
     static final String FULL_NAME_ERROR = "fullNameError";
     static final String CONFIRM_PASSWORD_ERROR = "confirmPasswordError";
-    static final String FIELD_ERROR = "errorField";
     static final String IS_VALID = "isValid";
     static final String VALIDATION_LEVEL = "validationLevel";
 
@@ -122,6 +121,7 @@ public class ValidateServiceImpl implements ValidateService {
         }
         return isDuplicate;
     }
+
 
     @Override
     public Map<String, Object> validateRegistration(AccountVo accountVo) {
@@ -260,36 +260,31 @@ public class ValidateServiceImpl implements ValidateService {
     }
 
     /**
-     * Validates a password change request
+     * Validates the email input for the forgot password process.
      *
-     * @param oldPassword     The current password
-     * @param newPassword     The new password
-     * @param confirmPassword The confirmation of the new password
-     * @param model           The model to add attribute errors to
-     * @return A map containing validation results
+     * @param email The email address to validate.
+     * @return A map containing error messages if validation fails.
      */
-    @Override
-    public Map<String, Object> validateChangePassword(String oldPassword,
-                                                      String newPassword,
-                                                      String confirmPassword,
-                                                      Model model) {
-        LOGGER.debug("Starting password change validation");
+    public Map<String, String> validateForgotPassword(String email) {
+        // Log the start of the validation process
+        LOGGER.debug("Starting forgot password validation");
 
-        Map<String, Object> passwordChangeMap = new HashMap<>();
-        passwordChangeMap.put(IS_VALID, true);
-        validateChangePasswordRequired(oldPassword, newPassword, confirmPassword, model);
-        validateValidChangePasswordFormats(oldPassword, newPassword, confirmPassword, model);
-        validatePasswordChangeRules(oldPassword, newPassword, confirmPassword, model);
-        if (model.containsAttribute(NEW_PASSWORD_ERROR) ||
-                model.containsAttribute(PASSWORD_ERROR) ||
-                model.containsAttribute(CONFIRM_PASSWORD_ERROR)) {
-            LOGGER.warn("Password change validation failed");
-            passwordChangeMap.put(IS_VALID, false);
-        } else {
-            LOGGER.info("Password change validation successful");
+        // Create a map to store validation errors
+        Map<String, String> errors = new HashMap<>();
+
+        // Check if the email field is empty or null
+        if (requiredField(email)) {
+            LOGGER.warn("Email is required but not provided");
+            errors.put(EMAIL_ERROR, globalConfig.getRequiredField());
+        }
+        // Check if the email format is valid
+        else if (!validEmail(email)) {
+            LOGGER.warn("Email is not valid");
+            errors.put(EMAIL_ERROR, globalConfig.getValidEmail());
         }
 
-        return passwordChangeMap;
+        // Return the map containing any validation errors
+        return errors;
     }
 
     @Override
@@ -305,6 +300,58 @@ public class ValidateServiceImpl implements ValidateService {
         }
         return hasError;
     }
+
+    @Override
+    public Map<String, String> validateResetPassword(String newPassword, String confirmPassword) {
+        LOGGER.debug("Starting reset password validation");
+        Map<String, String> errors = new HashMap<>();
+        if (requiredField(newPassword)) {
+            LOGGER.warn("New password is required but not provided");
+            errors.put(NEW_PASSWORD_ERROR, globalConfig.getRequiredField());
+        }
+        if (requiredField(confirmPassword)) {
+            LOGGER.warn("Confirm password is required but not provided");
+            errors.put(CONFIRM_PASSWORD_ERROR, globalConfig.getRequiredField());
+        }
+        if (!errors.containsKey(NEW_PASSWORD_ERROR) && !validPassword(newPassword)) {
+            LOGGER.warn("New password is not valid");
+            errors.put(NEW_PASSWORD_ERROR, globalConfig.getValidatePassword());
+        }
+        if (!errors.containsKey(NEW_PASSWORD_ERROR) && !errors.containsKey(CONFIRM_PASSWORD_ERROR)
+                && !confirmPassword.equals(newPassword)) {
+            LOGGER.warn("Confirm password is not equal");
+            errors.put(CONFIRM_PASSWORD_ERROR, globalConfig.getPasswordNotMatch());
+        }
+        return errors;
+    }
+
+    @Override
+    public void validateReset(String newPassword, String confirmPassword) {
+        LOGGER.debug("Starting forgot password validation");
+        Map<String, String> errors = new HashMap<>();
+
+        if (requiredField(newPassword)) {
+            LOGGER.warn("New password is required but not provided");
+            errors.put(NEW_PASSWORD_ERROR, globalConfig.getRequiredField());
+        }
+        if (requiredField(confirmPassword)) {
+            LOGGER.warn("Confirm password is required but not provided");
+            errors.put(CONFIRM_PASSWORD_ERROR, globalConfig.getRequiredField());
+        }
+        if (!errors.containsKey(NEW_PASSWORD_ERROR) && !validPassword(newPassword)) {
+            LOGGER.warn("New password is not valid");
+            errors.put(NEW_PASSWORD_ERROR, globalConfig.getValidatePassword());
+        }
+        if (!errors.containsKey(NEW_PASSWORD_ERROR) && !errors.containsKey(CONFIRM_PASSWORD_ERROR)
+                && !confirmPassword.equals(newPassword)) {
+            LOGGER.warn("Confirm password is not equal");
+            errors.put(CONFIRM_PASSWORD_ERROR, globalConfig.getPasswordNotMatch());
+        }
+        if (!errors.isEmpty()) {
+            throw new ExceptionCustom(errors);
+        }
+    }
+
 
     @Override
     public void validatePasswordResetRules(String newPassword, String confirmPassword, Model model) {
@@ -435,32 +482,28 @@ public class ValidateServiceImpl implements ValidateService {
      * @param oldPassword     The current password
      * @param newPassword     The new password
      * @param confirmPassword The confirmation of the new password
-     * @param model           The model to add attribute errors to
      * @return true if there are errors, false otherwise
      */
     @Override
-    public boolean validateChangePasswordRequired(String oldPassword,
-                                                  String newPassword,
-                                                  String confirmPassword, Model model) {
+    public Map<String, String> validateChangePasswordRequired(String oldPassword,
+                                                              String newPassword,
+                                                              String confirmPassword) {
         LOGGER.debug("Validating required fields for password change");
-        boolean hasError = false;
+        Map<String, String> changePasswordError = new HashMap<>();
         if (requiredField(oldPassword)) {
             LOGGER.warn("Old password is required but not provided");
-            model.addAttribute(PASSWORD_ERROR, globalConfig.getRequiredField());
-            hasError = true;
+            changePasswordError.put(PASSWORD_ERROR, globalConfig.getRequiredField());
         }
         if (requiredField(newPassword)) {
             LOGGER.warn("New password is required but not provided");
-            model.addAttribute(NEW_PASSWORD_ERROR, globalConfig.getRequiredField());
-            hasError = true;
+            changePasswordError.put(NEW_PASSWORD_ERROR, globalConfig.getRequiredField());
+
         }
         if (requiredField(confirmPassword)) {
             LOGGER.warn("Confirm password is required but not provided");
-            model.addAttribute(CONFIRM_PASSWORD_ERROR, globalConfig.getRequiredField());
-            hasError = true;
+            changePasswordError.put(CONFIRM_PASSWORD_ERROR, globalConfig.getRequiredField());
         }
-
-        return hasError;
+        return changePasswordError;
     }
 
     /**
@@ -469,34 +512,27 @@ public class ValidateServiceImpl implements ValidateService {
      * @param oldPassword     The current password
      * @param newPassword     The new password
      * @param confirmPassword The confirmation of the new password
-     * @param model           The model to add attribute errors to
      * @return true if there are errors, false otherwise
      */
     @Override
-    public boolean validateValidChangePasswordFormats(String oldPassword,
-                                                      String newPassword,
-                                                      String confirmPassword, Model model) {
+    public Map<String, String> validateValidChangePasswordFormats(String oldPassword,
+                                                                  String newPassword,
+                                                                  String confirmPassword) {
         LOGGER.debug("Validating password formats for password change");
-
-        boolean hasError = false;
-
-        if (!model.containsAttribute(PASSWORD_ERROR) && !validPassword(oldPassword)) {
+        Map<String, String> changePasswordError = validateChangePasswordRequired(oldPassword, newPassword, confirmPassword);
+        if (!changePasswordError.containsKey(PASSWORD_ERROR) && !validPassword(oldPassword)) {
             LOGGER.warn("Old password has invalid format");
-            model.addAttribute(PASSWORD_ERROR, globalConfig.getValidatePassword());
-            hasError = true;
+            changePasswordError.put(PASSWORD_ERROR, globalConfig.getValidatePassword());
         }
-        if (!model.containsAttribute(NEW_PASSWORD_ERROR) && !validPassword(newPassword)) {
+        if (!changePasswordError.containsKey(NEW_PASSWORD_ERROR) && !validPassword(newPassword)) {
             LOGGER.warn("New password has invalid format");
-            model.addAttribute(NEW_PASSWORD_ERROR, globalConfig.getValidatePassword());
-            hasError = true;
+            changePasswordError.put(NEW_PASSWORD_ERROR, globalConfig.getValidatePassword());
         }
-        if (!model.containsAttribute(CONFIRM_PASSWORD_ERROR) && !validPassword(confirmPassword)) {
+        if (!changePasswordError.containsKey(CONFIRM_PASSWORD_ERROR) && !validPassword(confirmPassword)) {
             LOGGER.warn("Confirm password has invalid format");
-            model.addAttribute(CONFIRM_PASSWORD_ERROR, globalConfig.getValidatePassword());
-            hasError = true;
+            changePasswordError.put(CONFIRM_PASSWORD_ERROR, globalConfig.getValidatePassword());
         }
-
-        return hasError;
+        return changePasswordError;
     }
 
     /**
@@ -505,31 +541,48 @@ public class ValidateServiceImpl implements ValidateService {
      * @param oldPassword     The current password
      * @param newPassword     The new password
      * @param confirmPassword The confirmation of the new password
-     * @param model           The model to add attribute errors to
      */
     @Override
-    public void validatePasswordChangeRules(String oldPassword,
-                                            String newPassword,
-                                            String confirmPassword,
-                                            Model model) {
+    public Map<String, String> validatePasswordChangeRules(String oldPassword,
+                                                           String newPassword,
+                                                           String confirmPassword) {
         LOGGER.debug("Validating password change rules");
-        // Check if new password matches confirmation
-        if (!model.containsAttribute(PASSWORD_ERROR) && !checkOldPassword(oldPassword)) {
+        Map<String, String> changePasswordError = validateValidChangePasswordFormats(oldPassword, newPassword, confirmPassword);
+        if (!changePasswordError.containsKey(PASSWORD_ERROR) && !checkOldPassword(oldPassword)) {
             LOGGER.warn("Current password is wrong.");
-            model.addAttribute(PASSWORD_ERROR, globalConfig.getOldPasswordWrong());
+            changePasswordError.put(PASSWORD_ERROR, globalConfig.getOldPasswordWrong());
         }
-        if (!model.containsAttribute(CONFIRM_PASSWORD_ERROR) &&
+        if (!changePasswordError.containsKey(CONFIRM_PASSWORD_ERROR) &&
                 !checkPasswordsMatch(newPassword, confirmPassword)) {
             LOGGER.warn("New password and confirm password do not match");
-            model.addAttribute(CONFIRM_PASSWORD_ERROR, globalConfig.getPasswordNotMatch());
+            changePasswordError.put(CONFIRM_PASSWORD_ERROR, globalConfig.getPasswordNotMatch());
         }
-        // Check if old and new passwords are the same
-        if (!model.containsAttribute(NEW_PASSWORD_ERROR) &&
+        if (!changePasswordError.containsKey(NEW_PASSWORD_ERROR) &&
                 checkPasswordsMatch(oldPassword, newPassword)) {
             LOGGER.warn("New password is the same as old password");
-            model.addAttribute(NEW_PASSWORD_ERROR, globalConfig.getNewPasswordWrong());
+            changePasswordError.put(NEW_PASSWORD_ERROR, globalConfig.getNewPasswordWrong());
         }
+        return changePasswordError;
     }
+//    @Override
+//    public Map<String, String> validateChangePassword(String oldPassword,
+//                                                      String newPassword,
+//                                                      String confirmPassword) {
+//        LOGGER.debug("Starting password change validation");
+//        Map<String, Object> passwordChangeMap = new HashMap<>();
+//        validateChangePasswordRequired(oldPassword, newPassword, confirmPassword);
+//        validateValidChangePasswordFormats(oldPassword, newPassword, confirmPassword);
+//        validatePasswordChangeRules(oldPassword, newPassword, confirmPassword);
+//        if (model.containsAttribute(NEW_PASSWORD_ERROR) ||
+//                model.containsAttribute(PASSWORD_ERROR) ||
+//                model.containsAttribute(CONFIRM_PASSWORD_ERROR)) {
+//            LOGGER.warn("Password change validation failed");
+//        } else {
+//            LOGGER.info("Password change validation successful");
+//        }
+//
+//        return passwordChangeMap;
+//    }
 
     /**
      * Checks if two passwords match
@@ -560,8 +613,8 @@ public class ValidateServiceImpl implements ValidateService {
             return false;
         }
         // Use password encoder to check if the provided password matches the stored one
-        String storedPassword = accountInfo.getPassword().replace("{bcrypt}", "");
-        boolean matches = passwordEncoder.matches(password, storedPassword);
+//        String storedPassword = accountInfo.getPassword().replace("{bcrypt}", "");
+        boolean matches = passwordEncoder.matches(password, accountInfo.getPassword());
         if (!matches) {
             LOGGER.warn("Old password verification failed for user: {}", email);
         } else {

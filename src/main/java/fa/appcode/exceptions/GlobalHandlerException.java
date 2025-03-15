@@ -35,19 +35,16 @@ public class GlobalHandlerException {
         logger.error("SQL Failed: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("SQL Failed:  " + e.getMessage());
     }
-
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException e) {
         logger.error("Entity not found: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entity not found: " + e.getMessage());
     }
-
     @ExceptionHandler(NoResourceFoundException.class)
     public String handleNoResourceFoundException(NoResourceFoundException e) {
         logger.error("NoResourceFoundException occurred: {}", e.getMessage(), e);
         return Constant.ERROR_PAGE;
     }
-
     @ExceptionHandler(TokenException.class)
     public ResponseEntity<String> handleTokenException(TokenException e) {
         logger.error("Token error: {}", e.getMessage(), e);
