@@ -97,4 +97,8 @@ public class GlobalConfig {
     private String unenrollSuccess;
     @Value("${ME_040}")
     private String invalidFullName;
+    @Value("${ME_041}")
+    private String UserAddSuccess;
+    @Value("${ME_042}")
+    private String UserUpdateSuccess;
 }

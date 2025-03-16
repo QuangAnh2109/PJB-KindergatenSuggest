@@ -3,6 +3,7 @@ package fa.appcode.web.controller;
 import fa.appcode.common.logging.Log4jUtils;
 import fa.appcode.common.utils.ValidateUtils;
 import fa.appcode.common.vo.AccountVo;
+import fa.appcode.config.GlobalConfig;
 import fa.appcode.services.AccountService;
 
 import fa.appcode.services.ValidateService;
@@ -24,7 +25,7 @@ public class UserManagementRestController {
     @Autowired
     private AccountService accountService;
     @Autowired
-    private ValidateService validateService;
+    private GlobalConfig globalConfig;
 
     /**
      * Delete account
@@ -72,11 +73,11 @@ public class UserManagementRestController {
         try {
             if (isAdding) {
                 accountService.addUserFromAdmin(accountVo, principal);
-                return ResponseEntity.ok(Map.of("message", "User added successfully."));
+                return ResponseEntity.ok(Map.of("message", globalConfig.getUserAddSuccess()));
             } else {
                 int newRecordNo = accountService.updateAccount(accountVo);
                 return ResponseEntity.ok(Map.of(
-                        "message", "User updated successfully.",
+                        "message", globalConfig.getUserAddSuccess(),
                         "recordNo", newRecordNo
                 ));
             }

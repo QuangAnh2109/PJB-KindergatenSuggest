@@ -15,6 +15,7 @@ import fa.appcode.exceptions.DuplicateException;
 import fa.appcode.exceptions.EntityNotFoundException;
 import fa.appcode.exceptions.ValidateParentException;
 import fa.appcode.repositories.AccountRepository;
+import fa.appcode.repositories.MasterDatumRepository;
 import fa.appcode.services.*;
 import jakarta.transaction.Transactional;
 import fa.appcode.services.AccountService;
@@ -47,8 +48,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     @Autowired
-    private MasterDatumService masterDatumService;
-
+    private MasterDatumRepository masterDatumRepository;
     @Autowired
     private AccountRepository accountRepository;
     private final ValidateService validateService;
@@ -161,8 +161,8 @@ public class AccountServiceImpl implements AccountService {
             accountVo.setFullAddress(fullAddress.toString().trim());
         }
         // Resolve role and status names
-        accountVo.setRole(masterDatumService.getMasterByTypeNameAndTypeKey("ROLE", accountInfo.getRoleId()));
-        accountVo.setStatus(masterDatumService.getMasterByTypeNameAndTypeKey("ACCOUNT STATUS", accountInfo.getStatusId()));
+        accountVo.setRole(masterDatumRepository.getMasterByTypeNameAndTypeKey("ROLE", accountInfo.getRoleId()));
+        accountVo.setStatus(masterDatumRepository.getMasterByTypeNameAndTypeKey("ACCOUNT STATUS", accountInfo.getStatusId()));
         accountVo.setRecordNo(accountInfo.getRecordNo());
         return accountVo;
     }
@@ -180,8 +180,8 @@ public class AccountServiceImpl implements AccountService {
             throw new IllegalStateException("Data has been modified by someone else!"); // Xử lý lỗi ở Service
         }
         // Update role or status of account
-        user.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
-        user.setStatusId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
+        user.setRoleId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
+        user.setStatusId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
 
         int newRecordNo = user.getRecordNo() + 1;
         user.setRecordNo(newRecordNo);
@@ -220,9 +220,9 @@ public class AccountServiceImpl implements AccountService {
         accountInfo.setEmail(accountVo.getEmail());
         accountInfo.setPhone(accountVo.getPhone());
         accountInfo.setDob(LocalDate.parse(accountVo.getDob()));
-        accountInfo.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
+        accountInfo.setRoleId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
         accountInfo.setPassword(encodePassword(accountVo.getPassword()));
-        accountInfo.setStatusId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus())); // Default status
+        accountInfo.setStatusId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus())); // Default status
         accountInfo.setImageUrl("null");
         accountInfo.setRecordNo(1);
         accountInfo.setCreateId("SYSTEM_ADMIN");
