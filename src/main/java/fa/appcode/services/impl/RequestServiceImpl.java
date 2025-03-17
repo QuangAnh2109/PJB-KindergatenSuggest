@@ -72,14 +72,15 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    //@Scheduled(cron = "0 0 0 */2 * ?")
-    @Scheduled(cron = "*/5 * * * * ?")
+    @Scheduled(cron = "0 0 0 */2 * ?")
+    //@Scheduled(cron = "*/5 * * * * ?")
     public void emailRequestReminder() {
         List<EmailContentVo> listSending = requestRepository.findAccountForEmail();
         List<String> emailList = new ArrayList<>();
         //emailList.add("dongquang569@gmail.com");
         for (EmailContentVo email : listSending) {
             if (email.getNumberOfRequest() > 0 || email.getRoleID() == 1) {
+                //System.out.println(email.getEmail());
                 emailList.add(email.getEmail());
             }
         }

@@ -237,7 +237,6 @@ public class RequestController {
                                           Principal principal){
         AccountInfo accountID = accountService.getAccountInfo(principal);
         SchoolInfo school = schoolInfoService.getSchoolInfoById(1);
-        System.out.println("Name: "+school.getSchoolName());
         Request request = new Request(accountID,school,fullName,email,phone,inquiries,1,1,"PARENT",Instant.now());
         requestService.createRequest(request);
         return "redirect:/public/search";

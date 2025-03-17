@@ -70,3 +70,22 @@
     min-width: 70px;
     text-align: center;
 }
+.table-container {
+    max-height: 600px; /* Điều chỉnh chiều cao theo ý muốn */
+    overflow-y: auto;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.table thead, .table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed; /* Giữ cột cố định kích thước */
+}
+
+.table tbody {
+    display: block;
+    max-height: 450px; /* Điều chỉnh theo nhu cầu */
+    overflow-y: auto;
+    width: 100%;
+}
