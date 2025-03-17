@@ -1,5 +1,6 @@
 package fa.appcode.services.impl;
 
+import fa.appcode.entities.Ward;
 import fa.appcode.repositories.WardRepository;
 import fa.appcode.services.WardService;
 import fa.appcode.common.vo.WardVo;
@@ -22,5 +23,10 @@ public class WardServiceImpl implements WardService {
     @Override
     public WardVo findByIdAndNoDelete(int id) {
         return wardRepository.findByIdAndDeleteFlg(id, false);
+    }
+
+    @Override
+    public Ward findByIdAndNoDeleteFlg(int id) {
+        return wardRepository.findByIdAndDeleteFlag(id, false);
     }
 }

@@ -1,14 +1,8 @@
 package fa.appcode.web.controller;
 
-import fa.appcode.common.utils.Constant;
 import fa.appcode.common.utils.RoleConstant;
-import fa.appcode.common.utils.SchoolConstant;
-import fa.appcode.common.utils.SchoolFormButton;
-import fa.appcode.common.vo.MasterDataVo;
-import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.entities.*;
 import fa.appcode.services.*;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,12 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import static fa.appcode.common.utils.Constant.EMAIL_REGEX_HTML;
-import static fa.appcode.common.utils.Constant.PHONE_REGEX_HTML;
 
 @Controller
 @RequestMapping("/school-owner/school")

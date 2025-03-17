@@ -37,8 +37,8 @@
                     </div>
 
                     <!-- Success Message -->
-                    <div th:if="${message}" class="alert alert-success">
-                        <span th:text="${message}"></span>
+                    <div th:if="${successMessage}" class="alert alert-success">
+                        <span th:text="${successMessage}"></span>
                     </div>
                     <form th:action="@{/public/register}" th:object="${accountVo}" method="post"
                           class="p-4 shadow rounded bg-white" name="registerForm">
@@ -52,11 +52,10 @@
                         <!-- Email Address -->
                         <div class="mb-3">
                             <label class="form-label">Email Address</label>
-                            <input type="email" th:field="*{email}" class="form-control"
+                            <input type="text" th:field="*{email}" class="form-control"
                                    placeholder="e.g., example@gmail.com">
                             <span class="text-danger" th:if="${emailError}" th:text="${emailError}"></span>
                         </div>
-
                         <!-- Mobile Number -->
                         <div class="mb-3">
                             <label class="form-label">Mobile Number</label>
@@ -81,7 +80,7 @@
                                   th:text="${confirmPasswordError}"></span>
                         </div>
                         <div class="d-flex justify-content-center gap-2">
-                            <input type="reset" value="Cancel" class="btn btn-warning w-45">
+                            <button type="button" class="btn btn-warning w-45" onclick="window.location.href='/showMyLoginPage'">Cancel</button>
                             <input type="submit" value="Sign Up" id="registerButton" class="btn btn-primary w-45">
                         </div>
                     </form>

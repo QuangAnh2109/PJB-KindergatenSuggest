@@ -370,7 +370,7 @@
                                                         <select class="form-control" id="schoolId" name="school">
                                                             <option value="">No School</option>
                                                             <option th:each="school : ${schoolInfoList}"
-                                                                    th:value="${school.id}"
+                                                                    th:value="${school.schoolId}"
                                                                     th:text="${school.schoolName}"></option>
                                                         </select>
                                                     </label>

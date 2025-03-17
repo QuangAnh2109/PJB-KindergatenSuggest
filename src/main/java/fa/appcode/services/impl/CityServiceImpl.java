@@ -1,5 +1,6 @@
 package fa.appcode.services.impl;
 
+import fa.appcode.entities.City;
 import fa.appcode.repositories.CityRepository;
 import fa.appcode.services.CityService;
 import fa.appcode.common.vo.CityVo;
@@ -22,5 +23,10 @@ public class CityServiceImpl implements CityService {
     @Override
     public CityVo findByIdAndNoDelete(int id) {
         return cityRepository.findByIdAndDeleteFlg(id, false);
+    }
+
+    @Override
+    public City findByIdAndNoDeleteFlg(int id) {
+        return cityRepository.findByIdAndDeleteFlag(id, false);
     }
 }

@@ -1,5 +1,6 @@
 package fa.appcode.services.impl;
 
+import fa.appcode.entities.District;
 import fa.appcode.repositories.DistrictRepository;
 import fa.appcode.services.DistrictService;
 import fa.appcode.common.vo.DistrictVo;
@@ -22,5 +23,10 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public DistrictVo findByIdAndNoDelete(int id) {
         return districtRepository.findByIdAndDeleteFlg(id, false);
+    }
+
+    @Override
+    public District findByIdAndNoDeleteFlag(int id) {
+        return districtRepository.findByIdAndDeleteFalg(id, false);
     }
 }

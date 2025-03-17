@@ -38,14 +38,14 @@ public class Constant {
     public static final String SCHOOL_LIST_MANAGER_PAGE = "admin_side/school-list-manager";
 
     //REGEX
-    public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{12,}$";
+    public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{12,100}$";
     public static final String HOME_PAGE = "user_side/index";
     public static final String HOME_PAGE_URL = "public/home";
     public static final String EMAIL_REGEX_HTML = "\\w[\\w0-9]*@gmail.com";
     public static final String PHONE_REGEX_HTML = "/(84|0)[0-9]{9}/g";
     public static final String EMAIL_REGEX = "^[a-z][a-z0-9]*@gmail.com$";
     public static final String PHONE_REGEX = "^\\+?[0-9]{10,12}$";
-    public static final String MAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    public static final String MAIL_REGEX = "^(?=.{1,100}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
     //CONSTANT VALUE
     public static final Integer PARENT_ROLE_ID = 3;

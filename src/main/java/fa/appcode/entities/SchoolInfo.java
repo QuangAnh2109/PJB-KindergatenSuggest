@@ -3,6 +3,7 @@ package fa.appcode.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -13,10 +14,12 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@RequiredArgsConstructor
 @Table(name = "school_info", schema = "instance_kintergarden_db")
 @AllArgsConstructor
 public class SchoolInfo {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "school_id", nullable = false)
     private Integer id;
 
@@ -129,9 +132,5 @@ public class SchoolInfo {
         this.updateId = updateId;
         this.updateTime = updateTime;
         this.deleteFlg = deleteFlg;
-    }
-
-    public SchoolInfo() {
-
     }
 }

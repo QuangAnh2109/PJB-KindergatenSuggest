@@ -21,13 +21,6 @@ public interface ValidateService {
 
     boolean checkDuplicatePhone(String phoneNumber);
 
-    Map<String, Object> validateRegistration(AccountVo accountVo, BindingResult bindingResult, Model model);
-
-    boolean validateRegisterRequired(AccountVo accountVo, Model model);
-
-    boolean validateValidRegister(AccountVo accountVo, Model model);
-
-    void validateDuplicateRegister(AccountVo accountVo, Model model);
 
     Map<String, Object> validateChangePassword(String oldPassword, String newPassword, String confirmPassword, Model model);
 
@@ -55,8 +48,11 @@ public interface ValidateService {
 
     boolean validateUpdateAccountValid(AccountInfo accountInfo, Model model);
 
-    boolean  validateUpdateAccountDuplicate(String currentPhone, String newPhone, Model model);
+    boolean validateUpdateAccountDuplicate(String currentPhone, String newPhone, Model model);
 
-    boolean validateUpdateAccount(AccountInfo accountInfo,String currentPhone, Model model);
+    boolean validateUpdateAccount(AccountInfo accountInfo, String currentPhone, Model model);
 
+    Map<String, String> validateRegisterRequired(AccountVo accountVo);
+
+    Map<String, Object> validateRegistration(AccountVo accountVo);
 }

@@ -2,6 +2,7 @@ package fa.appcode.web.controller;
 
 import fa.appcode.common.logging.Log4jUtils;
 import fa.appcode.common.utils.Constant;
+import fa.appcode.common.vo.EnrollSchoolInfoVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.config.GlobalConfig;
@@ -70,13 +71,13 @@ public class ParentController {
             } else {
                 list = Page.empty();
             }
-            List<ParentVo> accounts = list.getContent();
+            List<ParentVo> parents = list.getContent();
             Log4jUtils.getLogger().info("Inside parentList Content : " + list);
             Log4jUtils.getLogger().info("Number Of pages : " + list.getTotalPages());
             /*
              * Put data into Model
              */
-            model.addAttribute("accounts", accounts);
+            model.addAttribute("accounts", parents);
             model.addAttribute("search", search);
             model.addAttribute("currentPage", currentPage);
             model.addAttribute("numberPage", list.getTotalPages());
@@ -106,7 +107,7 @@ public class ParentController {
              */
             String role = accountService.findAccountRoleString(principal.getName());
             Page<EnrolledSchoolVo> listParentEnroll;
-            List<SchoolInfo> schoolInfoList;
+            List<EnrollSchoolInfoVo> schoolInfoList;
 
             if (Constant.ADMIN_ROLE.equals(role)) {
                 //get Data for Admin Role
@@ -136,9 +137,6 @@ public class ParentController {
             model.addAttribute("currentPage", currentPage);
             model.addAttribute("numberPage", listParentEnroll.getTotalPages());
             model.addAttribute("role", role);
-        } catch (CustomDataException e) {
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
-            return "redirect:" + Constant.VIEW_PARENT_DETAIL_URL + id;
         } catch (IllegalAccessException e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
             return "redirect:" + Constant.PARENT_LIST_URL;
@@ -178,6 +176,7 @@ public class ParentController {
                 redirectAttributes.addFlashAttribute("alertType", Constant.DANGER);
                 Log4jUtils.getLogger().info("Unenroll Parent Success");
             } else {
+                redirectAttributes.addFlashAttribute("alertType", Constant.DANGER);
                 redirectAttributes.addFlashAttribute("message", "Invalid action Type");
             }
         } catch (Exception e) {
