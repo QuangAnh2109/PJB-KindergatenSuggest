@@ -89,3 +89,14 @@
     overflow-y: auto;
     width: 100%;
 }
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.clickable-row:hover {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4); /* Đổ bóng rõ hơn */
+    font-weight: 600;
+}
+
+
