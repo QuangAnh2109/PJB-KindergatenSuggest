@@ -10,5 +10,6 @@ import lombok.*;
 public class EmailContentVo {
     private Integer id;
     private String email;
+    private int roleID;
     private Long numberOfRequest;
 }
