@@ -51,7 +51,6 @@ public class ForgotPasswordController {
         else {
             model.addAttribute("linkSendStatus", globalConfig.getSendResetPassword());
         }
-
         // Return the forgot password page
         return Constant.FORGOT_PASSWORD_PAGE;
     }

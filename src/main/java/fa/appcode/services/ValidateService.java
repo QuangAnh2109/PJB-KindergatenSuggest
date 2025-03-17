@@ -3,8 +3,8 @@ package fa.appcode.services;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.entities.AccountInfo;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 public interface ValidateService {
@@ -61,4 +61,5 @@ public interface ValidateService {
     Map<String, String> validateResetPassword(String newPassword, String confirmPassword);
 
     void validateReset(String newPassword, String confirmPassword);
+    Map<String, String> validateAccountField(String fullName, String currentPhone, String newPhone, LocalDate dob);
 }

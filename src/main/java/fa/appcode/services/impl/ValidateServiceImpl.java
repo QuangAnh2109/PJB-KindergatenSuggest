@@ -142,7 +142,6 @@ public class ValidateServiceImpl implements ValidateService {
         } else {
             LOGGER.info("Registration validation successful for email: {}", accountVo.getEmail());
         }
-
         return result;
     }
 
@@ -361,6 +360,44 @@ public class ValidateServiceImpl implements ValidateService {
             model.addAttribute(CONFIRM_PASSWORD_ERROR, globalConfig.getPasswordNotMatch());
         }
     }
+    @Override
+    public Map<String, String> validateAccountField(String fullName, String currentPhone, String newPhone, LocalDate dob) {
+        Map<String, String> validationErrors = new HashMap<>();
+        validationErrors.putAll(fullNameValidation(fullName));
+        validationErrors.putAll(validatePhone(currentPhone, newPhone));
+        if (dob != null && !dob.isBefore(LocalDate.of(2006, 1, 1))) {
+            validationErrors.put("dobError", globalConfig.getInvalidDate());
+        }
+        return validationErrors;
+    }
+
+    public Map<String, String> fullNameValidation(String fullName) {
+        Map<String, String> fullNameErrors = new HashMap<>();
+        if (requiredField(fullName)) {
+            fullNameErrors.put(FULL_NAME_ERROR, globalConfig.getRequiredField());
+            return fullNameErrors;
+        } else if (fullName.length() > 250) {
+            fullNameErrors.put(FULL_NAME_ERROR, globalConfig.getInvalidFullName());
+            return fullNameErrors;
+        }
+        return fullNameErrors;
+    }
+
+    public Map<String, String> validatePhone(String phone, String newPhone) {
+        Map<String, String> phoneErrors = new HashMap<>();
+        if (requiredField(phone)) {
+            phoneErrors.put(PHONE_ERROR, globalConfig.getRequiredField());
+            return phoneErrors;
+        } else if (!validPhoneNumber(phone)) {
+            phoneErrors.put(PHONE_ERROR, globalConfig.getPhoneIsNotValid());
+            return phoneErrors;
+        } else if (!newPhone.equals(phone) && accountRepository.existsByPhone(phone)) {
+            phoneErrors.put(PHONE_ERROR, globalConfig.getPhoneIsExist());
+            return phoneErrors;
+        }
+        return phoneErrors;
+    }
+
 
     @Override
     public boolean validateUpdateAccountReq(AccountInfo accountInfo, Model model) {
@@ -398,7 +435,7 @@ public class ValidateServiceImpl implements ValidateService {
     @Override
     public boolean validateUpdateAccountDuplicate(String currentPhone, String newPhone, Model model) {
         if (!model.containsAttribute(PHONE_ERROR)) {
-            if (!currentPhone.equals(newPhone) && !checkDuplicatePhone(newPhone)) {
+            if (!currentPhone.equals(newPhone) && checkDuplicatePhone(newPhone)) {
                 LOGGER.warn("Phone already exists with other account: {}", newPhone);
                 model.addAttribute(PHONE_ERROR, globalConfig.getPhoneIsExist());
                 return true;
@@ -410,9 +447,7 @@ public class ValidateServiceImpl implements ValidateService {
     @Override
     public boolean validateUpdateAccount(AccountInfo accountInfo, String currentPhone, Model model) {
         LOGGER.debug("Validating update account process");
-
         boolean hasError = false;
-
         if (validateUpdateAccountReq(accountInfo, model)) {
             hasError = true;
         }
@@ -564,25 +599,6 @@ public class ValidateServiceImpl implements ValidateService {
         }
         return changePasswordError;
     }
-//    @Override
-//    public Map<String, String> validateChangePassword(String oldPassword,
-//                                                      String newPassword,
-//                                                      String confirmPassword) {
-//        LOGGER.debug("Starting password change validation");
-//        Map<String, Object> passwordChangeMap = new HashMap<>();
-//        validateChangePasswordRequired(oldPassword, newPassword, confirmPassword);
-//        validateValidChangePasswordFormats(oldPassword, newPassword, confirmPassword);
-//        validatePasswordChangeRules(oldPassword, newPassword, confirmPassword);
-//        if (model.containsAttribute(NEW_PASSWORD_ERROR) ||
-//                model.containsAttribute(PASSWORD_ERROR) ||
-//                model.containsAttribute(CONFIRM_PASSWORD_ERROR)) {
-//            LOGGER.warn("Password change validation failed");
-//        } else {
-//            LOGGER.info("Password change validation successful");
-//        }
-//
-//        return passwordChangeMap;
-//    }
 
     /**
      * Checks if two passwords match

@@ -1,4 +1,4 @@
-package fa.appcode.web.controller;
+package fa.appcode.security;
 
 import fa.appcode.common.utils.Constant;
 import fa.appcode.entities.AccountInfo;
@@ -8,15 +8,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpRequest;
 import java.util.Collection;
 
 @Component
@@ -26,15 +23,18 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         String email = authentication.getName();
         AccountInfo accountInfo = accountService.findByEmail(email);
         if (accountInfo.getDatetimeChangePass() == null) {
-            response.sendRedirect(request.getContextPath() + "/auth/change-password");
+            response.getWriter().write("{\"redirectUrl\": \"" + request.getContextPath() + "/auth/change-password\"}");
             return;
         }
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         String redirectUrl = "/public/home";
         HttpSession session = request.getSession();
+
         for (GrantedAuthority authority : authorities) {
             String role = authority.getAuthority();
             if (role.equals(Constant.ADMIN_ROLE)) {
@@ -50,6 +50,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         }
         session.setAttribute("idAccount", accountInfo.getId());
         session.setAttribute("nameAccount", accountInfo.getFullName());
-        response.sendRedirect(request.getContextPath() + redirectUrl);
+        response.getWriter().write("{\"redirectUrl\": \"" + request.getContextPath() + redirectUrl + "\"}");
     }
+
 }

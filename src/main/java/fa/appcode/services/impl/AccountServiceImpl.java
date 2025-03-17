@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Logger;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,12 +36,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
@@ -373,8 +373,7 @@ public class AccountServiceImpl implements AccountService {
                 LOGGER.warn("Account verification failed - email not found: {}", email);
                 return false;
             }
-
-            if (accountInfo.getDatetimeChangePass() != null) {
+            if (accountInfo.getStatusId()==1) {
                 LOGGER.warn("Account already verified - email: {}", email);
                 return false;
             }
@@ -399,37 +398,6 @@ public class AccountServiceImpl implements AccountService {
         updatePassword(account, newPassword);
         return new HashMap<>();
     }
-
-//    @Override
-//    public boolean changePasswordProcess(String oldPassword, String newPassword, String confirmPassword, Model model) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String email = authentication.getName();
-//        try {
-//            // Validate password change
-//            Map<String, Object> validationResult = validateService.validateChangePassword(
-//                    oldPassword, newPassword, confirmPassword, model);
-//            if (!(boolean) validationResult.get("isValid")) {
-//                LOGGER.warn("Password change validation failed for user: {}", email);
-//                return false;
-//            }
-//
-//            boolean updated = updatePassword(email, newPassword);
-//            if (updated) {
-//                LOGGER.info("Password successfully updated for user: {}", email);
-//                model.addAttribute("successUpdate", globalConfig.getUpdateSuccess());
-//                return true;
-//            } else {
-//                LOGGER.error("Failed to update password for user: {}", email);
-//                model.addAttribute("exceptionError", globalConfig.getAnErrorOccur());
-//                return false;
-//            }
-//        } catch (Exception e) {
-//            LOGGER.error("Exception during password change for user: {}", email, e);
-//            model.addAttribute("exceptionError", globalConfig.getAnErrorOccur());
-//            return false;
-//        }
-//    }
-
     public boolean forgotPasswordProcess(String email, Model model) {
         try {
             LOGGER.info("Forgot password process - email: {}", email);
@@ -613,5 +581,23 @@ public class AccountServiceImpl implements AccountService {
         model.addAttribute("successMessage", globalConfig.getUpdateSuccess());
         return true;
     }
-
+    @Override
+    public Map<String,String> updateAccountProcess(AccountInfo accountInfo){
+        AccountInfo currentAccount = getCurrentAccountInfo();
+        Map<String,String>  updateAccountErrors = validateService.validateAccountField(
+                accountInfo.getFullName(),accountInfo.getPhone(),
+                currentAccount.getPhone(),accountInfo.getDob()
+        );
+        if (StringUtils.isEmpty(accountInfo.getAddress())) {
+            accountInfo.setCity(currentAccount.getCity());
+            accountInfo.setWard(currentAccount.getWard());
+            accountInfo.setDistrict(currentAccount.getDistrict());
+            accountInfo.setAddress(currentAccount.getAddress());
+        }
+        if(!updateAccountErrors.isEmpty()){
+           return updateAccountErrors;
+        }
+        updateAccountInfo(currentAccount, accountInfo);
+        return new HashMap<>();
+    }
 }

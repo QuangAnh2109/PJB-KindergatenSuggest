@@ -1,14 +1,29 @@
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelector("form").addEventListener("submit", function (event) {
-        let isValid = true;
+    if (window.location.search.includes("logout")) {
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+    const logoutMessage = document.getElementById("logoutMessage");
+    if (logoutMessage) {
+        setTimeout(() => {
+            logoutMessage.remove();
+        }, 3000);
+    }
 
-        let emailInput = document.getElementById("username");
-        let passwordInput = document.getElementById("password");
-        let serverError = document.querySelector(".alert-danger");
+    const form = document.querySelector("form[name='loginForm']");
+    const loginBtn = document.getElementById("loginBtn");
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
         document.querySelectorAll(".error-message").forEach(el => el.remove());
-        if (serverError) {
-            serverError.remove();
-        }
+        let serverError = document.querySelector(".alert-danger");
+        if (serverError) serverError.remove();
+
+        const emailInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
+
+        let isValid = true;
 
         if (!emailInput.value.trim()) {
             showError(emailInput, "This field is required");
@@ -23,8 +38,32 @@ document.addEventListener("DOMContentLoaded", function () {
             isValid = false;
         }
 
-        if (!isValid) {
-            event.preventDefault();
+        if (!isValid) return;
+
+        loginBtn.disabled = true;
+
+        try {
+            const formData = new FormData(form);
+            const response = await fetch(form.action, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                window.location.href = result.redirectUrl;
+            } else {
+                showServerError(result.error || "Login failed, please try again.");
+            }
+        } catch (error) {
+            console.error("Fetch error:", error);
+            alert("Having an errors while processing. Please try again.");
+        } finally {
+            loginBtn.disabled = false;
         }
     });
 
@@ -35,22 +74,15 @@ document.addEventListener("DOMContentLoaded", function () {
         inputElement.parentNode.insertAdjacentElement("afterend", error);
     }
 
+    function showServerError(message) {
+        let errorDiv = document.createElement("div");
+        errorDiv.className = "alert alert-danger text-center";
+        errorDiv.textContent = message;
+        document.querySelector(".padding40").insertAdjacentElement("afterbegin", errorDiv);
+    }
+
     function validateEmail(email) {
         let re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(email);
     }
-
-    document.querySelectorAll("input").forEach(input => {
-        input.addEventListener("input", function () {
-            let errorMessage = this.parentNode.nextElementSibling;
-            if (errorMessage && errorMessage.classList.contains("error-message")) {
-                errorMessage.remove();
-            }
-
-            let serverError = document.querySelector(".alert-danger");
-            if (serverError) {
-                serverError.remove();
-            }
-        });
-    });
 });

@@ -37,35 +37,43 @@
 
                                 <div th:if="${error}" class="alert alert-danger text-center">
                                     <span th:text="${error}"></span>
+
                                 </div>
-                                <form id="loginForm" th:action="@{/authenticateTheUser}" method="post">
+                                <div th:if="${message}" class="alert alert-success text-center" id="logoutMessage">
+                                    <span th:text="${message}"></span>
+
+                                </div>
+                                <form action="#" th:action="@{/authenticateTheUser}" method="post" name="loginForm">
                                     <div class="field-set">
                                         <label>Email address</label>
                                         <div class="input-group">
                                             <input type="text" th:name="username" id="username" class="form-control"
-                                                   placeholder="Enter your email" />
+                                                   placeholder="Enter your email" th:value="${email}"  />
                                             <span class="input-group-text"><i class="fa fa-envelope"></i></span>
                                         </div>
-                                        <div id="usernameError" class="text-danger mt-1"></div>
+                                        <div></div>
                                     </div>
 
                                     <div class="field-set mt-3">
                                         <label>Password</label>
                                         <div class="input-group">
                                             <input type="password" th:name="password" id="password" class="form-control"
-                                                   placeholder="Enter your password" />
+                                                   placeholder="Enter your password"  />
                                             <span class="input-group-text"><i class="fa fa-lock"></i></span>
                                         </div>
-                                        <div id="passwordError" class="text-danger mt-1"></div>
+                                        <div></div>
                                     </div>
 
-                                    <div id="serverError" class="alert alert-danger text-center" style="display: none;"></div>
+                                    <div class="text-center mt-3">
+                                        <a th:href="@{/public/forgot-password}">Forgot password?</a>
+                                    </div>
 
                                     <div class="text-center mt-4">
                                         <button type="submit" id="loginBtn" class="btn btn-success btn-block">Login</button>
                                     </div>
-                                </form>
+                                    <div class="text-center mt-3">OR</div>
 
+                                </form>
                                 <div class="text-center mt-3">
                                     <button style="background-color: #0e52c1; color: white;" class="btn btn-block"
                                             th:onclick="|window.location.href='@{/public/register}'|">Sign Up

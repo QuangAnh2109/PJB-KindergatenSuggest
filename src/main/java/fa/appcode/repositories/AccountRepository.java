@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository("accountRepository")
 @Transactional
 public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
@@ -21,9 +23,6 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
     @Query("SELECT c FROM AccountInfo c WHERE c.phone = ?1 AND c.deleteFlg = false")
     AccountInfo findAccountByPhone(String phone);
-
-    @Query("Select c.recordNo from  AccountInfo c where c.email=?1 and c.deleteFlg=false")
-    AccountVo getRecordByEmail(String email);
 
     /**
      * get a list of user accounts along with their full addresses by search criteria by name, email,phone .
@@ -114,8 +113,12 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
             "WHERE a.email = :email AND a.deleteFlg = :deleteFlg")
     AccountInfo findWithFullAddressByEmail(@Param("email") String email, @Param("deleteFlg") boolean deleteFlg);
 
+    @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1")
+    Optional<AccountInfo> findAccountByEmail(String email);
+
     @Query("SELECT si.account.email FROM SchoolInfo si WHERE si.id = :id AND si.account.statusId = :statusId AND si.account.deleteFlg = :deleteFlg")
     String getSchoolOwnerEmailBySchoolIdAndStatusAndDeleteFlg(@Param("id") int id, @Param("statusId") int statusId, @Param("deleteFlg") boolean deleteFlg);
-
+    @Query("SELECT COUNT(a) > 0 FROM AccountInfo a WHERE a.phone = :phone")
+    boolean existsByPhone(@Param("phone") String phone);
     AccountInfo findAccountByEmailAndStatusIdAndDeleteFlg(String email, int statusId, boolean deleteFlg);
 }
