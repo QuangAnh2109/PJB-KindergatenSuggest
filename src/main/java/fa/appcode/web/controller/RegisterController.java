@@ -35,10 +35,10 @@ public class RegisterController {
     @PostMapping
     public String processRegister(@ModelAttribute("accountVo") @Valid AccountVo accountVo,
                                   Model model) {
-        LOGGER.info("Processing registration for email: {}", accountVo.getEmail());
-        boolean isSuccess = accountService.processRegister(accountVo);
-        if (isSuccess) {
-            model.addAttribute("successMessage", globalConfig.getVerifyLinkSend());
+        LOGGER.info("Processing registration for     email: {}", accountVo.getEmail());
+        boolean isSuccessRegistration = accountService.processRegister(accountVo);
+        if (isSuccessRegistration) {
+            model.addAttribute("successMessage", globalConfig.getRegisterSuccess());
         } else {
             Map<String, Object> validationResult = accountService.getValidationResult();
             Optional.ofNullable(validationResult)
@@ -55,9 +55,11 @@ public class RegisterController {
         LOGGER.info("Verifying account with token: {}", token);
         boolean isVerified = accountService.verifyAccount(token);
         if (!isVerified) {
-            return Constant.TOKEN_INVALID_PAGE;
+            model.addAttribute("alreadyVerified", globalConfig.getAlreadyVerification());
         }
-        model.addAttribute("activeSuccess", globalConfig.getActiveSuccess());
+        else {
+            model.addAttribute("activeSuccess", globalConfig.getActiveSuccess());
+        }
         return Constant.VERIFY_ACCOUNT_PAGE;
     }
 }

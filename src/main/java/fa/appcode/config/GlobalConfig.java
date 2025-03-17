@@ -62,7 +62,7 @@ public class GlobalConfig {
     @Value("${ME_021}")
     private String updateSuccess;
     @Value("${ME_022}")
-    private String inactivateAccount;
+    private String alreadyVerification;
     @Value("${ME_023}")
     private String oldPasswordWrong;
     @Value("${ME_024}")
@@ -97,4 +97,12 @@ public class GlobalConfig {
     private String unenrollSuccess;
     @Value("${ME_040}")
     private String invalidFullName;
+    @Value("${ME_070}")
+    private String logoutSuccessFully;
+    @Value("${ME_071}")
+    private String registerSuccess;
+    @Value("${ME_072}")
+    private String accountDisabled;
+    @Value("${ME_073}")
+    private String accountNotActive;
 }

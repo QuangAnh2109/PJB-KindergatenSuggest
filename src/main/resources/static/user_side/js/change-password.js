@@ -21,7 +21,10 @@ function reloadHande() {
                     document.querySelector('.padding40').innerHTML =
                         tempDiv.querySelector('.padding40').innerHTML;
                     if (tempDiv.querySelector('.alert-success')) {
-                        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                        const successModal = new bootstrap.Modal(document.getElementById('successModal'), {
+                            backdrop: 'static',
+                            keyboard: false
+                        });
                         successModal.show();
                         document.getElementById('redirectLogin').addEventListener('click', function () {
                             window.location.href = "/public/showMyLoginPage";
@@ -39,4 +42,5 @@ function reloadHande() {
         });
     }
 }
+
 document.addEventListener('DOMContentLoaded', reloadHande);
