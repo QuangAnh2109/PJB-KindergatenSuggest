@@ -33,7 +33,7 @@ public class UserManagementRestController {
      * @param userId
      * @return ResponseEntity<String>
      */
-    @GetMapping(value = "/user/{userId}")
+    @GetMapping(value = "/delete/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Integer userId) {
 
         Log4jUtils.getLogger().info("Received request to delete user with ID: {}", userId);

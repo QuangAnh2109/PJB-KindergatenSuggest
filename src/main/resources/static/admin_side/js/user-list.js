@@ -23,11 +23,7 @@ $(document).ready(function () {
         if (selectedUserId) {
 
             $.get({
-                url: "/admin/api/user/" + selectedUserId,
-                // type: "DELETE",
-                // beforeSend: function (xhr) {
-                //     xhr.setRequestHeader(csrfHeader, csrfToken); // Gửi CSRF Token
-                // },
+                url: "/admin/api/delete/" + selectedUserId,
                 success: function (responseData) {
                     $("#deleteUserModal").modal("hide"); // Đóng modal xác nhận
                     $("#deleteResultMessage").text(responseData);

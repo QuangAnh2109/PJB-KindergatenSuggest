@@ -177,7 +177,7 @@ public class AccountServiceImpl implements AccountService {
         Log4jUtils.getLogger().info("recordNo get in DB : {}", user.getRecordNo());
 
         if (!user.getRecordNo().equals(accountVo.getRecordNo())) {
-            throw new IllegalStateException("Data has been modified by someone else!"); // Xử lý lỗi ở Service
+            throw new IllegalStateException("Data has been modified by someone else!"); 
         }
         // Update role or status of account
         user.setRoleId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
