@@ -12,6 +12,7 @@ import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.exceptions.EntityNotFoundException;
+import fa.appcode.exceptions.ValidateParentException;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.services.*;
 import jakarta.transaction.Transactional;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Logger;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,12 +37,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
@@ -61,7 +62,7 @@ public class AccountServiceImpl implements AccountService {
     private static final String ERROR_ATTRIBUTE = "error";
 
     public AccountInfo getAccountById(int id) {
-        return accountRepository.getAccountInfoById(id);
+        return accountRepository.getAccountInfoById(id,Constant.STATUS_ACTIVE);
     }
 
     @Override
@@ -69,9 +70,13 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findAccountByPhone(phone);
     }
 
+//    @Override
+//    public String encodePassword(String password) {
+//        return "{bcrypt}" + passwordEncoder.encode(password);
+//    }
     @Override
     public String encodePassword(String password) {
-        return "{bcrypt}" + passwordEncoder.encode(password);
+        return passwordEncoder.encode(password);
     }
 
     @Transactional
@@ -86,13 +91,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-    @Transactional
     @Override
     public boolean updatePassword(String email, String newPassword) {
         AccountInfo account = accountRepository.findByEmail(email);
-        if (account == null) {
-            return false;
-        }
         String encodedPassword = encodePassword(newPassword);
         account.setPassword(encodedPassword);
         account.setUpdateTime(Instant.now());
@@ -100,6 +101,15 @@ public class AccountServiceImpl implements AccountService {
         account.setRecordNo(account.getRecordNo() + 1);
         accountRepository.save(account);
         return true;
+    }
+
+    void updatePassword(AccountInfo account, String newPassword) {
+        String encodedPassword = encodePassword(newPassword);
+        account.setPassword(encodedPassword);
+        account.setUpdateTime(Instant.now());
+        account.setDatetimeChangePass(Instant.now());
+        account.setRecordNo(account.getRecordNo() + 1);
+        accountRepository.save(account);
     }
 
     @Override
@@ -249,14 +259,14 @@ public class AccountServiceImpl implements AccountService {
     //=========================================================
 
     public Page<ParentVo> findAllParent(String search, Pageable pageable) {
-        return accountRepository.findAllParent(search, pageable);
+        return accountRepository.findAllParent(search, pageable,Constant.STATUS_ACTIVE);
     }
 
     @Override
-    public ParentVo findParentById(int id) throws IllegalAccessException {
-        ParentVo parent = accountRepository.findParentById(id);
+    public ParentVo findParentById(int id) throws ValidateParentException {
+        ParentVo parent = accountRepository.findParentById(id,Constant.STATUS_ACTIVE);
         if (parent == null) {
-            throw new IllegalAccessException("This Parent is current Inactive, Deleted or not Exist");
+            throw new ValidateParentException("This Parent is current Inactive, Deleted or not Exist");
         }
         return parent;
     }
@@ -274,13 +284,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountInfo getAccountInfoById(int id) {
-        return accountRepository.getAccountInfoById(id);
+        return accountRepository.getAccountInfoById(id,Constant.STATUS_ACTIVE);
     }
 
 
     @Override
     public Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email, String search, Pageable pageable) {
-        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email, search, pageable);
+        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email, search, pageable,Constant.STATUS_ACTIVE);
     }
 
     @Override
@@ -369,8 +379,7 @@ public class AccountServiceImpl implements AccountService {
                 LOGGER.warn("Account verification failed - email not found: {}", email);
                 return false;
             }
-
-            if (accountInfo.getDatetimeChangePass() != null) {
+            if (accountInfo.getStatusId()==1) {
                 LOGGER.warn("Account already verified - email: {}", email);
                 return false;
             }
@@ -385,35 +394,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean changePasswordProcess(String oldPassword, String newPassword, String confirmPassword, Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        try {
-            // Validate password change
-            Map<String, Object> validationResult = validateService.validateChangePassword(
-                    oldPassword, newPassword, confirmPassword, model);
-            if (!(boolean) validationResult.get("isValid")) {
-                LOGGER.warn("Password change validation failed for user: {}", email);
-                return false;
-            }
-
-            boolean updated = updatePassword(email, newPassword);
-            if (updated) {
-                LOGGER.info("Password successfully updated for user: {}", email);
-                model.addAttribute("successUpdate", globalConfig.getUpdateSuccess());
-                return true;
-            } else {
-                LOGGER.error("Failed to update password for user: {}", email);
-                model.addAttribute("exceptionError", globalConfig.getAnErrorOccur());
-                return false;
-            }
-        } catch (Exception e) {
-            LOGGER.error("Exception during password change for user: {}", email, e);
-            model.addAttribute("exceptionError", globalConfig.getAnErrorOccur());
-            return false;
+    public Map<String, String> changePasswordHandle(String oldPassword, String newPassword, String confirmPassword) {
+        AccountInfo account = getCurrentAccountInfo();
+        Map<String, String> validateResult = validateService.validatePasswordChangeRules(oldPassword, newPassword, confirmPassword);
+        if (!validateResult.isEmpty()) {
+            return validateResult;
         }
+        LOGGER.info("Password successfully updated for user");
+        updatePassword(account, newPassword);
+        return new HashMap<>();
     }
-
     public boolean forgotPasswordProcess(String email, Model model) {
         try {
             LOGGER.info("Forgot password process - email: {}", email);
@@ -468,19 +458,96 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    /**
+     * Handles the forgot password process.
+     * Validates the email, checks if the account exists, and sends a password reset email.
+     *
+     * @param email The email address of the user requesting a password reset.
+     * @return A map containing validation errors if any, otherwise an empty map.
+     */
+    @Override
+    public Map<String, String> handleForgotPassword(String email) {
+        // Log the start of the forgot password process
+        LOGGER.debug("Handling forgot password for email: {}", email);
+
+        // Validate the email and return errors if any
+        Map<String, String> errors = validateService.validateForgotPassword(email);
+        if (!errors.isEmpty()) {
+            return errors;
+        }
+        // Check if an account exists for the given email
+        AccountInfo accountInfo = accountRepository.findByEmail(email);
+        if (accountInfo == null) {
+            LOGGER.warn("No account found for email: {}", email);
+            errors.put("emailError", globalConfig.getEmailNotExist());
+            return errors;
+        }
+        // Build and send a password reset email
+        SendMailInfo resetMail = EmailBuilder.buildForgotPasswordMail(email, accountInfo.getDatetimeChangePass());
+        emailService.sendEmailToMany(resetMail);
+        // Log the successful email sending
+        LOGGER.info("Password reset email sent to: {}", email);
+        // Return an empty map indicating success
+        return new HashMap<>();
+    }
+
     @Override
     public AccountInfo validateResetToken(String token, Model model) {
         String email = TokenUtils.getEmailFromToken(token);
         AccountInfo account = findByEmail(email);
-
         if (account == null || !TokenUtils.isTokenValid(token, account)) {
             model.addAttribute(ERROR_ATTRIBUTE, globalConfig.getExpiredLink());
             LOGGER.warn("Invalid or expired token");
             return null;
         }
-
         model.addAttribute("token", token);
         return account;
+    }
+
+    /**
+     * Validates an account based on the given token.
+     * Extracts the email from the token and checks if the token is valid.
+     *
+     * @param token The token to validate.
+     * @return The associated AccountInfo if valid, otherwise null.
+     */
+    @Override
+    public AccountInfo validateAccountToken(String token) {
+        String email = TokenUtils.getEmailFromToken(token);
+        AccountInfo account = findByEmail(email);
+        if (account == null || !TokenUtils.isTokenValid(token, account)) {
+            LOGGER.warn("Invalid or expired token");
+            return null;
+        }
+        return account;
+    }
+
+    /**
+     * Handles the password reset process.
+     * Validates the token, checks password confirmation, and updates the password if valid.
+     *
+     * @param token           The token used for password reset.
+     * @param newPassword     The new password entered by the user.
+     * @param confirmPassword The confirmation of the new password.
+     * @return A map containing validation errors if any, otherwise null if successful.
+     */
+
+    @Override
+    public Map<String, String> handleResetPassword(String token, String newPassword, String confirmPassword) {
+        AccountInfo account = validateAccountToken(token);
+        if (account == null) {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("tokenError", globalConfig.getExpiredLink());
+            return errors;
+        }
+        Map<String, String> errors = validateService.validateResetPassword(newPassword, confirmPassword);
+        if (!errors.isEmpty()) {
+            LOGGER.warn("Reset password failed - email: {}", account.getEmail());
+            return errors;
+        }
+        account.setDatetimeChangePass(Instant.now());
+        updatePassword(account, newPassword);
+        return new HashMap<>();
     }
 
     @Override
@@ -489,13 +556,11 @@ public class AccountServiceImpl implements AccountService {
         if (account == null) {
             return false;
         }
-
         boolean hasError = validateService.validateResetPassword(newPassword, confirmPassword, model);
         if (hasError) {
             LOGGER.warn("Reset password failed - email: {}", account.getEmail());
             return false;
         }
-
         account.setDatetimeChangePass(Instant.now());
         updatePassword(account.getEmail(), newPassword);
         return true;
@@ -510,10 +575,10 @@ public class AccountServiceImpl implements AccountService {
         }
         boolean hasError = validateService.validateUpdateAccount(accountInfo, currentAccount.getPhone(), model);
         if (StringUtils.isEmpty(accountInfo.getAddress())) {
-            accountInfo.setCity(currentAccount.getCity());
-            accountInfo.setWard(currentAccount.getWard());
-            accountInfo.setDistrict(currentAccount.getDistrict());
-            accountInfo.setAddress(currentAccount.getAddress());
+                accountInfo.setCity(currentAccount.getCity());
+                accountInfo.setWard(currentAccount.getWard());
+                accountInfo.setDistrict(currentAccount.getDistrict());
+                accountInfo.setAddress(currentAccount.getAddress());
         }
         if (hasError) {
             return false;
@@ -522,5 +587,23 @@ public class AccountServiceImpl implements AccountService {
         model.addAttribute("successMessage", globalConfig.getUpdateSuccess());
         return true;
     }
-
+    @Override
+    public Map<String,String> updateAccountProcess(AccountInfo accountInfo){
+        AccountInfo currentAccount = getCurrentAccountInfo();
+        Map<String,String>  updateAccountErrors = validateService.validateAccountField(
+                accountInfo.getFullName(),accountInfo.getPhone(),
+                currentAccount.getPhone(),accountInfo.getDob()
+        );
+        if (StringUtils.isEmpty(accountInfo.getAddress())) {
+            accountInfo.setCity(currentAccount.getCity());
+            accountInfo.setWard(currentAccount.getWard());
+            accountInfo.setDistrict(currentAccount.getDistrict());
+            accountInfo.setAddress(currentAccount.getAddress());
+        }
+        if(!updateAccountErrors.isEmpty()){
+           return updateAccountErrors;
+        }
+        updateAccountInfo(currentAccount, accountInfo);
+        return new HashMap<>();
+    }
 }

@@ -1,6 +1,7 @@
 package fa.appcode.services;
 
 import fa.appcode.common.vo.AccountVo;
+import fa.appcode.exceptions.ValidateParentException;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -89,8 +90,7 @@ public interface AccountService {
      * @param id
      * @return String role
      */
-    ParentVo findParentById(int id) throws IllegalAccessException;
-
+    ParentVo findParentById(int id) throws ValidateParentException;
     /**
      * This method if used to find role of account by using account email
      *
@@ -123,7 +123,7 @@ public interface AccountService {
 
     void saveAccountInfo(AccountInfo accountInfo);
 
-    boolean changePasswordProcess(String oldPassword, String newPassword, String confirmPassword, Model model);
+    Map<String, String> changePasswordHandle(String oldPassword, String newPassword, String confirmPassword);
 
     boolean forgotPasswordProcess(String email, Model model);
 
@@ -146,4 +146,11 @@ public interface AccountService {
     public int getAccountIdByEmail(String email);
 
     public String getAccountNameByEmailAndNoDelete(String email);
+
+    AccountInfo validateAccountToken(String token);
+
+    Map<String, String> handleForgotPassword(String email);
+
+    Map<String, String> handleResetPassword(String token, String newPassword, String confirmPassword);
+    Map<String,String> updateAccountProcess(AccountInfo accountInfo);
 }

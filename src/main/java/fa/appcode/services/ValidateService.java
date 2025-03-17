@@ -3,8 +3,8 @@ package fa.appcode.services;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.entities.AccountInfo;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 public interface ValidateService {
@@ -22,17 +22,17 @@ public interface ValidateService {
     boolean checkDuplicatePhone(String phoneNumber);
 
 
-    Map<String, Object> validateChangePassword(String oldPassword, String newPassword, String confirmPassword, Model model);
+//    Map<String,String> validateChangePassword(String oldPassword, String newPassword, String confirmPassword);
 
-    boolean validateChangePasswordRequired(String oldPassword, String newPassword, String confirmPassword, Model model);
+    Map<String, String> validateChangePasswordRequired(String oldPassword, String newPassword, String confirmPassword);
 
-    boolean validateValidChangePasswordFormats(String oldPassword, String newPassword, String confirmPassword, Model model);
+    Map<String, String> validateValidChangePasswordFormats(String oldPassword, String newPassword, String confirmPassword);
 
     boolean checkPasswordsMatch(String password, String confirmPassword);
 
     boolean checkOldPassword(String password);
 
-    void validatePasswordChangeRules(String oldPassword, String newPassword, String confirmPassword, Model model);
+    Map<String, String> validatePasswordChangeRules(String oldPassword, String newPassword, String confirmPassword);
 
     boolean validateForgotPassword(String email, Model model);
 
@@ -55,4 +55,11 @@ public interface ValidateService {
     Map<String, String> validateRegisterRequired(AccountVo accountVo);
 
     Map<String, Object> validateRegistration(AccountVo accountVo);
+
+    Map<String, String> validateForgotPassword(String email);
+
+    Map<String, String> validateResetPassword(String newPassword, String confirmPassword);
+
+    void validateReset(String newPassword, String confirmPassword);
+    Map<String, String> validateAccountField(String fullName, String currentPhone, String newPhone, LocalDate dob);
 }

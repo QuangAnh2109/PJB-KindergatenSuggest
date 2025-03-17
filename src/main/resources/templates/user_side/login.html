@@ -35,15 +35,20 @@
                                 <h4 class="text-center">Login into your account</h4>
                                 <div class="spacer-10"></div>
 
-                                <div th:if="${param.error}" class="alert alert-danger text-center">
-                                    <span th:text="${param.error}"></span>
+                                <div th:if="${error}" class="alert alert-danger text-center">
+                                    <span th:text="${error}"></span>
+
+                                </div>
+                                <div th:if="${message}" class="alert alert-success text-center" id="logoutMessage">
+                                    <span th:text="${message}"></span>
+
                                 </div>
                                 <form action="#" th:action="@{/authenticateTheUser}" method="post" name="loginForm">
                                     <div class="field-set">
                                         <label>Email address</label>
                                         <div class="input-group">
                                             <input type="text" th:name="username" id="username" class="form-control"
-                                                   placeholder="Enter your email"  />
+                                                   placeholder="Enter your email" th:value="${email}"  />
                                             <span class="input-group-text"><i class="fa fa-envelope"></i></span>
                                         </div>
                                         <div></div>

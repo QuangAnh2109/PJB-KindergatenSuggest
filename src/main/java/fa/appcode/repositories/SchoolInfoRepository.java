@@ -17,20 +17,20 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
 
 
     //find all schools by account email that have school status of published
-    @Query("SELECT new fa.appcode.common.vo.EnrollSchoolInfoVo(s.id,s.schoolName) FROM SchoolInfo s JOIN AccountInfo ai ON s.account.id = ai.id WHERE ai.email=?1 AND s.deleteFlg=false AND s.statusId=5")
-    List<EnrollSchoolInfoVo> findSchoolInfoByAccountEmail(String id);
+    @Query("SELECT new fa.appcode.common.vo.EnrollSchoolInfoVo(s.id,s.schoolName) FROM SchoolInfo s JOIN AccountInfo ai ON s.account.id = ai.id WHERE ai.email=?1 AND s.deleteFlg=false AND s.statusId=?2")
+    List<EnrollSchoolInfoVo> findSchoolInfoByAccountEmail(String id,int schoolStatusId);
 
     //find schoolInfo by school Id
-    @Query("SELECT s FROM SchoolInfo s WHERE s.deleteFlg=false AND s.statusId=5 AND s.id=?1")
-    SchoolInfo findSchoolInfoById(int id);
+    @Query("SELECT s FROM SchoolInfo s WHERE s.deleteFlg=false AND s.id=?1 AND s.statusId=?2")
+    SchoolInfo findSchoolInfoById(int id, int schoolStatusId);
 
     //find all schools by account email, get schoolID only
     @Query("SELECT s.id FROM SchoolInfo s JOIN AccountInfo ai ON s.account.id = ai.id WHERE ai.email=?1 AND s.deleteFlg=false AND s.statusId=5")
     List<Integer> getAllSchoolIdsByAccountEmail(String id);
 
     //find all school published for admin enroll parent to school
-    @Query("SELECT new fa.appcode.common.vo.EnrollSchoolInfoVo(s.id,s.schoolName) FROM SchoolInfo s WHERE s.deleteFlg=false AND s.statusId=5")
-    List<EnrollSchoolInfoVo> findAllSchoolPublished();
+    @Query("SELECT new fa.appcode.common.vo.EnrollSchoolInfoVo(s.id,s.schoolName) FROM SchoolInfo s WHERE s.deleteFlg=false AND s.statusId=?1")
+    List<EnrollSchoolInfoVo> findAllSchoolPublished(int schoolStatusId);
 
     //get all school by account email regard school status
     @Query("SELECT s.id FROM SchoolInfo s JOIN AccountInfo ai ON s.account.id = ai.id WHERE ai.email=?1 AND s.deleteFlg=false")
