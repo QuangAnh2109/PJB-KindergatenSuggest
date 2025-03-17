@@ -50,7 +50,7 @@ public class RequestController {
     @GetMapping("/manager/request-list")
     public String showRequestList(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                   Model model, Principal principal, HttpSession session) {
-        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
+        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("fullName").ascending());
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
         Page<RequestVo> requestList;
         if (role.equalsIgnoreCase(Constant.ADMIN_ROLE )) {
@@ -82,7 +82,7 @@ public class RequestController {
     @GetMapping("/manager/request-reminder")
     public String showRequestReminder(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                       Model model, Principal principal, HttpSession session) {
-        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
+        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("fullName").ascending());
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
         Page<RequestVo> requestList;
         if (role.equalsIgnoreCase(Constant.ADMIN_ROLE)) {
@@ -174,7 +174,7 @@ public class RequestController {
     public ResponseEntity<Page<RequestVo>> searchRequestList(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                                              @RequestParam(name = "keyword", required = false) String keyword,
                                                              Model model, Principal principal) {
-        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
+        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("fullName").ascending());
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
         Page<RequestVo> requestList;
         if (role.equalsIgnoreCase(Constant.ADMIN_ROLE)) {
@@ -203,7 +203,7 @@ public class RequestController {
     public ResponseEntity<Page<RequestVo>> searchRequestReminder(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                                                  @RequestParam(name = "keyword", required = false) String keyword,
                                                                  Model model, Principal principal) {
-        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
+        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("fullName").ascending());
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
         Page<RequestVo> requestList;
         if (role.equalsIgnoreCase(Constant.ADMIN_ROLE)) {
