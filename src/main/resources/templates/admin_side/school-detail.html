@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 
 <!-- Mirrored from coderthemes.com/simple/layouts/vertical/forms-general.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 28 Aug 2024 07:26:06 GMT -->
@@ -80,13 +81,11 @@
                 </div>
             </div>
             <!-- end row -->
-            <input id="schoolId" th:value="${school.id}" hidden>
-            <input id="recordNo" th:value="${school.recordNo}" hidden>
             <div>
                 <table class="col-12 school-form">
                     <tr>
                         <td>School Name</td>
-                        <td><input type="text" name="name" class="form-control" placeholder="Enter School Name Here..." disabled></td>
+                        <td><input type="text" name="name" class="form-control" th:value="${school.name}" placeholder="Enter School Name Here..." disabled></td>
                     </tr>
                     <tr>
                         <td>School Type</td>
@@ -208,14 +207,15 @@
                     </tr>
                 </table>
                 <div style="margin-top: 30px; padding-bottom: 30px">
-                    <button th:if="${canEdit}" hidden id="cancel" class="btn btn-primary" style="background-color: white;color: #458bc4;">Cancel</button>
+                    <button th:if="${canEdit}" hidden id="cancel" class="btn btn-primary" style="background-color: white;color: #458bc4;" onclick="location.reload()">Cancel</button>
+                    <button th:if="${canEdit}" hidden id="update" class="btn btn-primary" style="background-color: white;color: #458bc4;" onclick="updateSchool()">Submit</button>
                     <button th:if="${canEdit}" id="edit" class="btn btn-primary" onclick="openEdit()">Edit</button>
-                    <button th:if="${canEdit}" th:hidden="${!submit}" id="submit" class="btn btn-primary" th:onclick="'submitSchool('+${isAdmin}+')'">Submit</button>
-                    <button th:if="${delete}" id="delete" class="btn btn-danger" onclick="deleteSchool()">Delete</button>
-                    <button th:if="${reject}" id="reject" class="btn btn-danger" onclick="rejectSchool()">Reject</button>
-                    <button th:if="${approve}" id="approve" class="btn btn-primary" onclick="approveSchool()">Approve</button>
-                    <button th:if="${publish}" id="publish" class="btn btn-primary" onclick="publishSchool()">Publish</button>
-                    <button th:if="${unpublish}" id="unpublish" class="btn btn-primary" onclick="unpublishSchool()" style="background-color: white;color: #458bc4;">Unpublish</button>
+                    <button th:if="${canEdit}" th:hidden="${!submit}" id="submit" class="btn btn-primary" th:onclick="'changeSchoolStatus(\'/school-owner\', \'submit\', ' + ${school.id} + ', ' + ${school.recordNo} + ')'">Submit</button>
+                    <button th:if="${delete}" id="delete" class="btn btn-danger" th:onclick="'changeSchoolStatus(\'/manager\', \'delete\', ' + ${school.id} + ', ' + ${school.recordNo} + ')'">Delete</button>
+                    <button th:if="${reject}" id="reject" class="btn btn-danger" th:onclick="'changeSchoolStatus(\'/admin\', \'reject\', ' + ${school.id} + ', ' + ${school.recordNo} + ')'">Reject</button>
+                    <button th:if="${approve}" id="approve" class="btn btn-primary" th:onclick="'changeSchoolStatus(\'/admin\', \'approve\', ' + ${school.id} + ', ' + ${school.recordNo} + ')'">Approve</button>
+                    <button th:if="${publish}" id="publish" class="btn btn-primary" th:onclick="'changeSchoolStatus(\'/manager\', \'publish\', ' + ${school.id} + ', ' + ${school.recordNo} + ')'">Publish</button>
+                    <button th:if="${unpublish}" id="unpublish" class="btn btn-primary" th:onclick="'changeSchoolStatus(\'/manager\', \'unpublish\', ' + ${school.id} + ', ' + ${school.recordNo} + ')'" style="background-color: white;color: #458bc4;">Unpublish</button>
                 </div>
             </div>
 

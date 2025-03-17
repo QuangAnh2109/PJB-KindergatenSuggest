@@ -51,4 +51,8 @@ public interface SchoolInfoService {
     SchoolFormManager getSchoolFormByIdAndNoDelete(int id);
 
     int updateSchoolInfoBySchoolFormManager(SchoolFormManager schoolFormManager);
+
+    String getSchoolNameBySchoolIdAndNoDelete(int id);
+
+    SchoolFormManager getSchoolFormBySchoolIdAndEmailAndNoDelete(int id, String email);
 }

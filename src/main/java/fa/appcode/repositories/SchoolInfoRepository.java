@@ -1,6 +1,5 @@
 package fa.appcode.repositories;
 
-import fa.appcode.common.utils.SchoolConstant;
 import fa.appcode.common.vo.*;
 import fa.appcode.entities.SchoolInfo;
 import org.springframework.data.domain.Page;
@@ -11,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.Instant;
 import java.util.List;
 
 @Repository("schoolInfoRepository")
@@ -39,23 +37,29 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
     List<Integer> getAllSchoolIdsForUnenrollParentByAccountEmail(String id);
 
     //find all SchoolListManager by paging and search and delete flag
-    @Query("SELECT new fa.appcode.common.vo.SchoolListManager(si.id, si.schoolName, si.schoolAddress, si.city.cityName, si.district.districtName, si.ward.wardName, si.schoolPhone, si.schoolEmail, si.postedDate, si.statusId, " +
-            "CASE WHEN si.statusId = " + SchoolConstant.STATUS_DELETED + " THEN false ELSE true END, si.recordNo) " +
-            "FROM SchoolInfo si " +
-            "WHERE (si.schoolName IS NULL OR si.schoolName LIKE %:search%) AND si.deleteFlg = :deleteFlg " +
-            "ORDER BY " +
-            "CASE WHEN si.statusId = " + SchoolConstant.STATUS_SUBMITTED + " THEN 0 ELSE 1 END, " +
-            "si.postedDate DESC ")
+    @Query("""
+            SELECT new fa.appcode.common.vo.SchoolListManager(si.id, si.schoolName, si.schoolAddress, si.city.cityName, si.district.districtName, si.ward.wardName, si.schoolPhone, si.schoolEmail, si.postedDate, si.statusId,
+            CASE WHEN si.statusId = 7 THEN false ELSE true END, si.recordNo)
+            FROM SchoolInfo si
+            WHERE (si.schoolName LIKE %:search% OR si.schoolAddress LIKE %:search% OR si.city.cityName LIKE %:search% OR si.district.districtName LIKE %:search% OR si.ward.wardName LIKE %:search% OR si.schoolPhone LIKE %:search% OR si.schoolEmail LIKE %:search%)
+                AND si.deleteFlg = :deleteFlg
+            ORDER BY
+            CASE WHEN si.statusId = 2 THEN 0 ELSE 1 END,
+            si.postedDate DESC""")
     Page<SchoolListManager> searchAllByNameAndPagingAndDeleteFlg(Pageable pageable, @Param("search") String search, @Param("deleteFlg") boolean deleteFlg);
 
     //find all SchoolListManager by paging and search and account id and delete flag
-    @Query("SELECT new fa.appcode.common.vo.SchoolListManager(si.id, si.schoolName, si.schoolAddress, si.city.cityName, si.district.districtName, si.ward.wardName, si.schoolPhone, si.schoolEmail, si.postedDate, si.statusId, " +
-            "CASE WHEN si.statusId = " + SchoolConstant.STATUS_DELETED + " OR si.statusId = " + SchoolConstant.STATUS_APPROVED + " THEN false ELSE true END, si.recordNo) " +
-            "FROM SchoolInfo si " +
-            "WHERE (si.schoolName IS NULL OR si.schoolName LIKE %:search%) AND si.deleteFlg = :deleteFlg AND si.account.email = :account " +
-            "ORDER BY " +
-            "CASE WHEN si.statusId = " + SchoolConstant.STATUS_SUBMITTED + " THEN 0 ELSE 1 END, " +
-            "si.postedDate DESC")
+    @Query("""
+            SELECT new fa.appcode.common.vo.SchoolListManager(si.id, si.schoolName, si.schoolAddress, si.city.cityName, si.district.districtName, si.ward.wardName, si.schoolPhone, si.schoolEmail, si.postedDate, si.statusId,
+            CASE WHEN si.statusId IN (3,7) THEN false ELSE true END, si.recordNo)
+            FROM SchoolInfo si
+            WHERE (si.schoolName LIKE %:search% OR si.schoolAddress LIKE %:search% OR si.city.cityName LIKE %:search% OR si.district.districtName LIKE %:search% OR si.ward.wardName LIKE %:search% OR si.schoolPhone LIKE %:search% OR si.schoolEmail LIKE %:search%)
+                AND si.deleteFlg = :deleteFlg
+                AND si.account.email = :account
+            ORDER BY
+            CASE WHEN si.statusId = 2 THEN 0 ELSE 1 END,
+            si.postedDate DESC
+            """)
     Page<SchoolListManager> searchAllByNameAndAccountAndPagingAndDeleteFlg(Pageable pageable, @Param("search") String search, @Param("account") String email, @Param("deleteFlg") boolean deleteFlg);
 
     //update school status by school id and record no and no delete
@@ -68,10 +72,23 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
             "AND si.statusId IN (:#{#request.statusList})")
     int updateSchoolStatusByRequest(@Param("request") SchoolStatusUpdateRequest request);
 
-    @Query("SELECT new fa.appcode.common.vo.SchoolFormManager(si.id, si.schoolName, si.typeId, si.schoolAddress, si.city.id, si.city.cityName, si.district.id, si.district.districtName, si.ward.id, si.ward.wardName, si.schoolEmail, si.schoolPhone, si.childReceivingAgeId, si.educationMethodId, si.feeTo, si.feeFrom, si.schoolIntroduction, si.imageUrl, si.updateTime, si.updateId, si.recordNo, si.deleteFlg, si.account.email, si.statusId) " +
-            "FROM SchoolInfo si " +
-            "WHERE si.id = ?1 AND si.deleteFlg = ?2")
+
+    @Query("""
+            SELECT new fa.appcode.common.vo.SchoolFormManager(si.id, si.schoolName, si.typeId, si.schoolAddress, si.city.id, si.city.cityName, si.district.id, si.district.districtName, si.ward.id, si.ward.wardName, si.schoolEmail, si.schoolPhone, si.childReceivingAgeId, si.educationMethodId, si.feeTo, si.feeFrom, si.schoolIntroduction, si.imageUrl, si.updateTime, si.updateId, si.recordNo, si.deleteFlg, si.account.email, si.statusId)
+            FROM SchoolInfo si
+            WHERE si.id = ?1
+            AND si.deleteFlg = ?2
+            """)
     SchoolFormManager getSchoolFormByIdAndDeleteFlg(int id, boolean deleteFlg);
+
+    @Query("""
+            SELECT new fa.appcode.common.vo.SchoolFormManager(si.id, si.schoolName, si.typeId, si.schoolAddress, si.city.id, si.city.cityName, si.district.id, si.district.districtName, si.ward.id, si.ward.wardName, si.schoolEmail, si.schoolPhone, si.childReceivingAgeId, si.educationMethodId, si.feeTo, si.feeFrom, si.schoolIntroduction, si.imageUrl, si.updateTime, si.updateId, si.recordNo, si.deleteFlg, si.account.email, si.statusId)
+            FROM SchoolInfo si
+            WHERE si.id = ?1
+            AND (?2 IS NULL OR si.account.email = ?2)
+            AND si.deleteFlg = ?3
+            """)
+    SchoolFormManager getSchoolFormBySchoolIdAndEmailAndDeleteFlg(int id, String email, boolean deleteFlg);
 
     @Modifying
     @Query("UPDATE SchoolInfo si SET si.schoolName = :#{#schoolInfo.name} " +
@@ -98,73 +115,62 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
             "AND (:#{#schoolInfo.schoolOwnerEmail} IS NULL OR si.account.id = (SELECT ai.id FROM AccountInfo ai WHERE ai.email = :#{#schoolInfo.schoolOwnerEmail})) ")
     int updateSchoolInfoBySchoolFormManager(@Param("schoolInfo") SchoolFormManager schoolFormManager);
 
-    @Query("SELECT new fa.appcode.common.vo.SchoolRatingFeedback" +
-            "(" +
-                "f.id.schoolId, " +
-                "AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5), " +
-                "AVG(f.learningProgram), " +
-                "AVG(f.facilitiesUtilities), " +
-                "AVG(f.extracurricularActivities), " +
-                "AVG(f.teacherStaff), " +
-                "AVG(f.hygieneNutrition), " +
-                "COUNT(f.id.accountId)" +
-            ") " +
-            "FROM Feedback f " +
-            "WHERE f.id.feedbackTime = (" +
-                "SELECT MAX(f2.id.feedbackTime) " +
-                "FROM Feedback f2 " +
-                "WHERE f2.id.accountId = f.id.accountId " +
-                "AND f2.id.schoolId = f.id.schoolId " +
-                "GROUP BY f2.id.accountId " +
-            ") " +
-            "GROUP BY f.id.schoolId")
-    List<SchoolRatingFeedback> getAllSchoolRatingFeedback();
+    @Query("""
+            SELECT new fa.appcode.common.vo.SchoolRatingFeedback
+            (
+                f.id.schoolId,
+                AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5),
+                AVG(f.learningProgram),
+                AVG(f.facilitiesUtilities),
+                AVG(f.extracurricularActivities),
+                AVG(f.teacherStaff),
+                AVG(f.hygieneNutrition),
+                COUNT(f.id.accountId)
+            )
+            FROM Feedback f
+            WHERE f.id.feedbackTime = (
+                SELECT MAX(f2.id.feedbackTime)
+                FROM Feedback f2
+                WHERE
+                    f2.id.accountId = f.id.accountId
+                    AND f2.id.schoolId = :#{#form.schoolId}
+                    AND (:#{#form.accountEmail} IS NULL OR f2.school.account.email = :#{#form.accountEmail})
+                    AND (:#{#form.fromDate} IS NULL OR f.id.feedbackTime >= :#{#form.fromDate})
+                    AND (:#{#form.toDate} IS NULL OR f.id.feedbackTime <= :#{#form.toDate})
+                GROUP BY f2.id.accountId
+                )
+                AND f.id.schoolId = :#{#form.schoolId}
+            GROUP BY f.id.schoolId""")
+    SchoolRatingFeedback getSchoolRatingFeedbackBySchoolId(@Param("form")FeedbackRatingRequest feedbackRatingRequest);
 
-    @Query("SELECT new fa.appcode.common.vo.SchoolRatingFeedback" +
-            "(" +
-                "f.id.schoolId, " +
-                "AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5), " +
-                "AVG(f.learningProgram), " +
-                "AVG(f.facilitiesUtilities), " +
-                "AVG(f.extracurricularActivities), " +
-                "AVG(f.teacherStaff), " +
-                "AVG(f.hygieneNutrition), " +
-                "COUNT(f.id.accountId)" +
-            ") " +
-            "FROM Feedback f " +
-            "WHERE f.id.feedbackTime = (" +
-                "SELECT MAX(f2.id.feedbackTime) " +
-                "FROM Feedback f2 " +
-                "WHERE f2.id.accountId = f.id.accountId " +
-                "AND f2.id.schoolId = :#{#form.schoolId} " +
-                "AND (:#{#form.accountEmail} IS NULL OR f2.school.account.email = :#{#form.accountEmail}) " +
-//                "AND f2.school.account.id = :#{#form.accountId} " +
-                "AND (:#{#form.from} IS NULL OR f.id.feedbackTime >= :#{#form.from}) " +
-                "AND (:#{#form.to} IS NULL OR f.id.feedbackTime <= :#{#form.to})" +
-                "GROUP BY f2.id.accountId" +
-            ") " +
-            "GROUP BY f.id.schoolId")
-    SchoolRatingFeedback getSchoolRatingFeedbackBySchoolId(@Param("form") SchoolRatingFeedbackForm schoolRatingFeedbackForm);
+    @Query("""
+            SELECT new fa.appcode.common.vo.AccountFeedback
+            (
+                f.accountInfo.fullName,
+                MAX(f.id.feedbackTime),
+                (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5,
+                f.feedbackMessage
+            )
+            FROM Feedback f
+            WHERE f.id.schoolId = :#{#form.schoolId}
+                AND (:#{#form.accountEmail} IS NULL OR f.school.account.email = :#{#form.accountEmail})
+                AND f.deleteFlg = :#{#form.deleteFlg}
+                AND ((:#{#form.fromDate} IS NULL OR f.id.feedbackTime >= :#{#form.fromDate}) AND (:#{#form.toDate} IS NULL OR f.id.feedbackTime <= :#{#form.toDate}))
+                AND (:#{#form.rating} IS NULL
+                OR
+                (
+                    (1 IN :#{#form.rating} AND (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 >= 1 AND (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 < 2)
+                    OR (2 IN :#{#form.rating} AND (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 >= 2 AND (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 < 3)
+                    OR (3 IN :#{#form.rating} AND (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 >= 3 AND (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 < 4)
+                    OR (4 IN :#{#form.rating} AND (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 >= 4 AND (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 < 5)
+                    OR (5 IN :#{#form.rating} AND (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 = 5)
+                ))
+            GROUP BY f.id.accountId
+            ORDER BY f.id.feedbackTime""")
+    Page<AccountFeedback> getAllAccountFeedbackBySchoolId(@Param("form")FeedbackRatingRequest feedbackRatingRequest, Pageable pageable);
 
-    @Query("SELECT new fa.appcode.common.vo.AccountFeedback " +
-            "( " +
-                "f.accountInfo.fullName, " +
-                "MAX(f.id.feedbackTime), " +
-                "(f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5, " +
-                "f.feedbackMessage" +
-            ") " +
-            "FROM Feedback f " +
-            "WHERE f.id.schoolId = :#{#form.schoolId} " +
-                "AND (:#{#form.accountEmail} IS NULL OR f.school.account.email = :#{#form.accountEmail}) " +
-//                "AND f.school.account.id = :#{#form.accountId} " +
-                "AND f.deleteFlg = :#{#form.deleteFlg} " +
-                "AND (:#{#form.from} IS NULL OR f.id.feedbackTime >= :#{#form.from}) " +
-                "AND (:#{#form.to} IS NULL OR f.id.feedbackTime <= :#{#form.to}) " +
-                "AND (:#{#form.one} = false OR (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 >= 1 AND (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 < 2) " +
-                "AND (:#{#form.two} = false OR (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 >= 2 AND (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 < 3) " +
-                "AND (:#{#form.three} = false OR (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 >= 3 AND (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 < 4) " +
-                "AND (:#{#form.four} = false OR (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 >= 4 AND (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 < 5) " +
-                "AND (:#{#form.five} = false OR (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 = 5) " +
-            "GROUP BY f.id.accountId ")
-    Page<AccountFeedback> getAllAccountFeedbackBySchoolId(@Param("form") SchoolRatingFeedbackForm schoolRatingFeedbackForm, Pageable pageable);
+    @Query("SELECT si.schoolName FROM SchoolInfo si WHERE si.id = ?1 AND si.deleteFlg = ?2")
+    String getSchoolNameByIdAndDeleteFlg(int id, boolean deleteFlg);
+
+    List<SchoolInfo> findAll();
 }

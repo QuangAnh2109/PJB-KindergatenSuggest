@@ -1,7 +1,13 @@
 package fa.appcode.services;
 
+import fa.appcode.common.vo.FeedbackRatingRequest;
+import fa.appcode.exceptions.FromToDateException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.ui.Model;
 
 public interface FeedbackRatingService {
-    public void setBaseData(Model model, int schoolId, String accountEmail);
+    void setSchoolRatingFeedbackData(Model model, FeedbackRatingRequest feedbackRatingRequest) throws DataAccessException;
+    void setSchoolRatingData(Model model, FeedbackRatingRequest feedbackRatingRequest) throws DataAccessException;
+    void setSchoolFeedbackData(Model model, FeedbackRatingRequest feedbackRatingRequest) throws DataAccessException;
+    void validateFeedbackRatingRequest(FeedbackRatingRequest feedbackRatingRequest) throws FromToDateException;
 }

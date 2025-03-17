@@ -136,4 +136,6 @@ public interface AccountService {
 
 
     public int getAccountIdByEmail(String email);
+
+    public String getAccountNameByEmailAndNoDelete(String email);
 }

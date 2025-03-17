@@ -87,4 +87,14 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     public int updateSchoolInfoBySchoolFormManager(SchoolFormManager schoolFormManager) {
         return schoolInfoRepository.updateSchoolInfoBySchoolFormManager(schoolFormManager);
     }
+
+    @Override
+    public String getSchoolNameBySchoolIdAndNoDelete(int id) {
+        return schoolInfoRepository.getSchoolNameByIdAndDeleteFlg(id, false);
+    }
+
+    @Override
+    public SchoolFormManager getSchoolFormBySchoolIdAndEmailAndNoDelete(int id, String email) {
+        return schoolInfoRepository.getSchoolFormBySchoolIdAndEmailAndDeleteFlg(id, email, false);
+    }
 }

@@ -53,4 +53,10 @@ public class GlobalHandlerException {
         logger.error("Token error: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token error: " + e.getMessage());
     }
+
+    @ExceptionHandler(FromToDateException.class)
+    public ResponseEntity<String> handleInvalidDateException(FromToDateException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
 }

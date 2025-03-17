@@ -35,7 +35,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(configurer ->
                         configurer
                                 .requestMatchers("/public/showMyLoginPage", "/public/forgot-password", "public/register", "public/reset-password").anonymous()
-                                .requestMatchers("/", "/user_side/**", "/public/**").permitAll()
+                                .requestMatchers("/", "/user_side/**", "/public/**","/admin_side/**").permitAll()
                                 .requestMatchers("/user/**").not().hasAnyAuthority(Constant.SCHOOL_OWNER_ROLE, Constant.ADMIN_ROLE)
                                 .requestMatchers("/auth/**").hasAnyAuthority(Constant.PARENT_ROLE, Constant.SCHOOL_OWNER_ROLE, Constant.ADMIN_ROLE)
                                 .requestMatchers("/parent/**").hasAuthority(Constant.PARENT_ROLE)

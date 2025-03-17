@@ -314,6 +314,11 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findAccountByEmailAndStatusIdAndDeleteFlg(email, 1, false).getId();
     }
 
+    @Override
+    public String getAccountNameByEmailAndNoDelete(String email) {
+        return accountRepository.getAccountNameByEmailAndDeleteFlg(email, false);
+    }
+
     //    @Override
 //    public AccountInfo findWithFullAddressByEmail(String email, boolean deleteFlg) {
 //        return accountRepository.findWithFullAddressByEmail(email, deleteFlg);

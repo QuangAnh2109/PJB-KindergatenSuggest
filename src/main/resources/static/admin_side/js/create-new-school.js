@@ -1,5 +1,5 @@
 function addNewSchool(status, saveType){
-    let formData = new FormData();
+        let formData = new FormData();
     formData.append("image", document.getElementById("image").files[0]);
     formData.append("name", document.getElementById("schoolName").value);
     formData.append("typeId", document.getElementById("typeId").value);

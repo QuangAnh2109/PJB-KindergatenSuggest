@@ -1,42 +1,27 @@
-function submitSchool(isAdmin){
-    let link = "";
-    if(isAdmin) link = "/admin"
-    else link = "/school-owner"
+function changeSchoolStatus(role, type, schoolId, recordNo){
+    if(schoolId == null){
+        schoolId = document.getElementById("schoolId").value;
+    }
+    if(recordNo == null){
+        recordNo = document.getElementById("recordNo").value;
+    }
     $.ajax({
-        url: link + "/school/submit",
+        url: role + "/school/" + type,
         type: "post",
         data: {
-            schoolId: document.getElementById("schoolId").value,
-            recordNo: document.getElementById("recordNo").value,
+            schoolId: schoolId,
+            recordNo: recordNo,
         },
         success: function (json){
-            console.log("load ok" + json);
+            console.log("load ok " + json);
+            location.reload();
         },
         error: function (xhr){
-            console.log("load failed" + xhr);
+            console.log("load failed " + xhr);
+            $('#deleteModel').modal('show');
         },
     });
-};
-
-function deleteSchool(){
-
-};
-
-function rejectSchool(){
-
-};
-
-function approveSchool(){
-
-};
-
-function publishSchool(){
-
-};
-
-function unpublishSchool(){
-
-};
+}
 
 function openEdit(){
 

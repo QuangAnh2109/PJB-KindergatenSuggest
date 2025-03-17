@@ -13,7 +13,7 @@ public class AccountFeedback {
     private final int avgRating;
     private final String feedbackMessage;
 
-    public AccountFeedback(String username, Instant feedbackTime, Float avgRating, String feedbackMessage) {
+    public AccountFeedback(String username, Instant feedbackTime, float avgRating, String feedbackMessage) {
         this.username = username;
         this.feedbackTime = feedbackTime;
         this.avgRating = Math.round(avgRating * 2) * 5;

@@ -118,4 +118,7 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
     String getSchoolOwnerEmailBySchoolIdAndStatusAndDeleteFlg(@Param("id") int id, @Param("statusId") int statusId, @Param("deleteFlg") boolean deleteFlg);
 
     AccountInfo findAccountByEmailAndStatusIdAndDeleteFlg(String email, int statusId, boolean deleteFlg);
+
+    @Query("SELECT a.fullName FROM AccountInfo a WHERE a.email = ?1 AND a.deleteFlg = ?2")
+    String getAccountNameByEmailAndDeleteFlg(String email, boolean deleteFlg);
 }
