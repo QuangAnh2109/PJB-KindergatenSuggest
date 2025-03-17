@@ -10,6 +10,81 @@
     <link th:href="@{/user_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
     <link th:href="@{/user_side/css/mdb.min.css}" rel="stylesheet" type="text/css">
     <link th:href="@{/user_side/css/style.css}" rel="stylesheet" type="text/css">
+<style>
+    /* Cải thiện màu sắc và hiệu ứng cho trang Verify Account với màu chủ đạo xanh lá dễ nhìn hơn */
+    body.dark-scheme {
+        background: linear-gradient(135deg, #58d68d 0%, #2ecc71 100%);
+        color: white;
+    }
+
+    /* Làm mờ nền và tăng độ tương phản */
+    #section-verify {
+        position: relative;
+        text-align: center;
+        padding: 50px 0;
+    }
+
+    #section-verify img.jarallax-img {
+        filter: blur(3px) brightness(85%);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Tăng độ rõ nét của chữ */
+    h1, p, .btn-main {
+        text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Cải thiện màu sắc chữ */
+    h1.s2 {
+        font-size: 4rem;
+        font-weight: bold;
+    }
+
+    h1.s2 .c1 {
+        color: #58d68d;
+    }
+
+    h1.s2 .c3 {
+        color: #45b39d;
+    }
+
+    /* Tùy chỉnh nút "Go to Login" */
+    .btn-main {
+        background: linear-gradient(90deg, #58d68d, #45b39d);
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        transition: 0.3s;
+        box-shadow: 0px 4px 10px rgba(88, 214, 141, 0.4);
+    }
+
+    .btn-main:hover {
+        background: linear-gradient(90deg, #2ecc71, #1abc9c);
+        transform: scale(1.05);
+    }
+
+    /* Làm nổi bật thông báo thành công và lỗi */
+    .text-success {
+        color: #27ae60 !important;
+        font-weight: bold;
+        font-size: 1.3rem;
+        text-shadow: 2px 2px 10px rgba(39, 174, 96, 0.8);
+    }
+
+    .text-danger {
+        color: #e74c3c !important;
+        font-weight: bold;
+        font-size: 1.3rem;
+        text-shadow: 2px 2px 10px rgba(231, 76, 60, 0.8);
+    }
+
+
+</style>
 </head>
 
 <body class="dark-scheme">
@@ -21,20 +96,20 @@
     <div class="no-bottom no-top" id="content">
         <div id="top"></div>
         <section id="section-verify" class="jarallax text-light pt50 pb50 vertical-center" aria-label="section">
-            <img th:src="@{/user_side/images/background/background3.jpg}" style="filter: brightness(66%);" class="jarallax-img" alt="Verify Account Background">
+            <img th:src="@{/user_side/images/background/background3.jpg}" style="filter: brightness(80%);" class="jarallax-img" alt="Verify Account Background">
 
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-6">
                         <h1>Verify Your Account</h1>
-                        <p th:if="${message}" class="text-success" th:text="${message}"></p>
-                        <p th:if="${error}" class="text-danger" th:text="${error}"></p>
+                        <p th:if="${activeSuccess}" class="text-success" th:text="${activeSuccess}"></p>
+                            <p th:if="${alreadyVerified}" class="text-danger" th:text="${alreadyVerified}"></p>
                         <a th:href="@{/public/showMyLoginPage}" class="btn-main">Go to Login</a>
                         <div class="spacer-10"></div>
                     </div>
                     <div class="col-lg-6 text-center">
                         <h1 class="s2">
-                            <span class="c1">Verify</span>
+                            <span class="c1" >Verify</span>
                             <span class="spacer-single"></span>
                             <span class="c3">Your Account</span>
                         </h1>

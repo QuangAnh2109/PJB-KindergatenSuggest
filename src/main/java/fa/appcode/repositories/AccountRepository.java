@@ -1,5 +1,6 @@
 package fa.appcode.repositories;
 
+import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.entities.AccountInfo;
@@ -12,6 +13,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository("accountRepository")
 @Transactional
 public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
@@ -21,9 +24,6 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
     @Query("SELECT c FROM AccountInfo c WHERE c.phone = ?1 AND c.deleteFlg = false")
     AccountInfo findAccountByPhone(String phone);
-
-    @Query("Select c.recordNo from  AccountInfo c where c.email=?1 and c.deleteFlg=false")
-    AccountVo getRecordByEmail(String email);
 
     /**
      * get a list of user accounts along with their full addresses by search criteria by name, email,phone .
@@ -65,7 +65,7 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
     Page<AccountVo> findAllWithFullAddress(@Param("search") String search, Pageable pageable);
 
 
-    // Find Parent data by parent Id
+    // Find Parent data by parent ID
     @Query("""
             SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone,ai.dob,TRIM(BOTH ' ' FROM CONCAT(COALESCE(ai.address, ''), '   ', COALESCE(w.wardName, ''), '   ', COALESCE(d.districtName, ''), '   ', COALESCE(c.cityName, ''))))
                         FROM AccountInfo ai
@@ -73,8 +73,8 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
                         LEFT JOIN Ward w ON w.id=ai.ward.id
                         LEFT JOIN District d ON d.id = ai.district.id
                         LEFT JOIN City c ON c.id=ai.city.id
-                        WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=1""")
-    ParentVo findParentById(int id);
+                        WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=?2""")
+    ParentVo findParentById(int id, int accountStatusId);
 
     //    find all Parent List
     @Query("""
@@ -89,16 +89,16 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
                         JOIN MasterDatum ma ON ai.roleId=ma.typeKey AND ma.typeName='ROLE' 
                         LEFT JOIN EnrollSchool e ON ai.id = e.account.id
                         LEFT JOIN SchoolInfo s ON e.school.id = s.id
-                        WHERE ma.id=3 AND (ai.fullName LIKE %?1% OR ai.email LIKE%?1% OR ai.phone LIKE %?1% ) AND ai.deleteFlg=false AND ai.statusId=1
+                        WHERE ma.id=3 AND (ai.fullName LIKE %?1% OR ai.email LIKE%?1% OR ai.phone LIKE %?1% ) AND ai.deleteFlg=false AND ai.statusId=?2
                         GROUP BY ai.id, ai.fullName, ai.email, ai.phone """)
-    Page<ParentVo> findAllParent(String search, Pageable pageable);
+    Page<ParentVo> findAllParent(String search, Pageable pageable,int accountStatusId);
 
 
     //find account role by email
     @Query("SELECT m.typeValue FROM AccountInfo ai JOIN MasterDatum m ON ai.roleId=m.id AND ai.email=?1")
     String findAccountRoleString(String email);
-
-    AccountInfo getAccountInfoById(int id);
+    @Query("SELECT ai FROM AccountInfo  ai WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId = ?2")
+    AccountInfo getAccountInfoById(int id,int accountStatusId);
 
 
     //find all parent for School Owner List
@@ -114,9 +114,9 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
                         JOIN MasterDatum ma ON ai.roleId=ma.typeKey AND ma.typeName='ROLE'
                         LEFT JOIN EnrollSchool e ON ai.id = e.account.id
                         LEFT JOIN SchoolInfo s ON e.school.id = s.id AND s.account.email = :email
-                        WHERE ma.id=3 AND (ai.fullName LIKE %:search% OR ai.email LIKE%:search% OR ai.phone LIKE %:search% ) AND ai.deleteFlg=false AND ai.statusId=1
+                        WHERE ma.id=3 AND (ai.fullName LIKE %:search% OR ai.email LIKE%:search% OR ai.phone LIKE %:search% ) AND ai.deleteFlg=false AND ai.statusId= :accountStatusId
                         GROUP BY ai.id,ai.fullName,ai.email,ai.phone""")
-    Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(@Param("email") String email, @Param("search") String search, Pageable pageable);
+    Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(@Param("email") String email, @Param("search") String search, Pageable pageable, int accountStatusId);
 
     @Query("SELECT ai.email FROM AccountInfo ai WHERE ai.id = :id AND ai.statusId = :statusId AND ai.deleteFlg = :deleteFlg")
     String getEmailByAccountIdAndStatusIdAndDeleteFlg(@Param("id") int id, @Param("statusId") int statusId, @Param("deleteFlg") boolean deleteFlg);
@@ -128,8 +128,12 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
             "WHERE a.email = :email AND a.deleteFlg = :deleteFlg")
     AccountInfo findWithFullAddressByEmail(@Param("email") String email, @Param("deleteFlg") boolean deleteFlg);
 
+    @Query("SELECT c FROM AccountInfo c WHERE c.email = ?1")
+    Optional<AccountInfo> findAccountByEmail(String email);
+
     @Query("SELECT si.account.email FROM SchoolInfo si WHERE si.id = :id AND si.account.statusId = :statusId AND si.account.deleteFlg = :deleteFlg")
     String getSchoolOwnerEmailBySchoolIdAndStatusAndDeleteFlg(@Param("id") int id, @Param("statusId") int statusId, @Param("deleteFlg") boolean deleteFlg);
-
+    @Query("SELECT COUNT(a) > 0 FROM AccountInfo a WHERE a.phone = :phone")
+    boolean existsByPhone(@Param("phone") String phone);
     AccountInfo findAccountByEmailAndStatusIdAndDeleteFlg(String email, int statusId, boolean deleteFlg);
 }

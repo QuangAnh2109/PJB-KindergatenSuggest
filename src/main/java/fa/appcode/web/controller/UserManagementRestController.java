@@ -73,11 +73,11 @@ public class UserManagementRestController {
         try {
             if (isAdding) {
                 accountService.addUserFromAdmin(accountVo, principal);
-                return ResponseEntity.ok(Map.of("message", globalConfig.getUserAddSuccess()));
+                return ResponseEntity.ok(Map.of("message", globalConfig.getUserAddSucess()));
             } else {
                 int newRecordNo = accountService.updateAccount(accountVo);
                 return ResponseEntity.ok(Map.of(
-                        "message", globalConfig.getUserAddSuccess(),
+                        "message", globalConfig.getUserUpdateSucess(),
                         "recordNo", newRecordNo
                 ));
             }

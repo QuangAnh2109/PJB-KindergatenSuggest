@@ -47,7 +47,7 @@ $(document).ready(function () {
                 ? `<button class="btn btn-success btn-sm rounded-pill" style="min-width: 80px; font-size: 12px;">${request.requestMasterName}</button>`
                 : `<button class="btn btn-danger btn-sm rounded-pill" style="min-width: 80px; font-size: 12px;">${request.requestMasterName}</button>`;
             const row = `
-                <tr onclick="redirectToDetail(${request.id},${currentPage})">
+                <tr class="clickable-row" onclick="redirectToDetail(${request.id},${currentPage})">
                     <th scope="row">${request.id}</th>
                     <th>${request.fullName || 'N/A'}</th>
                     <th>${request.requestEmail || 'N/A'}</th>

@@ -123,7 +123,7 @@ public interface AccountService {
 
     void saveAccountInfo(AccountInfo accountInfo);
 
-    boolean changePasswordProcess(String oldPassword, String newPassword, String confirmPassword, Model model);
+    Map<String, String> changePasswordHandle(String oldPassword, String newPassword, String confirmPassword);
 
     boolean forgotPasswordProcess(String email, Model model);
 
@@ -144,4 +144,11 @@ public interface AccountService {
     Map<String, Object> getValidationResult();
 
     public int getAccountIdByEmail(String email);
+
+    AccountInfo validateAccountToken(String token);
+
+    Map<String, String> handleForgotPassword(String email);
+
+    Map<String, String> handleResetPassword(String token, String newPassword, String confirmPassword);
+    Map<String,String> updateAccountProcess(AccountInfo accountInfo);
 }

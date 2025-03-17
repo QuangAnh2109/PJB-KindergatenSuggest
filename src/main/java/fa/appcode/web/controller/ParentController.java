@@ -159,7 +159,7 @@ public class ParentController {
             if (Constant.ENROLL_PARENT_SCHOOL.equals(actionType)) {
                 //Enroll Parent to School
                 Log4jUtils.getLogger().info("Enrolling Parent: ");
-                enrollSchoolService.enrollSchoolParent(accountService.getAccountInfoById(id), schoolInfoService.getSchoolInfoById(schoolId), LocalDate.now(), normalizedRole, principal);
+                enrollSchoolService.enrollSchoolParent(accountService.getAccountInfoById(id), schoolInfoService.getSchoolInfoById(schoolId), LocalDate.now(), normalizedRole, principal.getName());
                 //Add FlashAttribute into redirectAttribute
                 redirectAttributes.addFlashAttribute("message", globalConfig.getEnrollSuccess());
                 redirectAttributes.addFlashAttribute("alertType", Constant.SUCCESS);
@@ -168,7 +168,7 @@ public class ParentController {
                 EnrollSchool enrollSchool = enrollSchoolService.findEnrollSchoolById(enrollId);
                 //unenroll Parent
                 Log4jUtils.getLogger().info("Unenrolling Parent: ");
-                enrollSchoolService.evaluateParentEnroll(enrollSchool, LocalDate.now(), normalizedRole, Constant.ENROLL_STATUS_UNENROLL, principal, recordNo,id);
+                enrollSchoolService.evaluateParentEnroll(enrollSchool, LocalDate.now(), normalizedRole, Constant.ENROLL_STATUS_UNENROLL, principal.getName(), recordNo,id);
                 redirectAttributes.addFlashAttribute("message", globalConfig.getUnenrollSuccess());
                 redirectAttributes.addFlashAttribute("alertType", Constant.DANGER);
                 Log4jUtils.getLogger().info("Unenroll Parent Success");

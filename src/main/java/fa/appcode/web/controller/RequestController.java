@@ -50,10 +50,10 @@ public class RequestController {
     @GetMapping("/manager/request-list")
     public String showRequestList(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                   Model model, Principal principal, HttpSession session) {
-        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
-        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
+        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("fullName").ascending());
+        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
         Page<RequestVo> requestList;
-        if (role.equalsIgnoreCase("Admin")) {
+        if (role.equalsIgnoreCase(Constant.ADMIN_ROLE )) {
             requestList = requestService.listAllRequest(null,null,pageable);
         } else {
             int accountID = accountService.getAccountInfo(principal).getId();
@@ -82,10 +82,10 @@ public class RequestController {
     @GetMapping("/manager/request-reminder")
     public String showRequestReminder(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                       Model model, Principal principal, HttpSession session) {
-        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
-        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
+        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("fullName").ascending());
+        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
         Page<RequestVo> requestList;
-        if (role.equalsIgnoreCase("Admin")) {
+        if (role.equalsIgnoreCase(Constant.ADMIN_ROLE)) {
             requestList = requestService.listAllRequest(null,2,pageable);
         } else {
             int accountID = accountService.getAccountInfo(principal).getId();
@@ -118,7 +118,7 @@ public class RequestController {
                                     @RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                     Model model, Principal principal) {
         RequestDetailVo requestDetail = requestService.findById(id);
-        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
+        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
         model.addAttribute("requestDetail", requestDetail);
         model.addAttribute("page", page);
         model.addAttribute("role", role);
@@ -145,8 +145,8 @@ public class RequestController {
                                 Model model, Principal principal,
                                 RedirectAttributes redirectAttributes,
                                 HttpSession session) {
-        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
-        if (role.equalsIgnoreCase("Admin")) {
+        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
+        if (role.equalsIgnoreCase(Constant.ADMIN_ROLE)) {
             requestService.updateRequest("SYSTEM_ADMIN", id);
         } else if (role.equalsIgnoreCase("School owner")) {
             requestService.updateRequest("SCHOOL_OWNER", id);
@@ -174,10 +174,10 @@ public class RequestController {
     public ResponseEntity<Page<RequestVo>> searchRequestList(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                                              @RequestParam(name = "keyword", required = false) String keyword,
                                                              Model model, Principal principal) {
-        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
-        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
+        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("fullName").ascending());
+        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
         Page<RequestVo> requestList;
-        if (role.equalsIgnoreCase("Admin")) {
+        if (role.equalsIgnoreCase(Constant.ADMIN_ROLE)) {
             requestList = requestService.searchRequest(keyword,null,null, pageable);
         } else {
             int accountID = accountService.getAccountInfo(principal).getId();
@@ -203,10 +203,10 @@ public class RequestController {
     public ResponseEntity<Page<RequestVo>> searchRequestReminder(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                                                  @RequestParam(name = "keyword", required = false) String keyword,
                                                                  Model model, Principal principal) {
-        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("id").ascending());
-        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
+        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("fullName").ascending());
+        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
         Page<RequestVo> requestList;
-        if (role.equalsIgnoreCase("Admin")) {
+        if (role.equalsIgnoreCase(Constant.ADMIN_ROLE)) {
             requestList = requestService.searchRequest(keyword,null,2, pageable);
         } else {
             int accountID = accountService.getAccountInfo(principal).getId();
@@ -237,7 +237,6 @@ public class RequestController {
                                           Principal principal){
         AccountInfo accountID = accountService.getAccountInfo(principal);
         SchoolInfo school = schoolInfoService.getSchoolInfoById(1);
-        System.out.println("Name: "+school.getSchoolName());
         Request request = new Request(accountID,school,fullName,email,phone,inquiries,1,1,"PARENT",Instant.now());
         requestService.createRequest(request);
         return "redirect:/public/search";
