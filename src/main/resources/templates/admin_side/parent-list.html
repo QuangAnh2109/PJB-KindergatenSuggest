@@ -9,6 +9,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <!-- App favicon -->
     <link rel="shortcut icon" th:href="@{/admin_side/images/favicon.ico}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- App css -->
     <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css" id="bootstrap-stylesheet"/>
@@ -17,81 +19,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script th:src="@{/admin_side/js/parent-list.js}"></script>
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
+    <link th:href="@{/admin_side/css/request-list.css}" rel="stylesheet" type="text/css"/>
 
-    <style>
-        .btn-closed {
-            background-color: #E6FAE6;
-            color: #0b5ed7;
-            border: 2px solid #555;
-            border-radius: 20px;
-            padding: 5px 15px;
-            font-weight: bold;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .btn-closed:hover {
-            border-color: #333;
-            background-color: #D4F5D4;
-        }
-
-        .app-search {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .app-search-box {
-            max-width: 300px;
-        }
-
-        .app-search .form-control {
-            border-radius: 20px;
-            border: 2px solid #ccc;
-            padding: 10px 15px;
-        }
-
-        .app-search .btn {
-            background-color: #28a745;
-            color: white;
-            border-radius: 20px;
-            padding: 8px 15px;
-            border: none;
-        }
-
-        .pagination-container {
-            margin-top: 20px;
-        }
-
-        .logout-container {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 20px;
-        }
-
-        .logout-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-            color: #3498db;
-            margin-top: 20px;
-        }
-
-        .logout-btn i {
-            font-size: 22px;
-            color: #333;
-        }
-
-        .btn-closed {
-            font-size: 12px;
-            padding: 3px 10px;
-            border-radius: 15px;
-            min-width: 70px;
-            text-align: center;
-        }
-    </style>
 </head>
 
 <body>
@@ -155,15 +84,8 @@
                                 </div>
                             </div>
                             <!--                            </form>-->
-                            <div style="max-height: 600px; overflow-y: auto;">
-                                <table class="table table-striped table-bordered dt-responsive nowrap"
-                                       style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                    <colgroup>
-                                        <col style="width: 30%;">
-                                        <col style="width: 30%;">
-                                        <col style="width: 20%;">
-                                        <col style="width: 20%;">
-                                    </colgroup>
+                            <div class="table-responsive table-container">
+                                <table class="table table-striped m-0">
                                     <thead class="head">
                                     <tr>
                                         <th>Full Name</th>
@@ -175,8 +97,10 @@
                                     </thead>
 
                                     <tbody>
-                                    <tr th:each="parent : ${accounts}">
-                                        <th ><a th:text="${parent.parentName}" th:href="@{'/manager/parent-list/parent-details/' + ${parent.parentId}}"></a></th>
+                                    <tr th:each="parent : ${accounts}" class="clickable-row"
+                                        th:attr="data-href=@{'/manager/parent-list/parent-details/' + ${parent.parentId}}"
+                                        onclick="window.location=this.getAttribute('data-href')">
+                                        <th th:text="${parent.parentName}"></th>
                                         <th th:text="${parent.parentEmail}"></th>
                                         <th th:text="${parent.parentPhone}"></th>
                                         <th>
