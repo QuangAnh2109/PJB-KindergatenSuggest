@@ -150,25 +150,6 @@ public class AccountServiceImpl implements AccountService {
         accountVo.setEmail(accountInfo.getEmail());
         accountVo.setPhone(accountInfo.getPhone());
         accountVo.setDob(accountInfo.getDob() != null ? accountInfo.getDob().toString() : null);
-        accountVo.setImageUrl(accountInfo.getImageUrl());
-
-        // Build full address
-        if (accountInfo.getAddress() == null && accountInfo.getWard() == null &&
-                accountInfo.getDistrict() == null && accountInfo.getCity() == null) {
-            accountVo.setFullAddress("No specific information yet");
-        } else {
-            StringBuilder fullAddress = new StringBuilder(accountInfo.getAddress() != null ? accountInfo.getAddress() : "");
-            if (accountInfo.getWard() != null) {
-                fullAddress.append(", ").append(accountInfo.getWard().getWardName());
-            }
-            if (accountInfo.getDistrict() != null) {
-                fullAddress.append(", ").append(accountInfo.getDistrict().getDistrictName());
-            }
-            if (accountInfo.getCity() != null) {
-                fullAddress.append(", ").append(accountInfo.getCity().getCityName());
-            }
-            accountVo.setFullAddress(fullAddress.toString().trim());
-        }
         // Resolve role and status names
         accountVo.setRole(masterDatumRepository.getMasterByTypeNameAndTypeKey("ROLE", accountInfo.getRoleId()));
         accountVo.setStatus(masterDatumRepository.getMasterByTypeNameAndTypeKey("ACCOUNT STATUS", accountInfo.getStatusId()));
