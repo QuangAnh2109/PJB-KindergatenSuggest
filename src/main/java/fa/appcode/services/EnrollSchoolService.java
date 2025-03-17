@@ -40,13 +40,13 @@ public interface EnrollSchoolService {
      * This method to evaluate to unenroll parent to school
      *
      * @param enrollSchool
-     * @param approvalEnrollDate
+     * @param enrollEndDate
      * @param role
      * @param status
-     * @param principal
+     * @param email
      * @param recordNo
      */
-    void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status, Principal principal, Integer recordNo) throws Exception;
+    void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate enrollEndDate, String role, Integer status, String email, Integer recordNo, Integer parentId);
 
     //Enroll Parent School
     /**
@@ -55,9 +55,9 @@ public interface EnrollSchoolService {
      * @param account
      * @param school
      * @param enrollDate
-     * @param principal
+     * @param schoolOwnerEmail
      */
-    void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role, Principal principal) throws Exception;
+    void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role, String schoolOwnerEmail);
 
     //check if parent is already enrolled or not
     /**
@@ -74,10 +74,10 @@ public interface EnrollSchoolService {
      * This method to check if school owner have access to school
      *
      * @param schoolId
-     * @param principal
+     * @param schoolOwnerEmail
      * @return true/false
      */
-    boolean validateAccess(Integer schoolId, Principal principal);
+    boolean validateAccess(Integer schoolId, String schoolOwnerEmail);
 
     //Get list Parent's School that is enrolled
     /**

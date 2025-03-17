@@ -46,8 +46,9 @@ public class UserManagementController {
                               @RequestParam(defaultValue = Constant.USER_INIT_PAGE) int currentPage,
                               Model model, Principal principal) throws Exception {
 
+
         Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage());
-        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
+        String role = accountService.getAccountInfo(principal).getRoleId().equals(Constant.ADMIN_ROLE_ID) ? "Admin" : "School owner";
 
         Page<AccountVo> accounts = accountService.getAllAccounts(search, pageable);
         List<AccountVo> listAccount = accounts.getContent();
@@ -70,7 +71,7 @@ public class UserManagementController {
      */
     @GetMapping({"add-user", "edit-user/{id}"})
     public String showUserForm(@PathVariable(name = "id", required = false) Integer id, Model model, Principal principal) {
-        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? "Admin" : "School owner";
+        String role = accountService.getAccountInfo(principal).getRoleId().equals(Constant.ADMIN_ROLE_ID) ? "Admin" : "School owner";
 
         AccountVo user = (id != null) ? accountService.getAccountById(id) : new AccountVo();
 

@@ -159,10 +159,10 @@
                                 <table class="table table-striped table-bordered dt-responsive nowrap"
                                        style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <colgroup>
+                                        <col style="width: 30%;">
+                                        <col style="width: 30%;">
                                         <col style="width: 20%;">
-                                        <col style="width: 40%;">
-                                        <col style="width: 10%;">
-                                        <col style="width: 10%;">
+                                        <col style="width: 20%;">
                                     </colgroup>
                                     <thead class="head">
                                     <tr>
@@ -170,29 +170,29 @@
                                         <th>Email</th>
                                         <th>Phone No.</th>
                                         <th>Status</th>
-                                        <th>Action</th>
+<!--                                        <th>Action</th>-->
                                     </tr>
                                     </thead>
 
                                     <tbody>
                                     <tr th:each="parent : ${accounts}">
-                                        <th th:text="${parent.parentName}"></th>
+                                        <th ><a th:text="${parent.parentName}" th:href="@{'/manager/parent-list/parent-details/' + ${parent.parentId}}"></a></th>
                                         <th th:text="${parent.parentEmail}"></th>
                                         <th th:text="${parent.parentPhone}"></th>
                                         <th>
                                             <span th:if="${parent.enrollStatus == 'Enrolled'}"
-                                                  class="stylebadge badge bg-success">Enrolled</span>
+                                                  class="rounded-pill stylebadge badge bg-success">Enrolled</span>
                                             <span th:if="${parent.enrollStatus == 'Wait approve'}"
-                                                  class="stylebadge badge bg-warning">Waiting Request Approve</span>
+                                                  class="rounded-pill stylebadge badge bg-warning">Waiting Request Approve</span>
                                             <span th:if="${parent.enrollStatus == 'Not Enroll'}"
-                                                  class="stylebadge badge bg-secondary">Not Enrolled</span>
+                                                  class="rounded-pill stylebadge badge bg-secondary">Not Enrolled</span>
                                         </th>
-                                        <td>
-                                            <form th:action="@{'/manager/parent-list/parent-details/'+${parent.parentId}} "
-                                                  method="get">
-                                                <button type="submit" class="btn btn-closed">View Details</button>
-                                            </form>
-                                        </td>
+<!--                                        <td>-->
+<!--                                            <form th:action="@{'/manager/parent-list/parent-details/'+${parent.parentId}} "-->
+<!--                                                  method="get">-->
+<!--                                                <button type="submit" class="btn btn-closed">View Details</button>-->
+<!--                                            </form>-->
+<!--                                        </td>-->
                                     </tr>
                                     </tbody>
                                 </table>
@@ -278,10 +278,12 @@
 </body>
 <style>
     .stylebadge {
-        font-size: 0.8rem; /* Adjust as needed */
+        font-size: 12px; /* Adjust as needed */
         display: inline-block;
-        width: 200px; /* Adjust as needed */
+        width: 120px;
+        /*height: 10px;!* Adjust as needed *!*/
         text-align: center;
+        min-width: 80px;
     }
 </style>
 </html>

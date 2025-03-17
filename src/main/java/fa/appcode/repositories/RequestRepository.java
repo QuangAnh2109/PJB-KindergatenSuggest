@@ -106,12 +106,12 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
      */
     @Query(""" 
             SELECT  new fa.appcode.common.vo.EmailContentVo(
-                        a.id,a.email,count(a.id))
-            FROM  Request r 
-            JOIN SchoolInfo s On r.school.id=s.id 
-            JOIN AccountInfo a On a.id=s.account.id 
-            WHERE r.requestMasterId!=2
-            GROUP BY a.id,a.email 
+                        a.id,a.email,a.roleId,count(a.id))
+            FROM AccountInfo a
+            JOIN SchoolInfo s On (s.account.id=a.id) Or a.roleId=1
+            JOIN Request r On r.school.id=s.id 
+            WHERE (r.requestMasterId!=2 AND a.roleId =2) OR (a.roleId=1)
+            GROUP BY a.id
             """)
     List<EmailContentVo> findAccountForEmail();
 

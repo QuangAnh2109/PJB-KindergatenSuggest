@@ -9,6 +9,7 @@ import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.EnrollSchool;
 import fa.appcode.entities.SchoolInfo;
 import fa.appcode.exceptions.CustomDataException;
+import fa.appcode.exceptions.ValidateParentException;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.EnrollSchoolService;
 import fa.appcode.services.SchoolInfoService;
@@ -52,7 +53,6 @@ public class ParentController {
                                      , defaultValue = Constant.SCHOOL_AND_ENROLL_INIT_PAGE) int currentPage,
                              @RequestParam(defaultValue = Constant.KEY_WORD_DEFAULT) String search, Model model,
                              Principal principal, RedirectAttributes redirectAttributes) {
-        try {
             Log4jUtils.getLogger().info("Inside parentList Method");
             Log4jUtils.getLogger().info(principal.getName());
             /*
@@ -85,24 +85,23 @@ public class ParentController {
             model.addAttribute("currentPage", currentPage);
             model.addAttribute("numberPage", list.getTotalPages());
             model.addAttribute("role", role);
-        } catch (CustomDataException e) {
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
-        }
+
         /*
          * Return view name
          */
-        return "admin_side/parent-list";
+        return Constant.PARENT_LIST_PAGE;
     }
 
     @GetMapping("parent-list/parent-details/{id}")
     public String parentDetailsAdmin(@RequestParam(name = "currentPage"
-                                             , defaultValue = Constant.SCHOOL_AND_ENROLL_INIT_PAGE) int currentPage, @PathVariable("id") int id, Model model, Principal principal,
-                                     RedirectAttributes redirectAttributes) {
+                                             , defaultValue = Constant.SCHOOL_AND_ENROLL_INIT_PAGE) int currentPage, @PathVariable("id") String idStr, Model model, Principal principal,
+                                     RedirectAttributes redirectAttributes){
 
         /*
          * Setup pageable
          */
         try {
+            int id = Integer.parseInt(idStr);
             Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(),
                     Sort.by("id").ascending());
             /*
@@ -140,14 +139,10 @@ public class ParentController {
             model.addAttribute("currentPage", currentPage);
             model.addAttribute("numberPage", listParentEnroll.getTotalPages());
             model.addAttribute("role", role);
-        } catch (CustomDataException e) {
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
-            return "redirect:" + Constant.VIEW_PARENT_DETAIL_URL + id;
-        } catch (IllegalAccessException e) {
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
-            return "redirect:" + Constant.PARENT_LIST_URL;
+        } catch (NumberFormatException e) {
+            throw new ValidateParentException("Invalid ID format");
         }
-        return "admin_side/parent-details";
+        return Constant.PARENT_DETAIL_PAGE;
     }
 
     @PostMapping({"parent-list/parent-details/{id}"})
@@ -161,14 +156,10 @@ public class ParentController {
         String role = accountService.findAccountRoleString(principal.getName());
         String normalizedRole = role.toUpperCase().trim().replace(" ", "_");
 
-        /*
-         * Enroll Parent to School if action = enroll
-         */
-        try {
             if (Constant.ENROLL_PARENT_SCHOOL.equals(actionType)) {
                 //Enroll Parent to School
                 Log4jUtils.getLogger().info("Enrolling Parent: ");
-                enrollSchoolService.enrollSchoolParent(accountService.getAccountInfoById(id), schoolInfoService.getSchoolInfoById(schoolId), LocalDate.now(), normalizedRole, principal);
+                enrollSchoolService.enrollSchoolParent(accountService.getAccountInfoById(id), schoolInfoService.getSchoolInfoById(schoolId), LocalDate.now(), normalizedRole, principal.getName());
                 //Add FlashAttribute into redirectAttribute
                 redirectAttributes.addFlashAttribute("message", globalConfig.getEnrollSuccess());
                 redirectAttributes.addFlashAttribute("alertType", Constant.SUCCESS);
@@ -177,18 +168,14 @@ public class ParentController {
                 EnrollSchool enrollSchool = enrollSchoolService.findEnrollSchoolById(enrollId);
                 //unenroll Parent
                 Log4jUtils.getLogger().info("Unenrolling Parent: ");
-                enrollSchoolService.evaluateParentEnroll(enrollSchool, LocalDate.now(), normalizedRole, Constant.ENROLL_STATUS_UNENROLL, principal, recordNo);
-                redirectAttributes.addFlashAttribute("message", "You have Unenroll parent from " + enrollSchool.getSchool().getSchoolName());
+                enrollSchoolService.evaluateParentEnroll(enrollSchool, LocalDate.now(), normalizedRole, Constant.ENROLL_STATUS_UNENROLL, principal.getName(), recordNo,id);
+                redirectAttributes.addFlashAttribute("message", globalConfig.getUnenrollSuccess());
                 redirectAttributes.addFlashAttribute("alertType", Constant.DANGER);
                 Log4jUtils.getLogger().info("Unenroll Parent Success");
             } else {
+                redirectAttributes.addFlashAttribute("alertType", Constant.DANGER);
                 redirectAttributes.addFlashAttribute("message", "Invalid action Type");
             }
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
-            redirectAttributes.addFlashAttribute("alertType", Constant.DANGER);
-        }
-
         /*
          * Return view name
          */

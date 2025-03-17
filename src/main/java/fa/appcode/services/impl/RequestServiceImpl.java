@@ -38,8 +38,8 @@ public class RequestServiceImpl implements RequestService {
     private static final Logger logger = LoggerFactory.getLogger(RequestServiceImpl.class);
 
     @Override
-    public Page<RequestVo> listAllRequest(Integer accountID,Integer requestMasterID,Pageable pageable) {
-        return (Page<RequestVo>) requestRepository.listAllRequest(accountID,requestMasterID,pageable);
+    public Page<RequestVo> listAllRequest(Integer accountID, Integer requestMasterID, Pageable pageable) {
+        return (Page<RequestVo>) requestRepository.listAllRequest(accountID, requestMasterID, pageable);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Page<RequestVo> searchRequest(String keyword, Integer accountID, Integer requestMasterID, Pageable pageable) {
-        return (Page<RequestVo>)requestRepository.searchRequest(keyword,accountID,requestMasterID,pageable);
+        return (Page<RequestVo>) requestRepository.searchRequest(keyword, accountID, requestMasterID, pageable);
     }
 
 
@@ -74,8 +74,11 @@ public class RequestServiceImpl implements RequestService {
         List<EmailContentVo> listSending = requestRepository.findAccountForEmail();
         List<String> emailList = new ArrayList<>();
         //emailList.add("dongquang569@gmail.com");
-        for(EmailContentVo email : listSending ){
-            emailList.add(email.getEmail());
+        for (EmailContentVo email : listSending) {
+            if (email.getNumberOfRequest() > 0 || email.getRoleID() == 1) {
+                //System.out.println(email.getEmail());
+                emailList.add(email.getEmail());
+            }
         }
         String reminderLink = Constant.REQUEST_REMINDER_URL;
         Map<Placeholder, String> link = Map.of(Placeholder.LINK, reminderLink);

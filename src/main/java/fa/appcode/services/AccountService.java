@@ -1,6 +1,7 @@
 package fa.appcode.services;
 
 import fa.appcode.common.vo.AccountVo;
+import fa.appcode.exceptions.ValidateParentException;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
@@ -22,10 +24,6 @@ public interface AccountService {
     String encodePassword(String password);
 
     void save(AccountInfo accountInfo);
-
-    boolean processRegister(AccountVo accountVo, BindingResult bindingResult, Model model);
-
-    boolean verifyAccount(String token, Model model);
 
     AccountInfo findByEmail(String email);
 
@@ -85,13 +83,14 @@ public interface AccountService {
     AccountInfo createAccount(AccountVo accountVo);
 
     Page<ParentVo> findAllParent(Pageable pageable);
+
     /**
      * This method is used to find Parent based on their ID
      *
      * @param id
      * @return String role
      */
-    ParentVo findParentById(int id) throws IllegalAccessException;
+    ParentVo findParentById(int id) throws ValidateParentException;
     /**
      * This method if used to find role of account by using account email
      *
@@ -124,16 +123,32 @@ public interface AccountService {
 
     void saveAccountInfo(AccountInfo accountInfo);
 
-    boolean changePasswordProcess(String oldPassword, String newPassword, String confirmPassword, Model model);
+    Map<String, String> changePasswordHandle(String oldPassword, String newPassword, String confirmPassword);
 
     boolean forgotPasswordProcess(String email, Model model);
 
     String resetPasswordProcess(String token, String newPassword, String confirmPassword, Model model);
+
     AccountInfo validateResetToken(String token, Model model);
+
     boolean resetPassword(String token, String newPassword, String confirmPassword, Model model);
+
     boolean updateAccountDetails(AccountInfo accountInfo, Model model);
+
     AccountInfo getCurrentAccountInfo();
 
+    boolean processRegister(AccountVo accountVo);
+
+    boolean verifyAccount(String token);
+
+    Map<String, Object> getValidationResult();
 
     public int getAccountIdByEmail(String email);
+
+    AccountInfo validateAccountToken(String token);
+
+    Map<String, String> handleForgotPassword(String email);
+
+    Map<String, String> handleResetPassword(String token, String newPassword, String confirmPassword);
+    Map<String,String> updateAccountProcess(AccountInfo accountInfo);
 }
