@@ -32,8 +32,8 @@ public class UserHomeController {
 
     @GetMapping(Constant.HOME_PAGE_URL)
     public String parentHome(Model model) {
-        List<CityVo> listCity1 = cityService.findAllByNoDelete();
-        model.addAttribute("listCity", listCity1);
+        List<CityVo> listCityVo = cityService.findAllByNoDelete();
+        model.addAttribute("listCity", listCityVo);
         return Constant.HOME_PAGE;
     }
 

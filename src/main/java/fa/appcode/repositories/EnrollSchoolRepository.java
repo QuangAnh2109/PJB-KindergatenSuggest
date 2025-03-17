@@ -1,6 +1,7 @@
 package fa.appcode.repositories;
 
 import fa.appcode.common.vo.EnrolledSchoolVo;
+import fa.appcode.common.vo.MySchoolVo;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.entities.EnrollSchool;
 import fa.appcode.entities.SchoolInfo;
@@ -93,4 +94,60 @@ public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Inte
                            @Param("updateTime") Instant updateTime,
                            @Param("status") Integer status,
                            @Param("currentRecordNo") Integer currentRecordNo);
+
+    @Query("SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName,CAST(ceiling(((f.extracurricularActivities + f.facilitiesUtilities + f.hygieneNutrition + f.learningProgram + f.teacherStaff) / 5) * 2) / 2 AS FLOAT),f.feedbackMessage,e.recordNo)" +
+            "FROM AccountInfo ai " +
+            "JOIN  EnrollSchool e ON e.account.id=ai.id " +
+            "JOIN SchoolInfo s ON s.id=e.school.id " +
+            "LEFT JOIN Feedback f on f.id.schoolId=s.id AND f.id.accountId=ai.id AND " +
+            "f.id.feedbackTime = ( " +
+            "          SELECT MAX(f2.id.feedbackTime)" +
+            "          FROM Feedback f2 " +
+            "          WHERE f2.id.schoolId = s.id " +
+            "         AND f2.id.accountId = ai.id AND f2.deleteFlg=false) " +
+            "WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=1 AND e.status=3")
+    Page<EnrolledSchoolVo> findListParentEnrolledSchoolByParentId(int id, Pageable pageable);
+
+    @Query("""
+            SELECT new fa.appcode.common.vo.MySchoolVo(s.id,s.schoolName,s.schoolAddress,s.feeFrom,m.typeValue,m1.typeValue,s.imageUrl, 
+                COALESCE(CAST(AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5) AS double), 0.0),
+                COALESCE(CAST(COUNT(DISTINCT f.id) AS integer), 0))
+                FROM SchoolInfo s
+                JOIN MasterDatum m ON m.typeKey = s.childReceivingAgeId AND m.typeName = "CHILD RECEIVING AGE"
+                JOIN MasterDatum m1 ON m1.typeKey = s.typeId AND m1.typeName = "SCHOOL TYPE"
+                JOIN EnrollSchool e ON e.school.id = s.id
+                              
+                LEFT JOIN Feedback f ON f.school.id = s.id AND f.id.feedbackTime = (
+                    SELECT MAX(f2.id.feedbackTime) 
+                    FROM Feedback f2 
+                    WHERE f2.id.schoolId = s.id AND f2.id.accountId = f.id.accountId
+                    GROUP BY f2.id.accountId
+                )        
+                WHERE e.account.id= :id AND s.deleteFlg=false AND e.status = 3 AND s.statusId = 5
+               GROUP BY s.id              
+        """)
+    Page<MySchoolVo> findListSchoolParentEnrolledByParentId(int id, Pageable pageable);
+
+    @Query("""
+            SELECT new fa.appcode.common.vo.MySchoolVo(s.id,s.schoolName,s.schoolAddress,s.feeFrom,m.typeValue,m1.typeValue,s.imageUrl, 
+                COALESCE(CAST(AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5) AS double), 0.0),
+                COALESCE(CAST(COUNT(DISTINCT f.id) AS integer), 0))
+                FROM SchoolInfo s
+                JOIN MasterDatum m ON m.typeKey = s.childReceivingAgeId AND m.typeName = "CHILD RECEIVING AGE"
+                JOIN MasterDatum m1 ON m1.typeKey = s.typeId AND m1.typeName = "SCHOOL TYPE"
+                JOIN EnrollSchool e ON e.school.id = s.id
+                              
+                LEFT JOIN Feedback f ON f.school.id = s.id AND f.id.feedbackTime = (
+                    SELECT MAX(f2.id.feedbackTime) 
+                    FROM Feedback f2 
+                    WHERE f2.id.schoolId = s.id AND f2.id.accountId = f.id.accountId
+                    GROUP BY f2.id.accountId
+                )        
+                WHERE e.account.id= :id AND s.deleteFlg=false AND e.status = 4 AND s.statusId = 5
+               GROUP BY s.id              
+        """)
+    Page<MySchoolVo> findListSchoolParentPreEnrolledByParentId(int id, Pageable pageable);
+
+
+
 }

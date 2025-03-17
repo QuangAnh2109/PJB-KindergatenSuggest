@@ -20,6 +20,7 @@
     <!-- color scheme -->
     <link id="colors" th:href="@{/user_side/css/colors/scheme-01.css}" rel="stylesheet" type="text/css">
 
+
     <style>
         #messages {
             text-align: center;
@@ -175,11 +176,13 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            line-height: 1.3;
         }
 
         .school-image {
-            height: 200px;
             object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
         }
 
         .school-title {
@@ -284,9 +287,14 @@
             color: #0d9bdb;
         }
 
-        .container {
-            margin-top: 50px;
+        .school-image-container {
+            border-radius: 12px;
+            margin: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            line-height: 1.5;
         }
+
+
     </style>
 </head>
 
@@ -308,7 +316,7 @@
                             <div class="de-flex-col">
                                 <!-- logo begin -->
                                 <div id="logo">
-                                    <a th:href="@{/home}">
+                                    <a th:href="@{/public/home}">
                                         <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
                                         <img class="logo-2" src="/user_side/images/logo1.png" alt="">
                                     </a>
@@ -318,7 +326,7 @@
                         </div>
                         <div class="de-flex-col header-col-mid">
                             <ul id="mainmenu">
-                                <li><a class="menu-item" href="/public/search">School Search</a>
+                                <li><a class="menu-item" href="/public/school/search">School Search</a>
                                 </li>
                                 <li><a class="menu-item" href="#">Community</a>
                                 </li>
@@ -489,9 +497,10 @@
                             <div class="card school-card">
                                 <div class="row g-0">
                                     <div class="col-md-4 ">
-                                        <img src="/user_side/images/school-image/school-1.jpg"
-                                             class="img-fluid school-image w-100" alt="School view"
-                                             style="padding: 10px">
+                                        <div class="school-image-container">
+                                            <img src="/user_side/images/school-image/school-1.jpg"
+                                                 class="img-fluid school-image" alt="School view">
+                                        </div>
                                         <div class="rating-stars">
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
@@ -504,12 +513,13 @@
 
                                     <div class="col-md-8">
                                         <div class="card-body p-4">
-                                            <div class="d-flex mb-3" style="display: flex;justify-content: space-between">
+                                            <div class="d-flex mb-3"
+                                                 style="display: flex;justify-content: space-between;align-items: center">
                                                 <a href="#">
-                                                    <h4 class="card-title school-title mb-0">Fort Street Public
-                                                        School</h4>
+                                                    <h3 class="card-title school-title">Fort Street Public
+                                                        School</h3>
                                                 </a>
-                                                <div class="col-md-5" style="align-items: end">
+                                                <div>
                                                     <button class="request-btn text-white"
                                                             onclick="openCounselingForm()">Request Counseling
                                                     </button>
@@ -527,12 +537,12 @@
 
                                                 <div class="d-flex align-items-center mb-2">
                                                     <div class="info-icon text-center">
-                                                        <i class="fas fa-globe"></i>
+                                                        <i class="fas fa-mail-bulk"></i>
                                                     </div>
-                                                    <div>Website:</div>
+                                                    <div>Email:</div>
                                                     <div class="ms-2">
                                                         <a href="#" class="text-decoration-none"
-                                                           style="color: #0d99ff;">FortStreet.school.edu</a>
+                                                           style="color: #0d99ff;">FortStreetschool@edu.vn</a>
                                                     </div>
                                                 </div>
 
@@ -568,11 +578,6 @@
                                                 </div>
                                                 <div class="facilities mt-2">
                                                     <span class="badge badge-light-blue me-2 mb-2 py-2 px-3 rounded-pill">Cafeteria</span>
-                                                    <span class="badge badge-light-blue me-2 mb-2 py-2 px-3 rounded-pill">School bus</span>
-                                                    <span class="badge badge-light-blue me-2 mb-2 py-2 px-3 rounded-pill">After school care</span>
-                                                    <span class="badge badge-light-blue me-2 mb-2 py-2 px-3 rounded-pill">Saturday class</span>
-                                                    <span class="badge badge-light-blue me-2 mb-2 py-2 px-3 rounded-pill">Camera</span>
-                                                    <span class="badge badge-light-blue me-2 mb-2 py-2 px-3 rounded-pill">Picnic activities</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -646,7 +651,8 @@
 
                         <div class="mb-3">
                             <label for="mobile" class="form-label">Mobile No. :</label>
-                            <input type="tel" class="form-control" id="mobile" placeholder="+91 - 98596 58000" name="phone">
+                            <input type="tel" class="form-control" id="mobile" placeholder="+91 - 98596 58000"
+                                   name="phone">
                         </div>
 
                         <div class="mb-3">
@@ -803,35 +809,50 @@
 
     //End dropdown
 
-    //load district by city id
+    document.addEventListener("DOMContentLoaded", function () {
+        let cityValue = document.getElementById("citySelect").value;
+        if (cityValue != null) {
+            loadDistrict(cityValue);
+        }
+    });
+
+</script>
+
+<script th:inline="javascript">
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
     function loadDistrict(cityId) {
+        if (!cityId) {
+            document.getElementById("district").innerHTML = '<option value="" disabled selected>Select a city first</option>';
+            return;
+        }
+
         $.ajax({
             url: "/public/districts",
             type: "get",
-            data: {
-                cityId: cityId,
-            },
+            data: { cityId: cityId },
             success: function (json) {
-                //change response data to html
-                response = '<option value="" disabled selected>District</option>';
+                let selectedDistrict = getQueryParam("districtId"); // Lấy districtId từ URL
+
+                let response = '<option value="" disabled>Select District</option>';
                 json.forEach(item => {
-                    response += '<option value="' + item.id + '">' + item.districtName + '</option>';
+                    let isSelected = selectedDistrict == item.id ? 'selected' : '';
+                    response += `<option value="${item.id}" ${isSelected}>${item.districtName}</option>`;
                 });
-                //add html to district form
+
                 document.getElementById("district").innerHTML = response;
                 document.getElementById("district").removeAttribute("disabled");
-                //disable ward form and address form
-                document.getElementById("ward").disabled = true;
-                document.getElementById("ward").value = "";
-                document.getElementById("address").disabled = true;
-                document.getElementById("address").value = "";
             },
             error: function (xhr) {
-                console.log("load district faild" + xhr);
-            },
+                console.log("Load district failed: " + xhr);
+            }
         });
     }
 </script>
+
 <script th:inline="javascript">
     function submitRequestCounselingForm() {
         let email = document.getElementById("email").value.trim();

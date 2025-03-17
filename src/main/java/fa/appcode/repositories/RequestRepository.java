@@ -27,7 +27,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
      * @return a RequestDetailVo containing request details
      */
     @Query("""
-            SELECT new fa.appcode.common.vo.RequestDetailVo(
+            SELECT new fa.appcode.common.vo.RequestDetailVo(-+
                         r.id,r.fullName,r.requestEmail,r.requestPhone,
                         s.schoolAddress,s.schoolName,r.inquiries,m.typeValue)
             FROM  Request r

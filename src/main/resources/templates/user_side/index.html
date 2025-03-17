@@ -173,7 +173,7 @@
                             <div class="de-flex-col">
                                 <!-- logo begin -->
                                 <div id="logo">
-                                    <a th:href="@{/home}">
+                                    <a th:href="@{/public/home}">
                                         <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
                                         <img class="logo-2" src="/user_side/images/logo1.png" alt="">
                                     </a>
@@ -183,7 +183,7 @@
                         </div>
                         <div class="de-flex-col header-col-mid">
                             <ul id="mainmenu">
-                                <li><a class="menu-item" href="/public/search">School Search</a>
+                                <li><a class="menu-item" href="/public/school/search">School Search</a>
                                 </li>
                                 <li><a class="menu-item" href="#">Community</a>
                                 </li>
@@ -261,7 +261,7 @@
                                                        class="form-control"
                                                        style="width: 50%;height: 50px">
                                                 <button class="btn-main" style="margin-left: 15px"
-                                                        onclick="searchRedirect()">Search
+                                                        onclick="searchRedirectByKeyword()">Search
                                                 </button>
                                             </div>
                                             <div class="jls-address-preview jls-address-preview--hidden">
@@ -286,7 +286,7 @@
                                                 <option selected disabled value="">Select District</option>
                                             </select>
                                             <button class="btn-main" style="width: 15%;margin-left: 15px"
-                                                    onclick="searchRedirect()">
+                                                    onclick="searchRedirectByAddress()">
                                                 Search
                                             </button>
                                         </div>
@@ -675,38 +675,60 @@
     function loadDistrict(cityId) {
         $.ajax({
             url: "/public/districts",
-            type: "get",
-            data: {
-                cityId: cityId,
-            },
+            type: "GET",
+            data: { cityId: cityId },
             success: function (json) {
-                //change response data to html
-                response = '<option value="" disabled selected>District</option>';
-                json.forEach(item => {
-                    response += '<option value="' + item.id + '">' + item.districtName + '</option>';
-                });
-                //add html to district form
-                document.getElementById("district").innerHTML = response;
-                document.getElementById("district").removeAttribute("disabled");
-                //disable ward form and address form
-                document.getElementById("ward").disabled = true;
-                document.getElementById("ward").value = "";
-                document.getElementById("address").disabled = true;
-                document.getElementById("address").value = "";
+                if (!json || json.length === 0) {
+                    console.warn("No districts found for cityId:", cityId);
+                    return;
+                }
+
+                const districtSelect = document.getElementById("district");
+                if (!districtSelect) return;
+
+                const selectedDistrict = districtSelect.value; // Lấy giá trị đang chọn trước đó
+
+                let options = '<option value="" disabled>District</option>';
+                options += json.map(item => {
+                    const isSelected = item.id == selectedDistrict ? 'selected' : '';
+                    return `<option value="${item.id}" ${isSelected}>${item.districtName}</option>`;
+                }).join('');
+
+                districtSelect.innerHTML = options;
+                districtSelect.removeAttribute("disabled");
+
+                // Reset address field
+                const addressInput = document.getElementById("address");
+                if (addressInput) {
+                    addressInput.disabled = true;
+                    addressInput.value = "";
+                }
             },
             error: function (xhr) {
-                console.log("load district failed" + xhr);
+                console.error("Load district failed:", xhr);
             },
         });
     }
+
 
     function searchRedirect() {
         const input = document.getElementById("keyword").value;
         const cityId = document.getElementById("citySelect").value;
         const district = document.getElementById("district").value;
-
         const uri = `/public/school/search?keyword=${encodeURIComponent(input)}&cityId=${cityId}&districtId=${district}`;
+        window.location.href = uri;
+    }
 
+    function searchRedirectByAddress() {
+        let cityId = document.getElementById("citySelect").value;
+        let district = document.getElementById("district").value;
+        const uri = `/public/school/search?cityId=${cityId}&districtId=${district}`;
+        window.location.href = uri;
+    }
+
+    function searchRedirectByKeyword() {
+        const input = document.getElementById("keyword").value;
+        const uri = `/public/school/search?keyword=${encodeURIComponent(input)}`;
         window.location.href = uri;
     }
 

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 @Repository("schoolInfoRepository")
 public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer> {
@@ -167,4 +168,6 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
                 "AND (:#{#form.five} = false OR (f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 = 5) " +
             "GROUP BY f.id.accountId ")
     Page<AccountFeedback> getAllAccountFeedbackBySchoolId(@Param("form") SchoolRatingFeedbackForm schoolRatingFeedbackForm, Pageable pageable);
+
+
 }

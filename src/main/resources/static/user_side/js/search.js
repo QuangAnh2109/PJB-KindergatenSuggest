@@ -19,4 +19,18 @@ function getSelectedCheckboxValues() {
 
 
 
+function search() {
+    $.ajax(
+        {
+            url: "/public/school/search/api",
+            data: getSelectedCheckboxValues(),
+            success: function(responseData) {
+                $("#main-content").html($(responseData).find("#main-content").html());
+            },
+        }
+    )
+}
+
+
+
 

@@ -3,6 +3,7 @@ package fa.appcode.services.impl;
 import fa.appcode.common.logging.Log4jUtils;
 import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.EnrolledSchoolVo;
+import fa.appcode.common.vo.MySchoolVo;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.entities.EnrollSchool;
@@ -10,6 +11,8 @@ import fa.appcode.entities.SchoolInfo;
 import fa.appcode.repositories.EnrollSchoolRepository;
 import fa.appcode.services.EnrollSchoolService;
 import fa.appcode.services.SchoolInfoService;
+import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
@@ -20,20 +23,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     @Autowired
     private ApplicationContext applicationContext;
     @Autowired
     private SchoolInfoService schoolInfoService;
-
     @Autowired
     private EnrollSchoolRepository enrollSchoolRepository;
     @Autowired
     private GlobalConfig globalConfig;
+
+    private static final Logger LOGGER = Log4jUtils.getLogger(EnrollSchoolService.class);
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -120,6 +124,22 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     public boolean validateAccess(Integer schoolId, Principal principal) {
         List<Integer> schoolIdList = schoolInfoService.getAllSchoolIdsForUnenrollParentByAccountEmail(principal.getName());
         return schoolIdList.contains(schoolId);
+    }
+
+
+    @Override
+    public Page<MySchoolVo> findListSchoolParentEnrolledByParentId(int parentId, Pageable pageable) {
+        LOGGER.info("Find List Parent Enrolled School By ParentId: {}", parentId);
+        LOGGER.info("Found {} records of school for Parent ID: {}", pageable.getPageSize(), parentId);
+
+        return enrollSchoolRepository.findListSchoolParentEnrolledByParentId(parentId,pageable);
+    }
+
+    @Override
+    public Page<MySchoolVo> findListSchoolParentPreEnrolledByParentId(int parentId, Pageable pageable) {
+        LOGGER.info("Find List Parent Previous Enrolled School By ParentId: {}", parentId);
+        LOGGER.info("Found {} records of pre-school for Parent ID: {}", pageable.getPageSize(), parentId);
+        return enrollSchoolRepository.findListSchoolParentPreEnrolledByParentId(parentId,pageable);
     }
 
     //check if Parent is Enrolled to school or not
