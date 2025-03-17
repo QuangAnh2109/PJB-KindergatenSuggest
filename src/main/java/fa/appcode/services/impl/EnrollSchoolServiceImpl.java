@@ -38,23 +38,24 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role, Principal principal){
+    public void enrollSchoolParent(AccountInfo account, SchoolInfo school, LocalDate enrollDate, String role, String email){
         //create instant enroll School
         Log4jUtils.getLogger().info("Inside Enroll Method");
         EnrollSchool schoolEnroll = new EnrollSchool();
         //AParent that enroll
-        if (account==null||account.getDeleteFlg() || account.getStatusId().equals(Constant.STATUS_INACTIVE)) {
+        if (account==null || account.getDeleteFlg() || account.getStatusId().equals(Constant.STATUS_INACTIVE)) {
             Log4jUtils.getLogger().info("Enroll Failed, account not active or no longer available");
             throw new EnrollUnenrollParentException("Account is not active Or No Longer Available Or not Exists Please Try Again!",account.getId());
+        }
+        if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_")) && !validateAccess(school.getId(), email)) {
+            Log4jUtils.getLogger().info("Enroll Failed, school owner does not have access to SchoolID: " + school.getId());
+            throw new EnrollUnenrollParentException(globalConfig.getSchoolOwnerAccess(),account.getId());
         }
         if (school==null||school.getDeleteFlg() || !school.getStatusId().equals(Constant.SCHOOL_PUBLISH_STATUS)) {
             Log4jUtils.getLogger().info("Enroll Failed, school not published or no longer available");
             throw new EnrollUnenrollParentException("School is not published Or No Longer Available Or not Exists Please Try Again!",account.getId());
         }
-        if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_")) && !validateAccess(school.getId(), principal)) {
-            Log4jUtils.getLogger().info("Enroll Failed, school owner does not have access to SchoolID: " + school.getId());
-            throw new EnrollUnenrollParentException(globalConfig.getSchoolOwnerAccess(),account.getId());
-        }
+
         if (isEnrolled(account.getId(), school.getId())) {
             Log4jUtils.getLogger().info("Enroll Failed, Parent "+ account.getId()+" is already enrolling to school: " + school.getId());
             throw new EnrollUnenrollParentException(globalConfig.getParentEnrolled(),account.getId());
@@ -82,27 +83,27 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
 
     @Override
     public EnrollSchool findEnrollSchoolById(Integer id) {
-        return enrollSchoolRepository.findEnrollSchoolById(id);
+        return enrollSchoolRepository.findEnrollSchoolById(id,Constant.ENROLL_STATUS_UNENROLL);
     }
 
     @Override
     public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable) {
-        return enrollSchoolRepository.findParentEnrolledSchoolByParentId(id, pageable);
+        return enrollSchoolRepository.findParentEnrolledSchoolByParentId(id, pageable,Constant.STATUS_ACTIVE,Constant.ENROLL_STATUS_ENROLL);
     }
 
     @Override
-    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId, Pageable pageable) {
-        return enrollSchoolRepository.findParentEnrolledSchoolByParentIdAndSchoolOwner(parentId, schoolOwnerId, pageable);
+    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerEmail, Pageable pageable) {
+        return enrollSchoolRepository.findParentEnrolledSchoolByParentIdAndSchoolOwner(parentId, schoolOwnerEmail, pageable,Constant.STATUS_ACTIVE,Constant.ENROLL_STATUS_ENROLL);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status, Principal principal, Integer recordNo, Integer parentId){
+    public void evaluateParentEnroll(EnrollSchool enrollSchool, LocalDate approvalEnrollDate, String role, Integer status, String schoolOwnerEmail, Integer recordNo, Integer parentId){
         if (enrollSchool == null) {
             Log4jUtils.getLogger().info("Enroll Failed, unenroll school is null");
             throw new EnrollUnenrollParentException("Illegal Unenroll school on your action",parentId);
         }
-        if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_")) && !validateAccess(enrollSchool.getSchool().getId(), principal)) {
+        if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_")) && !validateAccess(enrollSchool.getSchool().getId(), schoolOwnerEmail)) {
             Log4jUtils.getLogger().info("School Owner does not have Access to school: "+enrollSchool.getSchool().getId());
             throw new EnrollUnenrollParentException(globalConfig.getSchoolOwnerAccess(),parentId);
         }
@@ -118,14 +119,14 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
 
     //check for authorized school owner school
     @Override
-    public boolean validateAccess(Integer schoolId, Principal principal) {
-        List<Integer> schoolIdList = schoolInfoService.getAllSchoolIdsForUnenrollParentByAccountEmail(principal.getName());
+    public boolean validateAccess(Integer schoolId, String schoolOwnerEmail) {
+        List<Integer> schoolIdList = schoolInfoService.getAllSchoolIdsForUnenrollParentByAccountEmail(schoolOwnerEmail);
         return schoolIdList.contains(schoolId);
     }
 
     //check if Parent is Enrolled to school or not
     @Override
     public boolean isEnrolled(Integer parentId, Integer schoolId) {
-        return enrollSchoolRepository.isParentEnrollingToSchool(parentId, schoolId);
+        return enrollSchoolRepository.isParentEnrollingToSchool(parentId, schoolId,Constant.ENROLL_STATUS_ENROLL);
     }
 }

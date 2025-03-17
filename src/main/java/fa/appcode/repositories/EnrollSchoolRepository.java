@@ -20,9 +20,9 @@ import java.util.List;
 @Repository("enrollSchoolRepository")
 public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Integer> {
     @Query("""
-            SELECT e FROM EnrollSchool e WHERE e.id = ?1 AND e.deleteFlg=false AND e.status != 4
+            SELECT e FROM EnrollSchool e WHERE e.id = ?1 AND e.deleteFlg=false AND e.status != ?2
             """)
-    EnrollSchool findEnrollSchoolById(Integer id);
+    EnrollSchool findEnrollSchoolById(Integer id,int enrollStatusId);
 
     //    Find All enrolled School for specific School Owner
     @Query("""
@@ -37,8 +37,8 @@ public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Inte
                                  FROM Feedback f2 
                                  WHERE f2.id.schoolId = s.id 
                                  AND f2.id.accountId = ai.id AND f2.deleteFlg=false) 
-                        WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=1 AND s.account.email=?2 AND e.status=3""")
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId, Pageable pageable);
+                        WHERE ai.id= :parentId AND ai.deleteFlg=false AND ai.statusId= :accountStatusId AND s.account.email=:schoolOwnerId AND e.status=:enrollStatusId""")
+    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId, Pageable pageable,int accountStatusId, int enrollStatusId);
 
     //    Find All enrolled School for admin
     @Query("""
@@ -53,8 +53,8 @@ public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Inte
                                   FROM Feedback f2 
                                   WHERE f2.id.schoolId = s.id 
                                  AND f2.id.accountId = ai.id AND f2.deleteFlg=false)
-                        WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=1 AND e.status=3""")
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable);
+                        WHERE ai.id= :id AND ai.deleteFlg=false AND ai.statusId=:accountStatusId AND e.status=:enrollStatusId""")
+    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable,int accountStatusId, int enrollStatusId);
 
     //    Find All enrolled School for admin
     @Query("""
@@ -70,16 +70,16 @@ public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Inte
     @Query("""
             SELECT COUNT(e)>0 FROM EnrollSchool e
             WHERE e.account.id=?1
-            AND e.school.id=?2 AND e.status=3
+            AND e.school.id=?2 AND e.status=?3
             AND e.deleteFlg=false
             """)
-    boolean isParentEnrollingToSchool(Integer accountId, Integer schoolId);
+    boolean isParentEnrollingToSchool(int accountId, int schoolId, int enrollStatus);
 
     @Modifying
     @Query("""
             UPDATE EnrollSchool e SET e.enrollEndDate = :enrollEndDate,
                         e.updateId = :updateId, e.updateTime = :updateTime, e.status = :status,
-                        e.recordNo = e.recordNo + 1 
+                        e.recordNo = e.recordNo + 1
                         WHERE e.id = :id AND e.recordNo = :currentRecordNo AND e.deleteFlg=false""")
     @Transactional
     int evaluateParentEnroll(@Param("id") Integer id,

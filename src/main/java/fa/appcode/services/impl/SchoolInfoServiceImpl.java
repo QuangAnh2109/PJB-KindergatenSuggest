@@ -1,5 +1,6 @@
 package fa.appcode.services.impl;
 
+import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.EnrollSchoolInfoVo;
 import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.common.vo.SchoolListManager;
@@ -32,16 +33,16 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
 
     @Override
     public List<EnrollSchoolInfoVo> findSchoolInfoListByAccountEmail(String email) {
-        return schoolInfoRepository.findSchoolInfoByAccountEmail(email);
+        return schoolInfoRepository.findSchoolInfoByAccountEmail(email,Constant.SCHOOL_PUBLISH_STATUS);
     }
     @Override
     public List<EnrollSchoolInfoVo> findAllSchoolPublished() {
-        return schoolInfoRepository.findAllSchoolPublished();
+        return schoolInfoRepository.findAllSchoolPublished(Constant.SCHOOL_PUBLISH_STATUS);
     }
 
     @Override
     public SchoolInfo getSchoolInfoById(int email) {
-        return schoolInfoRepository.findSchoolInfoById(email);
+        return schoolInfoRepository.findSchoolInfoById(email,Constant.SCHOOL_PUBLISH_STATUS);
     }
 
     @Override

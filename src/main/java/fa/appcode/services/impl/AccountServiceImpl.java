@@ -62,7 +62,7 @@ public class AccountServiceImpl implements AccountService {
     private static final String ERROR_ATTRIBUTE = "error";
 
     public AccountInfo getAccountById(int id) {
-        return accountRepository.getAccountInfoById(id);
+        return accountRepository.getAccountInfoById(id,Constant.STATUS_ACTIVE);
     }
 
     @Override
@@ -250,12 +250,12 @@ public class AccountServiceImpl implements AccountService {
     //=========================================================
 
     public Page<ParentVo> findAllParent(String search, Pageable pageable) {
-        return accountRepository.findAllParent(search, pageable);
+        return accountRepository.findAllParent(search, pageable,Constant.STATUS_ACTIVE);
     }
 
     @Override
     public ParentVo findParentById(int id) throws ValidateParentException {
-        ParentVo parent = accountRepository.findParentById(id);
+        ParentVo parent = accountRepository.findParentById(id,Constant.STATUS_ACTIVE);
         if (parent == null) {
             throw new ValidateParentException("This Parent is current Inactive, Deleted or not Exist");
         }
@@ -275,13 +275,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountInfo getAccountInfoById(int id) {
-        return accountRepository.getAccountInfoById(id);
+        return accountRepository.getAccountInfoById(id,Constant.STATUS_ACTIVE);
     }
 
 
     @Override
     public Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email, String search, Pageable pageable) {
-        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email, search, pageable);
+        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email, search, pageable,Constant.STATUS_ACTIVE);
     }
 
     @Override
