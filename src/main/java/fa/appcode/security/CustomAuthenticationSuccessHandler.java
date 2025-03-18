@@ -34,7 +34,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         String redirectUrl = "/public/home";
         HttpSession session = request.getSession();
-
         for (GrantedAuthority authority : authorities) {
             String role = authority.getAuthority();
             if (role.equals(Constant.ADMIN_ROLE)) {
