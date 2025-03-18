@@ -90,7 +90,7 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
                         JOIN MasterDatum ma ON ai.roleId=ma.typeKey AND ma.typeName='ROLE' 
                         LEFT JOIN EnrollSchool e ON ai.id = e.account.id
                         LEFT JOIN SchoolInfo s ON e.school.id = s.id
-                        WHERE ma.id=3 AND (ai.fullName LIKE %?1% OR ai.email LIKE%?1% OR ai.phone LIKE %?1% ) AND ai.deleteFlg=false AND ai.statusId=?2
+                        WHERE ma.id=3 AND (ai.fullName LIKE CONCAT('%', :search, '%') OR ai.email LIKE CONCAT('%', :search, '%') OR ai.phone LIKE CONCAT('%', :search, '%') ) AND ai.deleteFlg=false AND ai.statusId= :accountStatusId
                         GROUP BY ai.id, ai.fullName, ai.email, ai.phone """)
     Page<ParentVo> findAllParent(String search, Pageable pageable,int accountStatusId);
 
@@ -115,7 +115,7 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
                         JOIN MasterDatum ma ON ai.roleId=ma.typeKey AND ma.typeName='ROLE'
                         LEFT JOIN EnrollSchool e ON ai.id = e.account.id
                         LEFT JOIN SchoolInfo s ON e.school.id = s.id AND s.account.email = :email
-                        WHERE ma.id=3 AND (ai.fullName LIKE %:search% OR ai.email LIKE%:search% OR ai.phone LIKE %:search% ) AND ai.deleteFlg=false AND ai.statusId= :accountStatusId
+                        WHERE ma.id=3 AND (ai.fullName LIKE CONCAT('%', :search, '%') OR ai.email LIKE CONCAT('%', :search, '%') OR ai.phone LIKE CONCAT('%', :search, '%') ) AND ai.deleteFlg=false AND ai.statusId= :accountStatusId
                         GROUP BY ai.id,ai.fullName,ai.email,ai.phone""")
     Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(@Param("email") String email, @Param("search") String search, Pageable pageable, int accountStatusId);
 

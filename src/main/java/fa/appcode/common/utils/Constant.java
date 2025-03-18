@@ -10,6 +10,8 @@ public class Constant {
     public static final String PAGE_SIZE = "10";
     public static final String KEY_WORD_DEFAULT = "";
     public static final String VIEW_ACCOUNT_PAGE = "user_side/view-account";
+    public static final String ACCOUNT_MANAGEMENT_PAGE = "user_side/view-account";
+
     public static final String FORGOT_PASSWORD_PAGE = "user_side/forgot-password";
     public static final String RESET_PASSWORD_PAGE = "user_side/reset-password";
     public static final String TOKEN_INVALID_PAGE = "user_side/token-invalid";
@@ -38,7 +40,8 @@ public class Constant {
     public static final String SCHOOL_LIST_MANAGER_PAGE = "admin_side/school-list-manager";
     public static final String PARENT_DETAIL_PAGE = "admin_side/parent-details";
     public static final String PARENT_LIST_PAGE = "admin_side/parent-list";
-
+    public static final String USER_LIST_PAGE = "admin_side/user-list";
+    public static final String USER_DETAIL_PAGE = "admin_side/edit-account";
     //REGEX
     public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{12,100}$";
     public static final String HOME_PAGE = "user_side/index";

@@ -48,7 +48,7 @@
                                         <label>Email address</label>
                                         <div class="input-group">
                                             <input type="text" th:name="username" id="username" class="form-control"
-                                                   placeholder="Enter your email" th:value="${email}"  />
+                                                   placeholder="Enter your email" th:value="${email}"/>
                                             <span class="input-group-text"><i class="fa fa-envelope"></i></span>
                                         </div>
                                         <div></div>
@@ -58,8 +58,11 @@
                                         <label>Password</label>
                                         <div class="input-group">
                                             <input type="password" th:name="password" id="password" class="form-control"
-                                                   placeholder="Enter your password"  />
-                                            <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                                   placeholder="Enter your password"/>
+                                            <span class="input-group-text" onclick="togglePassword()"
+                                                  style="cursor: pointer;">
+        <i class="fa fa-eye" id="toggleIcon"></i>
+    </span>
                                         </div>
                                         <div></div>
                                     </div>
@@ -69,7 +72,8 @@
                                     </div>
 
                                     <div class="text-center mt-4">
-                                        <button type="submit" id="loginBtn" class="btn btn-success btn-block">Login</button>
+                                        <button type="submit" id="loginBtn" class="btn btn-success btn-block">Login
+                                        </button>
                                     </div>
                                     <div class="text-center mt-3">OR</div>
 
@@ -92,6 +96,21 @@
 <script th:src="@{/user_side/js/plugins.js}"></script>
 <script th:src="@{/user_side/js/designesia.js}"></script>
 <script th:src="@{/user_side/js/login.js}"></script>
+<script>
+    function togglePassword() {
+        var passwordInput = document.getElementById("password");
+        var toggleIcon = document.getElementById("toggleIcon");
 
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleIcon.classList.remove("fa-eye");
+            toggleIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            toggleIcon.classList.remove("fa-eye-slash");
+            toggleIcon.classList.add("fa-eye");
+        }
+    }
+</script>
 </body>
 </html>

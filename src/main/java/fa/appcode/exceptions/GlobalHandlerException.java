@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.sql.SQLException;
+import java.util.Map;
 
 @ControllerAdvice
 public class GlobalHandlerException {
@@ -41,6 +42,13 @@ public class GlobalHandlerException {
     public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException e) {
         logger.error("Entity not found: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entity not found: " + e.getMessage());
+    }
+
+
+    @ExceptionHandler(DuplicateException.class)
+    public ResponseEntity<Map<String,String>> handleDuplicateException(DuplicateException e) {
+        logger.error("Duplicate exception: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("email","Duplicate exception: " + e.getMessage()));
     }
 
     @ExceptionHandler(NoResourceFoundException.class)

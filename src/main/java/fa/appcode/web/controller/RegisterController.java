@@ -10,11 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("public/register")
@@ -25,41 +23,75 @@ public class RegisterController {
     private final AccountService accountService;
     private final GlobalConfig globalConfig;
 
+    /**
+     * Handles GET request to show the registration page.
+     * @param model Model object to pass data to the view
+     * @return Registration page view name
+     */
     @GetMapping
-    public String register(Model model) {
+    public String showRegisterPage(Model model) {
         LOGGER.info("Accessing registration page");
+        // Add an empty AccountVo object to the model for form binding
         model.addAttribute("accountVo", new AccountVo());
+        // Return the registration page view
         return Constant.REGISTER_PAGE;
     }
 
+    /**
+     * Handles POST request to process user registration.
+     * @param accountVo The form data submitted by the user
+     * @param model     Model object to pass messages or errors to the view
+     * @return Registration page view name
+     */
     @PostMapping
     public String processRegister(@ModelAttribute("accountVo") @Valid AccountVo accountVo,
                                   Model model) {
-        LOGGER.info("Processing registration for     email: {}", accountVo.getEmail());
+        LOGGER.info("Processing registration for email: {}", accountVo.getEmail());
+        // Process registration and check if it was successful
         boolean isSuccessRegistration = accountService.processRegister(accountVo);
+
         if (isSuccessRegistration) {
+            // If registration is successful, add a success message
             model.addAttribute("successMessage", globalConfig.getRegisterSuccess());
         } else {
+            // If registration fails, retrieve validation errors
             Map<String, Object> validationResult = accountService.getValidationResult();
-            Optional.ofNullable(validationResult)
-                    .map(result -> result.get("errors"))
-                    .filter(Map.class::isInstance)
-                    .map(map -> (Map<String, String>) map)
-                    .ifPresent(errors -> errors.forEach(model::addAttribute));
+
+            if (validationResult != null) {
+                Object errors = validationResult.get("errors");
+
+                // If errors exist, add them to the model for displaying in the view
+                if (errors instanceof Map) {
+                    ((Map<String, String>) errors).forEach(model::addAttribute);
+                }
+            }
         }
+
+        // Return the registration page view with success or error messages
         return Constant.REGISTER_PAGE;
     }
 
+    /**
+     * Handles GET request for email verification.
+     * @param token Verification token from the URL
+     * @param model Model object to pass messages to the view
+     * @return Verification result page view name
+     */
     @GetMapping("/verify")
     public String verifyAccount(@RequestParam String token, Model model) {
         LOGGER.info("Verifying account with token: {}", token);
+
+        // Call service method to verify the account using the token
         boolean isVerified = accountService.verifyAccount(token);
         if (!isVerified) {
+            // If already verified, show appropriate message
             model.addAttribute("alreadyVerified", globalConfig.getAlreadyVerification());
-        }
-        else {
+        } else {
+            // If verification is successful, show success message
             model.addAttribute("activeSuccess", globalConfig.getActiveSuccess());
         }
+
+        // Return the verification result page
         return Constant.VERIFY_ACCOUNT_PAGE;
     }
 }

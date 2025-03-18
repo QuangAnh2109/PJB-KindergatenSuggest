@@ -30,7 +30,6 @@ public class AccountInfoDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) {
         AccountInfo account = accountRepository.findAccountByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Account not found"));
-
         // Assigns the role to the user based on their role ID.
         List<GrantedAuthority> authorities = Collections.singletonList(
                 new SimpleGrantedAuthority(mapRole(account.getRoleId()))
