@@ -311,6 +311,11 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findAccountByEmailAndStatusIdAndDeleteFlg(email, 1, false).getId();
     }
 
+    @Override
+    public String getAccountNameByEmailAndNoDelete(String email) {
+        return accountRepository.getAccountNameByEmailAndDeleteFlg(email, false);
+    }
+
     //    @Override
 //    public AccountInfo findWithFullAddressByEmail(String email, boolean deleteFlg) {
 //        return accountRepository.findWithFullAddressByEmail(email, deleteFlg);
@@ -585,5 +590,10 @@ public class AccountServiceImpl implements AccountService {
         }
         updateAccountInfo(currentAccount, accountInfo);
         return new HashMap<>();
+    }
+
+    @Override
+    public List<String> getAllAccountEmailsByRole(int roleId) {
+        return accountRepository.getAllEmailByRoleAndDeleteFlg(roleId, false);
     }
 }

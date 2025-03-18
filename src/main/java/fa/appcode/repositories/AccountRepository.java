@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository("accountRepository")
@@ -136,4 +137,10 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
     @Query("SELECT COUNT(a) > 0 FROM AccountInfo a WHERE a.phone = :phone")
     boolean existsByPhone(@Param("phone") String phone);
     AccountInfo findAccountByEmailAndStatusIdAndDeleteFlg(String email, int statusId, boolean deleteFlg);
+
+    @Query("SELECT a.fullName FROM AccountInfo a WHERE a.email = ?1 AND a.deleteFlg = ?2")
+    String getAccountNameByEmailAndDeleteFlg(String email, boolean deleteFlg);
+
+    @Query("SELECT a.email FROM AccountInfo a WHERE a.roleId = ?1 AND a.deleteFlg = ?2")
+    List<String> getAllEmailByRoleAndDeleteFlg(int role, boolean deleteFlg);
 }

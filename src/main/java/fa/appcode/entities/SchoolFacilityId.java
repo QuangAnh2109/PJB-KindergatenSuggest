@@ -3,6 +3,7 @@ package fa.appcode.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
@@ -11,6 +12,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Embeddable
+@NoArgsConstructor
 public class SchoolFacilityId implements java.io.Serializable {
     private static final long serialVersionUID = -2057415372289811956L;
     @Column(name = "school_id", nullable = false)
@@ -33,4 +35,8 @@ public class SchoolFacilityId implements java.io.Serializable {
         return Objects.hash(facilitiesId, schoolId);
     }
 
+    public SchoolFacilityId(Integer schoolId, Integer facilitiesId) {
+        this.schoolId = schoolId;
+        this.facilitiesId = facilitiesId;
+    }
 }

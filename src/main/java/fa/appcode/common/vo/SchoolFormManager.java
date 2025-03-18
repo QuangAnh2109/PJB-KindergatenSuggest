@@ -58,4 +58,27 @@ public class SchoolFormManager {
     private String schoolOwnerEmail;
 
     private int statusId;
+
+    public SchoolFormManager(boolean deleteFlg, String schoolOwnerEmail, int recordNo, int id, int typeId, String name, String address, int cityId, int districtId, int wardId, String email, String phone, int childReceivingAgeId, int educationMethodId, BigDecimal feeTo, BigDecimal feeFrom, String introduction, String imgageUrl, Instant updateTime, String updateId) {
+        this.deleteFlg = deleteFlg;
+        this.schoolOwnerEmail = schoolOwnerEmail;
+        this.recordNo = recordNo;
+        this.id = id;
+        this.typeId = typeId;
+        this.name = name;
+        this.address = address;
+        this.cityId = cityId;
+        this.districtId = districtId;
+        this.wardId = wardId;
+        this.email = email;
+        this.phone = phone;
+        this.childReceivingAgeId = childReceivingAgeId;
+        this.educationMethodId = educationMethodId;
+        this.feeTo = feeTo;
+        this.feeFrom = feeFrom;
+        this.introduction = introduction;
+        this.imgageUrl = imgageUrl;
+        this.updateTime = updateTime;
+        this.updateId = updateId;
+    }
 }

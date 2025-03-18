@@ -1,6 +1,5 @@
 package fa.appcode.web.controller;
 
-import com.cloudinary.provisioning.Account;
 import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.RequestDetailVo;
 import fa.appcode.common.vo.RequestVo;
@@ -14,7 +13,6 @@ import fa.appcode.services.RequestService;
 import fa.appcode.services.SchoolInfoService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

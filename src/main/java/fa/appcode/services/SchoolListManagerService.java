@@ -1,15 +1,18 @@
 package fa.appcode.services;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.ui.Model;
 
 public interface SchoolListManagerService {
     /**
      *
      * @param search
-     * @param page
-     * @param isAdmin
+     * @param pageNumber
      * @param ajaxCall
-     * @return page link
+     * @param model
+     * @return
+     * @throws NullPointerException
+     * @throws DataAccessException
      */
-    public String setSchoolDataToModelBySearchAndPage(String search, int page, boolean isAdmin, boolean ajaxCall, Model model);
+    String setSchoolDataToModelBySearchAndPage(String search, int pageNumber, boolean ajaxCall, Model model) throws NullPointerException, DataAccessException;
 }

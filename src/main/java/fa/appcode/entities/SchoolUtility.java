@@ -2,7 +2,9 @@ package fa.appcode.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
@@ -10,6 +12,8 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@ToString
 @Table(name = "school_utilities", schema = "instance_kintergarden_db")
 public class SchoolUtility {
     @EmbeddedId
@@ -38,5 +42,4 @@ public class SchoolUtility {
 
     @Column(name = "delete_flg", nullable = false)
     private Boolean deleteFlg = false;
-
 }
