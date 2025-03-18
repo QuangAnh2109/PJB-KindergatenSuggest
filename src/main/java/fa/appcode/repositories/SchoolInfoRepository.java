@@ -91,28 +91,29 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
     SchoolFormManager getSchoolFormBySchoolIdAndEmailAndDeleteFlg(int id, String email, boolean deleteFlg);
 
     @Modifying
-    @Query("UPDATE SchoolInfo si SET si.schoolName = :#{#schoolInfo.name} " +
-            ",si.typeId = :#{#schoolInfo.typeId} " +
-            ",si.schoolAddress = :#{#schoolInfo.address} " +
-            ",si.city.id = :#{#schoolInfo.cityId} " +
-            ",si.district.id = :#{#schoolInfo.districtId} " +
-            ",si.ward.id = :#{#schoolInfo.wardId} " +
-            ",si.schoolEmail = :#{#schoolInfo.email} " +
-            ",si.schoolPhone = :#{#schoolInfo.phone} " +
-            ",si.childReceivingAgeId = :#{#schoolInfo.childReceivingAgeId} " +
-            ",si.educationMethodId = :#{#schoolInfo.educationMethodId} " +
-            ",si.feeTo = :#{#schoolInfo.feeTo} " +
-            ",si.feeFrom = :#{#schoolInfo.feeFrom} " +
-            ",si.schoolIntroduction = :#{#schoolInfo.introduction} " +
-            ",si.imageUrl = :#{#schoolInfo.imgageUrl} " +
-            ",si.updateTime = :#{#schoolInfo.updateTime} " +
-            ",si.updateId = :#{#schoolInfo.updateId} " +
-            ",si.recordNo = si.recordNo + 1 " +
-            ",si.statusId = :#{#schoolInfo.statusId} " +
-            "WHERE si.id = :#{#schoolInfo.id} " +
-            "AND si.recordNo = :#{#schoolInfo.recordNo} " +
-            "AND si.deleteFlg = :#{#schoolInfo.deleteFlg} " +
-            "AND (:#{#schoolInfo.schoolOwnerEmail} IS NULL OR si.account.id = (SELECT ai.id FROM AccountInfo ai WHERE ai.email = :#{#schoolInfo.schoolOwnerEmail})) ")
+    @Query("""
+            UPDATE SchoolInfo si SET si.schoolName = :#{#schoolInfo.name}
+            ,si.typeId = :#{#schoolInfo.typeId}
+            ,si.schoolAddress = :#{#schoolInfo.address}
+            ,si.city.id = :#{#schoolInfo.cityId}
+            ,si.district.id = :#{#schoolInfo.districtId}
+            ,si.ward.id = :#{#schoolInfo.wardId}
+            ,si.schoolEmail = :#{#schoolInfo.email}
+            ,si.schoolPhone = :#{#schoolInfo.phone}
+            ,si.childReceivingAgeId = :#{#schoolInfo.childReceivingAgeId}
+            ,si.educationMethodId = :#{#schoolInfo.educationMethodId}
+            ,si.feeTo = :#{#schoolInfo.feeTo}
+            ,si.feeFrom = :#{#schoolInfo.feeFrom}
+            ,si.schoolIntroduction = :#{#schoolInfo.introduction}
+            ,si.imageUrl = :#{#schoolInfo.imgageUrl}
+            ,si.updateTime = :#{#schoolInfo.updateTime}
+            ,si.updateId = :#{#schoolInfo.updateId}
+            ,si.recordNo = si.recordNo + 1
+            ,si.statusId = :#{#schoolInfo.statusId}
+            WHERE si.id = :#{#schoolInfo.id}
+            AND si.recordNo = :#{#schoolInfo.recordNo}
+            AND si.deleteFlg = :#{#schoolInfo.deleteFlg}
+            AND (:#{#schoolInfo.schoolOwnerEmail} IS NULL OR si.account.id = (SELECT ai.id FROM AccountInfo ai WHERE ai.email = :#{#schoolInfo.schoolOwnerEmail}))""")
     int updateSchoolInfoBySchoolFormManager(@Param("schoolInfo") SchoolFormManager schoolFormManager);
 
     @Query("""

@@ -77,20 +77,23 @@
                     <div class="header-title d-flex align-items-center gap-2">
                         <h4 class="mb-3" style="font-size: 25px;padding-right: 20px">School details</h4>
                         <h1 class="school-status" th:text="${statusName}"></h1>
+                            <input type="hidden" id="status" th:value="${school.statusId}">
+                            <input type="hidden" id="recordNo" th:value="${school.recordNo}">
                     </div>
                 </div>
             </div>
             <!-- end row -->
+            <input type="hidden" id="schoolId" th:value="${school.id}">
             <div>
                 <table class="col-12 school-form">
                     <tr>
                         <td>School Name</td>
-                        <td><input type="text" name="name" class="form-control" th:value="${school.name}" placeholder="Enter School Name Here..." disabled></td>
+                        <td><input id="schoolName" type="text" name="name" class="form-control" th:value="${school.name}" placeholder="Enter School Name Here..." disabled></td>
                     </tr>
                     <tr>
                         <td>School Type</td>
                         <td>
-                            <select name="type" class="form-control" disabled>
+                            <select id="typeId" name="type" class="form-control" disabled>
                                 <option value="" disabled selected>Select a school type</option>
                                 <option th:each="schoolType:${schoolTypes}" th:value="${schoolType.typeKey}" th:text="${schoolType.typeValue}" th:selected="${school.typeId == schoolType.typeKey}"></option>
                             </select>
@@ -99,7 +102,7 @@
                     <tr>
                         <td>Address</td>
                         <td>
-                            <select onchange="loadDistrict(this.value)" name="city" class="form-control" disabled>
+                            <select id="city" onchange="loadDistrict(this.value)" name="city" class="form-control" disabled>
                                 <option value="" disabled selected>Province/City</option>
                                 <option th:each="city:${citys}" th:value="${city.id}" th:text="${city.cityName}" th:selected="${school.cityName == city.cityName}"></option>
                             </select>
@@ -131,16 +134,16 @@
                     </tr>
                     <tr>
                         <td>Email</td>
-                        <td><input type="email" name="email" class="form-control" placeholder="Enter School Email Here..." th:value="${school.email}" disabled></td>
+                        <td><input id="email" type="email" name="email" class="form-control" placeholder="Enter School Email Here..." th:value="${school.email}" disabled></td>
                     </tr>
                     <tr>
                         <td>Phone No.</td>
-                        <td><input type="text" name="phone" class="form-control" placeholder="Enter Phone Number Here..." th:value="${school.phone}" disabled></td>
+                        <td><input id="phone" type="text" name="phone" class="form-control" placeholder="Enter Phone Number Here..." th:value="${school.phone}" disabled></td>
                     </tr>
                     <tr>
                         <td>Child-receiving age</td>
                         <td>
-                            <select class="form-control" name="age" disabled>
+                            <select id="childReceivingAge" class="form-control" name="age" disabled>
                                 <option value="" disabled selected>Select Child-Receiving Age</option>
                                 <option th:each="age:${childReceivingAges}" th:value="${age.typeKey}"
                                         th:text="${age.typeValue}" th:selected="${school.childReceivingAgeId == age.typeKey}">
@@ -150,7 +153,7 @@
                     <tr>
                         <td>Education method</td>
                         <td>
-                            <select class="form-control" name="educationMethod" disabled>
+                            <select id="educationMethod" class="form-control" name="educationMethod" disabled>
                                 <option value="" disabled selected>Select Education Method</option>
                                 <option th:each="method:${educationMethods}" th:value="${method.typeKey}"
                                         th:text="${method.typeValue}" th:selected="${school.typeId == method.typeKey}">
@@ -161,9 +164,9 @@
                         <td>Fee/month(VND)</td>
                         <td class="row">
                             <label class="col-1 col-form-label">From</label>
-                            <input name="feeFrom" class="col-3 form-control" type="text" th:value="${school.feeFrom}" disabled>
+                            <input id="feeFrom" name="feeFrom" class="col-3 form-control" type="text" th:value="${school.feeFrom}" disabled>
                             <label class="col-1 col-form-label">To</label>
-                            <input name="feeTo" class="col-3 form-control" type="text" th:value="${school.feeTo}" disabled>
+                            <input id="feeTo" name="feeTo" class="col-3 form-control" type="text" th:value="${school.feeTo}" disabled>
                         </td>
                     </tr>
                     <tr>
@@ -242,6 +245,30 @@
 
 </div>
 <!-- END wrapper -->
+
+<!-- popup 1 -->
+<div id="notificationModel" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Notification</h5>
+            </div>
+            <div class="modal-body">
+                <h6 id="msg-popup-1"></h6>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="button-popup-1" class="btn btn-secondary waves-effect"
+                        data-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- END popup 1 -->
 
 <!-- Vendor js -->
 <script src="/admin_side/js/vendor.min.js"></script>

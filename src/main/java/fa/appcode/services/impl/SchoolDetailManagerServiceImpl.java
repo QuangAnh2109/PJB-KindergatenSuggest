@@ -164,6 +164,76 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
         }
     }
 
+    @Transactional
+    @Override
+    public ResponseEntity<Map<String, Object>> updateSchool(SchoolFormManager schoolInfo, MultipartFile image, List<Integer> schoolFacilityId, List<Integer> schoolUtilityId) throws DataAccessException {
+        SchoolInfo schoolInfoNow = schoolInfoService.getSchoolInfoById(schoolInfo.getId());
+        if(schoolInfoNow == null) return ResponseEntity.badRequest().body(Map.of("message", "School not found!"));
+        SchoolFormManager schoolInfoNowForm = new SchoolFormManager(
+                false, null, schoolInfoNow.getRecordNo(), schoolInfoNow.getId(),
+                schoolInfoNow.getTypeId(), schoolInfoNow.getSchoolName(), schoolInfoNow.getSchoolAddress(), schoolInfoNow.getCity().getId(), schoolInfoNow.getDistrict().getId(), schoolInfoNow.getWard().getId(),
+                schoolInfoNow.getSchoolEmail(), schoolInfoNow.getSchoolPhone(), schoolInfoNow.getChildReceivingAgeId(), schoolInfoNow.getEducationMethodId(), schoolInfoNow.getFeeTo(),
+                schoolInfoNow.getFeeFrom(), schoolInfoNow.getSchoolIntroduction(), schoolInfoNow.getImageUrl(), schoolInfo.getUpdateTime(), schoolInfo.getUpdateId()
+        );
+        if(!schoolInfoNowForm.equals(schoolInfo)) return ResponseEntity.badRequest().body(Map.of("message", "Don't have change!"));
+        try {
+            if(image != null && !image.isEmpty()){
+                // Get current account
+                String uploadDir = Constant.IMAGE_DIR;
+                String imagePath;
+
+                File uploadFolder = new File(uploadDir);
+                if (!uploadFolder.exists() && !uploadFolder.mkdirs()) {
+                    throw new IOException("Failed to create directory: " + uploadDir);
+                }
+
+                String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename().replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+                Path filePath = Paths.get(uploadDir).resolve(fileName);
+                Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                imagePath = fileName; // Save file name to DB
+
+                // save to DB
+                schoolInfo.setImgageUrl(imagePath);
+            }
+
+            schoolInfoService.updateSchoolInfoBySchoolFormManager(schoolInfo);
+            schoolUtilityRepository.saveAll(schoolUtilityId.stream()
+                    .map(utilityId -> {
+                        SchoolUtility su = new SchoolUtility();
+                        su.setId(new SchoolUtilityId(schoolInfo.getId(), utilityId));
+                        su.setSchool(schoolInfoNow);
+                        su.setCreateId(RoleConstant.SCHOOL_OWNER);
+                        su.setCreateTime(Instant.now());
+                        su.setUpdateId(RoleConstant.SCHOOL_OWNER);
+                        su.setUpdateTime(Instant.now());
+                        su.setDeleteFlg(false);
+                        su.setRecordNo(1);
+                        return su;
+                    })
+                    .collect(Collectors.toList())
+            );
+
+            schoolFacilityRepository.saveAll(schoolFacilityId.stream()
+                    .map(facilityId -> {
+                        SchoolFacility sf = new SchoolFacility();
+                        sf.setId(new SchoolFacilityId(schoolInfo.getId(), facilityId));
+                        sf.setSchool(schoolInfoNow);
+                        sf.setCreateId(RoleConstant.SCHOOL_OWNER);
+                        sf.setCreateTime(Instant.now());
+                        sf.setUpdateId(RoleConstant.SCHOOL_OWNER);
+                        sf.setUpdateTime(Instant.now());
+                        sf.setDeleteFlg(false);
+                        sf.setRecordNo(1);
+                        return sf;
+                    })
+                    .collect(Collectors.toList())
+            );
+            return ResponseEntity.ok().body(Map.of("message", "Update school successfully!"));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save school due to file upload error.", e);
+        }
+    }
+
     @Override
     public ResponseEntity<Map<String, Object>> changeSchoolStatus(Integer id, int recordNo, int newStatus, List<Integer> inStatus, Integer mailId, Map<Placeholder, String> detail, List<String> toMail, List<String> ccMail) throws DataAccessException {
         // Get role

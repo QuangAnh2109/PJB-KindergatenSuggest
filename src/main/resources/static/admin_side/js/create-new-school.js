@@ -1,5 +1,5 @@
 function addNewSchool(status){
-        let formData = new FormData();
+    let formData = new FormData();
     formData.append("image", document.getElementById("image").files[0]);
     formData.append("name", document.getElementById("schoolName").value);
     formData.append("typeId", document.getElementById("typeId").value);
@@ -26,8 +26,6 @@ function addNewSchool(status){
         contentType: false,
         dataType: 'json',
         success: function (json){
-            console.log("ok");
-            console.log(json);
             document.getElementById("msg-popup-1").textContent = json.message;
             document.getElementById("button-popup-1").addEventListener("click", function(){
                 window.location.href = "/manager/school/view-detail?id=" + json.id;
@@ -39,8 +37,6 @@ function addNewSchool(status){
             modal.show();
         },
         error: function (xhr){
-            console.log("error");
-            console.log(xhr);
 
             document.getElementById("msg-popup-1").textContent = "Failed!";
 
@@ -55,7 +51,6 @@ function addNewSchool(status){
 };
 
 function getSelected(isFacility) {
-    // Lấy tất cả các checkbox có name là "schoolFacilities" đã được chọn
     let facilityCheckboxes
     if(isFacility) {
         facilityCheckboxes = document.querySelectorAll('input[name="schoolFacilities"]:checked');
@@ -64,10 +59,8 @@ function getSelected(isFacility) {
         facilityCheckboxes = document.querySelectorAll('input[name="schoolUtilities"]:checked');
     }
 
-    // Tạo mảng chứa các giá trị đã chọn
     const selectedFacilities = [];
 
-    // Lặp qua tất cả các checkbox đã chọn và lấy giá trị
     facilityCheckboxes.forEach(checkbox => {
         selectedFacilities.push(checkbox.value);
     });
