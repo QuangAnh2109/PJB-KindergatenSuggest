@@ -73,13 +73,16 @@
             </div>
 
             <div class="row">
-                <div class="col-12">
+                <div class="col-10">
                     <div class="header-title d-flex align-items-center gap-2">
                         <h4 class="mb-3" style="font-size: 25px;padding-right: 20px">School details</h4>
                         <h1 class="school-status" th:text="${statusName}"></h1>
                             <input type="hidden" id="status" th:value="${school.statusId}">
                             <input type="hidden" id="recordNo" th:value="${school.recordNo}">
                     </div>
+                </div>
+                <div class="col-2 header-title">
+                    <a th:href="'/manager/school/feedback-rating/'+${school.id}">View rating & feedback</a>
                 </div>
             </div>
             <!-- end row -->
