@@ -40,6 +40,7 @@ public class AuthenticationHandler implements AuthenticationFailureHandler {
             LOGGER.warn("Bad credentials for email {}: {}", email, exception.getMessage());
         } else if (exception instanceof DisabledException) {
             error = globalConfig.getAccountNotActive();
+            LOGGER.warn("Account is not active for email {}: {}", email, exception.getMessage());
         } else if (exception instanceof LockedException) {
             error = globalConfig.getAccountDisabled();
             LOGGER.warn("Account locked for email {}: {}", email, exception.getMessage());

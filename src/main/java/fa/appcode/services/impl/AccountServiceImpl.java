@@ -464,7 +464,6 @@ public class AccountServiceImpl implements AccountService {
     public Map<String, String> handleForgotPassword(String email) {
         // Log the start of the forgot password process
         LOGGER.debug("Handling forgot password for email: {}", email);
-
         // Validate the email and return errors if any
         Map<String, String> errors = validateService.validateForgotPassword(email);
         if (!errors.isEmpty()) {

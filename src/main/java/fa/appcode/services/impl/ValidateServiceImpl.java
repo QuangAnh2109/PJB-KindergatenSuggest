@@ -123,27 +123,27 @@ public class ValidateServiceImpl implements ValidateService {
     }
 
 
-    @Override
-    public Map<String, Object> validateRegistration(AccountVo accountVo) {
-        LOGGER.debug("Validating registration for email: {}", accountVo.getEmail());
-        Map<String, Object> result = new HashMap<>();
-        result.put(IS_VALID, true);
-        Map<String, String> errors = new HashMap<>();
-        Map<String, String> requiredErrors = validateRegisterRequired(accountVo);
-        errors.putAll(requiredErrors);
-        validateFullName(accountVo.getFullName(), requiredErrors.containsKey(FULL_NAME_ERROR), errors);
-        validateEmail(accountVo.getEmail(), requiredErrors.containsKey(EMAIL_ERROR), errors);
-        validatePhone(accountVo.getPhone(), requiredErrors.containsKey(PHONE_ERROR), errors);
-        validatePasswords(accountVo.getPassword(), accountVo.getConfirmPassword(),
-                requiredErrors.containsKey(PASSWORD_ERROR) || requiredErrors.containsKey(CONFIRM_PASSWORD_ERROR),
-                errors);
-        if (!errors.isEmpty()) {
-            setValidationResult(result, errors, requiredErrors.isEmpty());
-        } else {
-            LOGGER.info("Registration validation successful for email: {}", accountVo.getEmail());
+        @Override
+        public Map<String, Object> validateRegistration(AccountVo accountVo) {
+            LOGGER.debug("Validating registration for email: {}", accountVo.getEmail());
+            Map<String, Object> result = new HashMap<>();
+            result.put(IS_VALID, true);
+            Map<String, String> errors = new HashMap<>();
+            Map<String, String> requiredErrors = validateRegisterRequired(accountVo);
+            errors.putAll(requiredErrors);
+            validateFullName(accountVo.getFullName(), requiredErrors.containsKey(FULL_NAME_ERROR), errors);
+            validateEmail(accountVo.getEmail(), requiredErrors.containsKey(EMAIL_ERROR), errors);
+            validatePhone(accountVo.getPhone(), requiredErrors.containsKey(PHONE_ERROR), errors);
+            validatePasswords(accountVo.getPassword(), accountVo.getConfirmPassword(),
+                    requiredErrors.containsKey(PASSWORD_ERROR) || requiredErrors.containsKey(CONFIRM_PASSWORD_ERROR),
+                    errors);
+            if (!errors.isEmpty()) {
+                setValidationResult(result, errors, requiredErrors.isEmpty());
+            } else {
+                LOGGER.info("Registration validation successful for email: {}", accountVo.getEmail());
+            }
+            return result;
         }
-        return result;
-    }
 
     /**
      * Validates email format and checks for duplicates

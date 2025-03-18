@@ -18,9 +18,11 @@ function reloadHande() {
                 .then(html => {
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = html;
-                    document.querySelector('.padding40').innerHTML =
-                        tempDiv.querySelector('.padding40').innerHTML;
-                    if (tempDiv.querySelector('.alert-success')) {
+                    const newPasswordTab = tempDiv.querySelector('#password');
+                    if (newPasswordTab) {
+                        document.querySelector('#password').innerHTML = newPasswordTab.innerHTML;
+                    }
+                    if (tempDiv.querySelector('.alert-success') || tempDiv.querySelector('[th\\:if="${successUpdate}"]')) {
                         const successModal = new bootstrap.Modal(document.getElementById('successModal'), {
                             backdrop: 'static',
                             keyboard: false
@@ -30,11 +32,14 @@ function reloadHande() {
                             window.location.href = "/public/showMyLoginPage";
                         });
                     }
+
+                    document.getElementById('password-tab').click();
+
                     reloadHande();
                 })
                 .catch(error => {
                     console.error('error:', error);
-                    alert('An error occur. PLease try again.');
+                    alert('An error occurred. Please try again.');
                 })
                 .finally(() => {
                     submitBtn.disabled = false;
