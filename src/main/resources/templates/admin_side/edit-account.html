@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
-    <title th:text="${user.id == null ? 'Add User' : 'Edit User Account'}"></title>
+    <title th:text="${user.id == null ? 'Add User' : (viewMode ? 'User Details' : 'Edit User Account')}"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Responsive bootstrap 4 admin template" name="description"/>
     <meta content="Coderthemes" name="author"/>
@@ -47,123 +47,155 @@
     <!-- ============================================================== -->
     <!-- Start Page Content here -->
     <!-- ============================================================== -->
-    <div class="container-fluid" style="margin-top: 20px;">
-        <div class="row">
-            <div class="col-12">
-                <div>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a th:href="@{/admin/user-list}">User Management</a></li>
-                            <li class="breadcrumb-item active" aria-current="page" th:text="${user.id == null ? 'Add User' : 'Edit User Account'}"></li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <div class="card shadow p-4 rounded-5">
-                    <h2 class="text-center mb-4"
-                        th:text="${user.id != null ? 'Edit User' : 'Add User'}">
-                    </h2>
 
-                    <!-- Success Message -->
-                    <div th:if="${message}" class="alert alert-success mt-3">
-                        <strong>Success!</strong> <span th:text="${message}"></span>
+    <div class="content-page">
+
+        <div class="content">
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a th:href="@{/admin/user-list}">User Management</a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page"
+                                        th:text="${user.id == null ? 'Add User' : (viewMode ? 'User Details' : 'Edit User Account')}"></li>
+                                </ol>
+                            </nav>
+                        </div>
                     </div>
-
-                    <!-- Error Message -->
-                    <div th:if="${error}" class="alert alert-danger mt-3">
-                        <strong>Error!</strong> <span th:text="${error}"></span>
-                    </div>
-
-
-                    <form id="userForm"
-                          th:action="@{/admin/api/save-user}"
-                          method="post"
-                          th:object="${user}">
-
-                        <input type="hidden" th:field="*{id}" id="userID">
-                        <input type="hidden" th:field="*{recordNo} " id="recordNo">
-
-                        <!-- Full Name -->
-                        <div class="mb-3">
-                            <label class="form-label">Full Name <span class="text-danger">*</span> </label>
-                            <input type="text" class="form-control" th:field="*{fullName}" id="fullName"
-                                   th:readonly="${!(user.id == null)}">
-                            <div class="text-danger" id="errorFullName"></div>
-                        </div>
-
-                        <!-- Email -->
-                        <div class="mb-3">
-                            <label class="form-label">Email<span class="text-danger">*</span> </label>
-                            <input type="email" class="form-control" th:field="*{email}" id="email"
-                                   th:readonly="${user.id != null}">
-                            <div class="text-danger" id="errorEmail"></div>
-                        </div>
-
-                        <!-- DOB -->
-                        <div class="mb-3">
-                            <label class="form-label">D.O.B<span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" th:field="*{dob}" id="dob"
-                                   th:readonly="${!(user.id == null)}">
-                            <div class="text-danger" id="errorDob"></div>
-                        </div>
-
-                        <!-- Phone -->
-                        <div class="mb-3">
-                            <label class="form-label">Phone No.<span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" th:field="*{phone}" id="phone"
-                                   th:readonly="${!(user.id == null)}">
-                            <div class="text-danger" id="errorPhone"></div>
-                        </div>
-
-                        <!-- Role (Chỉ hiển thị nếu là ADMIN) -->
-                        <div class="mb-3">
-                            <label class="form-label">Role<span class="text-danger">*</span></label>
-                            <select name="role" class="form-control" th:field="*{role}" id="role">
-                                <option th:each="role : ${roles}" th:value="${role.typeValue}"
-                                        th:text="${role.typeValue}"></option>
-                            </select>
-                            <div class="text-danger" id="errorRole"></div>
-                        </div>
-
-                        <!-- Status (Chỉ hiển thị nếu là ADMIN) -->
-                        <div class="mb-3">
-                            <label class="form-label">Status<span class="text-danger">*</span></label>
-                            <select name="status" class="form-control" th:field="*{status}" id="status">
-                                <option th:each="sta : ${status}" th:value="${sta.typeValue}"
-                                        th:text="${sta.typeValue}"></option>
-                            </select>
-                            <div class="text-danger" id="errorStatus"></div>
-                        </div>
-
-
-                        <!-- Buttons -->
-                        <div class="text-center">
-                            <button
-                                    type="button"
-                                    class="btn btn-danger"
-                                    id="cancel-button">
-                                Cancel
-                            </button>
-                            <button type="submit" class="btn btn-primary" id="save-user" data-role="${role}"
-                                    th:text="${user.id == null ? 'Create' : 'Save'}"></button>
-                        </div>
-                    </form>
                 </div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div class="card shadow p-4 rounded-5">
+                            <h2 class="text-center mb-4"
+                                th:text="${user.id == null ? 'Add User' : (viewMode ? 'User Details' : 'Edit User Account')}">
+                            </h2>
+
+                            <!-- Success Message -->
+                            <div th:if="${message}" class="alert alert-success mt-3">
+                                <strong>Success!</strong> <span th:text="${message}"></span>
+                            </div>
+
+                            <!-- Error Message -->
+                            <div th:if="${error}" class="alert alert-danger mt-3">
+                                <strong>Error!</strong> <span th:text="${error}"></span>
+                            </div>
+
+
+                            <form id="userForm"
+                                  th:action="@{/admin/api/save-user}"
+                                  method="post"
+                                  th:object="${user}">
+
+                                <input type="hidden" th:field="*{id}" id="userID">
+                                <input type="hidden" th:field="*{recordNo} " id="recordNo">
+
+                                <!-- Full Name -->
+                                <div class="mb-3">
+                                    <label class="form-label">Full Name <span class="text-danger">*</span> </label>
+                                    <input type="text" class="form-control" th:field="*{fullName}" id="fullName"
+                                           th:readonly="${!(user.id == null)}"
+                                           th:placeholder="${user.id == null ? 'Enter Full Name' : ''}">
+                                    <div class="text-danger" id="errorFullName"></div>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="mb-3">
+                                    <label class="form-label">Email<span class="text-danger">*</span> </label>
+                                    <input type="email" class="form-control" th:field="*{email}" id="email"
+                                           th:readonly="${user.id != null}"
+                                           th:placeholder="${user.id == null ? 'Enter Email' : ''}">
+                                    <div class="text-danger" id="errorEmail"></div>
+                                </div>
+
+                                <!-- DOB -->
+                                <div class="mb-3">
+                                    <label class="form-label">D.O.B<span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" th:field="*{dob}" id="dob"
+                                           th:readonly="${!(user.id == null)}"
+                                           th:placeholder="${user.id == null ? 'Select Date of Birth' : ''}">
+                                    <div class="text-danger" id="errorDob"></div>
+                                </div>
+
+                                <!-- Phone -->
+                                <div class="mb-3">
+                                    <label class="form-label">Phone No.<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" th:field="*{phone}" id="phone"
+                                           th:readonly="${!(user.id == null)}"
+                                           th:placeholder="${user.id == null ? 'Enter Phone Number' : ''}">
+                                    <div class="text-danger" id="errorPhone"></div>
+                                </div>
+
+                                <!-- Role -->
+                                <div class="mb-3">
+                                    <label class="form-label">Role<span class="text-danger">*</span></label>
+                                    <div th:if="${!viewMode}">
+                                        <select name="role" class="form-control" th:field="*{role}" id="role">
+                                            <option th:each="role : ${roles}" th:value="${role.typeValue}"
+                                                    th:text="${role.typeValue}"></option>
+                                        </select>
+                                    </div>
+                                    <div th:if="${viewMode}">
+                                        <input name="role" class="form-control" th:field="*{role}"/>
+                                    </div>
+                                    <div class="text-danger" id="errorRole"></div>
+                                </div>
+
+                                <!-- Status -->
+                                <div class="mb-3">
+                                    <label class="form-label">Status<span class="text-danger">*</span></label>
+                                    <div th:if="${!viewMode}">
+                                        <select name="status" class="form-control" th:field="*{status}" id="status">
+                                            <option th:each="sta : ${status}"
+                                                    th:value="${sta.typeValue}"
+                                                    th:text="${sta.typeValue}"
+                                                    th:disabled="${user.id == null && sta.typeValue == 'Inactive'}"
+                                                    th:title="${user.id == null && sta.typeValue == 'Inactive' ? 'Only Active is allowed when adding new user' : ''}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div th:if="${viewMode}">
+                                        <input name="status" class="form-control" th:field="*{status}"/>
+                                    </div>
+                                    <div class="text-danger" id="errorStatus"></div>
+                                </div>
+
+
+
+                                <!-- Buttons -->
+                                <div class="text-center" th:if="${!viewMode}">
+                                    <button type="button" class="btn btn-danger" id="cancel-button">Cancel</button>
+                                    <button type="submit" class="btn btn-primary" id="save-user"
+                                            th:text="${user.id == null ? 'Create' : 'Save'}"></button>
+                                </div>
+                                <div class="text-center" th:if="${viewMode}">
+                                    <a th:href="@{/admin/user-list}" class="btn btn-primary">Back</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">2017 - 2020 &copy; Simple theme by <a href="#">Coderthemes</a></div>
+                        </div>
+                    </div>
+                </footer>
+
             </div>
+            <!-- end container-fluid -->
+
         </div>
+        <!-- end content -->
+
     </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">2017 - 2020 &copy; Simple theme by <a href="#">Coderthemes</a></div>
-            </div>
-        </div>
-    </footer>
+    <!-- END content-page -->
 
 </div>
 

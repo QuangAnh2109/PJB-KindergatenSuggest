@@ -58,8 +58,21 @@ public class UserManagementController {
         model.addAttribute("numberPage", accounts.getTotalPages());
         model.addAttribute("role", role);
 
-        return "admin_side/user-list";
+        return Constant.USER_LIST_PAGE;
     }
+
+    @GetMapping("user-details/{id}")
+    public String showUserDetails(@PathVariable("id") Integer id, Model model, Principal principal) {
+        String role = accountService.getAccountInfo(principal).getRoleId().equals(Constant.ADMIN_ROLE_ID) ? "Admin" : "School owner";
+        AccountVo user = accountService.getAccountById(id);
+
+        model.addAttribute("role", role);
+        model.addAttribute("user", user);
+        model.addAttribute("viewMode", true);
+
+        return Constant.USER_DETAIL_PAGE;
+    }
+
 
     /**
      * Edit or Add user account Screen
@@ -82,10 +95,11 @@ public class UserManagementController {
         model.addAttribute("user", user);
         model.addAttribute("roles", roles);
         model.addAttribute("status", status);
+        model.addAttribute("viewMode", false);
         model.addAttribute("recordNo", user.getRecordNo());
 
         Log4jUtils.getLogger().info("recordNo : " + user.getRecordNo());
-        return "admin_side/edit-account";
+        return Constant.USER_DETAIL_PAGE;
     }
 
 
