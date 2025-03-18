@@ -145,10 +145,15 @@ public interface AccountService {
 
     public int getAccountIdByEmail(String email);
 
+    public String getAccountNameByEmailAndNoDelete(String email);
+
     AccountInfo validateAccountToken(String token);
 
     Map<String, String> handleForgotPassword(String email);
 
     Map<String, String> handleResetPassword(String token, String newPassword, String confirmPassword);
+
     Map<String,String> updateAccountProcess(AccountInfo accountInfo);
+
+    List<String> getAllAccountEmailsByRole(int roleId);
 }
