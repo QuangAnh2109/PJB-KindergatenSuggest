@@ -23,7 +23,7 @@ public class SchoolDetailByAdminController {
 
     @ResponseBody
     @PostMapping("/reject")
-    public ResponseEntity rejectSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
+    public ResponseEntity<Map<String, Object>> rejectSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
         // Get school owner email
         String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
         // Send email to school owner
@@ -34,7 +34,7 @@ public class SchoolDetailByAdminController {
 
     @ResponseBody
     @PostMapping("/approve")
-    public ResponseEntity approveSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
+    public ResponseEntity<Map<String, Object>> approveSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
         // Get school owner email
         String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
         // Send email to school owner

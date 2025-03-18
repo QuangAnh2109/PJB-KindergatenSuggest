@@ -98,15 +98,8 @@ public class SchoolInfo {
     @Column(name = "delete_flg", nullable = false)
     private Boolean deleteFlg = false;
 
-    @ElementCollection
-    @CollectionTable(name = "school_facilities", joinColumns = @JoinColumn(name = "school_id"))
-    @Column(name = "facilities_id")
-    private List<Integer> facilitis;
-
-    @ElementCollection
-    @CollectionTable(name = "school_utilities", joinColumns = @JoinColumn(name = "school_id"))
-    @Column(name = "utilities_id")
-    private List<Integer> utilities;
+    @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SchoolUtility> schoolUtilities;
 
     public SchoolInfo(AccountInfo account, String schoolName, String schoolEmail, String imageUrl, String schoolPhone, BigDecimal feeFrom, BigDecimal feeTo, String schoolAddress, Ward ward, District district, City city, String schoolIntroduction, Instant postedDate, Integer childReceivingAgeId, Integer educationMethodId, Integer typeId, Integer statusId, Integer recordNo, String createId, Instant createTime, String updateId, Instant updateTime, Boolean deleteFlg) {
         this.account = account;

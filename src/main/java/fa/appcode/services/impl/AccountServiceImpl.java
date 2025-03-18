@@ -606,4 +606,9 @@ public class AccountServiceImpl implements AccountService {
         updateAccountInfo(currentAccount, accountInfo);
         return new HashMap<>();
     }
+
+    @Override
+    public List<String> getAllAccountEmailsByRole(int roleId) {
+        return accountRepository.getAllEmailByRoleAndDeleteFlg(roleId, false);
+    }
 }

@@ -14,6 +14,6 @@ public interface SchoolDetailManagerService {
     String getSchoolCreateFormToModel(Model model);
     void setAllAddressToModel(Model model, int cityId, int districtId);
     String getSchoolDetail(Model model, int schoolId);
-    ResponseEntity<String> changeSchoolStatus(int id, int recordNo, int newStatus, List<Integer> inStatus, Integer mailId, Map<Placeholder, String> detail, List<String> toMail, List<String> ccMail) throws DataAccessException;
-    ResponseEntity<String> createNewSchool(SchoolInfo schoolInfo, MultipartFile image, List<Integer> schoolFacilities, List<Integer> schoolUtilities);
+    ResponseEntity<Map<String, Object>> changeSchoolStatus(Integer id, int recordNo, int newStatus, List<Integer> inStatus, Integer mailId, Map<Placeholder, String> detail, List<String> toMail, List<String> ccMail) throws DataAccessException;
+    ResponseEntity<Map<String, Object>> createNewSchool(SchoolInfo schoolInfo, MultipartFile image, List<Integer> schoolFacilityId, List<Integer> schoolUtilityId) throws DataAccessException;
 }

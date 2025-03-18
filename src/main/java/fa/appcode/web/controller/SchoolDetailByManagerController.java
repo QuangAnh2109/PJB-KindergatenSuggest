@@ -38,7 +38,7 @@ public class SchoolDetailByManagerController {
 
     @ResponseBody
     @PostMapping("/delete")
-    public ResponseEntity<String> deleteSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
+    public ResponseEntity<Map<String, Object>> deleteSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
         List<Integer> inStatus = List.of(SchoolConstant.STATUS_SAVED, SchoolConstant.STATUS_SUBMITTED, SchoolConstant.STATUS_APPROVED, SchoolConstant.STATUS_REJECTED, SchoolConstant.STATUS_PUBLISHED, SchoolConstant.STATUS_UNPUBLISHED);
         return schoolDetailManagerService.changeSchoolStatus(id, recordNo, SchoolConstant.STATUS_DELETED, inStatus, null, null, null, null);
     }
@@ -52,7 +52,7 @@ public class SchoolDetailByManagerController {
 
     @ResponseBody
     @PostMapping("/public")
-    public ResponseEntity publicSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
+    public ResponseEntity<Map<String, Object>> publicSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
         // Get school owner email
         String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
 
@@ -63,7 +63,7 @@ public class SchoolDetailByManagerController {
 
     @ResponseBody
     @PostMapping("/unpublic")
-    public ResponseEntity unpublicSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
+    public ResponseEntity<Map<String, Object>> unpublicSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
         return schoolDetailManagerService.changeSchoolStatus(id, recordNo, SchoolConstant.STATUS_UNPUBLISHED, List.of(SchoolConstant.STATUS_PUBLISHED), null, null, null, null);
     }
 }

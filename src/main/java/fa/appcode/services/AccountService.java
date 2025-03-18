@@ -152,5 +152,8 @@ public interface AccountService {
     Map<String, String> handleForgotPassword(String email);
 
     Map<String, String> handleResetPassword(String token, String newPassword, String confirmPassword);
+
     Map<String,String> updateAccountProcess(AccountInfo accountInfo);
+
+    List<String> getAllAccountEmailsByRole(int roleId);
 }
