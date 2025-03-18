@@ -61,6 +61,7 @@ public class ParentController {
             Log4jUtils.getLogger().info("Inside parentList Content : ");
             Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(),
                     Sort.by("id").ascending());
+            Log4jUtils.getLogger().info("Pageable: " + pageable);
             /*
              * Get page from Service
              */
@@ -107,6 +108,7 @@ public class ParentController {
             /*
              * Get page from Service
              */
+            Log4jUtils.getLogger().info("Principle Data"+principal.getName());
             String role = accountService.findAccountRoleString(principal.getName());
             Page<EnrolledSchoolVo> listParentEnroll;
             List<EnrollSchoolInfoVo> schoolInfoList;
