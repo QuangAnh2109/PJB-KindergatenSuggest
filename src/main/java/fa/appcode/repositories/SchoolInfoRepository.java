@@ -173,5 +173,5 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
     @Query("SELECT si.schoolName FROM SchoolInfo si WHERE si.id = ?1 AND si.deleteFlg = ?2")
     String getSchoolNameByIdAndDeleteFlg(int id, boolean deleteFlg);
 
-    List<SchoolInfo> findAll();
+    SchoolInfo findSchoolInfoByIdAndRecordNoAndDeleteFlg(int id, int recordNo, boolean deleteFlg);
 }

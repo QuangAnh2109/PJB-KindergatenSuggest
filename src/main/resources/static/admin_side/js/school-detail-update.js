@@ -102,8 +102,9 @@ function updateSchool(){
             modal.show();
         },
         error: function (xhr){
+            console.log(xhr);
 
-            document.getElementById("msg-popup-1").textContent = "Failed!";
+            document.getElementById("msg-popup-1").textContent = "Update failed!";
 
             var modalElement = document.getElementById('notificationModel');
 
