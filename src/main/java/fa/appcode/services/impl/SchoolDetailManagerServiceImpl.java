@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,7 +56,9 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
     private final AccountService accountService;
 
     private final SchoolInfoRepository schoolInfoRepository;
+
     private final SchoolUtilityRepository schoolUtilityRepository;
+
     private final SchoolFacilityRepository schoolFacilityRepository;
 
     @Override
@@ -167,15 +170,30 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
     @Transactional
     @Override
     public ResponseEntity<Map<String, Object>> updateSchool(SchoolFormManager schoolInfo, MultipartFile image, List<Integer> schoolFacilityId, List<Integer> schoolUtilityId) throws DataAccessException {
-        SchoolInfo schoolInfoNow = schoolInfoService.getSchoolInfoById(schoolInfo.getId());
-        if(schoolInfoNow == null) return ResponseEntity.badRequest().body(Map.of("message", "School not found!"));
+        // Get the current user's authentication
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int status = SchoolConstant.STATUS_SUBMITTED;
+        for(GrantedAuthority grantedAuthority: authentication.getAuthorities()){
+            if(grantedAuthority.getAuthority().equals(Constant.ADMIN_ROLE)){
+                status = SchoolConstant.STATUS_APPROVED;
+                break;
+            }
+        }
+        schoolInfo.setStatusId(status);
+
+        // Get school info from DB
+        SchoolInfo schoolInfoDb = schoolInfoRepository.findSchoolInfoByIdAndRecordNoAndDeleteFlg(schoolInfo.getId(), schoolInfo.getRecordNo(), false);
+        List<Integer> facilityIdDb = schoolFacilityService.getAllSchoolFacilityIdBySchoolIdAndNoDeleteFlg(schoolInfo.getId()), utilityIdDb = schoolUtilityService.getAllSchoolUtilityIdBySchoolIdAndNoDelete(schoolInfo.getId());
+        if(schoolInfoDb == null) return ResponseEntity.badRequest().body(Map.of("message", "School not found!"));
+        
+        // Check if there is no change
         SchoolFormManager schoolInfoNowForm = new SchoolFormManager(
-                false, null, schoolInfoNow.getRecordNo(), schoolInfoNow.getId(),
-                schoolInfoNow.getTypeId(), schoolInfoNow.getSchoolName(), schoolInfoNow.getSchoolAddress(), schoolInfoNow.getCity().getId(), schoolInfoNow.getDistrict().getId(), schoolInfoNow.getWard().getId(),
-                schoolInfoNow.getSchoolEmail(), schoolInfoNow.getSchoolPhone(), schoolInfoNow.getChildReceivingAgeId(), schoolInfoNow.getEducationMethodId(), schoolInfoNow.getFeeTo(),
-                schoolInfoNow.getFeeFrom(), schoolInfoNow.getSchoolIntroduction(), schoolInfoNow.getImageUrl(), schoolInfo.getUpdateTime(), schoolInfo.getUpdateId()
+                false, null, schoolInfoDb.getRecordNo(), schoolInfoDb.getId(),
+                schoolInfoDb.getTypeId(), schoolInfoDb.getSchoolName(), schoolInfoDb.getSchoolAddress(), schoolInfoDb.getCity().getId(), schoolInfoDb.getDistrict().getId(), schoolInfoDb.getWard().getId(),
+                schoolInfoDb.getSchoolEmail(), schoolInfoDb.getSchoolPhone(), schoolInfoDb.getChildReceivingAgeId(), schoolInfoDb.getEducationMethodId(), schoolInfoDb.getFeeTo(),
+                schoolInfoDb.getFeeFrom(), schoolInfoDb.getSchoolIntroduction(), schoolInfoDb.getImageUrl(), schoolInfo.getUpdateTime(), schoolInfo.getUpdateId()
         );
-        if(!schoolInfoNowForm.equals(schoolInfo)) return ResponseEntity.badRequest().body(Map.of("message", "Don't have change!"));
+        if(!schoolInfoNowForm.equals(schoolInfo) && !new HashSet<>(facilityIdDb).equals(new HashSet<>(schoolFacilityId)) && !new HashSet<>(utilityIdDb).equals(new HashSet<>(schoolUtilityId))) return ResponseEntity.badRequest().body(Map.of("message", "Don't have change!"));
         try {
             if(image != null && !image.isEmpty()){
                 // Get current account
@@ -201,7 +219,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
                     .map(utilityId -> {
                         SchoolUtility su = new SchoolUtility();
                         su.setId(new SchoolUtilityId(schoolInfo.getId(), utilityId));
-                        su.setSchool(schoolInfoNow);
+                        su.setSchool(schoolInfoDb);
                         su.setCreateId(RoleConstant.SCHOOL_OWNER);
                         su.setCreateTime(Instant.now());
                         su.setUpdateId(RoleConstant.SCHOOL_OWNER);
@@ -217,7 +235,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
                     .map(facilityId -> {
                         SchoolFacility sf = new SchoolFacility();
                         sf.setId(new SchoolFacilityId(schoolInfo.getId(), facilityId));
-                        sf.setSchool(schoolInfoNow);
+                        sf.setSchool(schoolInfoDb);
                         sf.setCreateId(RoleConstant.SCHOOL_OWNER);
                         sf.setCreateTime(Instant.now());
                         sf.setUpdateId(RoleConstant.SCHOOL_OWNER);

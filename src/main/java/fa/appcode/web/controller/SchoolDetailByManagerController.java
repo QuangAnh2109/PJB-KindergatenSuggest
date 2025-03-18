@@ -95,7 +95,6 @@ public class SchoolDetailByManagerController {
                 email, phone, ageTypeKey, educationTypeKey, feeTo,
                 feeFrom, schoolIntroduction, null, Instant.now(), updateId
         );
-
         return schoolDetailManagerService.updateSchool(schoolInfo, image, schoolFacilityID, schoolUtilityID);
     }
 
