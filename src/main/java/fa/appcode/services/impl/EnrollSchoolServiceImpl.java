@@ -86,10 +86,6 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         return enrollSchoolRepository.findEnrollSchoolById(id,Constant.ENROLL_STATUS_UNENROLL);
     }
 
-    @Override
-    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable) {
-        return enrollSchoolRepository.findParentEnrolledSchoolByParentId(id, pageable,Constant.STATUS_ACTIVE,Constant.ENROLL_STATUS_ENROLL);
-    }
 
     @Override
     public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerEmail, Pageable pageable) {

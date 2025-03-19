@@ -105,16 +105,16 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
     //find all parent for School Owner List
     @Query("""
             SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone,
-                        CASE WHEN EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 1 AND si.account.email = :email)
+                        CASE WHEN EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 1 AND (:email IS NULL OR s.account.email = :email))
                         THEN (SELECT md.typeValue FROM MasterDatum md WHERE md.typeKey = 1 AND md.typeName='ENROLL STATUS')
-                        WHEN EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 3 AND si.account.email = :email)
-                        AND NOT EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 1 AND si.account.email = :email)
+                        WHEN EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 3 AND (:email IS NULL OR s.account.email = :email))
+                        AND NOT EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 1 AND (:email IS NULL OR s.account.email = :email))
                         THEN (SELECT md.typeValue FROM MasterDatum md WHERE md.typeKey = 3 AND md.typeName='ENROLL STATUS')
                         ELSE 'Not Enroll' END )
                         FROM AccountInfo ai
                         JOIN MasterDatum ma ON ai.roleId=ma.typeKey AND ma.typeName='ROLE'
                         LEFT JOIN EnrollSchool e ON ai.id = e.account.id
-                        LEFT JOIN SchoolInfo s ON e.school.id = s.id AND s.account.email = :email
+                        LEFT JOIN SchoolInfo s ON e.school.id = s.id AND (:email IS NULL OR s.account.email = :email)
                         WHERE ma.id=3 AND (ai.fullName LIKE CONCAT('%', :search, '%') OR ai.email LIKE CONCAT('%', :search, '%') OR ai.phone LIKE CONCAT('%', :search, '%') ) AND ai.deleteFlg=false AND ai.statusId= :accountStatusId
                         GROUP BY ai.id,ai.fullName,ai.email,ai.phone""")
     Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(@Param("email") String email, @Param("search") String search, Pageable pageable, int accountStatusId);

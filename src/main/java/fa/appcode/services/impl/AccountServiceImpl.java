@@ -234,19 +234,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-    // ========================================================
-
-
-    @Override
-    public Page<ParentVo> findAllParent(Pageable pageable) {
-        return null;
-    }
-
-    //=========================================================
-
-    public Page<ParentVo> findAllParent(String search, Pageable pageable) {
-        return accountRepository.findAllParent(search, pageable,Constant.STATUS_ACTIVE);
-    }
 
     @Override
     public ParentVo findParentById(int id) throws ValidateParentException {
@@ -257,10 +244,6 @@ public class AccountServiceImpl implements AccountService {
         return parent;
     }
 
-    @Override
-    public Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id, Pageable pageable) {
-        return null;
-    }
 
 
     @Override
