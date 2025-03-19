@@ -76,7 +76,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Full Name</th>
-                                    <th>Email</th>
+                                    <th class="email-column">Email</th>
                                     <th>Phone No.</th>
                                     <th>Request Status</th>
                                 </tr>
@@ -86,7 +86,7 @@
                                     th:attr="onclick='redirectToDetail(' + ${request.id} + ',' + ${currentPage} + ')'">
                                     <th scope="row" th:text="${request.id}"/>
                                     <th th:text="${request.fullName}"/>
-                                    <th th:text="${request.requestEmail}"/>
+                                    <th class="email-column" th:text="${request.requestEmail}"/>
                                     <th th:text="${request.requestPhone}"/>
                                     <td>
                                         <button th:if="${request.requestMasterName == 'Open'}" class="btn btn-success btn-sm rounded-pill" style="min-width: 80px; font-size: 12px;" th:text="${request.requestMasterName}"></button>

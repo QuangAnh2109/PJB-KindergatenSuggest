@@ -73,10 +73,14 @@
 .table-container {
     max-height: 600px; /* Điều chỉnh chiều cao theo ý muốn */
     overflow-y: auto;
+    overflow-x: auto;
     display: block;
     margin-bottom: 10px;
 }
-
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
 .table thead, .table tbody tr {
     display: table;
     width: 100%;
@@ -88,6 +92,13 @@
     max-height: 450px; /* Điều chỉnh theo nhu cầu */
     overflow-y: auto;
     width: 100%;
+}
+.email-column {
+    max-width: 250px; /* Giới hạn chiều rộng */
+    word-wrap: break-word; /* Cho phép xuống dòng */
+    overflow-wrap: break-word; /* Đảm bảo xuống dòng */
+    white-space: normal; /* Cho phép nội dung xuống dòng */
+    display: block; /* Giúp nội dung xuống dòng đúng */
 }
 .clickable-row {
     cursor: pointer;
