@@ -13,7 +13,7 @@ $(document).ready(function () {
         currentPage = page;
         const keyword = $("input[name='keyword']").val();
         $.ajax({
-            url: `/manager/searchRequestList?currentPage=${page}&keyword=${encodeURIComponent(keyword)}`,
+            url: `/manager/searchRequestList?currentPage=${page}&keyword=${encodeURIComponent(keyword)}&currPage=requestList`,
             type: 'GET',
             dataType: 'json',
             success: function (data) {
@@ -50,7 +50,7 @@ $(document).ready(function () {
                 <tr class="clickable-row" onclick="redirectToDetail(${request.id},${currentPage})">
                     <th scope="row">${request.id}</th>
                     <th>${request.fullName || 'N/A'}</th>
-                    <th>${request.requestEmail || 'N/A'}</th>
+                    <th class="email-column">${request.requestEmail || 'N/A'}</th>
                     <th>${request.requestPhone || 'N/A'}</th>
                     <th>${statusButton}</th>
                 </tr>
