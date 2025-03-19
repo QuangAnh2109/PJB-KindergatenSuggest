@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public enum SchoolFormButton {
     // Button for admin
-    admin1(SchoolFormButtonBuild.builder().submit(true).delete(true).canEdit(true).build()),
+    admin1(SchoolFormButtonBuild.builder().delete(true).build()),
     admin2(SchoolFormButtonBuild.builder().delete(true).reject(true).approve(true).build()),
     admin3(SchoolFormButtonBuild.builder().delete(true).publish(true).unPublish(true).canEdit(true).build()),
     admin4(SchoolFormButtonBuild.builder().delete(true).build()),

@@ -16,12 +16,6 @@ public interface SchoolInfoService {
      */
     List<EnrollSchoolInfoVo> findSchoolInfoListByAccountEmail(String email);
 
-    /**
-     * Retrieves a List of Published School
-     *
-     * @return a List of SchoolInfo
-     */
-    List<EnrollSchoolInfoVo> findAllSchoolPublished();
 
     /**
      * This method is used to find School information based on School ID
@@ -52,4 +46,8 @@ public interface SchoolInfoService {
     SchoolFormManager getSchoolFormByIdAndNoDelete(int id);
 
     int updateSchoolInfoBySchoolFormManager(SchoolFormManager schoolFormManager);
+
+    String getSchoolNameBySchoolIdAndNoDelete(int id);
+
+    SchoolFormManager getSchoolFormBySchoolIdAndEmailAndNoDelete(int id, String email);
 }

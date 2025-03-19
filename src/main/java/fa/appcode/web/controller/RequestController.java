@@ -1,6 +1,5 @@
 package fa.appcode.web.controller;
 
-import com.cloudinary.provisioning.Account;
 import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.RequestDetailVo;
 import fa.appcode.common.vo.RequestVo;
@@ -14,7 +13,6 @@ import fa.appcode.services.RequestService;
 import fa.appcode.services.SchoolInfoService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.security.Principal;
 import java.time.Instant;
 
@@ -37,7 +36,6 @@ public class RequestController {
     private final AccountService accountService;
     private final SchoolInfoService schoolInfoService;
     private final GlobalConfig globalConfig;
-
     /**
      * Display request list
      *
@@ -45,63 +43,43 @@ public class RequestController {
      * @param model
      * @param principal   current logged-in user
      * @param session
-     * @return view name "admin_side/request-list"
+     * @return
      */
-    @GetMapping("/manager/request-list")
+    @GetMapping(Constant.REQUEST_LIST_CONTROLLER)
     public String showRequestList(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
+                                  @RequestParam(name = "currPage", defaultValue = "") String currPage,
                                   Model model, Principal principal, HttpSession session) {
-        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("fullName").ascending());
-        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
-        Page<RequestVo> requestList;
-        if (role.equalsIgnoreCase(Constant.ADMIN_ROLE )) {
-            requestList = requestService.listAllRequest(null,null,pageable);
-        } else {
-            int accountID = accountService.getAccountInfo(principal).getId();
-            requestList = requestService.listAllRequest(accountID,null, pageable);
-        }
-        String message = (String) session.getAttribute("message");
-        session.removeAttribute("message");
-
-        model.addAttribute("requestList", requestList);
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("numberPage", requestList.getTotalPages());
-        model.addAttribute("message", message);
-        model.addAttribute("role", role);
-        return "admin_side/request-list";
-    }
-
-    /**
-     * Display request reminders
-     *
-     * @param currentPage current page number
-     * @param model
-     * @param principal   current logged-in user
-     * @param session
-     * @return view name "admin_side/request-reminder"
-     */
-    @GetMapping("/manager/request-reminder")
-    public String showRequestReminder(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
-                                      Model model, Principal principal, HttpSession session) {
-        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("fullName").ascending());
+        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by(Sort.Order.asc("fullName"), Sort.Order.asc("id")));
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
         Page<RequestVo> requestList;
         if (role.equalsIgnoreCase(Constant.ADMIN_ROLE)) {
-            requestList = requestService.listAllRequest(null,2,pageable);
+            if (currPage.equalsIgnoreCase(Constant.REQUEST_LIST_PAGE)) {
+                requestList = requestService.listAllRequest(null, null, pageable);
+            } else {
+                requestList = requestService.listAllRequest(null, 2, pageable);
+            }
         } else {
             int accountID = accountService.getAccountInfo(principal).getId();
-            requestList = requestService.listAllRequest(accountID,2, pageable);
+            if (currPage.equalsIgnoreCase(Constant.REQUEST_LIST_PAGE)) {
+                requestList = requestService.listAllRequest(accountID, null, pageable);
+            } else {
+                requestList = requestService.listAllRequest(accountID, 2, pageable);
+            }
         }
-        String message = (String) session.getAttribute("message");
-        session.removeAttribute("message");
+        String message = (String) session.getAttribute(Constant.message);
+        session.removeAttribute(Constant.message);
 
         model.addAttribute("requestList", requestList);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("numberPage", requestList.getTotalPages());
-        model.addAttribute("message", message);
+        model.addAttribute(Constant.message, message);
         model.addAttribute("role", role);
-        return "admin_side/request-reminder";
+        if (currPage.equalsIgnoreCase(Constant.REQUEST_LIST_PAGE)) {
+            return Constant.REQUEST_LIST_URL;
+        } else {
+            return Constant.REQUEST_REMINDER_URL_HTML;
+        }
     }
-
     /**
      * Show request detail by request ID
      *
@@ -110,7 +88,7 @@ public class RequestController {
      * @param currentPage current page number
      * @param model
      * @param principal   current logged-in user
-     * @return view name "admin_side/request-list-detail"
+     * @return
      */
     @GetMapping("/manager/request-list-detail")
     public String requestListDetail(@RequestParam Integer id,
@@ -148,7 +126,7 @@ public class RequestController {
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
         if (role.equalsIgnoreCase(Constant.ADMIN_ROLE)) {
             requestService.updateRequest("SYSTEM_ADMIN", id);
-        } else if (role.equalsIgnoreCase("School owner")) {
+        } else if (role.equalsIgnoreCase(Constant.SCHOOL_OWNER_ROLE)) {
             requestService.updateRequest("SCHOOL_OWNER", id);
         }
 
@@ -156,9 +134,11 @@ public class RequestController {
         model.addAttribute("requestDetail", requestDetail);
         model.addAttribute("role", role);
         redirectAttributes.addAttribute("currentPage", currentPage);
-        session.setAttribute("message", "Update successfully!");
-        if (page.equals("Detail")) return "redirect:/manager/request-reminder";
-        return "redirect:/manager/request-list";
+        session.setAttribute("message", globalConfig.getUpdateSuccessfullMessage());
+        if(!page.equalsIgnoreCase("Detail")){
+            redirectAttributes.addAttribute("currPage", "requestList");
+        }
+        return "redirect:"+Constant.REQUEST_LIST_CONTROLLER;
     }
 
     /**
@@ -170,18 +150,27 @@ public class RequestController {
      * @param principal   the currently logged-in user
      * @return a ResponseEntity containing a page of RequestVo
      */
-    @GetMapping("/manager/searchRequestList")
+    @GetMapping(Constant.SEARCH_REQUEST_LIST_CONTROLLER)
     public ResponseEntity<Page<RequestVo>> searchRequestList(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                                              @RequestParam(name = "keyword", required = false) String keyword,
+                                                             @RequestParam(name = "currPage", defaultValue = "") String currPage,
                                                              Model model, Principal principal) {
-        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("fullName").ascending());
+        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by(Sort.Order.asc("fullName"), Sort.Order.asc("id")));
         String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
         Page<RequestVo> requestList;
         if (role.equalsIgnoreCase(Constant.ADMIN_ROLE)) {
-            requestList = requestService.searchRequest(keyword,null,null, pageable);
+            if (currPage.equalsIgnoreCase(Constant.REQUEST_LIST_PAGE)) {
+                requestList = requestService.searchRequest(keyword, null, null, pageable);
+            } else {
+                requestList = requestService.searchRequest(keyword, null, 2, pageable);
+            }
         } else {
             int accountID = accountService.getAccountInfo(principal).getId();
-            requestList = requestService.searchRequest(keyword, accountID,null, pageable);
+            if (currPage.equalsIgnoreCase(Constant.REQUEST_LIST_PAGE)) {
+                requestList = requestService.searchRequest(keyword, accountID, null, pageable);
+            }else{
+                requestList = requestService.searchRequest(keyword, accountID, 2, pageable);
+            }
         }
         model.addAttribute("requestList", requestList);
         model.addAttribute("currentPage", currentPage);
@@ -189,44 +178,14 @@ public class RequestController {
         model.addAttribute("role", role);
         return ResponseEntity.ok(requestList);
     }
-
-    /**
-     * Search for unresolved request reminders based on keyword
-     *
-     * @param currentPage the current page number
-     * @param keyword     the search keyword
-     * @param model
-     * @param principal   the currently logged-in user
-     * @return a ResponseEntity containing a page of RequestVo
-     */
-    @GetMapping("/manager/searchRequestReminder")
-    public ResponseEntity<Page<RequestVo>> searchRequestReminder(@RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
-                                                                 @RequestParam(name = "keyword", required = false) String keyword,
-                                                                 Model model, Principal principal) {
-        Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("fullName").ascending());
-        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
-        Page<RequestVo> requestList;
-        if (role.equalsIgnoreCase(Constant.ADMIN_ROLE)) {
-            requestList = requestService.searchRequest(keyword,null,2, pageable);
-        } else {
-            int accountID = accountService.getAccountInfo(principal).getId();
-            requestList = requestService.searchRequest(keyword, accountID,2, pageable);
-        }
-        model.addAttribute("requestList", requestList);
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("numberPage", requestList.getTotalPages());
-        model.addAttribute("role", role);
-        return ResponseEntity.ok(requestList);
-    }
-
     /**
      * Create a new counseling request.
      *
-     * @param fullName           the full name of the requester
-     * @param email              the email of the requester
-     * @param phone              the phone number of the requester
-     * @param inquiries          the inquiries or questions from the requester
-     * @param principal          the currently logged-in user
+     * @param fullName  the full name of the requester
+     * @param email     the email of the requester
+     * @param phone     the phone number of the requester
+     * @param inquiries the inquiries or questions from the requester
+     * @param principal the currently logged-in user
      * @return the redirection path to "/public/search"
      */
     @PostMapping("/public/createRequest")
@@ -234,10 +193,10 @@ public class RequestController {
                                           @RequestParam String email,
                                           @RequestParam String phone,
                                           @RequestParam String inquiries,
-                                          Principal principal){
+                                          Principal principal) {
         AccountInfo accountID = accountService.getAccountInfo(principal);
         SchoolInfo school = schoolInfoService.getSchoolInfoById(1);
-        Request request = new Request(accountID,school,fullName,email,phone,inquiries,1,1,"PARENT",Instant.now());
+        Request request = new Request(accountID, school, fullName, email, phone, inquiries, 1, 1, "PARENT", Instant.now());
         requestService.createRequest(request);
         return "redirect:/public/search";
     }

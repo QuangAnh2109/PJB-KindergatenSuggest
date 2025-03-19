@@ -31,15 +31,6 @@ public interface AccountService {
 
     boolean updatePassword(String email, String newPassword);
 
-    /**
-     * Retrieves a paginated list of parent based on the search
-     *
-     * @param search
-     * @param pageable
-     * @return a page of ParentVo containing user account details
-     */
-    Page<ParentVo> findAllParent(String search, Pageable pageable);
-
     //tuanpa79
 
     /**
@@ -82,8 +73,6 @@ public interface AccountService {
 
     AccountInfo createAccount(AccountVo accountVo);
 
-    Page<ParentVo> findAllParent(Pageable pageable);
-
     /**
      * This method is used to find Parent based on their ID
      *
@@ -101,8 +90,6 @@ public interface AccountService {
     String findAccountRoleString(String email);
 
     AccountInfo getAccountInfoById(int id);
-
-    Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id, Pageable pageable);
 
     /**
      * Retrieves a paginated list of user accounts based on search and email of School Owner criteria.
@@ -130,7 +117,11 @@ public interface AccountService {
 
 
     public int getAccountIdByEmail(String email);
-     boolean isValidAccountToken(String token);
+
+    public String getAccountNameByEmailAndNoDelete(String email);
+
+    boolean isValidAccountToken(String token);
+
     Map<String, String> handleForgotPassword(String email);
 
     Map<String, String> handleResetPassword(String token, String newPassword, String confirmPassword);
@@ -138,5 +129,7 @@ public interface AccountService {
     Map<String, String> updateAccountProcess(AccountInfo accountInfo);
 
     Map<String, String> handleRegisterProcess(AccountVo accountVo);
+
+    List<String> getAllAccountEmailsByRole(int roleId);
 
 }

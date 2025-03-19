@@ -37,34 +37,8 @@ public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Inte
                                  FROM Feedback f2 
                                  WHERE f2.id.schoolId = s.id 
                                  AND f2.id.accountId = ai.id AND f2.deleteFlg=false) 
-                        WHERE ai.id= :parentId AND ai.deleteFlg=false AND ai.statusId= :accountStatusId AND s.account.email=:schoolOwnerId AND e.status=:enrollStatusId""")
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerId, Pageable pageable,int accountStatusId, int enrollStatusId);
-
-    //    Find All enrolled School for admin
-    @Query("""
-            SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName,CAST(ceiling(((f.extracurricularActivities + f.facilitiesUtilities + f.hygieneNutrition + f.learningProgram + f.teacherStaff) / 5) * 2) / 2 AS FLOAT),f.feedbackMessage,e.recordNo)
-                        FROM AccountInfo ai 
-                        JOIN MasterDatum ma ON ai.roleId=ma.id
-                        JOIN  EnrollSchool e ON e.account.id=ai.id 
-                        JOIN SchoolInfo s ON s.id=e.school.id
-                        LEFT JOIN Feedback f on f.id.schoolId=s.id AND f.id.accountId=ai.id AND 
-                        f.id.feedbackTime = ( 
-                                  SELECT MAX(f2.id.feedbackTime)
-                                  FROM Feedback f2 
-                                  WHERE f2.id.schoolId = s.id 
-                                 AND f2.id.accountId = ai.id AND f2.deleteFlg=false)
-                        WHERE ai.id= :id AND ai.deleteFlg=false AND ai.statusId=:accountStatusId AND e.status=:enrollStatusId""")
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable,int accountStatusId, int enrollStatusId);
-
-    //    Find All enrolled School for admin
-    @Query("""
-            SELECT new fa.appcode.common.vo.EnrolledSchoolVo(e.id,s.schoolName,e.recordNo)
-                        FROM AccountInfo ai
-                        JOIN MasterDatum ma ON ai.roleId=ma.id
-                        JOIN  EnrollSchool e ON e.account.id=ai.id
-                        JOIN SchoolInfo s ON s.id=e.school.id
-                        WHERE ai.id=?1 AND ai.deleteFlg=false AND ai.statusId=1 AND e.status=1""")
-    List<EnrolledSchoolVo> findParentRequestEnrolledSchoolByParentId(int id);
+                        WHERE ai.id= :parentId AND ai.deleteFlg=false AND ai.statusId= :accountStatusId AND (:schoolOwnerEmail IS NULL OR s.account.email = :schoolOwnerEmail) AND e.status=:enrollStatusId""")
+    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerEmail, Pageable pageable,int accountStatusId, int enrollStatusId);
 
     //Check If Parent is Enrolled Or Not
     @Query("""

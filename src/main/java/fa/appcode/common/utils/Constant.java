@@ -42,6 +42,10 @@ public class Constant {
     public static final String PARENT_LIST_PAGE = "admin_side/parent-list";
     public static final String USER_LIST_PAGE = "admin_side/user-list";
     public static final String USER_DETAIL_PAGE = "admin_side/edit-account";
+    public static final String REQUEST_LIST_URL = "admin_side/request-list";
+    public static final String REQUEST_REMINDER_URL_HTML = "admin_side/request-reminder";
+    public static final String REQUEST_LIST_CONTROLLER = "/manager/request-list";
+    public static final String SEARCH_REQUEST_LIST_CONTROLLER = "/manager/searchRequestList";
     //REGEX
     public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{12,72}$";
     public static final String HOME_PAGE = "user_side/index";
@@ -64,6 +68,9 @@ public class Constant {
     public static final String WEB_SYSTEM = "WEB_SYSTEM";
     public static final int SEND_EMAIL_FORGOT = 1;
     public static final int SEND_EMAIL_REGISTER = 1;
+    public static final String REQUEST_LIST_PAGE = "requestList";
+    public static final String REQUEST_REMINDER_PAGE = "requestReminder";
+    public static final String message= "message";
 
     public static final int SEND_REQUEST_REMINDER = 7;
     public static final String INVALID_TOKEN_FORMAT = "Invalid token format";
@@ -80,4 +87,9 @@ public class Constant {
     public static final int ENROLL_STATUS_ENROLL=3;
     public static final int ENROLL_STATUS_UNENROLL=4;
 
+    public static final String IMAGE_DIR = "src/main/resources/static/admin_side/images";
+    public static final String alertType = "alertType";
+    public static final String parentMessage ="message";
+    public static final String parentCurrentPage ="currentPage";
+    public static final String parentPageSize ="numberPage";
 }

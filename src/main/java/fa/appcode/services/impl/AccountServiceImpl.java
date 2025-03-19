@@ -62,7 +62,7 @@ public class AccountServiceImpl implements AccountService {
     private static final String ERROR_ATTRIBUTE = "error";
 
     public AccountInfo getAccountById(int id) {
-        return accountRepository.getAccountInfoById(id, Constant.STATUS_ACTIVE);
+        return accountRepository.getAccountInfoById(id,Constant.STATUS_ACTIVE);
     }
 
     @Override
@@ -70,10 +70,6 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findAccountByPhone(phone);
     }
 
-    //    @Override
-//    public String encodePassword(String password) {
-//        return "{bcrypt}" + passwordEncoder.encode(password);
-//    }
     @Override
     public String encodePassword(String password) {
         return passwordEncoder.encode(password);
@@ -233,33 +229,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-    // ========================================================
-
-
-    @Override
-    public Page<ParentVo> findAllParent(Pageable pageable) {
-        return null;
-    }
-
-    //=========================================================
-
-    public Page<ParentVo> findAllParent(String search, Pageable pageable) {
-        return accountRepository.findAllParent(search, pageable, Constant.STATUS_ACTIVE);
-    }
 
     @Override
     public ParentVo findParentById(int id) throws ValidateParentException {
-        ParentVo parent = accountRepository.findParentById(id, Constant.STATUS_ACTIVE);
+        ParentVo parent = accountRepository.findParentById(id,Constant.STATUS_ACTIVE);
         if (parent == null) {
             throw new ValidateParentException("This Parent is current Inactive, Deleted or not Exist");
         }
         return parent;
     }
 
-    @Override
-    public Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id, Pageable pageable) {
-        return null;
-    }
 
 
     @Override
@@ -269,13 +248,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountInfo getAccountInfoById(int id) {
-        return accountRepository.getAccountInfoById(id, Constant.STATUS_ACTIVE);
+        return accountRepository.getAccountInfoById(id,Constant.STATUS_ACTIVE);
     }
 
 
     @Override
     public Page<ParentVo> findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(String email, String search, Pageable pageable) {
-        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email, search, pageable, Constant.STATUS_ACTIVE);
+        return accountRepository.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(email, search, pageable,Constant.STATUS_ACTIVE);
     }
 
     @Override
@@ -302,6 +281,11 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public int getAccountIdByEmail(String email) {
         return accountRepository.findAccountByEmailAndStatusIdAndDeleteFlg(email, 1, false).getId();
+    }
+
+    @Override
+    public String getAccountNameByEmailAndNoDelete(String email) {
+        return accountRepository.getAccountNameByEmailAndDeleteFlg(email, false);
     }
 
     //    @Override
@@ -424,7 +408,6 @@ public class AccountServiceImpl implements AccountService {
             return false;
         }
     }
-
     /**
      * Handles the password reset process.
      * Validates the token, checks password confirmation, and updates the password if valid.
@@ -457,7 +440,6 @@ public class AccountServiceImpl implements AccountService {
     public Map<String, String> updateAccountProcess(AccountInfo accountInfo) {
         // Retrieve the current account information of the logged-in user
         AccountInfo currentAccount = getCurrentAccountInfo();
-
         // Validate the updated account fields
         Map<String, String> updateAccountErrors = validateService.validateAccountField(
                 accountInfo.getFullName(), accountInfo.getPhone(),
@@ -490,4 +472,9 @@ public class AccountServiceImpl implements AccountService {
         accountInfo.setAddress(Optional.ofNullable(accountInfo.getAddress()).orElse(currentAccount.getAddress()));
     }
 
+
+    @Override
+    public List<String> getAllAccountEmailsByRole(int roleId) {
+        return accountRepository.getAllEmailByRoleAndDeleteFlg(roleId, false);
+    }
 }
