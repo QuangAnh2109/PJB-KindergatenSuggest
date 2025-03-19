@@ -85,4 +85,7 @@ public class Constant {
 
     public static final String IMAGE_DIR = "src/main/resources/static/admin_side/images";
     public static final String alertType = "alertType";
+    public static final String parentMessage ="message";
+    public static final String parentCurrentPage ="currentPage";
+    public static final String parentPageSize ="numberPage";
 }

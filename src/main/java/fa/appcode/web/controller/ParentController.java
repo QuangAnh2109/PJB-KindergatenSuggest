@@ -80,8 +80,8 @@ public class ParentController {
              */
             model.addAttribute("accounts", parents);
             model.addAttribute("search", search);
-            model.addAttribute("currentPage", currentPage);
-            model.addAttribute("numberPage", list.getTotalPages());
+            model.addAttribute(Constant.parentCurrentPage, currentPage);
+            model.addAttribute(Constant.parentPageSize, list.getTotalPages());
             model.addAttribute("role", role);
 
         /*
@@ -135,8 +135,8 @@ public class ParentController {
             model.addAttribute("schoolInfoList", schoolInfoList);
             model.addAttribute("enrolledSchools", enrolledSchools);
             model.addAttribute("accountInfo", accountInfo);
-            model.addAttribute("currentPage", currentPage);
-            model.addAttribute("numberPage", listParentEnroll.getTotalPages());
+            model.addAttribute(Constant.parentCurrentPage, currentPage);
+            model.addAttribute(Constant.parentPageSize, listParentEnroll.getTotalPages());
             model.addAttribute("role", role);
         } catch (NumberFormatException e) {
             throw new ValidateParentException("Invalid ID format");
@@ -160,7 +160,7 @@ public class ParentController {
                 Log4jUtils.getLogger().info("Enrolling Parent: ");
                 enrollSchoolService.enrollSchoolParent(accountService.getAccountInfoById(id), schoolInfoService.getSchoolInfoById(schoolId), LocalDate.now(), normalizedRole, principal.getName());
                 //Add FlashAttribute into redirectAttribute
-                redirectAttributes.addFlashAttribute("message", globalConfig.getEnrollSuccess());
+                redirectAttributes.addFlashAttribute(Constant.parentMessage, globalConfig.getEnrollSuccess());
                 redirectAttributes.addFlashAttribute(Constant.alertType, Constant.SUCCESS);
                 Log4jUtils.getLogger().info("Enroll Parent successful to School");
             } else if (Constant.UNENROLL_PARENT_SCHOOL.equals(actionType)) {
@@ -168,11 +168,11 @@ public class ParentController {
                 //unenroll Parent
                 Log4jUtils.getLogger().info("Unenrolling Parent: ");
                 enrollSchoolService.evaluateParentEnroll(enrollSchool, LocalDate.now(), normalizedRole, Constant.ENROLL_STATUS_UNENROLL, principal.getName(), recordNo,id);
-                redirectAttributes.addFlashAttribute("message", globalConfig.getUnenrollSuccess());
+                redirectAttributes.addFlashAttribute(Constant.parentMessage, globalConfig.getUnenrollSuccess());
                 redirectAttributes.addFlashAttribute(Constant.alertType, Constant.DANGER);
                 Log4jUtils.getLogger().info("Unenroll Parent Success");
             } else {
-                redirectAttributes.addFlashAttribute("alertType", Constant.DANGER);
+                redirectAttributes.addFlashAttribute(Constant.alertType, Constant.DANGER);
                 redirectAttributes.addFlashAttribute(Constant.alertType, "Invalid action Type");
             }
         /*
