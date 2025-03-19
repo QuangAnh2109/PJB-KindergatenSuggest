@@ -1,27 +1,23 @@
 package fa.appcode.web.controller;
 
-import fa.appcode.common.vo.SearchVo;
-import org.springframework.http.HttpStatus;
+import fa.appcode.services.SchoolInfoService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping("/public/search")
+@AllArgsConstructor
 public class SearchRestController {
-    @GetMapping("/process")
-    public ResponseEntity<Void> search(
+
+    private final SchoolInfoService schoolService;
+
+    @GetMapping("/api/schools")
+    public ResponseEntity<?> getSchoolResults(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Integer cityId,
             @RequestParam(required = false) Integer districtId) {
-
-        String redirectUrl = "/public/search/results?keyword=" + (keyword != null ? keyword : "") +
-                (cityId != null ? "&cityId=" + cityId : "") +
-                (districtId != null ? "&districtId=" + districtId : "");
-
-        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectUrl)).build();
+        return ResponseEntity.ok("");
     }
 
 }

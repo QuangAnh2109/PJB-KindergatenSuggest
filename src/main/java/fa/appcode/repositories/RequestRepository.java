@@ -1,6 +1,7 @@
 package fa.appcode.repositories;
 
 import fa.appcode.common.vo.EmailContentVo;
+import fa.appcode.common.vo.MyRequestVo;
 import fa.appcode.common.vo.RequestDetailVo;
 import fa.appcode.common.vo.RequestVo;
 import fa.appcode.entities.Request;
@@ -26,7 +27,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
      * @return a RequestDetailVo containing request details
      */
     @Query("""
-            SELECT new fa.appcode.common.vo.RequestDetailVo(
+            SELECT new fa.appcode.common.vo.RequestDetailVo(-+
                         r.id,r.fullName,r.requestEmail,r.requestPhone,
                         s.schoolAddress,s.schoolName,r.inquiries,m.typeValue)
             FROM  Request r
@@ -114,8 +115,35 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             """)
     List<EmailContentVo> findAccountForEmail();
 
-    //Find all request of parent
-    Page<Request> findRequestByAccountIdAndDeleteFlgIsFalse(Integer accountId, Pageable pageable);
+
+    @Query("""
+    SELECT new fa.appcode.common.vo.MyRequestVo(
+        r.id, r.fullName, r.requestEmail, r.requestPhone, 
+        s.schoolName, s.schoolAddress, r.inquiries, m1.typeValue, 
+        r.createTime, s.schoolEmail, 
+        COALESCE(CAST(AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5) AS double), 0.0),
+        COALESCE(CAST(COUNT(DISTINCT f.id) AS integer), 0), 
+        CAST(s.feeFrom AS double), m2.typeValue, s.id
+    )
+    FROM Request r
+    JOIN SchoolInfo s ON r.school.id = s.id
+    JOIN AccountInfo a ON a.id = r.account.id
+    JOIN MasterDatum m1 ON m1.typeKey = r.requestMasterId AND m1.typeName = 'REQUEST STATUS'
+    JOIN MasterDatum m2 ON m2.typeKey = s.childReceivingAgeId AND m2.typeName = 'CHILD RECEIVING AGE'
+    LEFT JOIN Feedback f ON f.school.id = s.id AND f.id.feedbackTime = (
+        SELECT MAX(f2.id.feedbackTime) 
+        FROM Feedback f2 
+        WHERE f2.id.schoolId = s.id AND f2.id.accountId = f.id.accountId
+        GROUP BY f2.id.accountId
+    )
+    WHERE r.account.id = :accountId AND r.deleteFlg = false
+    GROUP BY  r.inquiries, m1.typeValue, 
+             r.createTime, s.schoolEmail, s.feeFrom, m2.typeValue
+""")
+    Page<MyRequestVo> findRequestByAccountId(Integer accountId, Pageable pageable);
+
+
+
 
 
 }

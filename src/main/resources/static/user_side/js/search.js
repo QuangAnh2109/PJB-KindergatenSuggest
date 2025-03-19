@@ -1,17 +1,36 @@
-document.addEventListener("DOMContentLoaded", function () {
-    function handleCheckboxChange() {
-        let selectedFacilities = Array.from(document.querySelectorAll('input[name="facilities"]:checked'))
-            .map(checkbox => checkbox.value);
-        let selectedUtilities = Array.from(document.querySelectorAll('input[name="utilities"]:checked'))
+
+// Function to get list Facilities and utilities selected to search
+function getSelectedCheckboxValues() {
+    function getSelectedValues(name) {
+        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
             .map(checkbox => checkbox.value);
     }
-    document.querySelectorAll('input[name="facilities"]').forEach(checkbox => {
-        checkbox.addEventListener("change", handleCheckboxChange);
-    });
-    document.querySelectorAll('input[name="utilities"]').forEach(checkbox => {
-        checkbox.addEventListener("change", handleCheckboxChange);
-    });
 
-});
+    // Get values from both checkbox groups
+    const selectedFacilities = getSelectedValues("facilities");
+    const selectedUtilities = getSelectedValues("utilities");
+
+    // Return both lists as an object
+    return {
+        facilities: selectedFacilities,
+        utilities: selectedUtilities
+    };
+}
+
+
+
+function search() {
+    $.ajax(
+        {
+            url: "/public/school/search/api",
+            data: getSelectedCheckboxValues(),
+            success: function(responseData) {
+                $("#main-content").html($(responseData).find("#main-content").html());
+            },
+        }
+    )
+}
+
+
 
 

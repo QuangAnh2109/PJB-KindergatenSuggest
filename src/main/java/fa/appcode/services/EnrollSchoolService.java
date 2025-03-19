@@ -1,6 +1,7 @@
 package fa.appcode.services;
 
 import fa.appcode.common.vo.EnrolledSchoolVo;
+import fa.appcode.common.vo.MySchoolVo;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.entities.EnrollSchool;
 import fa.appcode.entities.SchoolInfo;
@@ -67,5 +68,25 @@ public interface EnrollSchoolService {
      * @return true/false
      */
     boolean validateAccess(Integer schoolId, String schoolOwnerEmail);
+
+    //Get list Parent's School that is enrolled
+    /**
+     * This method to get list school that parent has enrolled by ParentId
+     *
+     * @param parentId
+     * @param pageable
+     * @return list schoolInfo
+     */
+    Page<MySchoolVo> findListSchoolParentEnrolledByParentId(int parentId, Pageable pageable);
+
+
+    //Get list Parent's School that is previous enrolled
+    /**
+     * This method to get list school that parent has un-enrolled by ParentId(the school that has enrolled before)
+     * @param parentId
+     * @param pageable
+     * @return list schoolInfo
+     */
+    Page<MySchoolVo> findListSchoolParentPreEnrolledByParentId(int parentId,Pageable pageable);
 
 }

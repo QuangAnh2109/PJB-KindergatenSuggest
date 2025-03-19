@@ -12,14 +12,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @Controller
+@RequestMapping("/public")
 public class UserHomeController {
 
     private final CityService cityService;
@@ -29,48 +32,26 @@ public class UserHomeController {
 
     @GetMapping(Constant.HOME_PAGE_URL)
     public String parentHome(Model model) {
-        List<CityVo> listCity1 = cityService.findAllByNoDelete();
-        model.addAttribute("listCity", listCity1);
+        List<CityVo> listCityVo = cityService.findAllByNoDelete();
+        model.addAttribute("listCity", listCityVo);
         return Constant.HOME_PAGE;
     }
 
-    @GetMapping("/public/districts")
+    @GetMapping("/districts")
     public ResponseEntity<?> getDistrictByCity(@RequestParam(name = "cityId") Integer cityId) {
         try {
             List<DistrictVo> districts = districtService.findAllByCityIdAndNoDelete(cityId);
             return ResponseEntity.ok(districts);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to fetch districts: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to fetch districts: " + e.getMessage());
         }
     }
 
+    @GetMapping("/school/search")
+    public String showSearchResults(@RequestParam(required = false) String keyword, @RequestParam(required = false) Integer cityId, @RequestParam(required = false) Integer districtId, Model model) {
 
-    @GetMapping("/public/search")
-    public String searchSchool(Model model) {
-        List<CityVo> listCity1 = cityService.findAllByNoDelete();
-        List<MasterDataVo> listFacilities = masterDatumService.findAllByTypeNameNoDelete("FACILITIES");
-        List<MasterDataVo> listTypeSchool = masterDatumService.findAllByTypeNameNoDelete("SCHOOL TYPE");
-        List<MasterDataVo> listDataAge = masterDatumService.findAllByTypeNameNoDelete("CHILD RECEIVING AGE");
-        List<MasterDataVo> listUtilities = masterDatumService.findAllByTypeNameNoDelete("UTILITIES");
-        
-        //===========================================================
-        model.addAttribute("facilities", listFacilities);
-        model.addAttribute("type_school", listTypeSchool);
-        model.addAttribute("data_age", listDataAge);
-        model.addAttribute("utilities", listUtilities);
-        model.addAttribute("listCity", listCity1);
-        model.addAttribute("emailErrorMessage", globalConfig.getInValidEmail());
-        model.addAttribute("mobileErrorMessage", globalConfig.getInvalidPhoneNumber());
-        model.addAttribute("requiredFieldMessage", globalConfig.getRequiredMessage());
-        return "user_side/search-school";
-    }
-    @GetMapping("/public/search/results")
-    public String showSearchResults(@RequestParam(required = false) String keyword,
-                                    @RequestParam(required = false) Integer cityId,
-                                    @RequestParam(required = false) Integer districtId,
-                                    Model model) {
         loadCommonData(model);
+
         model.addAttribute("keyword", keyword);
         model.addAttribute("cityId", cityId);
         model.addAttribute("districtId", districtId);
@@ -79,6 +60,8 @@ public class UserHomeController {
 
         return "user_side/search-school";
     }
+
+
 
     private void loadCommonData(Model model) {
         List<CityVo> listCity = cityService.findAllByNoDelete();

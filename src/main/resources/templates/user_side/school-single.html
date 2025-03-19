@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zxx">
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <title>Rentaly - Multipurpose Vehicle Car Rental Website Template</title>
@@ -22,16 +23,18 @@
     <link id="colors" th:href="@{/user_side/css/colors/scheme-01.css}" rel="stylesheet" type="text/css">
 
     <style>
-        #img-school{
+        #img-school {
             display: flex;
             justify-content: center;
             border-radius: 5px;
-            border:1px solid #1ECB15 ;
+            border: 1px solid #1ECB15;
         }
-        #img-school img{
+
+        #img-school img {
             width: 90%;
             margin: 10px;
         }
+
         .tab-btn {
             border: none;
             background: none;
@@ -39,22 +42,27 @@
             font-weight: bold;
             cursor: pointer;
         }
+
         .tab-btn.active {
             border-bottom: 2px solid #007bff;
         }
+
         .rating-stars {
             color: gold;
         }
+
         .rating-bar {
             height: 10px;
             background-color: #ddd;
             border-radius: 5px;
             overflow: hidden;
         }
+
         .rating-fill {
             height: 100%;
             background-color: gold;
         }
+
         .filter-btn {
             border: 1px solid #007bff;
             padding: 5px 10px;
@@ -64,17 +72,19 @@
             font-weight: bold;
             margin-right: 5px;
         }
+
         .filter-btn.active, .filter-btn:hover {
             background: #007bff;
             color: white;
         }
 
-        #school-detail-info{
+        #school-detail-info {
             border: 1px solid #1ECB15;
             border-radius: 5px;
             margin-bottom: 20px;
             margin-top: 20px;
         }
+
         .school-card {
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -82,71 +92,176 @@
             background: white;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         }
+
         .btn-custom {
             border-radius: 20px;
             font-size: 14px;
             padding: 8px 15px;
         }
+
         .rating {
             color: #f4b400; /* Màu vàng */
+        }
+
+        .btn-yes {
+            background-color: #d9534f;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100px;
+        }
+
+        .btn-cancel {
+            width: 100px;
+            background-color: #5bc0de;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* Rating stars styling */
+        .star-rating {
+            display: flex;
+            gap: 8px;
+        }
+
+        .star {
+            font-size: 24px;
+            cursor: pointer;
+            color: #dee2e6;
+            transition: color 0.2s ease;
+            user-select: none;
+        }
+
+        .star.active {
+            color: #ffc107;
+        }
+
+        /* Rating value display */
+        .rating-value {
+            min-width: 32px;
+            padding: 2px 8px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #495057;
+            text-align: center;
+        }
+
+        /* Modal customization */
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header .btn-close {
+            padding: 0.75rem;
+        }
+
+        .rating-item label {
+            color: #495057;
+            margin-bottom: 0;
+        }
+
+        /* Form elements */
+        .form-control {
+            border-radius: 8px;
+            border-color: #dee2e6;
+            padding: 0.75rem;
+        }
+
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        /* Buttons */
+
+        .btn-outline-secondary {
+            color: #6c757d;
+            border-color: #dee2e6;
+        }
+
+        .btn-outline-secondary:hover {
+            color: #495057;
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
         }
     </style>
 </head>
 
 <body>
-    <div id="wrapper">
-        
-        <!-- page preloader begin -->
-        <div id="de-preloader"></div>
-        <!-- page preloader close -->
+<div id="wrapper">
 
-        <!-- header begin -->
-        <header class="transparent scroll-light has-topbar">
+    <!-- page preloader begin -->
+    <div id="de-preloader"></div>
+    <!-- page preloader close -->
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="de-flex sm-pt10">
+    <!-- header begin -->
+    <header class="transparent scroll-light has-topbar">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="de-flex sm-pt10">
+                        <div class="de-flex-col">
                             <div class="de-flex-col">
-                                <div class="de-flex-col">
-                                    <!-- logo begin -->
-                                    <div id="logo">
-                                        <a th:href="@{/home}">
-                                            <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
-                                            <img class="logo-2" src="/user_side/images/logo1.png" alt="">
-                                        </a>
-                                    </div>
-                                    <!-- logo close -->
+                                <!-- logo begin -->
+                                <div id="logo">
+                                    <a th:href="@{/public/home}">
+                                        <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
+                                        <img class="logo-2" src="/user_side/images/logo1.png" alt="">
+                                    </a>
                                 </div>
+                                <!-- logo close -->
                             </div>
-                            <div class="de-flex-col header-col-mid">
-                                <ul id="mainmenu">
-                                    <li><a class="menu-item" href="/search">School Search</a>
-                                    </li>
-                                    <li><a class="menu-item" href="#">Community</a>
-                                    </li>
-                                    <li><a class="menu-item" href="#">About Us</a>
-                                    </li>
-                                </ul>
+                        </div>
+                        <div class="de-flex-col header-col-mid">
+                            <ul id="mainmenu">
+                                <li><a class="menu-item" href="/public/school/search">School Search</a>
+                                </li>
+                                <li><a class="menu-item" href="#">Community</a>
+                                </li>
+                                <li><a class="menu-item" href="#">About Us</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="de-flex-col">
+                            <div class="menu_side_area" sec:authorize="!isAuthenticated()">
+                                <a th:href="@{/showMyLoginPage}" class="btn-main">Login</a>
+                                <span class="menu-btn"></span>
                             </div>
-                            <div class="de-flex-col">
-                                <div class="menu_side_area" sec:authorize="!isAuthenticated()">
-                                    <a th:href="@{/showMyLoginPage}" class="btn-main">Login</a>
-                                    <span class="menu-btn"></span>
-                                </div>
-                                <div class="menu_side_area" sec:authorize="!isAuthenticated()">
-                                    <a th:href="@{/register}" class="btn-main">Sign Up</a>
-                                    <span class="menu-btn"></span>
-                                </div>
-                                <div class="logout-container" sec:authorize="isAuthenticated()">
-                                    <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa-solid fa-user"></i> Welcome, Tran Hoai Thu
+                            <div class="menu_side_area" sec:authorize="!isAuthenticated()">
+                                <a th:href="@{/register}" class="btn-main">Sign Up</a>
+                                <span class="menu-btn"></span>
+                            </div>
+                            <div class="logout-container" sec:authorize="isAuthenticated()">
+                                <div class="dropdown">
+                                    <button class="dropdown-toggle" onclick="toggleDropdown()">
+                                        <span><i class="fa fa-user-o" aria-hidden="true" style="margin-right: 5px"></i></span>
+                                        Welcome, <span th:text="${session.nameAccount}"></span>
+                                        <i class="arrow-down"></i>
                                     </button>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#">Action</a>
-                                        <a class="dropdown-item" href="#">Another action</a>
-                                        <a class="dropdown-item" href="#">Something else here</a>
-                                        <a class="dropdown-item" href="#">Separated link</a>
+                                    <div class="dropdown-menu dropdown-menu-right" id="featuresDropdown">
+                                        <a href="/parent/my-school"><span><i class="fa-solid fa-school"></i></span> My
+                                            School</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="/parent/my-request"><span><i class="fas fa-clipboard-list"></i></span>
+                                            My
+                                            Request</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="/auth/view-account"><span><i class="fa-solid fa-user"></i></span> My
+                                            Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" onclick="showPopup()"><span><i
+                                                class="fa-solid fa-right-from-bracket"></i></span> Logout</a>
                                     </div>
                                 </div>
                             </div>
@@ -154,192 +269,195 @@
                     </div>
                 </div>
             </div>
-        </header>
-        <!-- header close -->
-        <!-- content begin -->
-        <div class="no-bottom no-top zebra" id="content">
-            <div id="top"></div>
-            
-            <!-- section begin -->
-            <section id="subheader" class="jarallax text-light">
-                <img src="/user_side/images/background/school-detail-background.jpg" class="jarallax-img" alt="">
-                    <div class="center-y relative text-center">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-12 text-center">
-									<h1>School Details</h1>
-                                </div>
-                                <div class="clearfix"></div>
-                            </div>
-                        </div>
-                    </div>
-            </section>
-            <!-- section close -->
+        </div>
+    </header>
+    <!-- header close -->
+    <!-- content begin -->
+    <div class="no-bottom no-top zebra" id="content">
+        <div id="top"></div>
 
-            <section id="section-car-details">
+        <!-- section begin -->
+        <section id="subheader" class="jarallax text-light">
+            <img src="/user_side/images/background/school-deatil-background.jpg" class="jarallax-img" alt="">
+            <div class="center-y relative text-center">
                 <div class="container">
-                    <div id="img-school">
-                        <img src="https://apu.edu.vn/uploads/gallery/slider_home-1-1724144804.jpg">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <h1>School Details</h1>
+                        </div>
+                        <div class="clearfix"></div>
                     </div>
                 </div>
-            </section>
-            <div class="container mt-4">
-                <div class="school-card d-flex justify-content-between align-items-start">
-                    <!-- Thông tin trường học -->
-                    <div>
-                        <h2><strong>Fort Street Public School</strong></h2>
-                        <p><strong>📍 Address:</strong> 24 Fordham Avenue CAMBERWELL VIC 3124</p>
-                        <p><strong>📧 Email:</strong> FortStreet@school.com</p>
-                        <p><strong>📞 Contact:</strong> 0123456789</p>
-                        <p><strong>🌍 Website:</strong> <a href="#">FortStreet.school.edu</a></p>
-                        <p><strong>💰 Tuition fee:</strong> From 4,000,000 VND/month</p>
-                        <p><strong>🎓 Admission age:</strong> From 6 months to 5 years</p>
-                        <p><strong>🏫 School type:</strong> Public</p>
-                    </div>
+            </div>
+        </section>
+        <!-- section close -->
 
-                    <!-- Nút hành động -->
-                    <div class="text-end">
-                        <div style="display: flex">
+        <section id="section-car-details">
+            <div class="container">
+                <div id="img-school">
+                    <img src="https://apu.edu.vn/uploads/gallery/slider_home-1-1724144804.jpg">
+                </div>
+            </div>
+        </section>
+        <div class="container mt-4">
+            <div class="school-card d-flex justify-content-between align-items-start">
+                <!-- Thông tin trường học -->
+                <div class="school-card-details">
+                    <h2><strong>Fort Street Public School</strong></h2>
+                    <p><strong>📍 Address:</strong> 24 Fordham Avenue CAMBERWELL VIC 3124</p>
+                    <p><strong>📧 Email:</strong> FortStreet@school.com</p>
+                    <p><strong>📞 Contact:</strong> 0123456789</p>
+                    <p><strong>💰 Tuition fee:</strong> From 4,000,000 VND/month</p>
+                    <p><strong>🎓 Admission age:</strong> From 6 months to 5 years</p>
+                    <p><strong>🏫 School type:</strong> Public</p>
+                </div>
+
+                <div class="text-end d-flex flex-column align-items-end">
+                    <div>
+                        <div style="width: 150px">
                             <button class="btn btn-primary btn-custom">Request Counseling</button>
-                            <button class="btn btn-outline-primary btn-custom">Rate School</button>
                         </div>
-                        <!-- Xếp hạng -->
-                        <div style="display: flex" >
-                            <span class="rating">⭐⭐⭐⭐⭐</span>
-                            <span>5.0/5 (120 ratings)</span>
+                        <div style="width: 190px;margin-top: 10px">
+                            <button class="btn btn-block btn-custom" onclick="openRatingPopup()">Rate School</button>
+                        </div>
+                    </div>
+                    <div class="mt-auto">
+                        <span class="rating">⭐⭐⭐⭐⭐</span>
+                        <span>5.0/5 (120 ratings)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container mt-4" id="school-detail-info">
+            <!-- Tabs -->
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#overview">Overview</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#ratings">Ratings</a>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content mt-3">
+                <!-- Overview Tab -->
+                <div class="tab-pane fade show active" id="overview">
+                    <h3>School Introduction</h3>
+                    <p>Thông tin tổng quan về trường học.</p>
+                </div>
+
+                <!-- Ratings Tab -->
+                <div class="tab-pane fade" id="ratings">
+                    <h3>Average ratings</h3>
+                    <h3>4.5 Stars (120 Ratings)</h3>
+                    <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Learning program:</span>
+                            <span>(5/5)</span>
+                        </div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 100%;"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <span>Facilities and Utilities:</span>
+                            <span>(4/5)</span>
+                        </div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 80%;"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <span>Extracurricular Activities:</span>
+                            <span>(4/5)</span>
+                        </div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 80%;"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <span>Teachers and Staff:</span>
+                            <span>(4/5)</span>
+                        </div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 80%;"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <span>Hygiene and Nutrition:</span>
+                            <span>(5/5)</span>
+                        </div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 100%;"></div>
+                        </div>
+                        <!-- Details -->
+                        <div class="mt-4">
+                            <h5>Details</h5>
+                            <div class="mb-3">
+                                <button class="filter-btn active">All</button>
+                                <button class="filter-btn">5 ⭐</button>
+                                <button class="filter-btn">4 ⭐</button>
+                                <button class="filter-btn">3 ⭐</button>
+                                <button class="filter-btn">2 ⭐</button>
+                                <button class="filter-btn">1 ⭐</button>
+                            </div>
+
+                            <!-- Review Item -->
+                            <div class="border p-3 rounded">
+                                <div class="d-flex align-items-center">
+                                    <img src="https://via.placeholder.com/50" class="rounded-circle me-2" alt="User">
+                                    <div>
+                                        <strong>Will Kenny</strong>
+                                        <div class="text-muted">Oct 10th, 2022 12:00AM</div>
+                                    </div>
+                                </div>
+                                <p class="mt-2">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                                    incididunt ut labore et dolore magna aliqua...
+                                </p>
+
+                                <div class="d-flex align-items-center">
+                                    <div class="rating-stars me-2">⭐⭐⭐⭐⭐</div>
+                                    <span>4.5/5</span>
+                                </div>
+
+                                <div class="mt-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span>Learning program:</span>
+                                        <span>⭐⭐⭐⭐⭐ (5/5)</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Facilities and Utilities:</span>
+                                        <span>⭐⭐⭐⭐ (4/5)</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Extracurricular Activities:</span>
+                                        <span>⭐⭐⭐⭐ (4/5)</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Teachers and Staff:</span>
+                                        <span>⭐⭐⭐⭐⭐ (5/5)</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Hygiene and Nutrition:</span>
+                                        <span>⭐⭐⭐⭐ (4/5)</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
-            <div class="container mt-4" id="school-detail-info">
-                <!-- Tabs -->
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#overview">Overview</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#ratings">Ratings</a>
-                    </li>
-                </ul>
-
-                <!-- Tab Content -->
-                <div class="tab-content mt-3">
-                    <!-- Overview Tab -->
-                    <div class="tab-pane fade show active" id="overview">
-                        <h3>School Introduction</h3>
-                        <p>Thông tin tổng quan về sản phẩm hoặc dịch vụ.</p>
-                    </div>
-
-                    <!-- Ratings Tab -->
-                    <div class="tab-pane fade" id="ratings">
-                        <h3>Average ratings</h3>
-                        <h3>4.5 Stars (120 Ratings)</h3>
-                        <div class="rating-stars">⭐⭐⭐⭐⭐</div>
-
-                        <div class="mt-3">
-                            <div class="d-flex justify-content-between">
-                                <span>Learning program:</span>
-                                <span>(5/5)</span>
-                            </div>
-                            <div class="rating-bar">
-                                <div class="rating-fill" style="width: 100%;"></div>
-                            </div>
-
-                            <div class="d-flex justify-content-between mt-2">
-                                <span>Facilities and Utilities:</span>
-                                <span>(4/5)</span>
-                            </div>
-                            <div class="rating-bar">
-                                <div class="rating-fill" style="width: 80%;"></div>
-                            </div>
-
-                            <div class="d-flex justify-content-between mt-2">
-                                <span>Extracurricular Activities:</span>
-                                <span>(4/5)</span>
-                            </div>
-                            <div class="rating-bar">
-                                <div class="rating-fill" style="width: 80%;"></div>
-                            </div>
-
-                            <div class="d-flex justify-content-between mt-2">
-                                <span>Teachers and Staff:</span>
-                                <span>(4/5)</span>
-                            </div>
-                            <div class="rating-bar">
-                                <div class="rating-fill" style="width: 80%;"></div>
-                            </div>
-
-                            <div class="d-flex justify-content-between mt-2">
-                                <span>Hygiene and Nutrition:</span>
-                                <span>(5/5)</span>
-                            </div>
-                            <div class="rating-bar">
-                                <div class="rating-fill" style="width: 100%;"></div>
-                            </div>
-                            <!-- Details -->
-                            <div class="mt-4">
-                                <h5>Details</h5>
-                                <div class="mb-3">
-                                    <button class="filter-btn active">All</button>
-                                    <button class="filter-btn">5 ⭐</button>
-                                    <button class="filter-btn">4 ⭐</button>
-                                    <button class="filter-btn">3 ⭐</button>
-                                    <button class="filter-btn">2 ⭐</button>
-                                    <button class="filter-btn">1 ⭐</button>
-                                </div>
-
-                                <!-- Review Item -->
-                                <div class="border p-3 rounded">
-                                    <div class="d-flex align-items-center">
-                                        <img src="https://via.placeholder.com/50" class="rounded-circle me-2" alt="User">
-                                        <div>
-                                            <strong>Will Kenny</strong>
-                                            <div class="text-muted">Oct 10th, 2022 12:00AM</div>
-                                        </div>
-                                    </div>
-                                    <p class="mt-2">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
-                                    </p>
-
-                                    <div class="d-flex align-items-center">
-                                        <div class="rating-stars me-2">⭐⭐⭐⭐⭐</div>
-                                        <span>4.5/5</span>
-                                    </div>
-
-                                    <div class="mt-3">
-                                        <div class="d-flex justify-content-between">
-                                            <span>Learning program:</span>
-                                            <span>⭐⭐⭐⭐⭐ (5/5)</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>Facilities and Utilities:</span>
-                                            <span>⭐⭐⭐⭐ (4/5)</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>Extracurricular Activities:</span>
-                                            <span>⭐⭐⭐⭐ (4/5)</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>Teachers and Staff:</span>
-                                            <span>⭐⭐⭐⭐⭐ (5/5)</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>Hygiene and Nutrition:</span>
-                                            <span>⭐⭐⭐⭐ (4/5)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
         </div>
         <!-- content close -->
 
         <a href="#" id="back-to-top"></a>
-        
+
         <!-- footer begin -->
         <footer class="text-light">
             <div class="container">
@@ -347,18 +465,23 @@
                     <div class="col-lg-3">
                         <div class="widget">
                             <h5>About Rentaly</h5>
-                            <p>Where quality meets affordability. We understand the importance of a smooth and enjoyable journey without the burden of excessive costs. That's why we have meticulously crafted our offerings to provide you with top-notch vehicles at minimum expense.</p>
+                            <p>Where quality meets affordability. We understand the importance of a smooth and enjoyable
+                                journey without the burden of excessive costs. That's why we have meticulously crafted
+                                our offerings to provide you with top-notch vehicles at minimum expense.</p>
                         </div>
                     </div>
-                    
+
                     <div class="col-lg-3">
                         <div class="widget">
                             <h5>Contact Info</h5>
                             <address class="s1">
-                                <span><i class="id-color fa fa-map-marker fa-lg"></i>08 W 36th St, New York, NY 10001</span>
+                                <span><i
+                                        class="id-color fa fa-map-marker fa-lg"></i>08 W 36th St, New York, NY 10001</span>
                                 <span><i class="id-color fa fa-phone fa-lg"></i>+1 333 9296</span>
-                                <span><i class="id-color fa fa-envelope-o fa-lg"></i><a href="mailto:contact@example.com">contact@example.com</a></span>
-                                <span><i class="id-color fa fa-file-pdf-o fa-lg"></i><a href="#">Download Brochure</a></span>
+                                <span><i class="id-color fa fa-envelope-o fa-lg"></i><a
+                                        href="mailto:contact@example.com">contact@example.com</a></span>
+                                <span><i class="id-color fa fa-file-pdf-o fa-lg"></i><a
+                                        href="#">Download Brochure</a></span>
                             </address>
                         </div>
                     </div>
@@ -390,7 +513,7 @@
                                 <a href="#"><i class="fa fa-pinterest fa-lg"></i></a>
                                 <a href="#"><i class="fa fa-rss fa-lg"></i></a>
                             </div>
-                        </div>    
+                        </div>
                     </div>
                 </div>
             </div>
@@ -415,16 +538,175 @@
             </div>
         </footer>
         <!-- footer close -->
-    </div>
 
-    <!-- Javascript Files
-    ================================================== -->
+        <!--Log out-->
+        <div id="logoutPopup" class="overlay">
+            <div class="popup">
+                <h2>Are you leaving?</h2>
+                <p>Are you sure you want to logout? All your unsaved data will be lost.</p>
+                <div class="button-container">
+                    <button class="btn-yes" onclick="confirmLogout()">Yes</button>
+                    <button class="btn-cancel" onclick="hidePopup()">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <form id="logoutForm" th:action="@{/logout}" method="post"></form>
+        <!--End log out-->
+
+        <!-- Rating Modal -->
+        <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="modal-title fw-semibold" id="ratingModalLabel">Please leave your ratings</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted small mb-4">Please give specific ratings for the following criteria</p>
+
+                        <form id="ratingForm">
+                            <div class="rating-items">
+                                <div class="rating-item mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <label>Learning program:</label>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="stars">
+                                                <div class="star-rating" data-rating="0">
+                                                    <i class="fa-regular fa-star star" data-value="1"></i>
+                                                    <i class="fa-regular fa-star star" data-value="2"></i>
+                                                    <i class="fa-regular fa-star star" data-value="3"></i>
+                                                    <i class="fa-regular fa-star star" data-value="4"></i>
+                                                    <i class="fa-regular fa-star star" data-value="5"></i>
+                                                </div>
+                                            </div>
+                                            <div class="rating-value">0.0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="rating-item mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <label>Facilities and Utilities:</label>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="stars">
+                                                <div class="star-rating" data-rating="0">
+                                                    <i class="fa-regular fa-star star" data-value="1"></i>
+                                                    <i class="fa-regular fa-star star" data-value="2"></i>
+                                                    <i class="fa-regular fa-star star" data-value="3"></i>
+                                                    <i class="fa-regular fa-star star" data-value="4"></i>
+                                                    <i class="fa-regular fa-star star" data-value="5"></i>
+                                                </div>
+                                            </div>
+                                            <div class="rating-value">0.0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="rating-item mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <label>Extracurricular Activities:</label>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="stars">
+                                                <div class="star-rating" data-rating="0">
+                                                    <i class="fa-regular fa-star star" data-value="1"></i>
+                                                    <i class="fa-regular fa-star star" data-value="2"></i>
+                                                    <i class="fa-regular fa-star star" data-value="3"></i>
+                                                    <i class="fa-regular fa-star star" data-value="4"></i>
+                                                    <i class="fa-regular fa-star star" data-value="5"></i>
+                                                </div>
+                                            </div>
+                                            <div class="rating-value">0.0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="rating-item mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <label>Teachers and Staff:</label>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="stars">
+                                                <div class="star-rating" data-rating="0">
+                                                    <i class="fa-regular fa-star star" data-value="1"></i>
+                                                    <i class="fa-regular fa-star star" data-value="2"></i>
+                                                    <i class="fa-regular fa-star star" data-value="3"></i>
+                                                    <i class="fa-regular fa-star star" data-value="4"></i>
+                                                    <i class="fa-regular fa-star star" data-value="5"></i>
+                                                </div>
+                                            </div>
+                                            <div class="rating-value">0.0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="rating-item mb-4">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <label>Hygiene and Nutrition:</label>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="stars">
+                                                <div class="star-rating" data-rating="0">
+                                                    <i class="fa-regular fa-star star" data-value="1"></i>
+                                                    <i class="fa-regular fa-star star" data-value="2"></i>
+                                                    <i class="fa-regular fa-star star" data-value="3"></i>
+                                                    <i class="fa-regular fa-star star" data-value="4"></i>
+                                                    <i class="fa-regular fa-star star" data-value="5"></i>
+                                                </div>
+                                            </div>
+                                            <div class="rating-value">0.0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="feedback" class="form-label">Feedback:</label>
+                                <textarea class="form-control" id="feedback" rows="4"
+                                          placeholder="Share your thoughts..."></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-outline-secondary flex-fill" data-bs-dismiss="modal">Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary flex-fill" onclick="submitRating()">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Show pop-up logout
+            function showPopup() {
+                document.querySelector(".overlay").classList.add("active");
+            }
+
+            function hidePopup() {
+                document.querySelector(".overlay").classList.remove("active");
+            }
+
+            function confirmLogout() {
+                document.getElementById("logoutForm").submit();
+            }
+
+            function toggleDropdown() {
+                document.getElementById("featuresDropdown").classList.toggle("show");
+            }
+
+            window.onclick = function (event) {
+                if (!event.target.matches('.dropdown-toggle')) {
+                    var dropdowns = document.getElementsByClassName("dropdown-menu");
+                    for (var i = 0; i < dropdowns.length; i++) {
+                        var openDropdown = dropdowns[i];
+                        if (openDropdown.classList.contains('show')) {
+                            openDropdown.classList.remove('show');
+                        }
+                    }
+                }
+            }
+        </script>
+    </div>
+    <!-- Javascript Files-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/user_side/js/plugins.js"></script>
     <script src="/user_side/js/designesia.js"></script>
-
+    <script src="/user_side/js/rating-client.js"></script>
+</div>
 </body>
 
-
-<!-- Mirrored from www.madebydesignesia.com/themes/rentaly/school-single.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 06 Sep 2024 16:12:34 GMT -->
 </html>

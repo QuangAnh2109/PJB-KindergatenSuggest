@@ -4,6 +4,7 @@ import fa.appcode.common.utils.Constant;
 import fa.appcode.common.utils.Placeholder;
 import fa.appcode.common.utils.SendMailInfo;
 import fa.appcode.common.vo.EmailContentVo;
+import fa.appcode.common.vo.MyRequestVo;
 import fa.appcode.common.vo.RequestDetailVo;
 import fa.appcode.common.vo.RequestVo;
 import fa.appcode.entities.Request;
@@ -53,16 +54,11 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Override
-    public Page<Request> findRequestByAccountIdAndDeleteFlg(Integer accountId, Pageable pageable) {
+    public Page<MyRequestVo> findRequestByAccountId(Integer accountId, Pageable pageable) throws DataAccessException{
         logger.info("Fetching requests by accountId and deleteFlg");
-        try {
-            Page<Request> result = requestRepository.findRequestByAccountIdAndDeleteFlgIsFalse(accountId, pageable);
-            logger.info("Found {} requests for account ID: {}", result.getTotalElements(), accountId);
-            return result;
-        } catch (DataAccessException e) {
-            logger.error("Database error when fetching requests for account ID: {}", accountId, e);
-            return Page.empty();
-        }
+        Page<MyRequestVo> result = requestRepository.findRequestByAccountId(accountId,pageable);
+        logger.info("Found {} requests for account ID: {}", result.getTotalElements(), accountId);
+        return result;
     }
 
     @Override

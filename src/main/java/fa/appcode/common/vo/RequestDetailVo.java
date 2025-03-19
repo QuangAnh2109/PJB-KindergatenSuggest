@@ -1,10 +1,9 @@
 package fa.appcode.common.vo;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
+
+import java.util.Date;
 
 @Getter
 @Setter

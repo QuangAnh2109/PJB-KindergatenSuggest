@@ -6,6 +6,7 @@ import fa.appcode.entities.District;
 import fa.appcode.entities.Ward;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.time.Instant;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Setter
 public class SchoolInfoVo {
     private Integer id;

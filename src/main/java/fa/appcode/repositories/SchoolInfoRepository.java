@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository("schoolInfoRepository")
 public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer> {
@@ -174,4 +175,5 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
     String getSchoolNameByIdAndDeleteFlg(int id, boolean deleteFlg);
 
     SchoolInfo findSchoolInfoByIdAndRecordNoAndDeleteFlg(int id, int recordNo, boolean deleteFlg);
+
 }

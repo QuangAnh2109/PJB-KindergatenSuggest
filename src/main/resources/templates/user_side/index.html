@@ -78,15 +78,17 @@
             border: none;
             cursor: pointer;
             border-radius: 5px;
+            width: 100px;
         }
 
         .btn-cancel {
+            width: 100px;
             background-color: #5bc0de;
             color: white;
             padding: 10px 15px;
             border: none;
             cursor: pointer;
-            border-radius:5px;
+            border-radius: 5px;
         }
 
         /* Drop-down */
@@ -173,7 +175,7 @@
                             <div class="de-flex-col">
                                 <!-- logo begin -->
                                 <div id="logo">
-                                    <a th:href="@{public    /home}">
+                                    <a th:href="@{/public/home}">
                                         <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
                                         <img class="logo-2" src="/user_side/images/logo1.png" alt="">
                                     </a>
@@ -183,7 +185,7 @@
                         </div>
                         <div class="de-flex-col header-col-mid">
                             <ul id="mainmenu">
-                                <li><a class="menu-item" href="/public/search">School Search</a>
+                                <li><a class="menu-item" href="/public/school/search">School Search</a>
                                 </li>
                                 <li><a class="menu-item" href="#">Community</a>
                                 </li>
@@ -193,11 +195,11 @@
                         </div>
                         <div class="de-flex-col">
                             <div class="menu_side_area" sec:authorize="!isAuthenticated()">
-                                <a th:href="@{/public/showMyLoginPage}" class="btn-main">Login</a>
+                                <a th:href="@{/showMyLoginPage}" class="btn-main">Login</a>
                                 <span class="menu-btn"></span>
                             </div>
                             <div class="menu_side_area" sec:authorize="!isAuthenticated()">
-                                <a th:href="@{/public/register}" class="btn-main">Sign Up</a>
+                                <a th:href="@{/register}" class="btn-main">Sign Up</a>
                                 <span class="menu-btn"></span>
                             </div>
                             <div class="logout-container" sec:authorize="isAuthenticated()">
@@ -260,7 +262,9 @@
                                                        placeholder="Enter a school name" id="keyword"
                                                        class="form-control"
                                                        style="width: 50%;height: 50px">
-                                                <button class="btn-main" style="margin-left: 15px" onclick="searchRedirect()">Search</button>
+                                                <button class="btn-main" style="margin-left: 15px"
+                                                        onclick="searchRedirectByKeyword()">Search
+                                                </button>
                                             </div>
                                             <div class="jls-address-preview jls-address-preview--hidden">
                                                 <div class="jls-address-preview__header">
@@ -283,7 +287,8 @@
                                             <select name="district" id="district" class="form-select">
                                                 <option selected disabled value="">Select District</option>
                                             </select>
-                                            <button class="btn-main" style="width: 15%;margin-left: 15px" onclick="searchRedirect()">
+                                            <button class="btn-main" style="width: 15%;margin-left: 15px"
+                                                    onclick="searchRedirectByAddress()">
                                                 Search
                                             </button>
                                         </div>
@@ -382,17 +387,20 @@
             <div class="container">
                 <div class="row g-5">
                     <div class="col-lg-6 wow fadeInRight">
-                        <h2>We offer customers a wide range of <span class="id-color">commercial cars</span> and <span
-                                class="id-color">luxury cars</span> for any occasion.</h2>
+                        <h2>We help parents find the perfect<span class="id-color">kindergarten</span> for their child
+                            by <span
+                                    class="id-color">personalized recommendations</span> based on location, facilities,
+                            curriculum, and budget.</h2>
                     </div>
                     <div class="col-lg-6 wow fadeInLeft">
-                        At our car rental agency, we believe that everyone deserves to experience the pleasure of
-                        driving a reliable and comfortable vehicle, regardless of their budget. We have curated a
-                        diverse fleet of well-maintained cars, ranging from sleek sedans to spacious SUVs, all at
-                        competitive prices. With our streamlined rental process, you can quickly and conveniently
-                        reserve your desired vehicle. Whether you need transportation for a business trip, family
-                        vacation, or simply want to enjoy a weekend getaway, we have flexible rental options to
-                        accommodate your schedule.
+                        Our kindergarten suggestion system is designed to help parents find the ideal learning
+                        environment for their child. We understand that every family has unique preferences, so our
+                        system carefully analyzes factors such as location, facilities, curriculum, teaching methods,
+                        and budget to provide personalized recommendations. With a user-friendly interface and a
+                        comprehensive database of kindergartens, we make the search process seamless and stress-free.
+                        Whether parents are looking for a school with a strong academic focus, a nurturing atmosphere,
+                        or specialized programs, our system ensures they find the best possible match for their child’s
+                        early education journey.
                     </div>
                 </div>
                 <div class="spacer-double"></div>
@@ -400,112 +408,25 @@
                     <div class="col-md-3 col-sm-6 mb-sm-30">
                         <div class="de_count bg-dark text-light wow fadeInUp">
                             <h3 class="timer" data-to="15425" data-speed="3000">0</h3>
-                            Completed Orders
+                            School
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6 mb-sm-30">
                         <div class="de_count bg-dark text-light wow fadeInUp">
                             <h3 class="timer" data-to="8745" data-speed="3000">0</h3>
-                            Happy Customers
+                            Happy Parents
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6 mb-sm-30">
                         <div class="de_count bg-dark text-light wow fadeInUp">
                             <h3 class="timer" data-to="235" data-speed="3000">0</h3>
-                            Vehicles Fleet
+                            School with 5 star
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6 mb-sm-30">
                         <div class="de_count bg-dark text-light wow fadeInUp">
                             <h3 class="timer" data-to="15" data-speed="3000">0</h3>
                             Years Experience
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="section-faq">
-            <div class="container">
-                <div class="row">
-                    <div class="col text-center">
-                        <span class="subtitle">Do You Have</h2></span>
-                        <h2>Any Questions?</h2>
-                        <div class="spacer-20"></div>
-                    </div>
-                </div>
-                <div class="row g-custom-x">
-                    <div class="col-md-6 wow fadeInUp">
-                        <div class="accordion secondary">
-                            <div class="accordion-section">
-                                <div class="accordion-section-title" data-tab="#accordion-1">
-                                    How do I get started with Car Rental?
-                                </div>
-                                <div class="accordion-section-content" id="accordion-1">
-                                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-                                        praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-                                        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-                                        officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
-                                        rerum facilis est et expedita distinctio.</p>
-                                </div>
-                                <div class="accordion-section-title" data-tab="#accordion-2">
-                                    Can I rent a car with a debit card??
-                                </div>
-                                <div class="accordion-section-content" id="accordion-2">
-                                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-                                        praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-                                        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-                                        officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
-                                        rerum facilis est et expedita distinctio.</p>
-                                </div>
-                                <div class="accordion-section-title" data-tab="#accordion-3">
-                                    What kind of Car Rental do I need?
-                                </div>
-                                <div class="accordion-section-content" id="accordion-3">
-                                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-                                        praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-                                        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-                                        officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
-                                        rerum facilis est et expedita distinctio.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 wow fadeInUp">
-                        <div class="accordion secondary">
-                            <div class="accordion-section">
-                                <div class="accordion-section-title" data-tab="#accordion-b-4">
-                                    What is a rental car security deposit?
-                                </div>
-                                <div class="accordion-section-content" id="accordion-b-4">
-                                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-                                        praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-                                        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-                                        officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
-                                        rerum facilis est et expedita distinctio.</p>
-                                </div>
-                                <div class="accordion-section-title" data-tab="#accordion-b-5">
-                                    Can I cancel or modify my reservation?
-                                </div>
-                                <div class="accordion-section-content" id="accordion-b-5">
-                                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-                                        praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-                                        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-                                        officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
-                                        rerum facilis est et expedita distinctio.</p>
-                                </div>
-                                <div class="accordion-section-title" data-tab="#accordion-b-6">
-                                    Is it possible to extend my rental period?
-                                </div>
-                                <div class="accordion-section-content" id="accordion-b-6">
-                                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-                                        praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-                                        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-                                        officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
-                                        rerum facilis est et expedita distinctio.</p>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -525,32 +446,6 @@
 
         <form id="logoutForm" th:action="@{/logout}" method="post"></form>
         <!--End log out-->
-        <section id="section-call-to-action" class="bg-color-2 pt60 pb60 text-light">
-            <div class="container">
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col-lg-4 offset-lg-2">
-                            <span class="subtitle text-white">Call us for further information</span>
-                            <h2 class="s2">Our customer care system is here to help you anytime.</h2>
-                        </div>
-
-                        <div class="col-lg-4 text-lg-center text-sm-center">
-                            <div class="phone-num-big">
-                                <i class="fa fa-phone"></i>
-                                <span class="pnb-text">
-                                    Call Us Now
-                                </span>
-                                <span class="pnb-num">
-                                    1 200 333 800
-                                </span>
-                            </div>
-                            <a href="#" class="btn-main">Contact Us</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </div>
 
     <!-- content close -->
@@ -588,7 +483,7 @@
                         <div class="col-lg-6">
                             <div class="widget">
                                 <ul>
-                                    <li><a href="#">School Search</a></li>
+                                    <li><a href="/public/school/search">School Search</a></li>
                                     <li><a href="#">Community</a></li>
                                     <li><a href="#">About Us</a></li>
                                 </ul>
@@ -634,7 +529,6 @@
     <!-- footer close -->
 </div>
 
-<!--Scrpit to fetch API, send request-->
 <script>
     // Show pop-up logout
     function showPopup() {
@@ -669,38 +563,60 @@
     function loadDistrict(cityId) {
         $.ajax({
             url: "/public/districts",
-            type: "get",
-            data: {
-                cityId: cityId,
-            },
+            type: "GET",
+            data: { cityId: cityId },
             success: function (json) {
-                //change response data to html
-                response = '<option value="" disabled selected>District</option>';
-                json.forEach(item => {
-                    response += '<option value="' + item.id + '">' + item.districtName + '</option>';
-                });
-                //add html to district form
-                document.getElementById("district").innerHTML = response;
-                document.getElementById("district").removeAttribute("disabled");
-                //disable ward form and address form
-                document.getElementById("ward").disabled = true;
-                document.getElementById("ward").value = "";
-                document.getElementById("address").disabled = true;
-                document.getElementById("address").value = "";
+                if (!json || json.length === 0) {
+                    console.warn("No districts found for cityId:", cityId);
+                    return;
+                }
+
+                const districtSelect = document.getElementById("district");
+                if (!districtSelect) return;
+
+                const selectedDistrict = districtSelect.value; // Lấy giá trị đang chọn trước đó
+
+                let options = '<option value="" disabled>District</option>';
+                options += json.map(item => {
+                    const isSelected = item.id == selectedDistrict ? 'selected' : '';
+                    return `<option value="${item.id}" ${isSelected}>${item.districtName}</option>`;
+                }).join('');
+
+                districtSelect.innerHTML = options;
+                districtSelect.removeAttribute("disabled");
+
+                // Reset address field
+                const addressInput = document.getElementById("address");
+                if (addressInput) {
+                    addressInput.disabled = true;
+                    addressInput.value = "";
+                }
             },
             error: function (xhr) {
-                console.log("load district failed" + xhr);
+                console.error("Load district failed:", xhr);
             },
         });
     }
+
 
     function searchRedirect() {
         const input = document.getElementById("keyword").value;
         const cityId = document.getElementById("citySelect").value;
         const district = document.getElementById("district").value;
+        const uri = `/public/school/search?keyword=${encodeURIComponent(input)}&cityId=${cityId}&districtId=${district}`;
+        window.location.href = uri;
+    }
 
-        const uri = `/public/search/process?keyword=${encodeURIComponent(input)}&cityId=${cityId}&districtId=${district}`;
+    function searchRedirectByAddress() {
+        let cityId = document.getElementById("citySelect").value;
+        let district = document.getElementById("district").value;
+        const uri = `/public/school/search?cityId=${cityId}&districtId=${district}`;
+        window.location.href = uri;
+    }
 
+    function searchRedirectByKeyword() {
+        const input = document.getElementById("keyword").value;
+        const uri = `/public/school/search?keyword=${encodeURIComponent(input)}`;
         window.location.href = uri;
     }
 
