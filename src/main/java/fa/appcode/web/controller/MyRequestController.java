@@ -39,13 +39,6 @@ public class MyRequestController {
         Page<MyRequestVo> listRequest = requestService.findRequestByAccountId(id, pageable);
 
 
-        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("requests", listRequest.getContent());
-            response.put("totalPages", listRequest.getTotalPages());
-            response.put("currentPage", listRequest.getNumber() + 1);
-            return ResponseEntity.ok(response);
-        }
 
         model.addAttribute("requestList", listRequest);
         model.addAttribute("currentPage", currentPage);

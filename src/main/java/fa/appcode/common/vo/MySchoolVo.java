@@ -1,12 +1,14 @@
 package fa.appcode.common.vo;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 
 public class MySchoolVo {
 
@@ -14,6 +16,8 @@ public class MySchoolVo {
     private Integer schoolId;
     @NotNull
     private String schoolName;
+    @NotNull
+    private String schoolEmail;
     @NotNull
     private String schoolAddress;
     @NotNull
@@ -28,5 +32,7 @@ public class MySchoolVo {
     private double avgRating;
     @NotNull
     private int totalRating;
+    @NotNull
+    private double yourRating;
 
 }

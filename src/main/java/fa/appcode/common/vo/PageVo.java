@@ -13,8 +13,9 @@ import lombok.NoArgsConstructor;
 @Setter
 public class PageVo<E> {
 
-    private Integer currentPage;
-    private Integer totalPage;
-    private List<E> content;
+    private List<?> content;
+    private int totalPages;
+    private long totalElements;
+    private int currentPage;
 
 }

@@ -78,9 +78,11 @@
             border: none;
             cursor: pointer;
             border-radius: 5px;
+            width: 100px;
         }
 
         .btn-cancel {
+            width: 100px;
             background-color: #5bc0de;
             color: white;
             padding: 10px 15px;
@@ -430,93 +432,6 @@
                 </div>
             </div>
         </section>
-
-        <section id="section-faq">
-            <div class="container">
-                <div class="row">
-                    <div class="col text-center">
-                        <span class="subtitle">Do You Have</h2></span>
-                        <h2>Any Questions?</h2>
-                        <div class="spacer-20"></div>
-                    </div>
-                </div>
-                <div class="row g-custom-x">
-                    <div class="col-md-6 wow fadeInUp">
-                        <div class="accordion secondary">
-                            <div class="accordion-section">
-                                <div class="accordion-section-title" data-tab="#accordion-1">
-                                    How do I get started with Car Rental?
-                                </div>
-                                <div class="accordion-section-content" id="accordion-1">
-                                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-                                        praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-                                        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-                                        officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
-                                        rerum facilis est et expedita distinctio.</p>
-                                </div>
-                                <div class="accordion-section-title" data-tab="#accordion-2">
-                                    Can I rent a car with a debit card??
-                                </div>
-                                <div class="accordion-section-content" id="accordion-2">
-                                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-                                        praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-                                        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-                                        officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
-                                        rerum facilis est et expedita distinctio.</p>
-                                </div>
-                                <div class="accordion-section-title" data-tab="#accordion-3">
-                                    What kind of Car Rental do I need?
-                                </div>
-                                <div class="accordion-section-content" id="accordion-3">
-                                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-                                        praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-                                        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-                                        officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
-                                        rerum facilis est et expedita distinctio.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 wow fadeInUp">
-                        <div class="accordion secondary">
-                            <div class="accordion-section">
-                                <div class="accordion-section-title" data-tab="#accordion-b-4">
-                                    What is a rental car security deposit?
-                                </div>
-                                <div class="accordion-section-content" id="accordion-b-4">
-                                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-                                        praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-                                        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-                                        officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
-                                        rerum facilis est et expedita distinctio.</p>
-                                </div>
-                                <div class="accordion-section-title" data-tab="#accordion-b-5">
-                                    Can I cancel or modify my reservation?
-                                </div>
-                                <div class="accordion-section-content" id="accordion-b-5">
-                                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-                                        praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-                                        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-                                        officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
-                                        rerum facilis est et expedita distinctio.</p>
-                                </div>
-                                <div class="accordion-section-title" data-tab="#accordion-b-6">
-                                    Is it possible to extend my rental period?
-                                </div>
-                                <div class="accordion-section-content" id="accordion-b-6">
-                                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-                                        praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-                                        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-                                        officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
-                                        rerum facilis est et expedita distinctio.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
         <!--Log out-->
         <div id="logoutPopup" class="overlay">
             <div class="popup">
@@ -531,32 +446,6 @@
 
         <form id="logoutForm" th:action="@{/logout}" method="post"></form>
         <!--End log out-->
-        <section id="section-call-to-action" class="bg-color-2 pt60 pb60 text-light">
-            <div class="container">
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col-lg-4 offset-lg-2">
-                            <span class="subtitle text-white">Call us for further information</span>
-                            <h2 class="s2">Our customer care system is here to help you anytime.</h2>
-                        </div>
-
-                        <div class="col-lg-4 text-lg-center text-sm-center">
-                            <div class="phone-num-big">
-                                <i class="fa fa-phone"></i>
-                                <span class="pnb-text">
-                                    Call Us Now
-                                </span>
-                                <span class="pnb-num">
-                                    1 200 333 800
-                                </span>
-                            </div>
-                            <a href="#" class="btn-main">Contact Us</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </div>
 
     <!-- content close -->
@@ -594,7 +483,7 @@
                         <div class="col-lg-6">
                             <div class="widget">
                                 <ul>
-                                    <li><a href="#">School Search</a></li>
+                                    <li><a href="/public/school/search">School Search</a></li>
                                     <li><a href="#">Community</a></li>
                                     <li><a href="#">About Us</a></li>
                                 </ul>
@@ -640,7 +529,6 @@
     <!-- footer close -->
 </div>
 
-<!--Scrpit to fetch API, send request-->
 <script>
     // Show pop-up logout
     function showPopup() {

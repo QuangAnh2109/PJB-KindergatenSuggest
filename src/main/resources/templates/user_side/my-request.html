@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="zxx" xmlns="http://www.w3.org/1999/html">
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
@@ -42,6 +41,7 @@
         }
     </style>
 </head>
+
 
 <body>
 <div id="wrapper">
@@ -142,62 +142,64 @@
             </div>
             <!-- Request 2 -->
             <div style="overflow-y:auto;height:1000px;width: auto;padding: 0px 20px">
-                <div class="row request-column" th:each="request : ${requestList}">
-                    <div class="col-md-7">
-                        <div class="request-card">
-                            <div style="display: flex;justify-content: space-between">
-                                <div style="margin-bottom: 10px" class="status-time"
-                                     th:text="${#temporals.format(request.getCreateTime(), 'dd/MM/yyyy HH:mm:ss')}"></div>
-                                <div th:with="status=${request.getRequestMasterName()}">
-                                    <span th:if="${status == 'Closed'}" class="status-closed">Closed</span>
-                                    <span th:if="${status == 'Open'}" class="status-open">Open</span>
+                <div id="requestContainer">
+                    <div class="row request-column" th:each="request : ${requestList}">
+                        <div class="col-md-7">
+                            <div class="request-card">
+                                <div style="display: flex;justify-content: space-between">
+                                    <div style="margin-bottom: 10px" class="status-time"
+                                         th:text="${#temporals.format(request.getCreateTime(), 'dd/MM/yyyy HH:mm:ss')}"></div>
+                                    <div th:with="status=${request.getRequestMasterName()}">
+                                        <span th:if="${status == 'Closed'}" class="status-closed">Closed</span>
+                                        <span th:if="${status == 'Open'}" class="status-open">Open</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h5>Request Number: #<span th:text="${request.getId()}"></span></h5>
+                                </div>
+                                <p><strong>Request Information:</strong></p>
+                                <p>Full Name: <span th:text="${request.getFullName()}"></span></p>
+                                <p>Email address: <span th:text="${request.getRequestEmail()}"></span></p>
+                                <p>Phone number: <span th:text="${request.getRequestPhone()}"></span></p>
+                                <p class="content" id="textContent">
+                                    <span th:text="${request.getInquires()}"></span>
+                                </p>
+                                <a class="see-more" id="seeMoreBtn" onclick="toggleContent()">See more...</a>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="school-summary">
+                                <h5>School Summary</h5>
+                                <h3><a th:href="@{/public/school/details/{id}(id=${request.getSchoolId()})}"><span
+                                        th:text="${request.getRequestSchoolName()}"></span></a>
+                                </h3>
+                                <p><i class="fa-solid fa-location-dot"></i> Address: <span
+                                        th:text="${request.getAddress()}"></span></p>
+                                <p><i class="fa-solid fa-envelope"></i> Email: <span
+                                        th:text="${request.getEmailSchool()}"></span></p>
+                                <p>
+                                    <i class="fa-solid fa-money-bills"></i>
+                                    Tuition fee: From
+                                    <span th:text="${#numbers.formatInteger(request.getFeeFrom(), 3, 'COMMA')}"></span>
+                                    VND/month
+                                </p>
+                                <p><i class="fa-solid fa-book-bookmark"></i> Admission age: From <span
+                                        th:text="${request.getAgeRange()}"></span></p>
+                                <div class="star-rating">
+                                    <!-- Show 5 stars with different classes based on rating -->
+                                    <span th:each="i : ${#numbers.sequence(1, 5)}"
+                                          th:class="${i <= request.getAvgRating() ? 'star-filled' : (i <= request.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
+                                    <span th:text="${request.getAvgRating()}"></span>/5
+                                    (<span th:text="${request.getTotalRating()}"></span> ratings)
                                 </div>
                             </div>
-                            <div>
-                                <h5>Request Number: #<span th:text="${request.getId()}"></span></h5>
-                            </div>
-                            <p><strong>Request Information:</strong></p>
-                            <p>Full Name: <span th:text="${request.getFullName()}"></span></p>
-                            <p>Email address: <span th:text="${request.getRequestEmail()}"></span></p>
-                            <p>Phone number: <span th:text="${request.getRequestPhone()}"></span></p>
-                            <p class="content" id="textContent">
-                                <span th:text="${request.getInquires()}"></span>
-                            </p>
-                            <a class="see-more" id="seeMoreBtn" onclick="toggleContent()">See more...</a>
                         </div>
+                        <p style="font-size: 13px;font-style: italic;color: darkgrey"> *Our staff will contact you
+                            within 24
+                            hrs. If you need urgent assistance, please contact us via our
+                            hotline 0123456789</p>
                     </div>
-                    <div class="col-md-5">
-                        <div class="school-summary">
-                            <h5>School Summary</h5>
-                            <h3><a th:href="@{/public/school/{id}(id=${request.getSchoolId()})}"><span
-                                    th:text="${request.getRequestSchoolName()}"></span></a></h3>
-                            </h3>
-                            <p><i class="fa-solid fa-location-dot"></i> Address: <span
-                                    th:text="${request.getAddress()}"></span></p>
-                            <p><i class="fa-solid fa-envelope"></i> Email: <span
-                                    th:text="${request.getEmailSchool()}"></span></p>
-                            <p>
-                                <i class="fa-solid fa-money-bills"></i>
-                                Tuition fee: From
-                                <span th:text="${#numbers.formatInteger(request.getFeeFrom(), 3, 'COMMA')}"></span>
-                                VND/month
-                            </p>
-                            <p><i class="fa-solid fa-book-bookmark"></i> Admission age: From <span
-                                    th:text="${request.getAgeRange()}"></span></p>
-                            <div class="star-rating">
-                                <!-- Show 5 stars with different classes based on rating -->
-                                <span th:each="i : ${#numbers.sequence(1, 5)}"
-                                      th:class="${i <= request.getAvgRating() ? 'star-filled' : (i <= request.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
-                                <span th:text="${request.getAvgRating()}"></span>/5
-                                (<span th:text="${request.getTotalRating()}"></span> ratings)
-                            </div>
-                        </div>
-                    </div>
-                    <p style="font-size: 13px;font-style: italic;color: darkgrey"> *Our staff will contact you within 24
-                        hrs. If you need urgent assistance, please contact us via our
-                        hotline 0123456789</p>
                 </div>
-
             </div>
 
             <!-- Add a hidden span to store total pages -->
@@ -228,7 +230,7 @@
     <div id="logoutPopup" class="overlay">
         <div class="popup">
             <h2>Are you leaving?</h2>
-            <p>Are you sure you want to logout? All your unsaved data will be lost.</p>
+            <p>Are you sure you want to log out? All your unsaved data will be lost.</p>
             <div class="button-container">
                 <button class="btn-yes" onclick="confirmLogout()">Yes</button>
                 <button class="btn-cancel" onclick="hidePopup()">Cancel</button>
@@ -249,10 +251,11 @@
             <div class="row g-custom-x">
                 <div class="col-lg-3">
                     <div class="widget">
-                        <h5>About Rentaly</h5>
-                        <p>Where quality meets affordability. We understand the importance of a smooth and enjoyable
-                            journey without the burden of excessive costs. That's why we have meticulously crafted our
-                            offerings to provide you with top-notch vehicles at minimum expense.</p>
+                        <h5>About KS System</h5>
+                        <p>The best way to find the perfect kindergarten for your child! We understand that every child
+                            has unique needs, so our system is designed to help you search easily, quickly, and
+                            accurately—matching your preferences in teaching quality, curriculum, location, and
+                            affordability.</p>
                     </div>
                 </div>
 
@@ -275,11 +278,9 @@
                         <div class="col-lg-6">
                             <div class="widget">
                                 <ul>
-                                    <li><a href="#">About</a></li>
-                                    <li><a href="#">Blog</a></li>
-                                    <li><a href="#">Careers</a></li>
-                                    <li><a href="#">News</a></li>
-                                    <li><a href="#">Partners</a></li>
+                                    <li><a href="/public/school/search">School Search</a></li>
+                                    <li><a href="#">Community</a></li>
+                                    <li><a href="#">About Us</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -306,8 +307,8 @@
                     <div class="col-md-12">
                         <div class="de-flex">
                             <div class="de-flex-col">
-                                <a href="index.html">
-                                    Copyright 2024 - Rentaly by Designesia
+                                <a href="/public/home">
+                                    Copyright 2025 - Kindergarten Suggestion System
                                 </a>
                             </div>
                             <ul class="menu-simple">
@@ -321,11 +322,9 @@
         </div>
     </footer>
     <!-- footer close -->
-
 </div>
 
 <script>
-
     // Show pop-up logout
     function showPopup() {
         document.querySelector(".overlay").classList.add("active");
@@ -339,9 +338,17 @@
         document.getElementById("logoutForm").submit();
     }
 
-    function toggleContent() {
-        var content = document.getElementById("textContent");
-        var seeMoreBtn = document.getElementById("seeMoreBtn");
+    // Toggle dropdown menu
+    function toggleDropdown(event) {
+        event.preventDefault();
+        var dropdown = document.getElementById("featuresDropdown");
+        dropdown.classList.toggle("show");
+    }
+
+    // Toggle content expansion for a specific request
+    function toggleContent(requestId) {
+        var content = document.getElementById("textContent-" + requestId);
+        var seeMoreBtn = document.getElementById("seeMoreBtn-" + requestId);
 
         if (content.classList.contains("expanded")) {
             content.classList.remove("expanded");
@@ -356,28 +363,44 @@
         }
     }
 
+    // Check if content needs "See more" button
     function checkOverflow() {
-        var content = document.getElementById("textContent");
-        var seeMoreBtn = document.getElementById("seeMoreBtn");
-        var computedStyle = window.getComputedStyle(content);
-        var lineHeight = parseFloat(computedStyle.lineHeight);
-        var maxHeight = lineHeight * 3; // 3 lines max
+        var contents = document.querySelectorAll(".content");
+        contents.forEach(function (content) {
+            var requestId = content.id.split("-")[1];
+            var seeMoreBtn = document.getElementById("seeMoreBtn-" + requestId);
 
-        if (content.scrollHeight > maxHeight) {
-            seeMoreBtn.style.display = "inline"; // Show "See more..."
-        }
+            if (seeMoreBtn) {
+                var computedStyle = window.getComputedStyle(content);
+                var lineHeight = parseFloat(computedStyle.lineHeight) || 20; // Default line height if not set
+                var maxHeight = lineHeight * 3; // 3 lines max
+
+                if (content.scrollHeight > content.clientHeight) {
+                    seeMoreBtn.style.display = "inline"; // Show "See more..."
+                }
+            }
+        });
     }
 
-    document.addEventListener("DOMContentLoaded", checkOverflow);
+    // Run on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        checkOverflow();
 
+        // Add click event listeners to pagination links
+        document.querySelectorAll(".pagination .page-link").forEach(function (link) {
+            if (link.getAttribute("href") === "#") {
+                link.addEventListener("click", function (e) {
+                    e.preventDefault();
+                });
+            }
+        });
+    });
 </script>
-<!-- Javascript Files
-================================================== -->
+
+<!-- Javascript Files -->
 <script src="/user_side/js/plugins.js"></script>
-<script src="/user_side/js/designesia.js"></script>
-<script src="/user_side/js/dropdown.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="/user_side/js/designesia.js"></script>
+<script src="/user_side/js/request-list.js"></script>
 </body>
-
 </html>

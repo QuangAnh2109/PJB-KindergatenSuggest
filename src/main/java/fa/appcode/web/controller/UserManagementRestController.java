@@ -1,7 +1,6 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.common.logging.Log4jUtils;
-import fa.appcode.common.utils.ValidateUtils;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.services.AccountService;
 

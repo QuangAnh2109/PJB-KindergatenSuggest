@@ -7,6 +7,9 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -54,6 +57,9 @@ public class SchoolInfo {
     @JoinColumn(name = "city_id", nullable = false)
     private City city;
 
+    @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
+    private Set<SchoolUtility> utilities = new HashSet<>();
+
     @Lob
     @Column(name = "school_introduction", columnDefinition = "TEXT")
     private String schoolIntroduction;
@@ -91,4 +97,5 @@ public class SchoolInfo {
 
     @Column(name = "delete_flg", nullable = false)
     private Boolean deleteFlg = false;
+
 }

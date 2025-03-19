@@ -132,16 +132,17 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     @Override
     public Page<MySchoolVo> findListSchoolParentEnrolledByParentId(int parentId, Pageable pageable) {
         LOGGER.info("Find List Parent Enrolled School By ParentId: {}", parentId);
-        LOGGER.info("Found {} records of school for Parent ID: {}", pageable.getPageSize(), parentId);
-
-        return enrollSchoolRepository.findListSchoolParentEnrolledByParentId(parentId,pageable);
+        Page<MySchoolVo> results = enrollSchoolRepository.findListSchoolParentEnrolledByParentId(parentId,pageable);
+        LOGGER.info("Found {} records of school for Parent ID: {}", results.getTotalElements(), parentId);
+        return results;
     }
 
     @Override
     public Page<MySchoolVo> findListSchoolParentPreEnrolledByParentId(int parentId, Pageable pageable) {
         LOGGER.info("Find List Parent Previous Enrolled School By ParentId: {}", parentId);
-        LOGGER.info("Found {} records of pre-school for Parent ID: {}", pageable.getPageSize(), parentId);
-        return enrollSchoolRepository.findListSchoolParentPreEnrolledByParentId(parentId,pageable);
+        Page<MySchoolVo> listPreEnroll = enrollSchoolRepository.findListSchoolParentPreEnrolledByParentId(parentId,pageable);
+        LOGGER.info("Found {} records of pre-school for Parent ID: {}", listPreEnroll.getTotalElements(), parentId);
+        return listPreEnroll;
     }
 
     //check if Parent is Enrolled to school or not

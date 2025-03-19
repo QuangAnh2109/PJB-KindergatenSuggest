@@ -234,6 +234,7 @@ public class RequestController {
                                           @RequestParam String email,
                                           @RequestParam String phone,
                                           @RequestParam String inquiries,
+                                          @RequestParam Integer schoolId,
                                           Principal principal){
         AccountInfo accountID = accountService.getAccountInfo(principal);
         SchoolInfo school = schoolInfoService.getSchoolInfoById(1);

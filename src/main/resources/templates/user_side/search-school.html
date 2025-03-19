@@ -860,7 +860,6 @@
         let fullName = document.getElementById("fullName").value.trim();
         let inquiries = document.getElementById("inquiries").value.trim();
 
-        // Lấy giá trị từ Thymeleaf, sử dụng giá trị mặc định nếu null hoặc undefined
         let emailErrorMessage = /*[[${emailErrorMessage}]]*/ 'Email must end with @gmail.com';
         let mobileErrorMessage = /*[[${mobileErrorMessage}]]*/ 'Mobile number must be 10 digits';
         let requiredFieldMessage = /*[[${requiredFieldMessage}]]*/ 'This field is required';
