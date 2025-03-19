@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class LoginController {
     private final GlobalConfig globalConfig;
+
     @GetMapping("/public/showMyLoginPage")
     public String showMyLoginPage(HttpServletRequest request, Model model,
                                   @RequestParam(value = "logout", required = false) String logout) {
@@ -25,13 +26,12 @@ public class LoginController {
         } else if (logout != null) {
             model.addAttribute("message", globalConfig.getLogoutSuccessFully());
         }
-
-        Object emailInput = session.getAttribute("email");
+        String email = "email";
+        Object emailInput = session.getAttribute(email);
         if (emailInput != null) {
-            model.addAttribute("email", emailInput);
-            session.removeAttribute("email");
+            model.addAttribute(email, emailInput);
+            session.removeAttribute(email);
         }
-
         return "/user_side/login";
     }
     @GetMapping("/public/access-denied")

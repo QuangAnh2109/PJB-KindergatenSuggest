@@ -39,19 +39,14 @@ public class ForgotPasswordController {
     @PostMapping("/public/forgot-password")
     public String forgotPasswordProcess(@RequestParam String email, Model model) {
         logger.debug("Processing forgot password request for email: {}", email);
-        // Calls service method to handle forgot password logic
         Map<String, String> validateError = accountService.handleForgotPassword(email);
-        // Add email to the model to retain input value
-        model.addAttribute("email", email);
-        // If there are validation errors, add them to the model
         if (!validateError.isEmpty()) {
-            model.addAttribute("validateError", validateError.get("emailError"));
-        }
-        // Otherwise, add the reset password link send status
-        else {
+            model.addAllAttributes(validateError);
+        } else {
             model.addAttribute("linkSendStatus", globalConfig.getSendResetPassword());
         }
-        // Return the forgot password page
+        model.addAttribute("email", email);
         return Constant.FORGOT_PASSWORD_PAGE;
     }
+
 }

@@ -134,9 +134,16 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
     @Query("SELECT si.account.email FROM SchoolInfo si WHERE si.id = :id AND si.account.statusId = :statusId AND si.account.deleteFlg = :deleteFlg")
     String getSchoolOwnerEmailBySchoolIdAndStatusAndDeleteFlg(@Param("id") int id, @Param("statusId") int statusId, @Param("deleteFlg") boolean deleteFlg);
-    @Query("SELECT COUNT(a) > 0 FROM AccountInfo a WHERE a.phone = :phone")
-    boolean existsByPhone(@Param("phone") String phone);
+    boolean existsByPhone(String phone);
+    boolean existsByEmail(String email);
     AccountInfo findAccountByEmailAndStatusIdAndDeleteFlg(String email, int statusId, boolean deleteFlg);
+    @Query("""
+    SELECT m.typeValue
+    FROM AccountInfo a
+    JOIN MasterDatum m ON a.roleId = m.typeKey
+    WHERE m.typeName = 'ROLE' AND a.email = :email
+""")
+    List<String> findRolesByEmail(@Param("email") String email);
 
     @Query("SELECT a.fullName FROM AccountInfo a WHERE a.email = ?1 AND a.deleteFlg = ?2")
     String getAccountNameByEmailAndDeleteFlg(String email, boolean deleteFlg);

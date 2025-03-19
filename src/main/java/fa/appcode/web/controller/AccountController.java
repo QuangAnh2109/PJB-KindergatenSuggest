@@ -26,10 +26,6 @@ public class AccountController {
     @GetMapping("/account-management")
     public String accountManagement(Model model) {
         AccountInfo accountInfo = accountService.getCurrentAccountInfo();
-        if (accountInfo == null) {
-            model.addAttribute("error", globalConfig.getNotFound());
-            return Constant.ACCOUNT_MANAGEMENT_PAGE;
-        }
         model.addAttribute("accountInfo", accountInfo);
         model.addAttribute("cities", cityService.findAllByNoDelete());
         return Constant.ACCOUNT_MANAGEMENT_PAGE;
@@ -38,10 +34,8 @@ public class AccountController {
     @PostMapping("/view-account")
     public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo, Model model) {
         Map<String, String> accountValidationErrors = accountService.updateAccountProcess(accountInfo);
-        if(!accountValidationErrors.isEmpty()){
-            for(Map.Entry<String, String> error : accountValidationErrors.entrySet()){
-                model.addAttribute(error.getKey(), error.getValue());
-            }
+        if (!accountValidationErrors.isEmpty()) {
+            model.addAllAttributes(accountValidationErrors);
             model.addAttribute("cities", cityService.findAllByNoDelete());
             return Constant.ACCOUNT_MANAGEMENT_PAGE;
         }

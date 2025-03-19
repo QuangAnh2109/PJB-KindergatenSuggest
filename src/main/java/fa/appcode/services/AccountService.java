@@ -80,6 +80,7 @@ public interface AccountService {
      * @return String role
      */
     ParentVo findParentById(int id) throws ValidateParentException;
+
     /**
      * This method if used to find role of account by using account email
      *
@@ -108,39 +109,27 @@ public interface AccountService {
 
     void updateAccountInfo(AccountInfo existing, AccountInfo formData);
 
-    void saveAccountInfo(AccountInfo accountInfo);
-
     Map<String, String> changePasswordHandle(String oldPassword, String newPassword, String confirmPassword);
-
-    boolean forgotPasswordProcess(String email, Model model);
-
-    String resetPasswordProcess(String token, String newPassword, String confirmPassword, Model model);
-
-    AccountInfo validateResetToken(String token, Model model);
-
-    boolean resetPassword(String token, String newPassword, String confirmPassword, Model model);
-
-    boolean updateAccountDetails(AccountInfo accountInfo, Model model);
 
     AccountInfo getCurrentAccountInfo();
 
-    boolean processRegister(AccountVo accountVo);
-
     boolean verifyAccount(String token);
 
-    Map<String, Object> getValidationResult();
 
     public int getAccountIdByEmail(String email);
 
     public String getAccountNameByEmailAndNoDelete(String email);
 
-    AccountInfo validateAccountToken(String token);
+    boolean isValidAccountToken(String token);
 
     Map<String, String> handleForgotPassword(String email);
 
     Map<String, String> handleResetPassword(String token, String newPassword, String confirmPassword);
 
-    Map<String,String> updateAccountProcess(AccountInfo accountInfo);
+    Map<String, String> updateAccountProcess(AccountInfo accountInfo);
+
+    Map<String, String> handleRegisterProcess(AccountVo accountVo);
 
     List<String> getAllAccountEmailsByRole(int roleId);
+
 }

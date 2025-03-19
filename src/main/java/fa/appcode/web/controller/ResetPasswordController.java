@@ -19,13 +19,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ResetPasswordController {
 
-    // Logger for debugging and tracking logs
     private static final Logger logger = Log4jUtils.getLogger();
-
-    // Global configuration properties
     private final GlobalConfig globalConfig;
-
-    // Service responsible for handling account-related operations
     private final AccountService accountService;
 
     /**
@@ -38,11 +33,11 @@ public class ResetPasswordController {
     @GetMapping("/public/reset-password")
     public String showResetPasswordForm(@RequestParam String token, Model model) {
         // Validate the token and show the appropriate page
-        if (accountService.validateAccountToken(token) != null) {
-            model.addAttribute("token", token); // Add token to the model for further processing
-            return Constant.RESET_PASSWORD_PAGE; // Return reset password page
+        if (accountService.isValidAccountToken(token)){
+            model.addAttribute("token", token);
+            return Constant.RESET_PASSWORD_PAGE;
         }
-        return Constant.TOKEN_INVALID_PAGE; // Return token invalid page if the token is invalid
+        return Constant.TOKEN_INVALID_PAGE;
     }
 
     /**
@@ -59,17 +54,14 @@ public class ResetPasswordController {
                                        @RequestParam String newPassword,
                                        @RequestParam String confirmPassword,
                                        Model model) {
-        logger.info("Handling reset password request"); // Log the request
+        logger.info("Handling reset password request");
 
-        // Process password reset and retrieve any validation errors
+        // Process the password reset and retrieve validation errors, if any
         Map<String, String> errors = accountService.handleResetPassword(token, newPassword, confirmPassword);
-
-        // If there are validation errors, add them to the model and return the reset password page
-        if (errors != null && !errors.isEmpty()) {
-            for (Map.Entry<String, String> entry : errors.entrySet()) {
-                model.addAttribute(entry.getKey(), entry.getValue());
-            }
-            model.addAttribute("token", token); // Keep the token in the model for user reference
+        // If errors exist, add them all to the model and return the reset password page
+        if (!errors.isEmpty()) {
+            model.addAllAttributes(errors);
+            model.addAttribute("token", token); // Keep the token in the model for reference
             return Constant.RESET_PASSWORD_PAGE;
         }
 
@@ -77,4 +69,5 @@ public class ResetPasswordController {
         model.addAttribute("passwordResetSuccess", globalConfig.getPasswordResetSuccess());
         return Constant.RESET_PASSWORD_PAGE;
     }
+
 }
