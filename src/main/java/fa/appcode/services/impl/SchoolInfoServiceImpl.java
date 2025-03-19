@@ -35,10 +35,7 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     public List<EnrollSchoolInfoVo> findSchoolInfoListByAccountEmail(String email) {
         return schoolInfoRepository.findSchoolInfoByAccountEmail(email,Constant.SCHOOL_PUBLISH_STATUS);
     }
-    @Override
-    public List<EnrollSchoolInfoVo> findAllSchoolPublished() {
-        return schoolInfoRepository.findAllSchoolPublished(Constant.SCHOOL_PUBLISH_STATUS);
-    }
+
 
     @Override
     public SchoolInfo getSchoolInfoById(int email) {

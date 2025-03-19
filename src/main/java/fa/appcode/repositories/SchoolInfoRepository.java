@@ -17,8 +17,8 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
 
 
     //find all schools by account email that have school status of published
-    @Query("SELECT new fa.appcode.common.vo.EnrollSchoolInfoVo(s.id,s.schoolName) FROM SchoolInfo s JOIN AccountInfo ai ON s.account.id = ai.id WHERE ai.email=?1 AND s.deleteFlg=false AND s.statusId=?2")
-    List<EnrollSchoolInfoVo> findSchoolInfoByAccountEmail(String id,int schoolStatusId);
+    @Query("SELECT new fa.appcode.common.vo.EnrollSchoolInfoVo(s.id,s.schoolName) FROM SchoolInfo s JOIN AccountInfo ai ON s.account.id = ai.id WHERE (:email IS NULL OR ai.email = :email) AND s.deleteFlg=false AND s.statusId=:schoolStatusId")
+    List<EnrollSchoolInfoVo> findSchoolInfoByAccountEmail(String email,int schoolStatusId);
 
     //find schoolInfo by school Id
     @Query("SELECT s FROM SchoolInfo s WHERE s.deleteFlg=false AND s.id=?1 AND s.statusId=?2")
