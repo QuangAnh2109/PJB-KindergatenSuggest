@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository("accountRepository")
@@ -133,7 +134,14 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
     @Query("SELECT si.account.email FROM SchoolInfo si WHERE si.id = :id AND si.account.statusId = :statusId AND si.account.deleteFlg = :deleteFlg")
     String getSchoolOwnerEmailBySchoolIdAndStatusAndDeleteFlg(@Param("id") int id, @Param("statusId") int statusId, @Param("deleteFlg") boolean deleteFlg);
-    @Query("SELECT COUNT(a) > 0 FROM AccountInfo a WHERE a.phone = :phone")
-    boolean existsByPhone(@Param("phone") String phone);
+    boolean existsByPhone(String phone);
+    boolean existsByEmail(String email);    
     AccountInfo findAccountByEmailAndStatusIdAndDeleteFlg(String email, int statusId, boolean deleteFlg);
+    @Query("""
+    SELECT m.typeValue
+    FROM AccountInfo a
+    JOIN MasterDatum m ON a.roleId = m.typeKey
+    WHERE m.typeName = 'ROLE' AND a.email = :email
+""")
+    List<String> findRolesByEmail(@Param("email") String email);
 }

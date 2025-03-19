@@ -47,30 +47,14 @@ public class RegisterController {
     public String processRegister(@ModelAttribute("accountVo") @Valid AccountVo accountVo,
                                   Model model) {
         LOGGER.info("Processing registration for email: {}", accountVo.getEmail());
-        // Process registration and check if it was successful
-        boolean isSuccessRegistration = accountService.processRegister(accountVo);
-
-        if (isSuccessRegistration) {
-            // If registration is successful, add a success message
-            model.addAttribute("successMessage", globalConfig.getRegisterSuccess());
-        } else {
-            // If registration fails, retrieve validation errors
-            Map<String, Object> validationResult = accountService.getValidationResult();
-
-            if (validationResult != null) {
-                Object errors = validationResult.get("errors");
-
-                // If errors exist, add them to the model for displaying in the view
-                if (errors instanceof Map) {
-                    ((Map<String, String>) errors).forEach(model::addAttribute);
-                }
-            }
+        Map<String, String> registrationErrors = accountService.handleRegisterProcess(accountVo);
+        if (!registrationErrors.isEmpty()) {
+            model.addAllAttributes(registrationErrors);
+            return Constant.REGISTER_PAGE;
         }
-
-        // Return the registration page view with success or error messages
+        model.addAttribute("successMessage", globalConfig.getRegisterSuccess());
         return Constant.REGISTER_PAGE;
     }
-
     /**
      * Handles GET request for email verification.
      * @param token Verification token from the URL
@@ -84,13 +68,10 @@ public class RegisterController {
         // Call service method to verify the account using the token
         boolean isVerified = accountService.verifyAccount(token);
         if (!isVerified) {
-            // If already verified, show appropriate message
             model.addAttribute("alreadyVerified", globalConfig.getAlreadyVerification());
         } else {
-            // If verification is successful, show success message
             model.addAttribute("activeSuccess", globalConfig.getActiveSuccess());
         }
-
         // Return the verification result page
         return Constant.VERIFY_ACCOUNT_PAGE;
     }

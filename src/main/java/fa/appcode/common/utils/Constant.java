@@ -43,15 +43,14 @@ public class Constant {
     public static final String USER_LIST_PAGE = "admin_side/user-list";
     public static final String USER_DETAIL_PAGE = "admin_side/edit-account";
     //REGEX
-    public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{12,100}$";
+    public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{12,72}$";
     public static final String HOME_PAGE = "user_side/index";
     public static final String HOME_PAGE_URL = "public/home";
     public static final String EMAIL_REGEX_HTML = "\\w[\\w0-9]*@gmail.com";
     public static final String PHONE_REGEX_HTML = "/(84|0)[0-9]{9}/g";
     public static final String EMAIL_REGEX = "^[a-z][a-z0-9]*@gmail.com$";
     public static final String PHONE_REGEX = "^\\+?[0-9]{10,12}$";
-    public static final String MAIL_REGEX = "^(?=.{1,100}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-
+    public static final String MAIL_REGEX = "^(?=.{1,255}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
     //CONSTANT VALUE
     public static final Integer PARENT_ROLE_ID = 3;
     public static final Integer SCHOOL_OWNER_ID = 2;
@@ -74,10 +73,8 @@ public class Constant {
     public static final String UNENROLL_PARENT_SCHOOL ="unenroll";
     public static final String ENROLL_PARENT_SCHOOL ="enroll";
     public static final Integer SCHOOL_PUBLISH_STATUS = 5;
-
     public static final int PAGE_DEFAULT = 0;
     public static final String SEARCH_ALL = "";
-
     public static final String SUCCESS = "success";
     public static final String DANGER = "danger";
     public static final int ENROLL_STATUS_ENROLL=3;

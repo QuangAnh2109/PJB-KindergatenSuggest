@@ -114,89 +114,89 @@
                                 <div class="tab-pane fade show active" id="profile" role="tabpanel"
                                      aria-labelledby="profile-tab">
                                     <div class="row update-account">
-                                        <form action="#" th:action="@{/auth/view-account}" name="update-form"
-                                              method="post" th:object="${accountInfo}">
-                                            <input type="hidden" th:field="*{email}">
-                                            <div class="mb-3">
-                                                <label class="form-label required-label">Full Name </label>
-                                                <input type="text" class="form-control" th:field="*{fullName}">
-                                                <div th:if="${fullNameError}" class="text-danger">
-                                                    <span th:text="${fullNameError}"></span>
-                                                </div>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label required-label">Email Address </label>
-                                                <input type="email" class="form-control" th:field="*{email}" disabled>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">D.O.B</label>
-                                                <input type="date" class="form-control" th:field="*{dob}"/>
-                                                <div th:if="${dobError}" class="text-danger">
-                                                    <span th:text="${dobError}"></span>
-                                                </div>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label required-label">Mobile No. </label>
-                                                <input type="text" class="form-control" th:field="*{phone}">
-                                                <div th:if="${phoneError}" class="text-danger">
-                                                    <span th:text="${phoneError}"></span>
-                                                </div>
-                                            </div>
-
-                                            <h5>Address</h5>
-                                            <div class="mb-3">
-                                                <select onchange="loadDistrict(this.value)" name="city"
-                                                        class="form-control">
-                                                    <option th:text="${accountInfo != null and accountInfo.city != null ? accountInfo.city.cityName : ''}"
-                                                            disabled selected>Province/City
-                                                    </option>
-                                                    <option th:each="city : ${cities}" th:value="${city.id}"
-                                                            th:text="${city.cityName}"></option>
-                                                </select>
+                                            <form action="#" th:action="@{/auth/view-account}" name="update-form"
+                                                  method="post" th:object="${accountInfo}">
+                                                <input type="hidden" th:field="*{email}">
                                                 <div class="mb-3">
-                                                    <select onchange="loadWard(this.value)" name="district"
-                                                            id="district"
-                                                            class="form-control" required disabled>
-                                                        <option value="" disabled selected
-                                                                th:text="${accountInfo.district != null ? accountInfo.district.districtName : 'District'}"></option>
+                                                    <label class="form-label required-label">Full Name </label>
+                                                    <input type="text" class="form-control" th:field="*{fullName}">
+                                                    <div th:if="${fullNameError}" class="text-danger">
+                                                        <span th:text="${fullNameError}"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label required-label">Email Address </label>
+                                                    <input type="email" class="form-control" th:field="*{email}" disabled>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">D.O.B</label>
+                                                    <input type="date" class="form-control" th:field="*{dob}"/>
+                                                    <div th:if="${dobError}" class="text-danger">
+                                                        <span th:text="${dobError}"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label required-label">Mobile No. </label>
+                                                    <input type="text" class="form-control" th:field="*{phone}">
+                                                    <div th:if="${phoneError}" class="text-danger">
+                                                        <span th:text="${phoneError}"></span>
+                                                    </div>
+                                                </div>
+
+                                                <h5>Address</h5>
+                                                <div class="mb-3">
+                                                    <select onchange="loadDistrict(this.value)" name="city"
+                                                            class="form-control">
+                                                        <option th:text="${accountInfo != null and accountInfo.city != null ? accountInfo.city.cityName : ''}"
+                                                                disabled selected>Province/City
+                                                        </option>
+                                                        <option th:each="city : ${cities}" th:value="${city.id}"
+                                                                th:text="${city.cityName}"></option>
                                                     </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <select onchange="enableParam('address')" name="ward" id="ward"
-                                                            class="form-control"
-                                                            required disabled>
-                                                        <option value="" disabled selected
-                                                                th:text="${accountInfo.ward != null ? accountInfo.ward.wardName : 'Ward'}"></option>
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <input type="text" name="address" id="address" class="form-control"
-                                                           th:value="${accountInfo.address != null ? accountInfo.address : ''}"
-                                                           placeholder="Enter you address..." maxlength="255" required
-                                                           disabled>
-                                                </div>
-                                                <div th:if="${param.success}" class="alert alert-success">
-                                                    Update Successfully!
-                                                </div>
+                                                    <div class="mb-3">
+                                                        <select onchange="loadWard(this.value)" name="district"
+                                                                id="district"
+                                                                class="form-control" required disabled>
+                                                            <option value="" disabled selected
+                                                                    th:text="${accountInfo.district != null ? accountInfo.district.districtName : 'District'}"></option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <select onchange="enableParam('address')" name="ward" id="ward"
+                                                                class="form-control"
+                                                                required disabled>
+                                                            <option value="" disabled selected
+                                                                    th:text="${accountInfo.ward != null ? accountInfo.ward.wardName : 'Ward'}"></option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <input type="text" name="address" id="address" class="form-control"
+                                                               th:value="${accountInfo.address != null ? accountInfo.address : ''}"
+                                                               placeholder="Enter you address..." maxlength="255" required
+                                                               disabled>
+                                                    </div>
+                                                    <div th:if="${param.success}" class="alert alert-success">
+                                                        Update Successfully!
+                                                    </div>
 
-                                                <div th:if="${successMessage}" id="success-alert"
-                                                     class="alert alert-success alert-dismissible fade show mt-3"
-                                                     role="alert">
-                                                    <strong>Success!</strong> <span th:text="${successMessage}"></span>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                            aria-label="Close"></button>
+                                                    <div th:if="${successMessage}" id="success-alert"
+                                                         class="alert alert-success alert-dismissible fade show mt-3"
+                                                         role="alert">
+                                                        <strong>Success!</strong> <span th:text="${successMessage}"></span>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <button type="reset" class="btn btn-primary">Cancel</button>
+                                                        <button type="submit" id="updateButton" class="btn btn-primary">
+                                                            Update
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div class="text-center">
-                                                    <button type="reset" class="btn btn-primary">Cancel</button>
-                                                    <button type="submit" id="updateButton" class="btn btn-primary">
-                                                        Update
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </form>
+                                            </form>
                                     </div>
                                 </div>
                                 <!-- Change Password Tab -->
