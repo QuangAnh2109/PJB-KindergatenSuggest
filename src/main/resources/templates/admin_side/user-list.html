@@ -107,7 +107,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="account : ${listAccounts}">
+                                <tr th:each="account : ${listAccounts}"  th:onclick="|window.location.href='/admin/user-details/' + ${account.id}|">
                                     <td th:text="${account.fullName}"></td>
                                     <td th:text="${account.email}"></td>
                                     <td th:text="${account.phone}"></td>

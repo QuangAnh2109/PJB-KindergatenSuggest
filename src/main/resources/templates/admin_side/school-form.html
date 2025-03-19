@@ -197,8 +197,8 @@
                 </table>
                 <div style="margin-top: 30px; padding-bottom: 30px">
                     <a th:href="${serverLink + '/manager/school-list'}"><button id="cancel" class="btn btn-primary" style="background-color: white;color: #458bc4;">Cancel</button></a>
-                    <button id="save" class="btn btn-primary" onclick="addNewSchool(1, 'save-draft-new')">Save draft</button>
-                    <button id="submit" class="btn btn-primary" onclick="addNewSchool(2, 'submit-new')">Submit</button>
+                    <button id="save" class="btn btn-primary" onclick="addNewSchool(1)">Save draft</button>
+                    <button id="submit" class="btn btn-primary" onclick="addNewSchool(2)">Submit</button>
                 </div>
             </div>
             <!-- end row -->
@@ -224,6 +224,30 @@
 
 </div>
 <!-- END wrapper -->
+
+<!-- popup 1 -->
+<div id="notificationModel" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Notification</h5>
+            </div>
+            <div class="modal-body">
+                <h6 id="msg-popup-1"></h6>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="button-popup-1" class="btn btn-secondary waves-effect"
+                        data-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- END popup 1 -->
 
 <!-- Vendor js -->
 <script src="/admin_side/js/vendor.min.js"></script>

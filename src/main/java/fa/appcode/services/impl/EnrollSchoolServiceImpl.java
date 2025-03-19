@@ -9,6 +9,7 @@ import fa.appcode.entities.AccountInfo;
 import fa.appcode.entities.EnrollSchool;
 import fa.appcode.entities.SchoolInfo;
 import fa.appcode.exceptions.EnrollUnenrollParentException;
+import fa.appcode.exceptions.ValidateParentException;
 import fa.appcode.repositories.EnrollSchoolRepository;
 import fa.appcode.services.EnrollSchoolService;
 import fa.appcode.services.SchoolInfoService;
@@ -49,7 +50,7 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         //AParent that enroll
         if (account==null || account.getDeleteFlg() || account.getStatusId().equals(Constant.STATUS_INACTIVE)) {
             Log4jUtils.getLogger().info("Enroll Failed, account not active or no longer available");
-            throw new EnrollUnenrollParentException("Account is not active Or No Longer Available Or not Exists Please Try Again!",account.getId());
+            throw new ValidateParentException("This Parent is current Inactive, Deleted or not Exist");
         }
         if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_")) && !validateAccess(school.getId(), email)) {
             Log4jUtils.getLogger().info("Enroll Failed, school owner does not have access to SchoolID: " + school.getId());
@@ -90,10 +91,6 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         return enrollSchoolRepository.findEnrollSchoolById(id,Constant.ENROLL_STATUS_UNENROLL);
     }
 
-    @Override
-    public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int id, Pageable pageable) {
-        return enrollSchoolRepository.findParentEnrolledSchoolByParentId(id, pageable,Constant.STATUS_ACTIVE,Constant.ENROLL_STATUS_ENROLL);
-    }
 
     @Override
     public Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentIdAndSchoolOwner(int parentId, String schoolOwnerEmail, Pageable pageable) {

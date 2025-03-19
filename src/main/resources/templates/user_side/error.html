@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <title>Token Invalid</title>
     <link rel="icon" th:href="@{/user_side/images/icon.png}" type="image/gif" sizes="16x16">
@@ -54,9 +56,19 @@
                 <div class="row align-items-center">
                     <div class="col-lg-6">
                         <h1>Invalid Link</h1>
-                        <button class="btn-custom login-btn"
-                                th:onclick="|window.location.href='@{/public/home}'|">Home Page
-                        </button>
+                        <th:block sec:authorize="hasAnyAuthority('Admin', 'School owner')">
+                            <button class="btn-custom login-btn"
+                                    th:onclick="|window.location.href='@{/manager/request-list}'|">
+                                Go to Request List
+                            </button>
+                        </th:block>
+
+                        <th:block sec:authorize="!hasAnyAuthority('Admin', 'SchoolOwner')">
+                            <button class="btn-custom login-btn"
+                                    th:onclick="|window.location.href='@{/public/home}'|">
+                                Home Page
+                            </button>
+                        </th:block>
                         <div class="spacer-10"></div>
                     </div>
                     <div class="col-lg-6 text-center">

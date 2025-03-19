@@ -2,6 +2,7 @@ package fa.appcode.web.controller;
 
 import fa.appcode.common.logging.Log4jUtils;
 import fa.appcode.common.vo.AccountVo;
+import fa.appcode.config.GlobalConfig;
 import fa.appcode.services.AccountService;
 
 import fa.appcode.services.ValidateService;
@@ -23,7 +24,7 @@ public class UserManagementRestController {
     @Autowired
     private AccountService accountService;
     @Autowired
-    private ValidateService validateService;
+    private GlobalConfig globalConfig;
 
     /**
      * Delete account
@@ -31,7 +32,7 @@ public class UserManagementRestController {
      * @param userId
      * @return ResponseEntity<String>
      */
-    @GetMapping(value = "/user/{userId}")
+    @GetMapping(value = "/delete/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Integer userId) {
 
         Log4jUtils.getLogger().info("Received request to delete user with ID: {}", userId);
@@ -61,26 +62,21 @@ public class UserManagementRestController {
             });
         }
 
-
-        boolean isAdding = accountVo.getId() == null;
-        Log4jUtils.getLogger().info("Is new user: {}", isAdding);
-
-        if (isAdding && validateService.checkDuplicateEmail(accountVo.getEmail())) {
-            errors.put("email", "Email already exists. Please use a different email.");
-        }
-
         if (!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors);
         }
 
+        boolean isAdding = accountVo.getId() == null;
+        Log4jUtils.getLogger().info("Is new user: {}", isAdding);
+
         try {
             if (isAdding) {
                 accountService.addUserFromAdmin(accountVo, principal);
-                return ResponseEntity.ok(Map.of("message", "User added successfully."));
+                return ResponseEntity.ok(Map.of("message", globalConfig.getUserAddSucess()));
             } else {
                 int newRecordNo = accountService.updateAccount(accountVo);
                 return ResponseEntity.ok(Map.of(
-                        "message", "User updated successfully.",
+                        "message", globalConfig.getUserUpdateSucess(),
                         "recordNo", newRecordNo
                 ));
             }

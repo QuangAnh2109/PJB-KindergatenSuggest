@@ -74,7 +74,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Full Name</th>
-                                    <th>Email</th>
+                                    <th class="email-column">Email</th>
                                     <th>Phone No.</th>
                                     <th>Request Status</th>
                                     <th>Action</th>
@@ -85,7 +85,7 @@
                                     th:attr="onclick='redirectToDetail('+ ${request.id}+')'">
                                     <th scope="row" th:text="${request.id}"/>
                                     <th th:text="${request.fullName}"/>
-                                    <th th:text="${request.requestEmail}"/>
+                                    <th class="email-column" th:text="${request.requestEmail}"/>
                                     <th th:text="${request.requestPhone}"/>
                                     <td>
                                         <button  class="btn btn-success btn-sm rounded-pill" style="min-width: 80px; font-size: 12px;" th:text="${request.requestMasterName}"></button>

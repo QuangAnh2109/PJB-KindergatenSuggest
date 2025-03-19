@@ -1,5 +1,6 @@
 package fa.appcode.security;
 
+import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.repositories.AccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +13,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AccountInfoDetailsService implements UserDetailsService {
-
     private final AccountRepository accountRepository;
 
     /**
@@ -29,32 +30,11 @@ public class AccountInfoDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) {
         AccountInfo account = accountRepository.findAccountByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Account not found"));
-
-        // Assigns the role to the user based on their role ID.
-        List<GrantedAuthority> authorities = Collections.singletonList(
-                new SimpleGrantedAuthority(mapRole(account.getRoleId()))
-        );
-
+                .orElseThrow(() -> new UsernameNotFoundException("Not Found"));
+        List<String> roles = accountRepository.findRolesByEmail(email);
+        List<GrantedAuthority> authorities = roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
         return new CustomUserDetails(account, authorities);
-    }
-
-    /**
-     * Maps role ID to a specific role name.
-     *
-     * @param roleId The ID representing the user's role.
-     * @return The corresponding role name as a string.
-     */
-    private String mapRole(int roleId) {
-        switch (roleId) {
-            case 1:
-                return "Admin";
-            case 2:
-                return "School owner";
-            case 3:
-                return "Parent";
-            default:
-                return "Parent";
-        }
     }
 }

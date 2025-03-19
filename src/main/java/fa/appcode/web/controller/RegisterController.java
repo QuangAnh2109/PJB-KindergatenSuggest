@@ -10,11 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("public/register")
@@ -25,41 +23,56 @@ public class RegisterController {
     private final AccountService accountService;
     private final GlobalConfig globalConfig;
 
+    /**
+     * Handles GET request to show the registration page.
+     * @param model Model object to pass data to the view
+     * @return Registration page view name
+     */
     @GetMapping
-    public String register(Model model) {
+    public String showRegisterPage(Model model) {
         LOGGER.info("Accessing registration page");
+        // Add an empty AccountVo object to the model for form binding
         model.addAttribute("accountVo", new AccountVo());
+        // Return the registration page view
         return Constant.REGISTER_PAGE;
     }
 
+    /**
+     * Handles POST request to process user registration.
+     * @param accountVo The form data submitted by the user
+     * @param model     Model object to pass messages or errors to the view
+     * @return Registration page view name
+     */
     @PostMapping
     public String processRegister(@ModelAttribute("accountVo") @Valid AccountVo accountVo,
                                   Model model) {
-        LOGGER.info("Processing registration for     email: {}", accountVo.getEmail());
-        boolean isSuccessRegistration = accountService.processRegister(accountVo);
-        if (isSuccessRegistration) {
-            model.addAttribute("successMessage", globalConfig.getRegisterSuccess());
-        } else {
-            Map<String, Object> validationResult = accountService.getValidationResult();
-            Optional.ofNullable(validationResult)
-                    .map(result -> result.get("errors"))
-                    .filter(Map.class::isInstance)
-                    .map(map -> (Map<String, String>) map)
-                    .ifPresent(errors -> errors.forEach(model::addAttribute));
+        LOGGER.info("Processing registration for email: {}", accountVo.getEmail());
+        Map<String, String> registrationErrors = accountService.handleRegisterProcess(accountVo);
+        if (!registrationErrors.isEmpty()) {
+            model.addAllAttributes(registrationErrors);
+            return Constant.REGISTER_PAGE;
         }
+        model.addAttribute("successMessage", globalConfig.getRegisterSuccess());
         return Constant.REGISTER_PAGE;
     }
-
+    /**
+     * Handles GET request for email verification.
+     * @param token Verification token from the URL
+     * @param model Model object to pass messages to the view
+     * @return Verification result page view name
+     */
     @GetMapping("/verify")
     public String verifyAccount(@RequestParam String token, Model model) {
         LOGGER.info("Verifying account with token: {}", token);
+
+        // Call service method to verify the account using the token
         boolean isVerified = accountService.verifyAccount(token);
         if (!isVerified) {
             model.addAttribute("alreadyVerified", globalConfig.getAlreadyVerification());
-        }
-        else {
+        } else {
             model.addAttribute("activeSuccess", globalConfig.getActiveSuccess());
         }
+        // Return the verification result page
         return Constant.VERIFY_ACCOUNT_PAGE;
     }
 }

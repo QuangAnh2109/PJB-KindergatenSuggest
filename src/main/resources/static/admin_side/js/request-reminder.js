@@ -9,7 +9,7 @@ $(document).ready(function () {
         currentPage = page; // Cập nhật currentPage
         const keyword = $("input[name='keyword']").val();
         $.ajax({
-            url: `/manager/searchRequestReminder?currentPage=${page}&keyword=${encodeURIComponent(keyword)}`,
+            url: `/manager/searchRequestList?currentPage=${page}&keyword=${encodeURIComponent(keyword)}`,
             type: 'GET',
             dataType: 'json',
             success: function (data) {
@@ -46,7 +46,7 @@ $(document).ready(function () {
                 <tr >
                     <th scope="row">${request.id}</th>
                     <th>${request.fullName || 'N/A'}</th>
-                    <th>${request.requestEmail || 'N/A'}</th>
+                    <th class="email-column">${request.requestEmail || 'N/A'}</th>
                     <th>${request.requestPhone || 'N/A'}</th>
                     <th>${statusButton}</th>
                     <td>

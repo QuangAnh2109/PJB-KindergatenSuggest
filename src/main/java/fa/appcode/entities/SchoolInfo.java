@@ -1,22 +1,25 @@
 package fa.appcode.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @Entity
+@RequiredArgsConstructor
 @Table(name = "school_info", schema = "instance_kintergarden_db")
+@AllArgsConstructor
 public class SchoolInfo {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "school_id", nullable = false)
     private Integer id;
 
@@ -57,9 +60,6 @@ public class SchoolInfo {
     @JoinColumn(name = "city_id", nullable = false)
     private City city;
 
-    @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
-    private Set<SchoolUtility> utilities = new HashSet<>();
-
     @Lob
     @Column(name = "school_introduction", columnDefinition = "TEXT")
     private String schoolIntroduction;
@@ -98,4 +98,32 @@ public class SchoolInfo {
     @Column(name = "delete_flg", nullable = false)
     private Boolean deleteFlg = false;
 
+    @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SchoolUtility> schoolUtilities;
+
+    public SchoolInfo(AccountInfo account, String schoolName, String schoolEmail, String imageUrl, String schoolPhone, BigDecimal feeFrom, BigDecimal feeTo, String schoolAddress, Ward ward, District district, City city, String schoolIntroduction, Instant postedDate, Integer childReceivingAgeId, Integer educationMethodId, Integer typeId, Integer statusId, Integer recordNo, String createId, Instant createTime, String updateId, Instant updateTime, Boolean deleteFlg) {
+        this.account = account;
+        this.schoolName = schoolName;
+        this.schoolEmail = schoolEmail;
+        this.imageUrl = imageUrl;
+        this.schoolPhone = schoolPhone;
+        this.feeFrom = feeFrom;
+        this.feeTo = feeTo;
+        this.schoolAddress = schoolAddress;
+        this.ward = ward;
+        this.district = district;
+        this.city = city;
+        this.schoolIntroduction = schoolIntroduction;
+        this.postedDate = postedDate;
+        this.childReceivingAgeId = childReceivingAgeId;
+        this.educationMethodId = educationMethodId;
+        this.typeId = typeId;
+        this.statusId = statusId;
+        this.recordNo = recordNo;
+        this.createId = createId;
+        this.createTime = createTime;
+        this.updateId = updateId;
+        this.updateTime = updateTime;
+        this.deleteFlg = deleteFlg;
+    }
 }

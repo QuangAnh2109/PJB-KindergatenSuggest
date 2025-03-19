@@ -23,28 +23,26 @@ public class AccountController {
     private final CityService cityService;
     private final GlobalConfig globalConfig;
 
-    @GetMapping("/view-account")
-    public String viewAccount(Model model) {
+    @GetMapping("/account-management")
+    public String accountManagement(Model model) {
         AccountInfo accountInfo = accountService.getCurrentAccountInfo();
-        if (accountInfo == null) {
-            model.addAttribute("error", globalConfig.getNotFound());
-            return Constant.VIEW_ACCOUNT_PAGE;
-        }
         model.addAttribute("accountInfo", accountInfo);
         model.addAttribute("cities", cityService.findAllByNoDelete());
-        return Constant.VIEW_ACCOUNT_PAGE;
+        return Constant.ACCOUNT_MANAGEMENT_PAGE;
     }
 
     @PostMapping("/view-account")
     public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo, Model model) {
-        model.addAttribute("cities", cityService.findAllByNoDelete());
         Map<String, String> accountValidationErrors = accountService.updateAccountProcess(accountInfo);
-        if(!accountValidationErrors.isEmpty()){
-            for(Map.Entry<String, String> error : accountValidationErrors.entrySet()){
-                model.addAttribute(error.getKey(), error.getValue());
-            }
-            return Constant.VIEW_ACCOUNT_PAGE;
+        if (!accountValidationErrors.isEmpty()) {
+            model.addAllAttributes(accountValidationErrors);
+            model.addAttribute("cities", cityService.findAllByNoDelete());
+            return Constant.ACCOUNT_MANAGEMENT_PAGE;
         }
-        return "redirect:/auth/view-account?success=true";
+        return "redirect:/auth/account-management?success=true";
+    }
+    @GetMapping("/view-account")
+    public String viewAccount(Model model) {
+        return "redirect:/auth/account-management";
     }
 }

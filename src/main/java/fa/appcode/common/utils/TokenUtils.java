@@ -66,6 +66,14 @@ public class TokenUtils {
             throw new TokenException(Constant.INVALID_TOKEN_FORMAT, e);
         }
     }
+    public static boolean isRegisterTokenValid(String token, String expectedEmail) {
+        try {
+            String emailFromToken = getEmailFromToken(token);
+            return emailFromToken.equals(expectedEmail);
+        } catch (TokenException e) {
+            return false;
+        }
+    }
 
     public static boolean isTokenValid(String token, AccountInfo account) {
         long expiredTime = getExpiredTime(token);

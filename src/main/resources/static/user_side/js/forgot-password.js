@@ -6,7 +6,6 @@ function attachFormHandler() {
         form.addEventListener('submit', async function (e) {
             e.preventDefault();
             submitBtn.disabled = true;
-
             try {
                 const response = await fetch(form.action, {
                     method: 'POST',
@@ -26,7 +25,7 @@ function attachFormHandler() {
                 attachFormHandler();
             } catch (error) {
                 console.error('Fetch error:', error);
-                alert(`Error: ${error.message}`);
+                alert("Having an error while processing. Please try again");
             } finally {
                 submitBtn.disabled = false;
             }

@@ -15,16 +15,6 @@ import java.util.List;
 public interface EnrollSchoolService {
     EnrollSchool findEnrollSchoolById(Integer id);
 
-    //Find All School that parent Enrolled with ParentID
-    /**
-     * This method to Find All Every Enrolled school with ParentID nad paging them
-     *
-     * @param parentId
-     * @param pageable
-     * @return Page<EnrolledSchoolVo>
-     */
-    Page<EnrolledSchoolVo> findParentEnrolledSchoolByParentId(int parentId, Pageable pageable);
-
     /**
      * This method to Find All Enrolled School Of School Owner That Parent Enrolled with Parent ID and SchoolOwner email
      *

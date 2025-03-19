@@ -11,9 +11,12 @@ import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
+import fa.appcode.exceptions.DuplicateException;
 import fa.appcode.exceptions.EntityNotFoundException;
+import fa.appcode.exceptions.TokenException;
 import fa.appcode.exceptions.ValidateParentException;
 import fa.appcode.repositories.AccountRepository;
+import fa.appcode.repositories.MasterDatumRepository;
 import fa.appcode.services.*;
 import jakarta.transaction.Transactional;
 import fa.appcode.services.AccountService;
@@ -38,16 +41,13 @@ import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     @Autowired
-    private MasterDatumService masterDatumService;
-
+    private MasterDatumRepository masterDatumRepository;
     @Autowired
     private AccountRepository accountRepository;
     private final ValidateService validateService;
@@ -70,10 +70,6 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findAccountByPhone(phone);
     }
 
-//    @Override
-//    public String encodePassword(String password) {
-//        return "{bcrypt}" + passwordEncoder.encode(password);
-//    }
     @Override
     public String encodePassword(String password) {
         return passwordEncoder.encode(password);
@@ -149,28 +145,9 @@ public class AccountServiceImpl implements AccountService {
         accountVo.setEmail(accountInfo.getEmail());
         accountVo.setPhone(accountInfo.getPhone());
         accountVo.setDob(accountInfo.getDob() != null ? accountInfo.getDob().toString() : null);
-        accountVo.setImageUrl(accountInfo.getImageUrl());
-
-        // Build full address
-        if (accountInfo.getAddress() == null && accountInfo.getWard() == null &&
-                accountInfo.getDistrict() == null && accountInfo.getCity() == null) {
-            accountVo.setFullAddress("No specific information yet");
-        } else {
-            StringBuilder fullAddress = new StringBuilder(accountInfo.getAddress() != null ? accountInfo.getAddress() : "");
-            if (accountInfo.getWard() != null) {
-                fullAddress.append(", ").append(accountInfo.getWard().getWardName());
-            }
-            if (accountInfo.getDistrict() != null) {
-                fullAddress.append(", ").append(accountInfo.getDistrict().getDistrictName());
-            }
-            if (accountInfo.getCity() != null) {
-                fullAddress.append(", ").append(accountInfo.getCity().getCityName());
-            }
-            accountVo.setFullAddress(fullAddress.toString().trim());
-        }
         // Resolve role and status names
-        accountVo.setRole(masterDatumService.getMasterByTypeNameAndTypeKey("ROLE", accountInfo.getRoleId()));
-        accountVo.setStatus(masterDatumService.getMasterByTypeNameAndTypeKey("ACCOUNT STATUS", accountInfo.getStatusId()));
+        accountVo.setRole(masterDatumRepository.getMasterByTypeNameAndTypeKey("ROLE", accountInfo.getRoleId()));
+        accountVo.setStatus(masterDatumRepository.getMasterByTypeNameAndTypeKey("ACCOUNT STATUS", accountInfo.getStatusId()));
         accountVo.setRecordNo(accountInfo.getRecordNo());
         return accountVo;
     }
@@ -185,11 +162,11 @@ public class AccountServiceImpl implements AccountService {
         Log4jUtils.getLogger().info("recordNo get in DB : {}", user.getRecordNo());
 
         if (!user.getRecordNo().equals(accountVo.getRecordNo())) {
-            throw new IllegalStateException("Data has been modified by someone else!"); // Xử lý lỗi ở Service
+            throw new IllegalStateException("Data has been modified by someone else!");
         }
         // Update role or status of account
-        user.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
-        user.setStatusId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
+        user.setRoleId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
+        user.setStatusId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
 
         int newRecordNo = user.getRecordNo() + 1;
         user.setRecordNo(newRecordNo);
@@ -213,6 +190,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void addUserFromAdmin(AccountVo accountVo, Principal principal) {
+        //Validate accountVo
+        if (accountRepository.findByEmail(accountVo.getEmail()) != null) {
+            throw new DuplicateException("Email already exists. Please use a different email.");
+        }
 
         // Generate password by system
         String randomPassword = UUID.randomUUID().toString();
@@ -224,9 +205,9 @@ public class AccountServiceImpl implements AccountService {
         accountInfo.setEmail(accountVo.getEmail());
         accountInfo.setPhone(accountVo.getPhone());
         accountInfo.setDob(LocalDate.parse(accountVo.getDob()));
-        accountInfo.setRoleId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
+        accountInfo.setRoleId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
         accountInfo.setPassword(encodePassword(accountVo.getPassword()));
-        accountInfo.setStatusId(masterDatumService.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus())); // Default status
+        accountInfo.setStatusId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus())); // Default status
         accountInfo.setImageUrl("null");
         accountInfo.setRecordNo(1);
         accountInfo.setCreateId("SYSTEM_ADMIN");
@@ -248,19 +229,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-    // ========================================================
-
-
-    @Override
-    public Page<ParentVo> findAllParent(Pageable pageable) {
-        return null;
-    }
-
-    //=========================================================
-
-    public Page<ParentVo> findAllParent(String search, Pageable pageable) {
-        return accountRepository.findAllParent(search, pageable,Constant.STATUS_ACTIVE);
-    }
 
     @Override
     public ParentVo findParentById(int id) throws ValidateParentException {
@@ -271,10 +239,6 @@ public class AccountServiceImpl implements AccountService {
         return parent;
     }
 
-    @Override
-    public Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id, Pageable pageable) {
-        return null;
-    }
 
 
     @Override
@@ -315,14 +279,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void saveAccountInfo(AccountInfo accountInfo) {
-        accountRepository.save(accountInfo);
-    }
-
-
-    @Override
     public int getAccountIdByEmail(String email) {
         return accountRepository.findAccountByEmailAndStatusIdAndDeleteFlg(email, 1, false).getId();
+    }
+
+    @Override
+    public String getAccountNameByEmailAndNoDelete(String email) {
+        return accountRepository.getAccountNameByEmailAndDeleteFlg(email, false);
     }
 
     //    @Override
@@ -339,31 +302,36 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.getSchoolOwnerEmailBySchoolIdAndStatusAndDeleteFlg(id, 1, false);
     }
 
-
+    /**
+     * Handles the registration process for a new user.
+     * @param accountVo The account information provided by the user.
+     * @return A map containing validation errors if any exist; otherwise, an empty map indicating success.
+     */
     @Override
-    public Map<String, Object> getValidationResult() {
-        return lastValidationResult;
-    }
+    public Map<String, String> handleRegisterProcess(AccountVo accountVo) {
+        // Validate the input fields (full name, email, phone, password, confirm password)
+        Map<String, String> validationResult = validateService.registerValidation(
+                accountVo.getFullName(), accountVo.getEmail(), accountVo.getPhone(),
+                accountVo.getPassword(), accountVo.getConfirmPassword()
+        );
 
-    @Override
-    public boolean processRegister(AccountVo accountVo) {
-        try {
-            lastValidationResult = validateService.validateRegistration(accountVo);
-            if (!(boolean) lastValidationResult.get("isValid")) {
-                String validationLevel = (String) lastValidationResult.get("validationLevel");
-                LOGGER.warn("Validation failed at level: {} - email: {}", validationLevel, accountVo.getEmail());
-                return false;
-            }
-            createAccount(accountVo);
-            LOGGER.info("Account created successfully - email: {}", accountVo.getEmail());
-            SendMailInfo registrationMail = EmailBuilder.buildRegistrationMail(accountVo.getEmail());
-            emailService.sendEmailToMany(registrationMail);
-            return true;
-        } catch (Exception e) {
-            LOGGER.error("Unexpected error during registration process - email: {}", accountVo.getEmail(), e);
-            return false;
+        // Check if there are any validation errors
+        if (!validationResult.isEmpty()) {
+            // Log the validation failure with the specific errors
+            LOGGER.warn("Validation failed: {}", validationResult);
+            // Return the validation errors so they can be displayed to the user
+            return validationResult;
         }
+        // If validation passes, create a new account and store it in the database
+        createAccount(accountVo);
+        // Log a message indicating that the account was created successfully
+        LOGGER.info("Account created successfully - email: {}", accountVo.getEmail());
+        // Send a registration confirmation email to the user
+        emailService.sendEmailToMany(EmailBuilder.buildRegistrationMail(accountVo.getEmail()));
+        // Return an empty map, indicating that registration was successful
+        return Collections.emptyMap();
     }
+
 
     @Override
     public boolean verifyAccount(String token) {
@@ -374,7 +342,7 @@ public class AccountServiceImpl implements AccountService {
                 LOGGER.warn("Account verification failed - email not found: {}", email);
                 return false;
             }
-            if (accountInfo.getStatusId()==1) {
+            if (accountInfo.getStatusId() == 1) {
                 LOGGER.warn("Account already verified - email: {}", email);
                 return false;
             }
@@ -399,58 +367,11 @@ public class AccountServiceImpl implements AccountService {
         updatePassword(account, newPassword);
         return new HashMap<>();
     }
-    public boolean forgotPasswordProcess(String email, Model model) {
-        try {
-            LOGGER.info("Forgot password process - email: {}", email);
-            boolean isValidate = validateService.validateForgotPassword(email, model);
-            AccountInfo accountInfo = accountRepository.findByEmail(email);
-            if (isValidate || accountInfo == null) {
-                LOGGER.warn("Forgot password validation failed - email not found: {}", email);
-                return false;
-            }
-            SendMailInfo resetMail = EmailBuilder.buildForgotPasswordMail(email, accountInfo.getDatetimeChangePass());
-            emailService.sendEmailToMany(resetMail);
-            model.addAttribute("linkSendStatus", globalConfig.getSendResetPassword());
-            return true;
-        } catch (Exception e) {
-            LOGGER.error("Unexpected error during forgot password process - email: {}", email, e);
-            model.addAttribute(ERROR_ATTRIBUTE, globalConfig.getAnErrorOccur());
-            return false;
-        }
-    }
 
     @Override
     public AccountInfo getCurrentAccountInfo() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return findByEmail(email);
-    }
-
-    @Override
-    public String resetPasswordProcess(String token, String newPassword, String confirmPassword, Model model) {
-        LOGGER.info("Reset password process ");
-        String email = TokenUtils.getEmailFromToken(token);
-        AccountInfo account = findByEmail(email);
-        model.addAttribute("token", token);
-        if (account == null) {
-            LOGGER.warn("Account not found - email: {}", email);
-            model.addAttribute(ERROR_ATTRIBUTE, globalConfig.getEmailNotExist());
-            return Constant.RESET_PASSWORD_PAGE;
-        }
-        if (!TokenUtils.isTokenValid(token, account)) {
-            model.addAttribute(ERROR_ATTRIBUTE, globalConfig.getExpiredLink());
-            LOGGER.warn("Token is invalid");
-            return Constant.RESET_PASSWORD_PAGE;
-        }
-        boolean hasError = validateService.validateResetPassword(newPassword, confirmPassword, model);
-        if (hasError) {
-            LOGGER.warn("Reset password validation failed - email: {}", email);
-            return Constant.RESET_PASSWORD_PAGE;
-        } else {
-            account.setDatetimeChangePass(Instant.now());
-            updatePassword(email, newPassword);
-            model.addAttribute("passwordReset", globalConfig.getPasswordResetSuccess());
-            return Constant.RESET_PASSWORD_PAGE;
-        }
     }
 
     /**
@@ -462,61 +383,31 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public Map<String, String> handleForgotPassword(String email) {
-        // Log the start of the forgot password process
         LOGGER.debug("Handling forgot password for email: {}", email);
-
-        // Validate the email and return errors if any
         Map<String, String> errors = validateService.validateForgotPassword(email);
         if (!errors.isEmpty()) {
             return errors;
         }
-        // Check if an account exists for the given email
         AccountInfo accountInfo = accountRepository.findByEmail(email);
         if (accountInfo == null) {
             LOGGER.warn("No account found for email: {}", email);
-            errors.put("emailError", globalConfig.getEmailNotExist());
-            return errors;
+            return Map.of("emailError", globalConfig.getEmailNotExist());
         }
-        // Build and send a password reset email
         SendMailInfo resetMail = EmailBuilder.buildForgotPasswordMail(email, accountInfo.getDatetimeChangePass());
         emailService.sendEmailToMany(resetMail);
-        // Log the successful email sending
-        LOGGER.info("Password reset email sent to: {}", email);
-        // Return an empty map indicating success
-        return new HashMap<>();
+        LOGGER.info("Password reset email successfully sent to: {}", email);
+        return Collections.emptyMap();
     }
 
     @Override
-    public AccountInfo validateResetToken(String token, Model model) {
-        String email = TokenUtils.getEmailFromToken(token);
-        AccountInfo account = findByEmail(email);
-        if (account == null || !TokenUtils.isTokenValid(token, account)) {
-            model.addAttribute(ERROR_ATTRIBUTE, globalConfig.getExpiredLink());
-            LOGGER.warn("Invalid or expired token");
-            return null;
+    public boolean isValidAccountToken(String token) {
+        try {
+            return TokenUtils.isTokenValid(token, findByEmail(TokenUtils.getEmailFromToken(token)));
+        } catch (TokenException e) {
+            LOGGER.warn("Invalid or expired token: {}", e.getMessage());
+            return false;
         }
-        model.addAttribute("token", token);
-        return account;
     }
-
-    /**
-     * Validates an account based on the given token.
-     * Extracts the email from the token and checks if the token is valid.
-     *
-     * @param token The token to validate.
-     * @return The associated AccountInfo if valid, otherwise null.
-     */
-    @Override
-    public AccountInfo validateAccountToken(String token) {
-        String email = TokenUtils.getEmailFromToken(token);
-        AccountInfo account = findByEmail(email);
-        if (account == null || !TokenUtils.isTokenValid(token, account)) {
-            LOGGER.warn("Invalid or expired token");
-            return null;
-        }
-        return account;
-    }
-
     /**
      * Handles the password reset process.
      * Validates the token, checks password confirmation, and updates the password if valid.
@@ -524,81 +415,66 @@ public class AccountServiceImpl implements AccountService {
      * @param token           The token used for password reset.
      * @param newPassword     The new password entered by the user.
      * @param confirmPassword The confirmation of the new password.
-     * @return A map containing validation errors if any, otherwise null if successful.
+     * @return A map containing validation errors if any, otherwise empty map if successful.
      */
 
     @Override
     public Map<String, String> handleResetPassword(String token, String newPassword, String confirmPassword) {
-        AccountInfo account = validateAccountToken(token);
-        if (account == null) {
-            Map<String, String> errors = new HashMap<>();
+        Map<String, String> errors = new HashMap<>();
+        if (!isValidAccountToken(token)) {
             errors.put("tokenError", globalConfig.getExpiredLink());
             return errors;
         }
-        Map<String, String> errors = validateService.validateResetPassword(newPassword, confirmPassword);
+        String email = TokenUtils.getEmailFromToken(token);
+        AccountInfo account = findByEmail(email);
+        errors.putAll(validateService.validateResetPassword(newPassword, confirmPassword));
         if (!errors.isEmpty()) {
             LOGGER.warn("Reset password failed - email: {}", account.getEmail());
             return errors;
         }
-        account.setDatetimeChangePass(Instant.now());
         updatePassword(account, newPassword);
-        return new HashMap<>();
+        return Collections.emptyMap();
     }
 
     @Override
-    public boolean resetPassword(String token, String newPassword, String confirmPassword, Model model) {
-        AccountInfo account = validateResetToken(token, model);
-        if (account == null) {
-            return false;
-        }
-        boolean hasError = validateService.validateResetPassword(newPassword, confirmPassword, model);
-        if (hasError) {
-            LOGGER.warn("Reset password failed - email: {}", account.getEmail());
-            return false;
-        }
-        account.setDatetimeChangePass(Instant.now());
-        updatePassword(account.getEmail(), newPassword);
-        return true;
-    }
-
-    @Override
-    public boolean updateAccountDetails(AccountInfo accountInfo, Model model) {
-        AccountInfo currentAccount = findByEmail(accountInfo.getEmail());
-        if (currentAccount == null) {
-            model.addAttribute(ERROR_ATTRIBUTE, globalConfig.getUserNotFound());
-            return false;
-        }
-        boolean hasError = validateService.validateUpdateAccount(accountInfo, currentAccount.getPhone(), model);
-        if (StringUtils.isEmpty(accountInfo.getAddress())) {
-                accountInfo.setCity(currentAccount.getCity());
-                accountInfo.setWard(currentAccount.getWard());
-                accountInfo.setDistrict(currentAccount.getDistrict());
-                accountInfo.setAddress(currentAccount.getAddress());
-        }
-        if (hasError) {
-            return false;
-        }
-        updateAccountInfo(currentAccount, accountInfo);
-        model.addAttribute("successMessage", globalConfig.getUpdateSuccess());
-        return true;
-    }
-    @Override
-    public Map<String,String> updateAccountProcess(AccountInfo accountInfo){
+    public Map<String, String> updateAccountProcess(AccountInfo accountInfo) {
+        // Retrieve the current account information of the logged-in user
         AccountInfo currentAccount = getCurrentAccountInfo();
-        Map<String,String>  updateAccountErrors = validateService.validateAccountField(
-                accountInfo.getFullName(),accountInfo.getPhone(),
-                currentAccount.getPhone(),accountInfo.getDob()
+        // Validate the updated account fields
+        Map<String, String> updateAccountErrors = validateService.validateAccountField(
+                accountInfo.getFullName(), accountInfo.getPhone(),
+                currentAccount.getPhone(), accountInfo.getDob()
         );
-        if (StringUtils.isEmpty(accountInfo.getAddress())) {
-            accountInfo.setCity(currentAccount.getCity());
-            accountInfo.setWard(currentAccount.getWard());
-            accountInfo.setDistrict(currentAccount.getDistrict());
-            accountInfo.setAddress(currentAccount.getAddress());
+
+        // If there are validation errors, return them immediately
+        if (!updateAccountErrors.isEmpty()) {
+            return updateAccountErrors;
         }
-        if(!updateAccountErrors.isEmpty()){
-           return updateAccountErrors;
-        }
+
+        // Retain the existing address details if they are not provided in the updated data
+        retainExistingAddressIfEmpty(accountInfo, currentAccount);
+
+        // Update the current account information with the new details
         updateAccountInfo(currentAccount, accountInfo);
-        return new HashMap<>();
+
+        // Return an empty map indicating a successful update
+        return Collections.emptyMap();
+    }
+
+    /**
+     * Ensures that if an address field in the updated account information is empty,
+     * it retains the corresponding value from the current account.
+     */
+    private void retainExistingAddressIfEmpty(AccountInfo accountInfo, AccountInfo currentAccount) {
+        accountInfo.setCity(Optional.ofNullable(accountInfo.getCity()).orElse(currentAccount.getCity()));
+        accountInfo.setWard(Optional.ofNullable(accountInfo.getWard()).orElse(currentAccount.getWard()));
+        accountInfo.setDistrict(Optional.ofNullable(accountInfo.getDistrict()).orElse(currentAccount.getDistrict()));
+        accountInfo.setAddress(Optional.ofNullable(accountInfo.getAddress()).orElse(currentAccount.getAddress()));
+    }
+
+
+    @Override
+    public List<String> getAllAccountEmailsByRole(int roleId) {
+        return accountRepository.getAllEmailByRoleAndDeleteFlg(roleId, false);
     }
 }

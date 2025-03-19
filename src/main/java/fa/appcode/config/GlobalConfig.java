@@ -73,8 +73,6 @@ public class GlobalConfig {
     private String verifiedAccount;
     @Value("${ME_027}")
     private String loginFailed;
-    @Value("${ME_028}")
-    private String notVerified;
     @Value("${page.size}")
     private Integer sizeOfPage;
     @Value("${page.school_rating_feedback.size}")
@@ -97,6 +95,10 @@ public class GlobalConfig {
     private String unenrollSuccess;
     @Value("${ME_040}")
     private String invalidFullName;
+    @Value("${ME_041}")
+    private String UserAddSucess;
+    @Value("${ME_042}")
+    private String UserUpdateSucess;
     @Value("${ME_070}")
     private String logoutSuccessFully;
     @Value("${ME_071}")
@@ -105,4 +107,6 @@ public class GlobalConfig {
     private String accountDisabled;
     @Value("${ME_073}")
     private String accountNotActive;
+    @Value("${ME_074}")
+    private String updateSuccessfullMessage;
 }

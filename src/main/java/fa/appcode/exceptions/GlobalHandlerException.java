@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.sql.SQLException;
+import java.util.Map;
 
 @ControllerAdvice
 public class GlobalHandlerException {
@@ -36,21 +37,37 @@ public class GlobalHandlerException {
         logger.error("SQL Failed: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("SQL Failed:  " + e.getMessage());
     }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException e) {
         logger.error("Entity not found: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entity not found: " + e.getMessage());
     }
+
+
+    @ExceptionHandler(DuplicateException.class)
+    public ResponseEntity<Map<String,String>> handleDuplicateException(DuplicateException e) {
+        logger.error("Duplicate exception: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("email","Duplicate exception: " + e.getMessage()));
+    }
+
     @ExceptionHandler(NoResourceFoundException.class)
     public String handleNoResourceFoundException(NoResourceFoundException e) {
         logger.error("NoResourceFoundException occurred: {}", e.getMessage(), e);
         return Constant.ERROR_PAGE;
     }
+
     @ExceptionHandler(TokenException.class)
     public ResponseEntity<String> handleTokenException(TokenException e) {
         logger.error("Token error: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token error: " + e.getMessage());
     }
+
+    @ExceptionHandler(FromToDateException.class)
+    public ResponseEntity<String> handleInvalidDateException(FromToDateException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
 
     @ExceptionHandler(ValidateParentException.class)
     public String handleInvalidParentIdException(ValidateParentException e,RedirectAttributes redirectAttributes) {
@@ -58,6 +75,7 @@ public class GlobalHandlerException {
         redirectAttributes.addFlashAttribute("alertType", Constant.DANGER);
         return "redirect:" + Constant.PARENT_LIST_URL;
     }
+
     @ExceptionHandler(EnrollUnenrollParentException.class)
     public String handleValidateEnrollUnenrollParent(EnrollUnenrollParentException e,RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("message", e.getMessage());

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
 <!-- Mirrored from coderthemes.com/simple/layouts/vertical/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 28 Aug 2024 07:25:32 GMT -->
 
 <head>
@@ -111,167 +110,178 @@
                 <div class="row" >
                     <div class="col-5 row">
                         <b class="col-3" style="margin: auto">From</b>
-                        <input class="col-7" type="date">
+                        <input class="col-7" type="date" id="fromDate">
                     </div>
                     <div class="col-5 row">
                         <b class="col-3" style="margin: auto">To</b>
-                        <input class="col-7" type="date">
+                        <input class="col-7" type="date" id="toDate">
                     </div>
                     <div class="col-2">
-                        <a class="button-search" onclick="getRatingByTime()" style="color: dodgerblue;text-decoration: underline;">
+                        <a class="button-search" th:onclick="'getRatingByTime('+${rating.schoolId}+')'" style="color: dodgerblue;text-decoration: underline;">
                             <i class="fa fa-refresh"></i>
                             <p>Refresh</p>
                         </a>
                     </div>
                 </div>
-                <div style="margin-top: 40px;padding-bottom: 20px;">
-                    <b class="feedback-title">Ratings</b>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <table>
-                            <tr class="ratings-left-table-tr">
-                                <td>Learning Program &nbsp;&nbsp;</td>
-                                <td>
-                                    <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-                                        <i th:if="${i * 10 <= rating.avgLearningProgram}" class="fa fa-star star-orange fa-2x"></i>
-                                        <i th:if="${i * 10 == rating.avgLearningProgram + 5}" class="fas fa-star-half-alt star-orange fa-2x"></i>
-                                        <i th:if="${i * 10 > rating.avgLearningProgram && i * 10 != rating.avgLearningProgram + 5}" class="far fa-star star-orange fa-2x"></i>
-                                    </th:block>
-                                </td>
-                            </tr>
-                            <tr class="ratings-left-table-tr">
-                                <td>Facilities & Utilities &nbsp;&nbsp;</td>
-                                <td>
-                                    <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-                                        <i th:if="${i * 10 <= rating.avgFacilitiesUtilities}" class="fa fa-star star-orange fa-2x"></i>
-                                        <i th:if="${i * 10 == rating.avgFacilitiesUtilities + 5}" class="fas fa-star-half-alt star-orange fa-2x"></i>
-                                        <i th:if="${i * 10 > rating.avgFacilitiesUtilities && i * 10 != rating.avgFacilitiesUtilities + 5}" class="far fa-star star-orange fa-2x"></i>
-                                    </th:block>
-                                </td>
-                            </tr>
-                            <tr class="ratings-left-table-tr">
-                                <td>Extracurricular Activities &nbsp;&nbsp;</td>
-                                <td>
-                                    <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-                                        <i th:if="${i * 10 <= rating.avgExtracurricularActivities}" class="fa fa-star star-orange fa-2x"></i>
-                                        <i th:if="${i * 10 == rating.avgExtracurricularActivities + 5}" class="fas fa-star-half-alt star-orange fa-2x"></i>
-                                        <i th:if="${i * 10 > rating.avgExtracurricularActivities && i * 10 != rating.avgExtracurricularActivities + 5}" class="far fa-star star-orange fa-2x"></i>
-                                    </th:block>
-                                </td>
-                            </tr>
-                            <tr class="ratings-left-table-tr">
-                                <td>Teachers & Staff &nbsp;&nbsp;</td>
-                                <td>
-                                    <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-                                        <i th:if="${i * 10 <= rating.avgTeacherStaff}" class="fa fa-star star-orange fa-2x"></i>
-                                        <i th:if="${i * 10 == rating.avgTeacherStaff + 5}" class="fas fa-star-half-alt star-orange fa-2x"></i>
-                                        <i th:if="${i * 10 > rating.avgTeacherStaff && i * 10 != rating.avgTeacherStaff + 5}" class="far fa-star star-orange fa-2x"></i>
-                                    </th:block>
-                                </td>
-                            </tr>
-                            <tr class="ratings-left-table-tr">
-                                <td>Hygiene and Nutrition &nbsp;&nbsp;</td>
-                                <td>
-                                    <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-                                        <i th:if="${i * 10 <= rating.avgHygieneNutrition}" class="fa fa-star star-orange fa-2x"></i>
-                                        <i th:if="${i * 10 == rating.avgHygieneNutrition + 5}" class="fas fa-star-half-alt star-orange fa-2x"></i>
-                                        <i th:if="${i * 10 > rating.avgHygieneNutrition && i * 10 != rating.avgHygieneNutrition + 5}" class="far fa-star star-orange fa-2x"></i>
-                                    </th:block>
-                                </td>
-                            </tr>
-                        </table>
+                <div th:fragment="main-contain" id="main-contain">
+                    <div style="margin-top: 40px;padding-bottom: 20px;">
+                        <b class="feedback-title">Ratings</b>
                     </div>
-                    <div class="col-6 row">
+                    <div class="row">
                         <div class="col-6">
-                            <div class="rating-box">
-                                <p>Average Rating</p>
-                                <div>
-                                    <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-                                        <i th:if="${i * 10 <= rating.avgRating}" class="fa fa-star star-orange fa-2x"></i>
-                                        <i th:if="${i * 10 == rating.avgRating + 5}" class="fas fa-star-half-alt star-orange fa-2x"></i>
-                                        <i th:if="${i * 10 > rating.avgRating && i * 10 != rating.avgRating + 5}" class="far fa-star star-orange fa-2x"></i>
-                                    </th:block>
+                            <table>
+                                <tr class="ratings-left-table-tr">
+                                    <td>Learning Program &nbsp;&nbsp;</td>
+                                    <td>
+                                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                            <i th:if="${i * 10 <= rating.avgLearningProgram}" class="fa fa-star star-orange fa-2x"></i>
+                                            <i th:if="${i * 10 == rating.avgLearningProgram + 5}" class="fas fa-star-half-alt star-orange fa-2x"></i>
+                                            <i th:if="${i * 10 > rating.avgLearningProgram && i * 10 != rating.avgLearningProgram + 5}" class="far fa-star star-orange fa-2x"></i>
+                                        </th:block>
+                                    </td>
+                                </tr>
+                                <tr class="ratings-left-table-tr">
+                                    <td>Facilities & Utilities &nbsp;&nbsp;</td>
+                                    <td>
+                                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                            <i th:if="${i * 10 <= rating.avgFacilitiesUtilities}" class="fa fa-star star-orange fa-2x"></i>
+                                            <i th:if="${i * 10 == rating.avgFacilitiesUtilities + 5}" class="fas fa-star-half-alt star-orange fa-2x"></i>
+                                            <i th:if="${i * 10 > rating.avgFacilitiesUtilities && i * 10 != rating.avgFacilitiesUtilities + 5}" class="far fa-star star-orange fa-2x"></i>
+                                        </th:block>
+                                    </td>
+                                </tr>
+                                <tr class="ratings-left-table-tr">
+                                    <td>Extracurricular Activities &nbsp;&nbsp;</td>
+                                    <td>
+                                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                            <i th:if="${i * 10 <= rating.avgExtracurricularActivities}" class="fa fa-star star-orange fa-2x"></i>
+                                            <i th:if="${i * 10 == rating.avgExtracurricularActivities + 5}" class="fas fa-star-half-alt star-orange fa-2x"></i>
+                                            <i th:if="${i * 10 > rating.avgExtracurricularActivities && i * 10 != rating.avgExtracurricularActivities + 5}" class="far fa-star star-orange fa-2x"></i>
+                                        </th:block>
+                                    </td>
+                                </tr>
+                                <tr class="ratings-left-table-tr">
+                                    <td>Teachers & Staff &nbsp;&nbsp;</td>
+                                    <td>
+                                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                            <i th:if="${i * 10 <= rating.avgTeacherStaff}" class="fa fa-star star-orange fa-2x"></i>
+                                            <i th:if="${i * 10 == rating.avgTeacherStaff + 5}" class="fas fa-star-half-alt star-orange fa-2x"></i>
+                                            <i th:if="${i * 10 > rating.avgTeacherStaff && i * 10 != rating.avgTeacherStaff + 5}" class="far fa-star star-orange fa-2x"></i>
+                                        </th:block>
+                                    </td>
+                                </tr>
+                                <tr class="ratings-left-table-tr">
+                                    <td>Hygiene and Nutrition &nbsp;&nbsp;</td>
+                                    <td>
+                                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                            <i th:if="${i * 10 <= rating.avgHygieneNutrition}" class="fa fa-star star-orange fa-2x"></i>
+                                            <i th:if="${i * 10 == rating.avgHygieneNutrition + 5}" class="fas fa-star-half-alt star-orange fa-2x"></i>
+                                            <i th:if="${i * 10 > rating.avgHygieneNutrition && i * 10 != rating.avgHygieneNutrition + 5}" class="far fa-star star-orange fa-2x"></i>
+                                        </th:block>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-6 row">
+                            <div class="col-6">
+                                <div class="rating-box">
+                                    <p>Average Rating</p>
+                                    <div>
+                                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                            <i th:if="${i * 10 <= rating.avgRating}" class="fa fa-star star-orange fa-2x"></i>
+                                            <i th:if="${i * 10 == rating.avgRating + 5}" class="fas fa-star-half-alt star-orange fa-2x"></i>
+                                            <i th:if="${i * 10 > rating.avgRating && i * 10 != rating.avgRating + 5}" class="far fa-star star-orange fa-2x"></i>
+                                        </th:block>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="rating-box">
+                                    <p>No. of feedbacks</p>
+                                    <b style="font-size: 30px;" th:text="${rating.totalFeedbacks}"></b>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="rating-box">
-                                <p>No. of feedbacks</p>
-                                <b style="font-size: 30px;" th:text="${rating.totalFeedbacks}"></b>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-10">
+                            <b class="feedback-title">All feedbacks</b>
+                        </div>
+                        <div class="col-2">
+                            <i class="mdi mdi-filter-menu-outline"></i>
+                            <b>Filters</b>
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-6 row" id="feedback-list">
+                            <th:block th:fragment="feedback-list">
+                                <div>
+                                    <div class="col-12 row" style="padding-top: 30px;" th:each="feedback:${feedbackList}">
+                                        <div class="account-name" th:text="${feedback.username}+${feedback.avgRating}"></div>
+                                        <div class="feedback-time" th:text="${#temporals.format(feedback.feedbackTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
+                                        <div class="col-12">
+                                            <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                                <i th:if="${i * 10 <= feedback.avgRating}" class="fa fa-star star-orange"></i>
+                                                <i th:if="${i * 10 == feedback.avgRating + 5}" class="fas fa-star-half-alt star-orange"></i>
+                                                <i th:if="${i * 10 > feedback.avgRating && i * 10 != feedback.avgRating + 5}" class="far fa-star star-orange"></i>
+                                            </th:block>
+                                        </div>
+                                        <div class="col-12 feedback-content" th:text="${feedback.feedbackMessage}"></div>
+                                    </div>
+                                </div>
+                                <div id="loadMoreFeedback-button" style="padding-top: 30px;" th:if="${feedbackList.hasNext()}">
+                                    <a class="button-search" style="padding-left: 50px;text-decoration: underline;color: dodgerblue;" th:onclick="'loadMoreFeedbackList(' + ${schoolId} + ', ' + ${feedbackList.getNumber() + 1} + ')'">View more feedbacks</a>
+                                </div>
+                            </th:block>
+                            <div id="noResultsMessage" th:if="${feedbackList.getNumberOfElements() == 0}"
+                                 class="alert alert-warning col-12"
+                                 role="alert" style="max-height: 50px">
+                                <span th:text="#{ME_012}"></span>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row" style="margin-top: 30px;">
-                    <div class="col-10">
-                        <b class="feedback-title">All feedbacks</b>
-                    </div>
-                    <div class="col-2">
-                        <i class="mdi mdi-filter-menu-outline"></i>
-                        <b>Filters</b>
-                    </div>
-                    <div class="col-1"></div>
-                    <div class="col-6 row">
-                        <div class="col-12 row" style="padding-top: 30px;" th:each="feedback:${feedbackList}">
-                            <div class="account-name" th:text="${feedback.username}+${feedback.avgRating}"></div>
-                            <div class="feedback-time" th:text="${#temporals.format(feedback.feedbackTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
-                            <div class="col-12">
-                                <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-                                    <i th:if="${i * 10 <= feedback.avgRating}" class="fa fa-star star-orange"></i>
-                                    <i th:if="${i * 10 == feedback.avgRating + 5}" class="fas fa-star-half-alt star-orange"></i>
-                                    <i th:if="${i * 10 > feedback.avgRating && i * 10 != feedback.avgRating + 5}" class="far fa-star star-orange"></i>
-                                </th:block>
-                            </div>
-                            <div class="col-12 feedback-content" th:text="${feedback.feedbackMessage}"></div>
-                        </div>
-                        <div style="padding-top: 30px;" th:if="${feedbackList.getNumber() < feedbackList.getTotalPages()}">
-                            <a class="button-search" style="padding-left: 50px;text-decoration: underline;color: dodgerblue;" th:attr="onclick='viewMoreFeedback(' + ${feedbackList.getNumber() + 1} + ')'">View more feedbacks</a>
-                        </div>
-                    </div>
-                    <div class="col text-end">
+                        <div class="col text-end">
 
-                    </div>
-                    <div style="width: 200px;">
-                        <div class="select-rating-box" style="box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);">
-                            <div class="filter-row">
-                                <input type="checkbox" id="search-star-1">
-                                <i class="fa fa-star star-orange"></i>
+                        </div>
+                        <div style="width: 200px;">
+                            <div class="select-rating-box" style="box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);">
+                                <div class="filter-row">
+                                    <input type="checkbox" id="search-star-1">
+                                    <i class="fa fa-star star-orange"></i>
+                                </div>
+                                <div class="filter-row">
+                                    <input type="checkbox" id="search-star-2">
+                                    <i class="fa fa-star star-orange"></i>
+                                    <i class="fa fa-star star-orange"></i>
+                                </div>
+                                <div class="filter-row">
+                                    <input type="checkbox" id="search-star-3">
+                                    <i class="fa fa-star star-orange"></i>
+                                    <i class="fa fa-star star-orange"></i>
+                                    <i class="fa fa-star star-orange"></i>
+                                </div>
+                                <div class="filter-row">
+                                    <input type="checkbox" id="search-star-4">
+                                    <i class="fa fa-star star-orange"></i>
+                                    <i class="fa fa-star star-orange"></i>
+                                    <i class="fa fa-star star-orange"></i>
+                                    <i class="fa fa-star star-orange"></i>
+                                </div>
+                                <div class="filter-row">
+                                    <input type="checkbox" id="search-star-5">
+                                    <i class="fa fa-star star-orange"></i>
+                                    <i class="fa fa-star star-orange"></i>
+                                    <i class="fa fa-star star-orange"></i>
+                                    <i class="fa fa-star star-orange"></i>
+                                    <i class="fa fa-star star-orange"></i>
+                                </div>
                             </div>
-                            <div class="filter-row">
-                                <input type="checkbox" id="search-star-2">
-                                <i class="fa fa-star star-orange"></i>
-                                <i class="fa fa-star star-orange"></i>
-                            </div>
-                            <div class="filter-row">
-                                <input type="checkbox" id="search-star-3">
-                                <i class="fa fa-star star-orange"></i>
-                                <i class="fa fa-star star-orange"></i>
-                                <i class="fa fa-star star-orange"></i>
-                            </div>
-                            <div class="filter-row">
-                                <input type="checkbox" id="search-star-4">
-                                <i class="fa fa-star star-orange"></i>
-                                <i class="fa fa-star star-orange"></i>
-                                <i class="fa fa-star star-orange"></i>
-                                <i class="fa fa-star star-orange"></i>
-                            </div>
-                            <div class="filter-row">
-                                <input type="checkbox" id="search-star-5">
-                                <i class="fa fa-star star-orange"></i>
-                                <i class="fa fa-star star-orange"></i>
-                                <i class="fa fa-star star-orange"></i>
-                                <i class="fa fa-star star-orange"></i>
-                                <i class="fa fa-star star-orange"></i>
+                            <div class="select-rating-box">
+                                <div style="padding: 10px">
+                                    <a class="button-search" th:onclick="'reloadFeedBackList('+${rating.schoolId}+')'" style="color: dodgerblue;text-decoration: underline;">Search</a>
+                                </div>
                             </div>
                         </div>
-                        <div class="select-rating-box">
-                            <div style="padding: 10px">
-                                <a class="button-search" onclick="searchFeedback()" style="color: dodgerblue;text-decoration: underline;">Search</a>
-                            </div>
-                        </div>
+                        <div class="col-1"></div>
                     </div>
-                    <div class="col-1"></div>
                 </div>
 
             </div>
@@ -299,6 +309,30 @@
 
 </div>
 <!-- END wrapper -->
+
+<!-- popup 1 -->
+<div id="unenrollModel" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Time invalid!</h5>
+            </div>
+            <div class="modal-body">
+                <h6>Time invalid!</h6>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary waves-effect"
+                        data-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- END popup 1 -->
 
 <!-- Vendor js -->
 <script src="/admin_side/js/vendor.min.js"></script>

@@ -57,35 +57,6 @@ body {
     border-color: #bd2130;
 }
 
-/* Breadcrumb */
-.breadcrumb {
-    background: #e9ecef;
-    font-size: 14px;
-    margin-top: 0;
-    padding: 10px 15px;
-    border-radius: 5px;
-    max-width: 100%; /* Giới hạn chiều rộng tối đa */
-    overflow: hidden; /* Ngăn chặn tràn nội dung */
-    white-space: nowrap; /* Ngăn chặn xuống dòng */
-    text-overflow: ellipsis; /* Hiển thị dấu ba chấm khi nội dung quá dài */
-}
-
-.breadcrumb-item a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-.breadcrumb-item.active {
-    font-weight: bold;
-    color: #555;
-}
-
-/* Đảm bảo rằng breadcrumb không tràn vào left sidebar */
-.container-fluid {
-    padding-left: 240px; /* Thêm padding để tạo khoảng cách với left sidebar */
-    padding-right: 20px;
-}
-
 
 .logout-container {
     display: flex;

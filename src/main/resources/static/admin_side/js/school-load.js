@@ -1,21 +1,20 @@
-function loadSchoolInPage(nextPage, isAdmin){
+function loadSchoolInPage(nextPage){
     url = "";
     search = document.getElementById("search").value;
-    if(isAdmin){
-        url = "/admin";
-    }else{
-        url = "/school-owner";
-    }
     $.ajax({
-        url: url + "/school-list/searchAndPaging",
+        url: url + "/manager/school-list",
         type: "GET",
         data: {
             search: search,
             page: nextPage,
+            ajax: true
         },
         success: function (data) {
             document.getElementById("main-content-school-table").outerHTML = data;
-            updateUrlParams(search, nextPage)
+            updateUrlParams(search, nextPage);
+        },
+        error: function (e) {
+            $('#searchModel').modal('show');
         }
     });
 }

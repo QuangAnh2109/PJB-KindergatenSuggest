@@ -31,15 +31,6 @@ public interface AccountService {
 
     boolean updatePassword(String email, String newPassword);
 
-    /**
-     * Retrieves a paginated list of parent based on the search
-     *
-     * @param search
-     * @param pageable
-     * @return a page of ParentVo containing user account details
-     */
-    Page<ParentVo> findAllParent(String search, Pageable pageable);
-
     //tuanpa79
 
     /**
@@ -82,8 +73,6 @@ public interface AccountService {
 
     AccountInfo createAccount(AccountVo accountVo);
 
-    Page<ParentVo> findAllParent(Pageable pageable);
-
     /**
      * This method is used to find Parent based on their ID
      *
@@ -91,6 +80,7 @@ public interface AccountService {
      * @return String role
      */
     ParentVo findParentById(int id) throws ValidateParentException;
+
     /**
      * This method if used to find role of account by using account email
      *
@@ -100,8 +90,6 @@ public interface AccountService {
     String findAccountRoleString(String email);
 
     AccountInfo getAccountInfoById(int id);
-
-    Page<EnrolledSchoolVo> findEnrolledSchoolBy(int id, Pageable pageable);
 
     /**
      * Retrieves a paginated list of user accounts based on search and email of School Owner criteria.
@@ -121,34 +109,27 @@ public interface AccountService {
 
     void updateAccountInfo(AccountInfo existing, AccountInfo formData);
 
-    void saveAccountInfo(AccountInfo accountInfo);
-
     Map<String, String> changePasswordHandle(String oldPassword, String newPassword, String confirmPassword);
-
-    boolean forgotPasswordProcess(String email, Model model);
-
-    String resetPasswordProcess(String token, String newPassword, String confirmPassword, Model model);
-
-    AccountInfo validateResetToken(String token, Model model);
-
-    boolean resetPassword(String token, String newPassword, String confirmPassword, Model model);
-
-    boolean updateAccountDetails(AccountInfo accountInfo, Model model);
 
     AccountInfo getCurrentAccountInfo();
 
-    boolean processRegister(AccountVo accountVo);
-
     boolean verifyAccount(String token);
 
-    Map<String, Object> getValidationResult();
 
     public int getAccountIdByEmail(String email);
 
-    AccountInfo validateAccountToken(String token);
+    public String getAccountNameByEmailAndNoDelete(String email);
+
+    boolean isValidAccountToken(String token);
 
     Map<String, String> handleForgotPassword(String email);
 
     Map<String, String> handleResetPassword(String token, String newPassword, String confirmPassword);
-    Map<String,String> updateAccountProcess(AccountInfo accountInfo);
+
+    Map<String, String> updateAccountProcess(AccountInfo accountInfo);
+
+    Map<String, String> handleRegisterProcess(AccountVo accountVo);
+
+    List<String> getAllAccountEmailsByRole(int roleId);
+
 }
