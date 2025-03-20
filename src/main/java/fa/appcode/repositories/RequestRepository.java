@@ -27,15 +27,22 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
      * @return a RequestDetailVo containing request details
      */
     @Query("""
-            SELECT new fa.appcode.common.vo.RequestDetailVo(-+
+            SELECT new fa.appcode.common.vo.RequestDetailVo(
                         r.id,r.fullName,r.requestEmail,r.requestPhone,
-                        s.schoolAddress,s.schoolName,r.inquiries,m.typeValue)
+                        s.schoolAddress,s.schoolName,r.inquiries,m.typeValue,r.recordNo)
             FROM  Request r
             JOIN MasterDatum m ON m.typeKey = r.requestMasterId AND m.typeName="REQUEST STATUS"
             JOIN SchoolInfo s ON r.school.id=s.id 
             WHERE r.id = ?1
             """)
     RequestDetailVo findRequestsById(Integer id);
+
+    @Query("""
+            SELECT r
+            FROM  Request r
+            WHERE r.id = ?1
+            """)
+    Request findRequestsInformationById(Integer id);
 
     /**
      * List all requests, optionally filtered by account ID and request master ID

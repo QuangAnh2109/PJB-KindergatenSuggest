@@ -109,4 +109,7 @@ public class GlobalConfig {
     private String accountNotActive;
     @Value("${ME_074}")
     private String updateSuccessfullMessage;
+
+    @Value("${ME_075}")
+    private String updateFailMessage;
 }
