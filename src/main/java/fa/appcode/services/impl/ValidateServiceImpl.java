@@ -87,6 +87,7 @@ public class ValidateServiceImpl implements ValidateService {
         LOGGER.debug("Validating phone number: {}", phoneNumber);
         return Pattern.matches(Constant.PHONE_REGEX, phoneNumber);
     }
+
     @Override
     public Map<String, String> dobValidation(LocalDate dob) {
         if (dob != null && !dob.isBefore(LocalDate.of(2006, 1, 1))) {
@@ -94,6 +95,7 @@ public class ValidateServiceImpl implements ValidateService {
         }
         return Collections.emptyMap();
     }
+
 
     public Map<String, String> fullNameValidation(String fullName) {
         if (requiredField(fullName)) {
@@ -201,29 +203,50 @@ public class ValidateServiceImpl implements ValidateService {
         return Collections.emptyMap();
     }
 
-
+    /**
+     * Validates account fields including full name, phone numbers, and date of birth.
+     * Combines multiple validation methods into a single map.
+     *
+     * @param fullName      The full name of the user.
+     * @param currentPhone  The current phone number of the user.
+     * @param newPhone      The new phone number to be updated.
+     * @param dob           The date of birth of the user.
+     * @return A map containing field names as keys and validation error messages as values.
+     */
     @Override
     public Map<String, String> validateAccountField(String fullName, String currentPhone, String newPhone, LocalDate dob) {
         return Stream.of(
-                        fullNameValidation(fullName),
-                        validatePhone(currentPhone, newPhone),
-                        dobValidation(dob)
+                        fullNameValidation(fullName),  // Validate full name
+                        validatePhone(currentPhone, newPhone),  // Validate phone numbers
+                        dobValidation(dob)  // Validate date of birth
                 )
-                .flatMap(map -> map.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1));
+                .flatMap(map -> map.entrySet().stream())  // Flatten maps into a stream of entries
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1));  // Merge into a single map
     }
 
-
+    /**
+     * Validates registration fields including full name, email, phone number, and password confirmation.
+     * Combines multiple validation methods into a single map.
+     *
+     * @param fullName        The full name of the user.
+     * @param email           The email address of the user.
+     * @param phone           The phone number of the user.
+     * @param password        The password entered by the user.
+     * @param confirmPassword The password confirmation entered by the user.
+     * @return A map containing field names as keys and validation error messages as values.
+     */
     @Override
     public Map<String, String> registerValidation(String fullName, String email, String phone, String password, String confirmPassword) {
         return Stream.of(
-                        fullNameValidation(fullName),
-                        emailValidation(email),
-                        phoneValidation(phone),
-                        validateResetPassword(password, confirmPassword)
-                ).flatMap(map -> map.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                        fullNameValidation(fullName),  // Validate full name
+                        emailValidation(email),  // Validate email
+                        phoneValidation(phone),  // Validate phone number
+                        validateResetPassword(password, confirmPassword)  // Validate password confirmation
+                )
+                .flatMap(map -> map.entrySet().stream())  // Flatten maps into a stream of entries
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));  // Merge into a single map
     }
+
 
     /**
      * Validates that all required fields for password change are provided

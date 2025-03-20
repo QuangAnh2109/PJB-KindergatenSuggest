@@ -142,7 +142,6 @@
                                 <label class="col-md-4 col-form-label fw-bold text-end">Inquires</label>
                                 <div class="col-md-7">
                                     <textarea class="form-control" th:field="*{inquires}" readonly rows="4"></textarea>
-
                                 </div>
                             </div>
 
@@ -171,7 +170,7 @@
                                                     data-dismiss="modal">No. Take me back!
                                             </button>
                                             <button type="button" class="btn btn-primary px-4"
-                                                    th:onclick="|window.location.href='@{/manager/updateRequest(id=${requestDetail.id}, page=${page},currentPage=${currentPage})}'|">
+                                                    th:onclick="|window.location.href='@{/manager/updateRequest(id=${requestDetail.id}, page=${page},currentPage=${currentPage},recordNo=${requestDetail.recordNo})}'|">
                                                 Yes
                                             </button>
                                         </div>

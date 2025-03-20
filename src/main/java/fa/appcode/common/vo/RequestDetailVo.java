@@ -33,4 +33,7 @@ public class RequestDetailVo {
 
     @NotNull
     private String requestMasterName;
+
+    @NotNull
+    private int recordNo;
 }

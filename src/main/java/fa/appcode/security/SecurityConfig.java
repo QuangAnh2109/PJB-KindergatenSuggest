@@ -79,6 +79,8 @@ public class SecurityConfig {
                         .clearAuthentication(true)
                         .logoutSuccessUrl("/public/showMyLoginPage?logout")
                         .permitAll()
+                ).sessionManagement(session -> session
+                        .invalidSessionUrl("/public/showMyLoginPage?timeout=true")
                 )
                 .exceptionHandling(configurer -> configurer
                         .accessDeniedPage("/public/access-denied")

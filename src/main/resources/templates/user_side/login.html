@@ -111,6 +111,15 @@
             toggleIcon.classList.add("fa-eye");
         }
     }
+
+        window.onload = function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('timeout') === 'true' && !sessionStorage.getItem("sessionTimeoutAlerted")) {
+                alert("Session has expired. Please log in again.");
+                sessionStorage.setItem("sessionTimeoutAlerted", "true");
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        };
 </script>
 </body>
 </html>

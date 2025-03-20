@@ -3,6 +3,7 @@ package fa.appcode.services;
 import fa.appcode.common.vo.MyRequestVo;
 import fa.appcode.common.vo.RequestDetailVo;
 import fa.appcode.common.vo.RequestVo;
+import fa.appcode.entities.AccountInfo;
 import fa.appcode.entities.Request;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,13 +45,8 @@ public interface RequestService {
 
     Page<MyRequestVo> findRequestByAccountId(Integer accountId, Pageable pageable);
 
-    /**
-     * Updates the status of a request.
-     *
-     * @param update_id the ID of the user performing the update
-     * @param id        the ID of the request to update
-     */
-    void updateRequest(String update_id, int id);
+
+    String updateRequest(Integer id,Integer recordNo, AccountInfo account);
 
     /**
      * Sends email reminders for pending requests.

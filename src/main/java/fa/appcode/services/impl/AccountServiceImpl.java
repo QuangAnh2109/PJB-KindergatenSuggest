@@ -355,18 +355,37 @@ public class AccountServiceImpl implements AccountService {
             return false;
         }
     }
-
+    /**
+     * Handles the password change process for the currently logged-in user.
+     * @param oldPassword      The current password of the user.
+     * @param newPassword      The new password entered by the user.
+     * @param confirmPassword  The confirmation of the new password entered by the user.
+     * @return A map where keys represent field names and values contain validation error messages.
+     *         Returns an empty map if the password is successfully updated.
+     */
     @Override
     public Map<String, String> changePasswordHandle(String oldPassword, String newPassword, String confirmPassword) {
+        // Retrieve the currently logged-in user's account information
         AccountInfo account = getCurrentAccountInfo();
+
+        // Validate the password change rules
         Map<String, String> validateResult = validateService.validatePasswordChangeRules(oldPassword, newPassword, confirmPassword);
+
+        // If there are validation errors, return them
         if (!validateResult.isEmpty()) {
             return validateResult;
         }
+
+        // Log successful password update
         LOGGER.info("Password successfully updated for user");
+
+        // Update the password in the database
         updatePassword(account, newPassword);
-        return new HashMap<>();
+
+        // Return an empty map indicating success
+        return Collections.emptyMap();
     }
+
 
     @Override
     public AccountInfo getCurrentAccountInfo() {
@@ -393,6 +412,7 @@ public class AccountServiceImpl implements AccountService {
             LOGGER.warn("No account found for email: {}", email);
             return Map.of("emailError", globalConfig.getEmailNotExist());
         }
+        // Build and send a password reset email
         SendMailInfo resetMail = EmailBuilder.buildForgotPasswordMail(email, accountInfo.getDatetimeChangePass());
         emailService.sendEmailToMany(resetMail);
         LOGGER.info("Password reset email successfully sent to: {}", email);
@@ -441,16 +461,14 @@ public class AccountServiceImpl implements AccountService {
         // Retrieve the current account information of the logged-in user
         AccountInfo currentAccount = getCurrentAccountInfo();
         // Validate the updated account fields
-        Map<String, String> updateAccountErrors = validateService.validateAccountField(
+        Map<String, String> validationResult = validateService.validateAccountField(
                 accountInfo.getFullName(), accountInfo.getPhone(),
                 currentAccount.getPhone(), accountInfo.getDob()
         );
-
         // If there are validation errors, return them immediately
-        if (!updateAccountErrors.isEmpty()) {
-            return updateAccountErrors;
+        if (!validationResult.isEmpty()) {
+            return validationResult;
         }
-
         // Retain the existing address details if they are not provided in the updated data
         retainExistingAddressIfEmpty(accountInfo, currentAccount);
 
