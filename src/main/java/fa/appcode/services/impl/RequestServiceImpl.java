@@ -1,5 +1,6 @@
 package fa.appcode.services.impl;
 
+import com.cloudinary.provisioning.Account;
 import fa.appcode.common.utils.Constant;
 import fa.appcode.common.utils.Placeholder;
 import fa.appcode.common.utils.SendMailInfo;
@@ -7,7 +8,10 @@ import fa.appcode.common.vo.EmailContentVo;
 import fa.appcode.common.vo.MyRequestVo;
 import fa.appcode.common.vo.RequestDetailVo;
 import fa.appcode.common.vo.RequestVo;
+import fa.appcode.config.GlobalConfig;
+import fa.appcode.entities.AccountInfo;
 import fa.appcode.entities.Request;
+import fa.appcode.repositories.AccountRepository;
 import fa.appcode.repositories.RequestRepository;
 import fa.appcode.services.EmailService;
 import fa.appcode.services.RequestService;
@@ -36,6 +40,11 @@ public class RequestServiceImpl implements RequestService {
     private EmailService emailService;
 
     private static final Logger logger = LoggerFactory.getLogger(RequestServiceImpl.class);
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private GlobalConfig globalConfig;
 
     @Override
     public Page<RequestVo> listAllRequest(Integer accountID, Integer requestMasterID, Pageable pageable) {
@@ -62,9 +71,22 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void updateRequest(String update_id, int id) {
-        Instant vietnamTime = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toInstant();
-        requestRepository.updateRequestStatus(update_id, id, vietnamTime);
+    public String updateRequest(Integer id , Integer recordNo, AccountInfo account) {
+        Request currRequest = requestRepository.findRequestsInformationById(id);
+        if(recordNo!=currRequest.getRecordNo()){
+            return globalConfig.getUpdateFailMessage();
+        }
+        currRequest.setRecordNo(currRequest.getRecordNo()+1);
+        currRequest.setUpdateTime(Instant.now());
+        String role = account.getRoleId()==1?Constant.ADMIN_ROLE:Constant.SCHOOL_OWNER_ROLE;
+        if(role.equalsIgnoreCase(Constant.ADMIN_ROLE)){
+            currRequest.setUpdateId("SYSTEM_ADMIN");
+        }else{
+            currRequest.setUpdateId("SCHOOL_OWNER");
+        }
+        currRequest.setRequestMasterId(2);
+        requestRepository.save(currRequest);
+        return globalConfig.getUpdateSuccessfullMessage();
     }
 
     @Override

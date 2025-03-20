@@ -119,22 +119,19 @@ public class RequestController {
     @GetMapping("/manager/updateRequest")
     public String updateRequest(@RequestParam Integer id,
                                 @RequestParam String page,
+                                @RequestParam(name = "recordNo",defaultValue = "0") Integer recordNo,
                                 @RequestParam(name = "currentPage", defaultValue = Constant.INIT_PAGE) int currentPage,
                                 Model model, Principal principal,
                                 RedirectAttributes redirectAttributes,
                                 HttpSession session) {
-        String role = accountService.getAccountInfo(principal).getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
-        if (role.equalsIgnoreCase(Constant.ADMIN_ROLE)) {
-            requestService.updateRequest("SYSTEM_ADMIN", id);
-        } else if (role.equalsIgnoreCase(Constant.SCHOOL_OWNER_ROLE)) {
-            requestService.updateRequest("SCHOOL_OWNER", id);
-        }
-
+        AccountInfo account = accountService.getAccountInfo(principal);
+        String role = account.getRoleId() == 1 ? Constant.ADMIN_ROLE : Constant.SCHOOL_OWNER_ROLE;
+        String message = requestService.updateRequest(id,recordNo,account);
         RequestDetailVo requestDetail = requestService.findById(id);
         model.addAttribute("requestDetail", requestDetail);
         model.addAttribute("role", role);
         redirectAttributes.addAttribute("currentPage", currentPage);
-        session.setAttribute("message", globalConfig.getUpdateSuccessfullMessage());
+        session.setAttribute("message", message);
         if(!page.equalsIgnoreCase("Detail")){
             redirectAttributes.addAttribute("currPage", "requestList");
         }
