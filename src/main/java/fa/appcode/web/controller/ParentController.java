@@ -7,8 +7,6 @@ import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.EnrollSchool;
-import fa.appcode.entities.SchoolInfo;
-import fa.appcode.exceptions.CustomDataException;
 import fa.appcode.exceptions.ValidateParentException;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.EnrollSchoolService;

@@ -139,13 +139,27 @@
                                             <a class="page-link" type="button"
                                                th:aria-disabled="${currentPage == 0}">Previous</a>
                                         </li>
+                                        <li class="page-item parent-page-item" th:data-page="0" th:if="${currentPage >= 3}">
+                                            <a class="page-link" th:if="${currentPage >= 3}" type="button">1</a>
+                                        </li>
+                                        <li class="page-item" th:if="${currentPage > 3}">...</li>
 
                                         <!-- Page Numbers -->
-                                        <li class="page-item parent-page-item"
-                                            th:each="pageNum : ${numberPage > 0 ? #numbers.sequence(0, numberPage - 1) : #numbers.sequence(0, 0)}"
-                                            th:classappend="${pageNum == currentPage} ? 'active'"
-                                            th:data-page="${pageNum}">
-                                            <a class="page-link" type="button" th:text="${pageNum + 1}"></a>
+<!--                                        <li class="page-item parent-page-item"-->
+<!--                                            th:each="pageNum : ${numberPage > 0 ? #numbers.sequence(0, numberPage - 1) : #numbers.sequence(0, 0)}"-->
+<!--                                            th:classappend="${pageNum == currentPage} ? 'active'"-->
+<!--                                            th:data-page="${pageNum}">-->
+<!--                                            <a class="page-link" type="button" th:text="${pageNum + 1}"></a>-->
+<!--                                        </li>-->
+                                        <li class="page-item parent-page-item" th:each="pageNum : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
+                                            th:if="${pageNum >= 0 and pageNum < numberPage}"
+                                            th:classappend="${pageNum == currentPage} ? 'active'" th:data-page="${pageNum}">
+                                            <a class="page-link"  type="button" th:text="${pageNum + 1}"></a>
+                                        </li>
+
+                                        <li class="page-item" th:if="${currentPage < numberPage - 3}">...</li>
+                                        <li class="page-item parent-page-item" th:if="${currentPage < numberPage - 1 }" th:data-page="${numberPage - 1}">
+                                            <a class="page-link" type="button" th:if="${currentPage < numberPage - 3}" th:text="${numberPage}"></a>
                                         </li>
 
                                         <!-- Next Button -->
