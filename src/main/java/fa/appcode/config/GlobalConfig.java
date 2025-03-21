@@ -112,4 +112,14 @@ public class GlobalConfig {
 
     @Value("${ME_075}")
     private String updateFailMessage;
+    @Value("${ME_InvalidID}")
+    private String invalidIDFormatParent;
+    @Value("${ME_076}")
+    private String invalidActionType;
+    @Value("${ME_077}")
+    private String failedSearchParent;
+    @Value("${ME_078}")
+    private String changedRecord;
+    @Value("${ME_079}")
+    private String schoolNotPublishStatus;
 }
