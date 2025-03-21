@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class FacilityVo {
-    private int schoolId;
     private Integer facilityId;
-    private String name;
+    private String value;
 }

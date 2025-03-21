@@ -10,8 +10,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository("schoolInfoRepository")
 public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer> {
@@ -19,7 +21,7 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
 
     //find all schools by account email that have school status of published
     @Query("SELECT new fa.appcode.common.vo.EnrollSchoolInfoVo(s.id,s.schoolName) FROM SchoolInfo s JOIN AccountInfo ai ON s.account.id = ai.id WHERE (:email IS NULL OR ai.email = :email) AND s.deleteFlg=false AND s.statusId=:schoolStatusId")
-    List<EnrollSchoolInfoVo> findSchoolInfoByAccountEmail(String email,int schoolStatusId);
+    List<EnrollSchoolInfoVo> findSchoolInfoByAccountEmail(String email, int schoolStatusId);
 
     //find schoolInfo by school Id
     @Query("SELECT s FROM SchoolInfo s WHERE s.deleteFlg=false AND s.id=?1 AND s.statusId=?2")
@@ -143,7 +145,7 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
                 )
                 AND f.id.schoolId = :#{#form.schoolId}
             GROUP BY f.id.schoolId""")
-    SchoolRatingFeedback getSchoolRatingFeedbackBySchoolId(@Param("form")FeedbackRatingRequest feedbackRatingRequest);
+    SchoolRatingFeedback getSchoolRatingFeedbackBySchoolId(@Param("form") FeedbackRatingRequest feedbackRatingRequest);
 
     @Query("""
             SELECT new fa.appcode.common.vo.AccountFeedback
@@ -169,11 +171,41 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
                 ))
             GROUP BY f.id.accountId
             ORDER BY f.id.feedbackTime""")
-    Page<AccountFeedback> getAllAccountFeedbackBySchoolId(@Param("form")FeedbackRatingRequest feedbackRatingRequest, Pageable pageable);
+    Page<AccountFeedback> getAllAccountFeedbackBySchoolId(@Param("form") FeedbackRatingRequest feedbackRatingRequest, Pageable pageable);
 
     @Query("SELECT si.schoolName FROM SchoolInfo si WHERE si.id = ?1 AND si.deleteFlg = ?2")
     String getSchoolNameByIdAndDeleteFlg(int id, boolean deleteFlg);
 
     SchoolInfo findSchoolInfoByIdAndRecordNoAndDeleteFlg(int id, int recordNo, boolean deleteFlg);
 
+     // This method to get list facilities and utilities of each school
+    @Query("""
+            SELECT m.typeValue as typeValue
+            FROM SchoolFacility sf
+            JOIN MasterDatum m ON sf.id.facilitiesId = m.typeKey AND m.typeName = 'FACILITIES'
+            WHERE sf.school.id IN :schoolId
+            UNION
+            SELECT m1.typeValue as typeValue
+            FROM SchoolUtility su
+            JOIN MasterDatum m1 ON su.id.utilitiesId = m1.typeKey AND m1.typeName = 'UTILITIES'
+            WHERE su.school.id IN :schoolId
+            """)
+    List<Object[]> findFacilitiesAndUtilitiesBySchoolId(List<Integer> schoolId);
+
+    default Map<Integer, List<String>> findFacilitiesAndUtilitiesBySchoolIds(List<Integer> schoolIds) {
+        if (schoolIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        List<Object[]> rawResults = findFacilitiesAndUtilitiesBySchoolId(schoolIds);
+
+        return rawResults.stream()
+                .collect(Collectors.groupingBy(
+                        result -> (Integer) result[0],
+                        Collectors.mapping(
+                                result -> (String) result[1],
+                                Collectors.toList()
+                        )
+                ));
+    }
 }
