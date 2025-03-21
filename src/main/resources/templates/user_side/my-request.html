@@ -161,7 +161,7 @@
                                 <p>Full Name: <span th:text="${request.getFullName()}"></span></p>
                                 <p>Email address: <span th:text="${request.getRequestEmail()}"></span></p>
                                 <p>Phone number: <span th:text="${request.getRequestPhone()}"></span></p>
-                                <p class="content" id="textContent">
+                                <p class="content" id="textContent" style="overflow-y:auto;">
                                     <span th:text="${request.getInquires()}"></span>
                                 </p>
                                 <a class="see-more" id="seeMoreBtn" onclick="toggleContent()">See more...</a>
