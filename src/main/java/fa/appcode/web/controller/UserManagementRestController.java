@@ -6,6 +6,7 @@ import fa.appcode.config.GlobalConfig;
 import fa.appcode.services.AccountService;
 
 import fa.appcode.services.ValidateService;
+import fa.appcode.services.impl.ValidateServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,8 @@ public class UserManagementRestController {
     private AccountService accountService;
     @Autowired
     private GlobalConfig globalConfig;
+    @Autowired
+    private ValidateService validateService;
 
     /**
      * Delete account
@@ -45,22 +48,14 @@ public class UserManagementRestController {
      *
      * @param accountVo
      * @param principal
-     * @param result
      * @return
      */
     @PostMapping("/save-user")
-    public ResponseEntity<?> saveUser(@RequestBody @Valid AccountVo accountVo, BindingResult result, Principal principal) throws Exception {
+    public ResponseEntity<?> saveUser(@RequestBody  AccountVo accountVo, Principal principal) throws Exception {
 
         Log4jUtils.getLogger().info("Received request to save user: {}", accountVo);
 
-        Map<String, String> errors = new HashMap<>();
-        if (result.hasErrors()) {
-            result.getFieldErrors().forEach(error -> {
-                if (!error.getField().equals("password") && !error.getField().equals("confirmPassword")) {
-                    errors.put(error.getField(), error.getDefaultMessage());
-                }
-            });
-        }
+        Map<String, String> errors = validateService.validateAccountVo(accountVo);
 
         if (!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors);

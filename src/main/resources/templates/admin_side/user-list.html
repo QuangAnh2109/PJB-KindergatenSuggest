@@ -107,7 +107,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="account : ${listAccounts}"  th:onclick="|window.location.href='/admin/user-details/' + ${account.id}|">
+                                <tr class="clickable-row" th:each="account : ${listAccounts}" th:data-userid="${account.id}">
                                     <td th:text="${account.fullName}"></td>
                                     <td th:text="${account.email}"></td>
                                     <td th:text="${account.phone}"></td>
@@ -124,7 +124,7 @@
                                             <i class="ti-pencil"></i>
                                         </a>
                                         <a href="#" class="btn btn-sm btn-danger delete-user-btn"
-                                           th:data-userid="${account.id}">
+                                            th:data-userid="${account.id}">
                                             <i class="ti-trash"></i>
                                         </a>
                                     </td>

@@ -112,4 +112,7 @@ public class GlobalConfig {
 
     @Value("${ME_075}")
     private String updateFailMessage;
+
+    @Value("${ME_076}")
+    private String DateInThePass;
 }

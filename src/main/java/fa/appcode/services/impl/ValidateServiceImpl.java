@@ -2,6 +2,7 @@ package fa.appcode.services.impl;
 
 import fa.appcode.common.logging.Log4jUtils;
 import fa.appcode.common.utils.Constant;
+import fa.appcode.common.vo.AccountVo;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.repositories.AccountRepository;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -248,6 +250,46 @@ public class ValidateServiceImpl implements ValidateService {
     }
 
 
+    public Map<String, String> validDob(String dob) {
+        if (dob == null || dob.trim().isEmpty()) {
+            return Map.of("dobError", globalConfig.getRequiredField());
+        }
+        try {
+            LocalDate parsedDob = LocalDate.parse(dob);
+            if (!parsedDob.isBefore(LocalDate.now())) {
+                return Map.of("dobError", globalConfig.getDateInThePass());
+            }
+        } catch (DateTimeParseException e) {
+            return Map.of("dobError", "Invalid date format");
+        }
+        return Collections.emptyMap();
+    }
+
+
+
+    @Override
+    public Map<String, String> validateAccountVo(AccountVo accountVo) {
+        Map<String, String> errors = new HashMap<>();
+
+        errors.putAll(fullNameValidation(accountVo.getFullName()));
+
+        errors.putAll(emailValidation(accountVo.getEmail()));
+
+        errors.putAll(phoneValidation(accountVo.getPhone()));
+
+        errors.putAll(validDob(accountVo.getDob()));
+
+        if (accountVo.getRole() == null || accountVo.getRole().trim().isEmpty()) {
+            errors.put("roleError", globalConfig.getRequiredField());
+        }
+
+        if (accountVo.getStatus() == null || accountVo.getStatus().trim().isEmpty()) {
+            errors.put("statusError", globalConfig.getRequiredField());
+        }
+        return errors;
+    }
+
+
     /**
      * Validates that all required fields for password change are provided
      * @param oldPassword     The current password
@@ -373,5 +415,8 @@ public class ValidateServiceImpl implements ValidateService {
         }
         return matches;
     }
+
+
+
 
 }
