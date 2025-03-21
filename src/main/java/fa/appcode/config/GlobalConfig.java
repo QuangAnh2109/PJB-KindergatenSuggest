@@ -122,4 +122,6 @@ public class GlobalConfig {
     private String changedRecord;
     @Value("${ME_079}")
     private String schoolNotPublishStatus;
+    @Value("${ME_076}")
+    private String DateInThePass;
 }
