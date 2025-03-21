@@ -65,7 +65,7 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         }
         if (school==null||school.getDeleteFlg() || !school.getStatusId().equals(Constant.SCHOOL_PUBLISH_STATUS)) {
             Log4jUtils.getLogger().info("Enroll Failed, school not published or no longer available");
-            throw new EnrollUnenrollParentException("School is not published Or No Longer Available Or not Exists Please Try Again!",account.getId());
+            throw new EnrollUnenrollParentException(globalConfig.getSchoolNotPublishStatus(),account.getId());
         }
 
         if (isEnrolled(account.getId(), school.getId())) {
@@ -112,14 +112,14 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
             throw new EnrollUnenrollParentException("Illegal Unenroll school on your action",parentId);
         }
         if (role.equals(Constant.SCHOOL_OWNER_ROLE.toUpperCase().replace(" ", "_")) && !validateAccess(enrollSchool.getSchool().getId(), schoolOwnerEmail)) {
-            Log4jUtils.getLogger().info("School Owner does not have Access to school: "+enrollSchool.getSchool().getId());
+            Log4jUtils.getLogger().info(globalConfig.getSchoolOwnerAccess()+enrollSchool.getSchool().getId());
             throw new EnrollUnenrollParentException(globalConfig.getSchoolOwnerAccess(),parentId);
         }
 
         int updateRows = enrollSchoolRepository.evaluateParentEnroll(enrollSchool.getId(), LocalDate.now(), role, Instant.now(), status, recordNo);
         if (updateRows == 0) {
             Log4jUtils.getLogger().info("Unenroll Fail, The Record has changed");
-            throw new EnrollUnenrollParentException("This Record is Already Edited. Please Try Again!",parentId);
+            throw new EnrollUnenrollParentException(globalConfig.getChangedRecord(),parentId);
         }
     }
 

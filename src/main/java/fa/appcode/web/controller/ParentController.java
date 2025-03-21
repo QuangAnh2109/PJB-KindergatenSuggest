@@ -47,7 +47,7 @@ public class ParentController {
     public String parentList(@RequestParam(name = "currentPage"
                                      , defaultValue = Constant.SCHOOL_AND_ENROLL_INIT_PAGE) int currentPage,
                              @RequestParam(defaultValue = Constant.KEY_WORD_DEFAULT) String search, Model model,
-                             Principal principal, RedirectAttributes redirectAttributes) {
+                             Principal principal) {
             Log4jUtils.getLogger().info("Inside parentList Method");
             Log4jUtils.getLogger().info(principal.getName());
             /*
@@ -90,8 +90,7 @@ public class ParentController {
 
     @GetMapping("parent-list/parent-details/{id}")
     public String parentDetailsAdmin(@RequestParam(name = "currentPage"
-                                             , defaultValue = Constant.SCHOOL_AND_ENROLL_INIT_PAGE) int currentPage, @PathVariable("id") String idStr, Model model, Principal principal,
-                                     RedirectAttributes redirectAttributes){
+                                             , defaultValue = Constant.SCHOOL_AND_ENROLL_INIT_PAGE) int currentPage, @PathVariable("id") String idStr, Model model, Principal principal){
 
         /*
          * Setup pageable
@@ -137,7 +136,7 @@ public class ParentController {
             model.addAttribute(Constant.parentPageSize, listParentEnroll.getTotalPages());
             model.addAttribute("role", role);
         } catch (NumberFormatException e) {
-            throw new ValidateParentException("Invalid ID format");
+            throw new ValidateParentException(globalConfig.getInvalidIDFormatParent());
         }
         return Constant.PARENT_DETAIL_PAGE;
     }
@@ -145,14 +144,14 @@ public class ParentController {
     @PostMapping({"parent-list/parent-details/{id}"})
     public String enrollAndUnenrollParentToSchool(@PathVariable("id") int id, @RequestParam(value = "school", required = false) Integer schoolId,
                                                   RedirectAttributes redirectAttributes, Principal principal, @RequestParam("actionType") String actionType,
-                                                  @RequestParam(value = "enroll", required = false) Integer enrollId, @RequestParam(value = "recordNo", required = false) Integer recordNo){
+                                                  @RequestParam(value = "enroll", required = false) String enrollId, @RequestParam(value = "recordNo", required = false) Integer recordNo){
         /*
          * get String role URL
          */
-
-        String role = accountService.findAccountRoleString(principal.getName());
-        String normalizedRole = role.toUpperCase().trim().replace(" ", "_");
-
+        try {
+            String role = accountService.findAccountRoleString(principal.getName());
+            String normalizedRole = role.toUpperCase().trim().replace(" ", "_");
+            int enrollSchoolId = Integer.parseInt(enrollId);
             if (Constant.ENROLL_PARENT_SCHOOL.equals(actionType)) {
                 //Enroll Parent to School
                 Log4jUtils.getLogger().info("Enrolling Parent: ");
@@ -162,17 +161,20 @@ public class ParentController {
                 redirectAttributes.addFlashAttribute(Constant.alertType, Constant.SUCCESS);
                 Log4jUtils.getLogger().info("Enroll Parent successful to School");
             } else if (Constant.UNENROLL_PARENT_SCHOOL.equals(actionType)) {
-                EnrollSchool enrollSchool = enrollSchoolService.findEnrollSchoolById(enrollId);
+                EnrollSchool enrollSchool = enrollSchoolService.findEnrollSchoolById(enrollSchoolId);
                 //unenroll Parent
                 Log4jUtils.getLogger().info("Unenrolling Parent: ");
-                enrollSchoolService.evaluateParentEnroll(enrollSchool, LocalDate.now(), normalizedRole, Constant.ENROLL_STATUS_UNENROLL, principal.getName(), recordNo,id);
+                enrollSchoolService.evaluateParentEnroll(enrollSchool, LocalDate.now(), normalizedRole, Constant.ENROLL_STATUS_UNENROLL, principal.getName(), recordNo, id);
                 redirectAttributes.addFlashAttribute(Constant.parentMessage, globalConfig.getUnenrollSuccess());
                 redirectAttributes.addFlashAttribute(Constant.alertType, Constant.DANGER);
                 Log4jUtils.getLogger().info("Unenroll Parent Success");
             } else {
                 redirectAttributes.addFlashAttribute(Constant.alertType, Constant.DANGER);
-                redirectAttributes.addFlashAttribute(Constant.alertType, "Invalid action Type");
+                redirectAttributes.addFlashAttribute(Constant.alertType, globalConfig.getInvalidActionType());
             }
+        } catch (NumberFormatException e) {
+            throw new ValidateParentException(globalConfig.getInvalidIDFormatParent());
+        }
         /*
          * Return view name
          */
