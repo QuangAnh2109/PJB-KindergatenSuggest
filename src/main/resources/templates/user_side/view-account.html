@@ -65,7 +65,7 @@
     <!-- page preloader close -->
     <!-- header begin -->
     <div th:if="${accountInfo.getDatetimeChangePass()!=null}">
-        <div th:insert="user_side/header :: header"></div>
+        <div th:insert="~{user_side/header :: header}"></div>
     </div>
     <div class="no-bottom no-top zebra" id="content">
         <div id="top"></div>
@@ -378,6 +378,7 @@
 <script th:src="@{/user_side/js/account-management.js}"></script>
 <script th:src="@{/user_side/js/dropdown.js}"></script>
 <script th:src="@{/user_side/js/address-load.js}"></script>
+<script th:src="@{/user_side/js/checkstatus.js}"></script>
 
 <!-- Bootstrap 5 JS for Tab functionality -->
 <script>
