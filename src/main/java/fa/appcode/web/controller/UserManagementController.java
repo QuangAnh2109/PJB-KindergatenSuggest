@@ -61,6 +61,15 @@ public class UserManagementController {
         return Constant.USER_LIST_PAGE;
     }
 
+
+    /**
+     * User Details screen
+     *
+     * @param id
+     * @param principal
+     * @param model
+     * @return
+     */
     @GetMapping("user-details/{id}")
     public String showUserDetails(@PathVariable("id") Integer id, Model model, Principal principal) {
         String role = accountService.getAccountInfo(principal).getRoleId().equals(Constant.ADMIN_ROLE_ID) ? "Admin" : "School owner";

@@ -99,7 +99,7 @@
                                     <input type="text" class="form-control" th:field="*{fullName}" id="fullName"
                                            th:readonly="${!(user.id == null)}"
                                            th:placeholder="${user.id == null ? 'Enter Full Name' : ''}">
-                                    <div class="text-danger" id="errorFullName"></div>
+                                    <div class="text-danger" id="fullNameError"></div>
                                 </div>
 
                                 <!-- Email -->
@@ -108,7 +108,7 @@
                                     <input type="email" class="form-control" th:field="*{email}" id="email"
                                            th:readonly="${user.id != null}"
                                            th:placeholder="${user.id == null ? 'Enter Email' : ''}">
-                                    <div class="text-danger" id="errorEmail"></div>
+                                    <div class="text-danger" id="emailError"></div>
                                 </div>
 
                                 <!-- DOB -->
@@ -117,7 +117,7 @@
                                     <input type="date" class="form-control" th:field="*{dob}" id="dob"
                                            th:readonly="${!(user.id == null)}"
                                            th:placeholder="${user.id == null ? 'Select Date of Birth' : ''}">
-                                    <div class="text-danger" id="errorDob"></div>
+                                    <div class="text-danger" id="dobError"></div>
                                 </div>
 
                                 <!-- Phone -->
@@ -126,7 +126,7 @@
                                     <input type="text" class="form-control" th:field="*{phone}" id="phone"
                                            th:readonly="${!(user.id == null)}"
                                            th:placeholder="${user.id == null ? 'Enter Phone Number' : ''}">
-                                    <div class="text-danger" id="errorPhone"></div>
+                                    <div class="text-danger" id="phoneError"></div>
                                 </div>
 
                                 <!-- Role -->
@@ -141,7 +141,7 @@
                                     <div th:if="${viewMode}">
                                         <input name="role" class="form-control" th:field="*{role}"/>
                                     </div>
-                                    <div class="text-danger" id="errorRole"></div>
+                                    <div class="text-danger" id="roleError"></div>
                                 </div>
 
                                 <!-- Status -->
@@ -160,7 +160,7 @@
                                     <div th:if="${viewMode}">
                                         <input name="status" class="form-control" th:field="*{status}"/>
                                     </div>
-                                    <div class="text-danger" id="errorStatus"></div>
+                                    <div class="text-danger" id="statusError"></div>
                                 </div>
 
 
