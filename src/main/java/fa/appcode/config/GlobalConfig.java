@@ -114,7 +114,7 @@ public class GlobalConfig {
     private String updateFailMessage;
     @Value("${ME_InvalidID}")
     private String invalidIDFormatParent;
-    @Value("${ME_50}")
+    @Value("${ME_050}")
     private String invalidActionType;
     @Value("${ME_077}")
     private String failedSearchParent;
