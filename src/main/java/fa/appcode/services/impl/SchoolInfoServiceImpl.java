@@ -9,6 +9,7 @@ import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.SchoolInfo;
 import fa.appcode.repositories.SchoolInfoRepository;
 import fa.appcode.services.SchoolInfoService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -60,11 +61,13 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
 
     //update school status by school id and record no and no delete
     @Override
+    @Transactional
     public int updateSchoolStatusByRequest(int id, int recordNo, int schoolStatus, String updateId, List<Integer> list) {
         return schoolInfoRepository.updateSchoolStatusByRequest(SchoolStatusUpdateRequest.builder().id(id).recordNo(recordNo).schoolStatus(schoolStatus).statusList(list).updateId(updateId).updateTime(Instant.now()).build());
     }
 
     @Override
+    @Transactional
     public int updateSchoolStatusByRequestAndAccount(int id, String email, int recordNo, int schoolStatus, String updateId, List<Integer> list) {
         return schoolInfoRepository.updateSchoolStatusByRequest(SchoolStatusUpdateRequest.builder().id(id).recordNo(recordNo).email(email).schoolStatus(schoolStatus).statusList(list).updateId(updateId).updateTime(Instant.now()).build());
     }
