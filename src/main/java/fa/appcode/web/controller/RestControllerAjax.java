@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class RestControllerAjax {
 
     @GetMapping("/search-result")
     public String searchResult() {
+
         return "Search result";
     }
 
@@ -34,7 +36,7 @@ public class RestControllerAjax {
             @RequestParam(defaultValue = Constant.INIT_PAGE) int page,
             @RequestParam(defaultValue = Constant.PAGE_SIZE) int size) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createTime").descending());
         Page<MyRequestVo> requestPage = requestService.findRequestByAccountId(accountId, pageable);
 
         PageVo<MyRequestVo> pageDto = new PageVo<>();

@@ -11,6 +11,7 @@ import fa.appcode.entities.SchoolInfo;
 import fa.appcode.exceptions.EnrollUnenrollParentException;
 import fa.appcode.exceptions.ValidateParentException;
 import fa.appcode.repositories.EnrollSchoolRepository;
+import fa.appcode.repositories.SchoolInfoRepository;
 import fa.appcode.services.EnrollSchoolService;
 import fa.appcode.services.SchoolInfoService;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -34,6 +39,8 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     private ApplicationContext applicationContext;
     @Autowired
     private SchoolInfoService schoolInfoService;
+    @Autowired
+    private SchoolInfoRepository schoolInfoRepository;
     @Autowired
     private EnrollSchoolRepository enrollSchoolRepository;
     @Autowired
@@ -129,7 +136,9 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     @Override
     public Page<MySchoolVo> findListSchoolParentEnrolledByParentId(int parentId, Pageable pageable) {
         LOGGER.info("Find List Parent Enrolled School By ParentId: {}", parentId);
-        Page<MySchoolVo> results = enrollSchoolRepository.findListSchoolParentEnrolledByParentId(parentId,pageable);
+        Page<MySchoolVo> results = enrollSchoolRepository.findListSchoolParentEnrolledByParentId(parentId, pageable);
+        // Fetch facilities map but no need to set it on schools since there's no setter
+        getFacilitiesMapForSchools(results);
         LOGGER.info("Found {} records of school for Parent ID: {}", results.getTotalElements(), parentId);
         return results;
     }
@@ -137,9 +146,32 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
     @Override
     public Page<MySchoolVo> findListSchoolParentPreEnrolledByParentId(int parentId, Pageable pageable) {
         LOGGER.info("Find List Parent Previous Enrolled School By ParentId: {}", parentId);
-        Page<MySchoolVo> listPreEnroll = enrollSchoolRepository.findListSchoolParentPreEnrolledByParentId(parentId,pageable);
-        LOGGER.info("Found {} records of pre-school for Parent ID: {}", listPreEnroll.getTotalElements(), parentId);
-        return listPreEnroll;
+        Page<MySchoolVo> results = enrollSchoolRepository.findListSchoolParentPreEnrolledByParentId(parentId, pageable);
+        // Fetch facilities map but no need to set it on schools since there's no setter
+        getFacilitiesMapForSchools(results);
+        LOGGER.info("Found {} records of pre-school for Parent ID: {}", results.getTotalElements(), parentId);
+        return results;
+    }
+
+    /**
+     * Helper method to fetch facilities and utilities for schools
+     * @param schoolPage Page of schools
+     * @return Map of school IDs to their facilities/utilities
+     */
+    private Map<Integer, List<String>> getFacilitiesMapForSchools(Page<MySchoolVo> schoolPage) {
+        List<MySchoolVo> schools = schoolPage.getContent();
+        if (schools.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        // Extract IDs efficiently
+        List<Integer> schoolIds = schools.stream()
+                .map(MySchoolVo::getSchoolId)
+                .distinct() // Remove any potential duplicates
+                .toList();
+
+        // Get facilities map in single query
+        return schoolInfoRepository.findFacilitiesAndUtilitiesBySchoolIds(schoolIds);
     }
 
     //check if Parent is Enrolled to school or not

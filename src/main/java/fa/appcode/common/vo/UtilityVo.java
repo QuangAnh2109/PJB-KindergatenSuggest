@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class UtilityVo {
-    private Integer id;
-    private String name;
+    private Integer utilityId;
+    private String value;
 }
