@@ -164,10 +164,20 @@ public class AccountServiceImpl implements AccountService {
         if (!user.getRecordNo().equals(accountVo.getRecordNo())) {
             throw new IllegalStateException("Data has been modified by someone else!");
         }
-        // Update role or status of account
+
+        // check data has changes or not
+        boolean isModified = false;
+
+        if (!Objects.equals(user.getRoleId(), masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()))) isModified = true;
+        if (!Objects.equals(user.getStatusId(), masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()))) isModified = true;
+
+        if (!isModified) {
+            throw new IllegalStateException("No changes detected, update aborted.");
+        }
+
+        // if has changes, perform update
         user.setRoleId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
         user.setStatusId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
-
         int newRecordNo = user.getRecordNo() + 1;
         user.setRecordNo(newRecordNo);
         user.setUpdateId("SYSTEM_ADMIN");
@@ -177,6 +187,7 @@ public class AccountServiceImpl implements AccountService {
 
         return newRecordNo;
     }
+
 
 
     // Delete logic user account

@@ -51,8 +51,6 @@ public class GlobalHandlerException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
     }
 
-
-
     @ExceptionHandler(NoResourceFoundException.class)
     public String handleNoResourceFoundException(NoResourceFoundException e) {
         logger.error("NoResourceFoundException occurred: {}", e.getMessage(), e);
