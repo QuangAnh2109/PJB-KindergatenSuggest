@@ -55,12 +55,7 @@ public class UserManagementRestController {
 
         Log4jUtils.getLogger().info("Received request to save user: {}", accountVo);
 
-        Map<String, String> errors = validateService.validateAccountVo(accountVo);
-
-        if (!errors.isEmpty()) {
-            return ResponseEntity.badRequest().body(errors);
-        }
-
+        // Determine add or edit
         boolean isAdding = accountVo.getId() == null;
         Log4jUtils.getLogger().info("Is new user: {}", isAdding);
 
