@@ -1,24 +1,63 @@
-
-
 document.addEventListener('DOMContentLoaded', function() {
     initializeFormHandlers();
     initializeTabSwitching();
     initializeSuccessModal();
+    checkForRecordError();
 });
 
+function checkForRecordError() {
+    const recordErrorAlert = document.getElementById('recordErrorAlert');
+    if (recordErrorAlert) {
+        const errorMessage = recordErrorAlert.textContent.trim();
+        recordErrorAlert.style.display = 'none';
+
+        alert(errorMessage);
+
+        // Reload the page after user clicks OK
+        window.location.reload();
+    }
+}
 function initializeFormHandlers() {
     // Xử lý form update account
     const updateForm = document.querySelector('form[name="update-form"]');
     const updateBtn = document.getElementById('updateButton');
 
     if (updateForm && updateBtn) {
+        // Store original form values when page loads
+        const originalFormData = new FormData(updateForm);
+        const originalValues = {};
+
+        for (const [key, value] of originalFormData.entries()) {
+            originalValues[key] = value;
+        }
+
         updateForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            updateBtn.disabled = true;
 
+            // Check if data has changed
+            const currentFormData = new FormData(updateForm);
+            let hasChanges = false;
+
+            for (const [key, value] of currentFormData.entries()) {
+                // Skip CSRF token or other fields that might change between requests
+                if (key === '_csrf' || key === 'recordNo') {
+                    continue;
+                }
+
+                if (originalValues[key] !== value) {
+                    hasChanges = true;
+                    break;
+                }
+            }
+
+            if (!hasChanges) {
+                alert("You didn't change anything");
+                return;
+            }
+            updateBtn.disabled = true;
             fetch(updateForm.action, {
                 method: 'POST',
-                body: new FormData(updateForm),
+                body: currentFormData,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
@@ -27,6 +66,15 @@ function initializeFormHandlers() {
                 .then(html => {
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = html;
+
+                    // Check if response contains recordError
+                    const recordError = tempDiv.querySelector('#recordErrorAlert');
+                    if (recordError) {
+                        const errorMessage = recordError.textContent.trim();
+                        alert(errorMessage);
+                        window.location.reload();
+                        return;
+                    }
 
                     const newProfileTab = tempDiv.querySelector('#profile');
                     if (newProfileTab) {
@@ -42,8 +90,8 @@ function initializeFormHandlers() {
                             }, 3000);
                         }
                     }
-
                     initializeFormHandlers();
+                    checkForRecordError();
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -54,6 +102,7 @@ function initializeFormHandlers() {
                 });
         });
     }
+
     const passwordForm = document.querySelector('form[name="changePass"]');
     const submitBtn = document.getElementById('submitButton');
 
@@ -140,7 +189,6 @@ function initializeSuccessModal() {
             window.location.href = '/public/showMyLoginPage';
         });
     }
-
     const successUpdate = document.querySelector('[th\\:if="${successUpdate}"]');
     if (successUpdate) {
         const successModal = new bootstrap.Modal(document.getElementById('successModal'));

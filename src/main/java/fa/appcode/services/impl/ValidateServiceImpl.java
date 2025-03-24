@@ -196,7 +196,10 @@ public class ValidateServiceImpl implements ValidateService {
             LOGGER.warn("New password is not valid");
             return Map.of(NEW_PASSWORD_ERROR, globalConfig.getValidatePassword());
         }
-
+        if (!validPassword(confirmPassword)) {
+            LOGGER.warn("New password is not valid");
+            return Map.of(CONFIRM_PASSWORD_ERROR, globalConfig.getValidatePassword());
+        }
         if (!newPassword.equals(confirmPassword)) {
             LOGGER.warn("Confirm password does not match new password");
             return Map.of(CONFIRM_PASSWORD_ERROR, globalConfig.getPasswordNotMatch());

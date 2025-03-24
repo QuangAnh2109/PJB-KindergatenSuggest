@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import java.util.Map;
 
 @Controller
@@ -27,8 +28,10 @@ public class ChangePasswordController {
     public String showChangePasswordPage() {
         return "redirect:/auth/account-management?tab=password";
     }
+
     /**
      * Processes the password change request.
+     *
      * @param oldPassword     The current password entered by the user.
      * @param newPassword     The new password the user wants to set.
      * @param confirmPassword The confirmation of the new password.
@@ -43,13 +46,12 @@ public class ChangePasswordController {
             @RequestParam("confirmPassword") String confirmPassword,
             HttpServletRequest request,
             Model model) {
-        Map<String, String> errors = accountService.changePasswordHandle(oldPassword, newPassword, confirmPassword);
         AccountInfo accountInfo = accountService.getCurrentAccountInfo();
         model.addAttribute("accountInfo", accountInfo);
+        Map<String, String> errors = accountService.changePasswordHandle(oldPassword, newPassword, confirmPassword);
         if (!errors.isEmpty()) {
             model.addAllAttributes(errors);
-        }
-        else {
+        } else {
             model.addAttribute("successUpdate", globalConfig.getUpdateSuccess());
             SecurityContextHolder.clearContext();
             request.getSession().invalidate();

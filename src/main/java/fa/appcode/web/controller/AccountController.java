@@ -34,9 +34,13 @@ public class AccountController {
     @PostMapping("/view-account")
     public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo, Model model) {
         Map<String, String> accountValidationErrors = accountService.updateAccountProcess(accountInfo);
-        if (!accountValidationErrors.isEmpty()) {
-            model.addAllAttributes(accountValidationErrors);
+        if(accountValidationErrors.containsKey("recordChange")) {
+            model.addAttribute("recordError", globalConfig.getUpdateFailMessage());
+            return Constant.ACCOUNT_MANAGEMENT_PAGE;
+        }
+        else if (!accountValidationErrors.isEmpty()) {
             model.addAttribute("cities", cityService.findAllByNoDelete());
+            model.addAllAttributes(accountValidationErrors);
             return Constant.ACCOUNT_MANAGEMENT_PAGE;
         }
         return "redirect:/auth/account-management?success=true";
