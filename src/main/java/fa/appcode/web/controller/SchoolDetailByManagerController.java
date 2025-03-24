@@ -6,12 +6,7 @@ import fa.appcode.common.utils.RoleConstant;
 import fa.appcode.common.utils.SchoolConstant;
 import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.config.GlobalConfig;
-import fa.appcode.entities.City;
-import fa.appcode.entities.District;
-import fa.appcode.entities.SchoolInfo;
-import fa.appcode.entities.Ward;
 import fa.appcode.services.*;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.management.relation.Role;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
@@ -99,8 +93,8 @@ public class SchoolDetailByManagerController {
     }
 
     @ResponseBody
-    @PostMapping("/public")
-    public ResponseEntity<Map<String, Object>> publicSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
+    @PostMapping("/publish")
+    public ResponseEntity<Map<String, Object>> publicSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
         // Get school owner email
         String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
 
@@ -110,8 +104,8 @@ public class SchoolDetailByManagerController {
     }
 
     @ResponseBody
-    @PostMapping("/unpublic")
-    public ResponseEntity<Map<String, Object>> unpublicSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
+    @PostMapping("/unpublish")
+    public ResponseEntity<Map<String, Object>> unpublicSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
         return schoolDetailManagerService.changeSchoolStatus(id, recordNo, SchoolConstant.STATUS_UNPUBLISHED, List.of(SchoolConstant.STATUS_PUBLISHED), null, null, null, null);
     }
 }

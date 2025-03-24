@@ -38,8 +38,6 @@ public class MyRequestController {
         Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage(), Sort.by("createTime").descending());
         Page<MyRequestVo> listRequest = requestService.findRequestByAccountId(id, pageable);
 
-
-
         model.addAttribute("requestList", listRequest);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", listRequest.getTotalPages());

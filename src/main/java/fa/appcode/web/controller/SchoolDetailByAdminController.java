@@ -1,9 +1,7 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.common.utils.*;
-import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.services.*;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,7 +21,7 @@ public class SchoolDetailByAdminController {
 
     @ResponseBody
     @PostMapping("/reject")
-    public ResponseEntity<Map<String, Object>> rejectSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
+    public ResponseEntity<Map<String, Object>> rejectSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
         // Get school owner email
         String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
         // Send email to school owner
@@ -34,7 +32,7 @@ public class SchoolDetailByAdminController {
 
     @ResponseBody
     @PostMapping("/approve")
-    public ResponseEntity<Map<String, Object>> approveSchool(@RequestParam("id") int id, @RequestParam("recordNo") int recordNo) {
+    public ResponseEntity<Map<String, Object>> approveSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
         // Get school owner email
         String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
         // Send email to school owner
