@@ -1,7 +1,11 @@
 package fa.appcode.common.utils;
 
+import fa.appcode.common.vo.AccountVo;
+
+import java.security.Principal;
 import java.time.Instant;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,4 +59,29 @@ public class EmailBuilder {
                 .detail(placeholders)
                 .build();
     }
+
+    /**
+     * Builds email for notifying a user that an admin has created their account.
+     * This email contains login information: email, password
+     *
+     * @param email
+     * @param password
+     * @param ownerName
+     */
+    public static SendMailInfo buildAddUserMail(String email, String password, String ownerName) {
+        Map<Placeholder, String> placeholders = Map.of(
+                Placeholder.USER_NAME, email,
+                Placeholder.EMAIL, email,
+                Placeholder.PASSWORD, password,
+                Placeholder.OWNER_ACCOUNT, ownerName
+        );
+
+        return SendMailInfo.builder()
+                .toMail(List.of(email))
+                .ccMail(Collections.emptyList())
+                .mailId(2) // ID email template
+                .detail(placeholders)
+                .build();
+    }
+
 }

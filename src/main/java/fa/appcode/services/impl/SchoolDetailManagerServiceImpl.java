@@ -1,5 +1,6 @@
 package fa.appcode.services.impl;
 
+import fa.appcode.common.logging.Log4jUtils;
 import fa.appcode.common.utils.*;
 import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.config.GlobalConfig;
@@ -211,6 +212,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             if(mailId != null && detail != null && toMail != null && ccMail != null){
                 // Send email to school owner
                 emailService.sendEmailToMany(SendMailInfo.builder().toMail(toMail).ccMail(ccMail).mailId(mailId).detail(detail).build());
+
             }
             return ResponseEntity.ok(Map.of("message", "Successfully!"));
         } else return ResponseEntity.badRequest().body(Map.of("message", "Failed!"));

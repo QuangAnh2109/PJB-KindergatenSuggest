@@ -45,11 +45,13 @@ public class GlobalHandlerException {
     }
 
 
-    @ExceptionHandler(DuplicateException.class)
-    public ResponseEntity<Map<String,String>> handleDuplicateException(DuplicateException e) {
-        logger.error("Duplicate exception: {}", e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("email","Duplicate exception: " + e.getMessage()));
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Map<String,String>> handleDuplicateException(ValidationException e) {
+        logger.error("validate exception: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
     }
+
+
 
     @ExceptionHandler(NoResourceFoundException.class)
     public String handleNoResourceFoundException(NoResourceFoundException e) {
