@@ -109,7 +109,6 @@ public class GlobalConfig {
     private String accountNotActive;
     @Value("${ME_074}")
     private String updateSuccessfullMessage;
-
     @Value("${ME_075}")
     private String updateFailMessage;
     @Value("${ME_InvalidID}")
@@ -124,4 +123,6 @@ public class GlobalConfig {
     private String schoolNotPublishStatus;
     @Value("${ME_076}")
     private String DateInThePass;
+    @Value("${ME_043}")
+    private String passwordLengthLimit;
 }

@@ -26,7 +26,6 @@ function loadDistrict(cityId) {
     });
 }
 
-
 //load ward by district id
 function loadWard(districtId) {
     $.ajax({
