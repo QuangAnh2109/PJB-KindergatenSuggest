@@ -367,21 +367,16 @@ public class AccountServiceImpl implements AccountService {
     public Map<String, String> changePasswordHandle(String oldPassword, String newPassword, String confirmPassword) {
         // Retrieve the currently logged-in user's account information
         AccountInfo account = getCurrentAccountInfo();
-
         // Validate the password change rules
         Map<String, String> validateResult = validateService.validatePasswordChangeRules(oldPassword, newPassword, confirmPassword);
-
         // If there are validation errors, return them
         if (!validateResult.isEmpty()) {
             return validateResult;
         }
-
         // Log successful password update
         LOGGER.info("Password successfully updated for user");
-
         // Update the password in the database
         updatePassword(account, newPassword);
-
         // Return an empty map indicating success
         return Collections.emptyMap();
     }
@@ -408,9 +403,12 @@ public class AccountServiceImpl implements AccountService {
             return errors;
         }
         AccountInfo accountInfo = accountRepository.findByEmail(email);
-        if (accountInfo == null) {
+        if (accountInfo == null || accountInfo.getDeleteFlg()) {
             LOGGER.warn("No account found for email: {}", email);
             return Map.of("emailError", globalConfig.getEmailNotExist());
+        } else if (accountInfo.getStatusId()!=1) {
+            LOGGER.warn("Account is not active - email: {}", email);
+            return Map.of("emailError", globalConfig.getAccountNotActive());
         }
         // Build and send a password reset email
         SendMailInfo resetMail = EmailBuilder.buildForgotPasswordMail(email, accountInfo.getDatetimeChangePass());
@@ -460,6 +458,10 @@ public class AccountServiceImpl implements AccountService {
     public Map<String, String> updateAccountProcess(AccountInfo accountInfo) {
         // Retrieve the current account information of the logged-in user
         AccountInfo currentAccount = getCurrentAccountInfo();
+        if(!currentAccount.getRecordNo().equals( accountInfo.getRecordNo())) {
+            LOGGER.info("Record no not equal to current account record no: {}", accountInfo.getRecordNo());
+            return Map.of("recordChange","Record Not Match");
+        }
         // Validate the updated account fields
         Map<String, String> validationResult = validateService.validateAccountField(
                 accountInfo.getFullName(), accountInfo.getPhone(),
@@ -471,10 +473,8 @@ public class AccountServiceImpl implements AccountService {
         }
         // Retain the existing address details if they are not provided in the updated data
         retainExistingAddressIfEmpty(accountInfo, currentAccount);
-
         // Update the current account information with the new details
         updateAccountInfo(currentAccount, accountInfo);
-
         // Return an empty map indicating a successful update
         return Collections.emptyMap();
     }

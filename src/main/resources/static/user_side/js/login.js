@@ -36,6 +36,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!passwordInput.value.trim()) {
             showError(passwordInput, "This field is required");
             isValid = false;
+        } else if (passwordInput.value.length < 12 || passwordInput.value.length > 72) {
+            showError(passwordInput, "Password length must be between 12 and 72 characters");
+            isValid = false;
         }
 
         if (!isValid) return;
@@ -61,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } catch (error) {
             console.error("Fetch error:", error);
-            alert("Having an errors while processing. Please try again.");
+            alert("Having an error while processing. Please try again.");
         } finally {
             loginBtn.disabled = false;
         }
