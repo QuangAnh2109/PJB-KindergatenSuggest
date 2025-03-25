@@ -128,4 +128,9 @@ public class RestControllerAjax {
             return ResponseEntity.badRequest().body("Failed to create feedback: " + e.getMessage());
         }
     }
+
+    @GetMapping("/feedback-list")
+    public ResponseEntity<String> getFeedbackList(){
+        return ResponseEntity.ok("Feedback list");
+    }
 }

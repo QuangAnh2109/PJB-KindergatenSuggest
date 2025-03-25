@@ -109,7 +109,24 @@ public class GlobalConfig {
     private String accountNotActive;
     @Value("${ME_074}")
     private String updateSuccessfullMessage;
-
     @Value("${ME_075}")
     private String updateFailMessage;
+    @Value("${ME_InvalidID}")
+    private String invalidIDFormatParent;
+    @Value("${ME_050}")
+    private String invalidActionType;
+    @Value("${ME_077}")
+    private String failedSearchParent;
+    @Value("${ME_078}")
+    private String changedRecord;
+    @Value("${ME_079}")
+    private String schoolNotPublishStatus;
+    @Value("${ME_076}")
+    private String DateInThePass;
+    @Value("${ME_043}")
+    private String passwordLengthLimit;
+    @Value("${ME_051}")
+    private String searchLengthLimit;
+    @Value("${ME_052}")
+    private String invalidPageNumber;
 }

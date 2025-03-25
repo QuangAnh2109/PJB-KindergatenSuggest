@@ -2,101 +2,79 @@
 //     $(".alert").remove();
 // }, 3000); // Hide alert after 3 seconds
 
+var initialUserData = {};
+
+$(document).ready(function () {
+    var userID = $("#userID").val();
+
+    // Check only if perform edit
+    if (userID) {
+        initialUserData = {
+            id: userID,
+            fullName: $("#fullName").val().trim(),
+            email: $("#email").val().trim(),
+            dob: $("#dob").val().trim(),
+            phone: $("#phone").val().trim(),
+            role: $('#role').val().trim(),
+            status: $("#status").val().trim(),
+            recordNo: $("#recordNo").val()
+        };
+    }
+});
+
 $("body").on("submit", "#userForm", function (event) {
     event.preventDefault();
 
     $(".error-message").html("");
     $(".text-danger").html("");
-    var count = 0;
-    var phoneRegex = /^[0-9]{10,15}$/;
-    var today = new Date().toISOString().split("T")[0];
-    var emailRegex =/\w[\w0-9]*@gmail.com/
 
-    if ($("#fullName").val().trim() === '') {
-        $("#errorFullName").html('Please enter full name');
-        count++;
+    var user = {
+        id: $("#userID").val() || null,
+        fullName: $("#fullName").val().trim(),
+        email: $("#email").val().trim(),
+        dob: $("#dob").val().trim(),
+        phone: $("#phone").val().trim(),
+        role: $('#role').val().trim(),
+        status: $("#status").val().trim(),
+        recordNo: $("#recordNo").val()
+    };
+
+    // If performing edit , check has changes or not
+    if (user.id && JSON.stringify(user) === JSON.stringify(initialUserData)) {
+        alert("There are no changes to update.");
+        return;
     }
-    var email = $("#email").val().trim();
-    if (email === '') {
-        $("#errorEmail").html('Please enter email');
-        count++;
-         }else if(!emailRegex.test(email)){
-             $("#errorEmail").html('Invalid email format');
-            count++;
-        }
 
-        var dob = $("#dob").val();
-        var userId = $("#userID").val();
-
-        if (!userId) { // Nếu ID rỗng -> Đang Add User
-            if (dob === '') {
-                $("#errorDob").html('Please enter date of birth');
-                count++;
-            } else if (dob >= today) {
-                $("#errorDob").html('Date of birth must be in the past');
-                count++;
+    $.ajax({
+        url: "/admin/api/save-user",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(user),
+        success: function (response) {
+            alert(response.message);
+            $("#recordNo").val(response.recordNo);
+        },
+        error: function (xhr) {
+            if (xhr.status === 409) {
+                alert("The data has been modified by someone else. Please reload the page!");
+                location.reload();
+            } else if (xhr.status === 304) {
+                alert(xhr.responseJSON.message);
+            } else {
+                var errors = xhr.responseJSON;
+                if (errors) {
+                    $("#fullNameError").html(errors.fullNameError);
+                    $("#emailError").html(errors.emailError);
+                    $("#dobError").html(errors.dobError);
+                    $("#phoneError").html(errors.phoneError);
+                    $("#roleError").html(errors.roleError);
+                    $("#statusError").html(errors.statusError);
+                } else {
+                    alert("An error occurred: " + xhr.responseText);
+                }
             }
         }
-
-        var phone = $("#phone").val().trim();
-        if (phone === '') {
-            $("#errorPhone").html('Please enter phone number');
-            count++;
-        } else if (!phoneRegex.test(phone)) {
-            $("#errorPhone").html('Invalid phone number format');
-            count++;
-        }
-        if ($('#role').val() === '') {
-            $("#errorRole").html('Please select a role');
-            count++;
-        }
-        if ($('#status').val() === '') {
-            $("#errorStatus").html('Please select a status');
-            count++;
-        }
-
-
-        if (count === 0) {
-            var user = {
-                id: $("#userID").val() || null,
-                fullName: $("#fullName").val().trim(),
-                email: $("#email").val().trim(),
-                dob: $("#dob").val().trim(),
-                phone: $("#phone").val().trim(),
-                role: $('#role').val().trim(),
-                status: $("#status").val().trim(),
-                recordNo: $("#recordNo").val()
-
-            };
-            $.ajax({
-                url: "/admin/api/save-user",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(user),
-                success: function (response) {
-                    alert(response.message);
-                    $("#recordNo").val(response.recordNo);
-                },
-                error: function (xhr) {
-                    if (xhr.status === 409) { // Conflict - data has been modified
-                        alert("The data has been modified by someone else. Please reload the page!");
-                        location.reload();
-                    } else {
-                        var errors = xhr.responseJSON;
-                        if (errors) {
-                            $("#errorFullName").html(errors.fullName);
-                            $("#errorEmail").html(errors.email);
-                            $("#errorDob").html(errors.dob);
-                            $("#errorPhone").html(errors.phone);
-                            $("#errorRole").html(errors.role);
-                            $("#errorStatus").html(errors.status);
-                        } else {
-                            alert("An error occurred: " + xhr.responseText);
-                        }
-                    }
-                }
-            });
-        }
+    });
 });
 
 document.getElementById("cancel-button").addEventListener("click", function () {
@@ -108,6 +86,7 @@ document.getElementById("cancel-button").addEventListener("click", function () {
         window.history.back();
     }
 });
+
 
 
 

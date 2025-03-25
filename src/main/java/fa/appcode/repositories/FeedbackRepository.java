@@ -39,6 +39,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
         COALESCE(CAST((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 AS double), 0.0)
         ,f.feedbackMessage)
         FROM Feedback f
+        JOIN AccountInfo ai ON f.id.accountId = ai.id
         WHERE f.id.schoolId = :schoolId
     """)
     List<FeedbackListVo> findListFeedbackBySchoolId(@Param("schoolId") Integer schoolId);

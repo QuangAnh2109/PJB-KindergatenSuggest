@@ -1,6 +1,8 @@
 package fa.appcode.services;
 
 
+import fa.appcode.common.vo.AccountVo;
+
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -31,4 +33,7 @@ public interface ValidateService {
     Map<String, String> validateAccountField(String fullName, String currentPhone, String newPhone, LocalDate dob);
 
     Map<String, String> registerValidation(String fullName, String email, String phone, String password, String confirmPassword);
+    Map<String, String> validateAccountVo(AccountVo accountVo);
+    boolean validateSearchString(String searchString);
+
 }

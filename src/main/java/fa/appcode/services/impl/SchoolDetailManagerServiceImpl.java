@@ -1,5 +1,6 @@
 package fa.appcode.services.impl;
 
+import fa.appcode.common.logging.Log4jUtils;
 import fa.appcode.common.utils.*;
 import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.config.GlobalConfig;
@@ -18,14 +19,13 @@ import org.springframework.ui.Model;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.management.relation.Role;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.Instant;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -56,10 +56,6 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
     private final AccountService accountService;
 
     private final SchoolInfoRepository schoolInfoRepository;
-
-    private final SchoolUtilityRepository schoolUtilityRepository;
-
-    private final SchoolFacilityRepository schoolFacilityRepository;
 
     @Override
     public String getSchoolCreateFormToModel(Model model) {
@@ -130,37 +126,11 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             }
 
             schoolInfoRepository.save(schoolInfo);
-            schoolUtilityRepository.saveAll(schoolUtilityId.stream()
-                    .map(utilityId -> {
-                        SchoolUtility su = new SchoolUtility();
-                        su.setId(new SchoolUtilityId(schoolInfo.getId(), utilityId));
-                        su.setSchool(schoolInfo);
-                        su.setCreateId(RoleConstant.SCHOOL_OWNER);
-                        su.setCreateTime(Instant.now());
-                        su.setUpdateId(RoleConstant.SCHOOL_OWNER);
-                        su.setUpdateTime(Instant.now());
-                        su.setDeleteFlg(false);
-                        su.setRecordNo(1);
-                        return su;
-                    })
-                    .collect(Collectors.toList())
-            );
-
-            schoolFacilityRepository.saveAll(schoolFacilityId.stream()
-                    .map(facilityId -> {
-                        SchoolFacility sf = new SchoolFacility();
-                        sf.setId(new SchoolFacilityId(schoolInfo.getId(), facilityId));
-                        sf.setSchool(schoolInfo);
-                        sf.setCreateId(RoleConstant.SCHOOL_OWNER);
-                        sf.setCreateTime(Instant.now());
-                        sf.setUpdateId(RoleConstant.SCHOOL_OWNER);
-                        sf.setUpdateTime(Instant.now());
-                        sf.setDeleteFlg(false);
-                        sf.setRecordNo(1);
-                        return sf;
-                    })
-                    .collect(Collectors.toList())
-            );
+            schoolUtilityService.saveAllSchoolUtility(schoolUtilityId, schoolInfo);
+            schoolFacilityService.saveAllSchoolFacility(schoolFacilityId,schoolInfo);
+            if(schoolInfo.getStatusId()==SchoolConstant.STATUS_SUBMITTED){
+                sendEmailForSubmitted(schoolInfo.getId());
+            }
             return ResponseEntity.ok().body(Map.of("message", "Create school successfully!", "id", schoolInfo.getId()));
         } catch (IOException e) {
             throw new RuntimeException("Failed to save school due to file upload error.", e);
@@ -215,37 +185,11 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             }
 
             schoolInfoService.updateSchoolInfoBySchoolFormManager(schoolInfo);
-            schoolUtilityRepository.saveAll(schoolUtilityId.stream()
-                    .map(utilityId -> {
-                        SchoolUtility su = new SchoolUtility();
-                        su.setId(new SchoolUtilityId(schoolInfo.getId(), utilityId));
-                        su.setSchool(schoolInfoDb);
-                        su.setCreateId(RoleConstant.SCHOOL_OWNER);
-                        su.setCreateTime(Instant.now());
-                        su.setUpdateId(RoleConstant.SCHOOL_OWNER);
-                        su.setUpdateTime(Instant.now());
-                        su.setDeleteFlg(false);
-                        su.setRecordNo(1);
-                        return su;
-                    })
-                    .collect(Collectors.toList())
-            );
-
-            schoolFacilityRepository.saveAll(schoolFacilityId.stream()
-                    .map(facilityId -> {
-                        SchoolFacility sf = new SchoolFacility();
-                        sf.setId(new SchoolFacilityId(schoolInfo.getId(), facilityId));
-                        sf.setSchool(schoolInfoDb);
-                        sf.setCreateId(RoleConstant.SCHOOL_OWNER);
-                        sf.setCreateTime(Instant.now());
-                        sf.setUpdateId(RoleConstant.SCHOOL_OWNER);
-                        sf.setUpdateTime(Instant.now());
-                        sf.setDeleteFlg(false);
-                        sf.setRecordNo(1);
-                        return sf;
-                    })
-                    .collect(Collectors.toList())
-            );
+            schoolUtilityService.saveAllSchoolUtility(schoolUtilityId, schoolInfoDb);
+            schoolFacilityService.saveAllSchoolFacility(schoolFacilityId,schoolInfoDb);
+            if(schoolInfo.getStatusId() == SchoolConstant.STATUS_SUBMITTED){
+                sendEmailForSubmitted(schoolInfo.getId());
+            }
             return ResponseEntity.ok().body(Map.of("message", "Update school successfully!"));
         } catch (IOException e) {
             throw new RuntimeException("Failed to save school due to file upload error.", e);
@@ -266,13 +210,19 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
         // Update school status
         if (schoolInfoService.updateSchoolStatusByRequest(id, recordNo, newStatus, role, inStatus) > 0) {
             if(mailId != null && detail != null && toMail != null && ccMail != null){
-                // Get school owner email
-                String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
-
                 // Send email to school owner
                 emailService.sendEmailToMany(SendMailInfo.builder().toMail(toMail).ccMail(ccMail).mailId(mailId).detail(detail).build());
+
             }
             return ResponseEntity.ok(Map.of("message", "Successfully!"));
         } else return ResponseEntity.badRequest().body(Map.of("message", "Failed!"));
+    }
+
+    private void sendEmailForSubmitted(int schoolId) {
+        List<String> sendTo = accountService.getAllAccountEmailsByRole(RoleConstant.ADMIN_ROLE.getKey());
+        Map<Placeholder, String> details = new HashMap<Placeholder, String>();
+        details.put(Placeholder.TITLE, "Review Submitted");
+        details.put(Placeholder.LINK, globalConfig.getServerLink() + "/manager/school/view-detail?id=" + schoolId);
+        emailService.sendEmailToMany(SendMailInfo.builder().toMail(sendTo).ccMail(List.of()).detail(details).build());
     }
 }

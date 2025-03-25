@@ -11,10 +11,10 @@ import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
-import fa.appcode.exceptions.DuplicateException;
 import fa.appcode.exceptions.EntityNotFoundException;
 import fa.appcode.exceptions.TokenException;
 import fa.appcode.exceptions.ValidateParentException;
+import fa.appcode.exceptions.ValidationException;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.repositories.MasterDatumRepository;
 import fa.appcode.services.*;
@@ -164,10 +164,20 @@ public class AccountServiceImpl implements AccountService {
         if (!user.getRecordNo().equals(accountVo.getRecordNo())) {
             throw new IllegalStateException("Data has been modified by someone else!");
         }
-        // Update role or status of account
+
+        // check data has changes or not
+        boolean isModified = false;
+
+        if (!Objects.equals(user.getRoleId(), masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()))) isModified = true;
+        if (!Objects.equals(user.getStatusId(), masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()))) isModified = true;
+
+        if (!isModified) {
+            throw new IllegalStateException("No changes detected, update aborted.");
+        }
+
+        // if has changes, perform update
         user.setRoleId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
         user.setStatusId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
-
         int newRecordNo = user.getRecordNo() + 1;
         user.setRecordNo(newRecordNo);
         user.setUpdateId("SYSTEM_ADMIN");
@@ -177,6 +187,7 @@ public class AccountServiceImpl implements AccountService {
 
         return newRecordNo;
     }
+
 
 
     // Delete logic user account
@@ -190,9 +201,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void addUserFromAdmin(AccountVo accountVo, Principal principal) {
-        //Validate accountVo
-        if (accountRepository.findByEmail(accountVo.getEmail()) != null) {
-            throw new DuplicateException("Email already exists. Please use a different email.");
+        // Validate accountVo
+        Map<String, String> errors = validateService.validateAccountVo(accountVo);
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
         }
 
         // Generate password by system
@@ -216,16 +228,10 @@ public class AccountServiceImpl implements AccountService {
         accountInfo.setUpdateTime(Instant.now());
         accountRepository.save(accountInfo);
 
-        // Send mail
-        emailService.sendEmailToMany(SendMailInfo.builder()
-                .toMail(List.of(accountVo.getEmail()))
-                .ccMail(List.of())
-                .mailId(2)
-                .detail(Map.of(Placeholder.USER_NAME, accountVo.getEmail(),
-                        Placeholder.EMAIL, accountVo.getEmail(),
-                        Placeholder.PASSWORD, randomPassword,
-                        Placeholder.OWNER_ACCOUNT, this.getAccountInfo(principal).getFullName()))
-                .build());
+        // Send email
+        String ownerName = this.getAccountInfo(principal).getFullName();
+        SendMailInfo sendMailInfo = EmailBuilder.buildAddUserMail(accountVo.getEmail(), randomPassword, ownerName);
+        emailService.sendEmailToMany(sendMailInfo);
     }
 
 
@@ -367,21 +373,16 @@ public class AccountServiceImpl implements AccountService {
     public Map<String, String> changePasswordHandle(String oldPassword, String newPassword, String confirmPassword) {
         // Retrieve the currently logged-in user's account information
         AccountInfo account = getCurrentAccountInfo();
-
         // Validate the password change rules
         Map<String, String> validateResult = validateService.validatePasswordChangeRules(oldPassword, newPassword, confirmPassword);
-
         // If there are validation errors, return them
         if (!validateResult.isEmpty()) {
             return validateResult;
         }
-
         // Log successful password update
         LOGGER.info("Password successfully updated for user");
-
         // Update the password in the database
         updatePassword(account, newPassword);
-
         // Return an empty map indicating success
         return Collections.emptyMap();
     }
@@ -408,9 +409,12 @@ public class AccountServiceImpl implements AccountService {
             return errors;
         }
         AccountInfo accountInfo = accountRepository.findByEmail(email);
-        if (accountInfo == null) {
+        if (accountInfo == null || accountInfo.getDeleteFlg()) {
             LOGGER.warn("No account found for email: {}", email);
             return Map.of("emailError", globalConfig.getEmailNotExist());
+        } else if (accountInfo.getStatusId()!=1) {
+            LOGGER.warn("Account is not active - email: {}", email);
+            return Map.of("emailError", globalConfig.getAccountNotActive());
         }
         // Build and send a password reset email
         SendMailInfo resetMail = EmailBuilder.buildForgotPasswordMail(email, accountInfo.getDatetimeChangePass());
@@ -460,6 +464,10 @@ public class AccountServiceImpl implements AccountService {
     public Map<String, String> updateAccountProcess(AccountInfo accountInfo) {
         // Retrieve the current account information of the logged-in user
         AccountInfo currentAccount = getCurrentAccountInfo();
+        if(!currentAccount.getRecordNo().equals( accountInfo.getRecordNo())) {
+            LOGGER.info("Record no not equal to current account record no: {}", accountInfo.getRecordNo());
+            return Map.of("recordChange","Record Not Match");
+        }
         // Validate the updated account fields
         Map<String, String> validationResult = validateService.validateAccountField(
                 accountInfo.getFullName(), accountInfo.getPhone(),
@@ -471,10 +479,8 @@ public class AccountServiceImpl implements AccountService {
         }
         // Retain the existing address details if they are not provided in the updated data
         retainExistingAddressIfEmpty(accountInfo, currentAccount);
-
         // Update the current account information with the new details
         updateAccountInfo(currentAccount, accountInfo);
-
         // Return an empty map indicating a successful update
         return Collections.emptyMap();
     }

@@ -8,6 +8,18 @@ $(document).ready(function () {
         window.location.href = "/admin/edit-user/" + userId;
     });
 
+    // when click con <tr>
+    $("body").on("click", "tr[data-userid]", function (event) {
+        let target = $(event.target);
+
+        // if not a link <a> direct to page details
+        if (target.closest("a").length === 0) {
+            let userId = $(this).data("userid");
+            window.location.href = "/admin/user-details/" + userId;
+        }
+    });
+
+
 
     var selectedUserId = null;
 
@@ -25,17 +37,17 @@ $(document).ready(function () {
             $.get({
                 url: "/admin/api/delete/" + selectedUserId,
                 success: function (responseData) {
-                    $("#deleteUserModal").modal("hide"); // Đóng modal xác nhận
+                    $("#deleteUserModal").modal("hide");
                     $("#deleteResultMessage").text(responseData);
-                    $("#deleteResultModal").modal("show"); // Hiển thị modal kết quả
+                    $("#deleteResultModal").modal("show");
                     setTimeout(function () {
-                        location.reload(); // Tải lại danh sách sau khi đóng modal
+                        location.reload();
                     }, 1500);
                 },
                 error: function (responseData) {
-                    $("#deleteUserModal").modal("hide"); // Đóng modal xác nhận
+                    $("#deleteUserModal").modal("hide"); // Close modal
                     $("#deleteResultMessage").text("Failed to delete user: " + responseData.responseText);
-                    $("#deleteResultModal").modal("show"); // Hiển thị modal thất bại
+                    $("#deleteResultModal").modal("show"); //display modal
                 }
             });
         }
