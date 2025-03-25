@@ -55,6 +55,7 @@ public class Constant {
     public static final String EMAIL_REGEX = "^[a-z][a-z0-9]*@gmail.com$";
     public static final String PHONE_REGEX = "^\\+?[0-9]{10,12}$";
     public static final String MAIL_REGEX = "^(?=.{1,255}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    public static final String SEARCH_REGEX ="^[\\\\p{L}0-9@._\\\\- ]*$";
     //CONSTANT VALUE
     public static final Integer PARENT_ROLE_ID = 3;
     public static final Integer SCHOOL_OWNER_ID = 2;

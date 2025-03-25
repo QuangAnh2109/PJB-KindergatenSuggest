@@ -249,7 +249,12 @@ public class ValidateServiceImpl implements ValidateService {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));  // Merge into a single map
     }
 
-
+    /**
+     * Validates the dob is in the past.
+     *
+     * @param dob
+     * @return A map containing error messages if validation fails.
+     */
     public Map<String, String> validDob(String dob) {
         if (dob == null || dob.trim().isEmpty()) {
             return Map.of("dobError", globalConfig.getRequiredField());
@@ -266,7 +271,12 @@ public class ValidateServiceImpl implements ValidateService {
     }
 
 
-
+    /**
+     * Validates the information of new user for add
+     *
+     * @param accountVo
+     * @return A map containing error messages if validation fails.
+     */
     @Override
     public Map<String, String> validateAccountVo(AccountVo accountVo) {
         Map<String, String> errors = new HashMap<>();
@@ -288,6 +298,24 @@ public class ValidateServiceImpl implements ValidateService {
         }
         return errors;
     }
+
+
+    /**
+     * Validates the search field
+     *
+     * @param search
+     * @return error messages
+     */
+    public String validateSearch(String search) {
+        if (search.length() > 1000) {
+            return "Search query is too long (max 1000 characters).";
+        }
+        if (!search.matches(Constant.SEARCH_REGEX)) {
+            return "Search query contains invalid characters.";
+        }
+        return null;
+    }
+
 
 
     /**
