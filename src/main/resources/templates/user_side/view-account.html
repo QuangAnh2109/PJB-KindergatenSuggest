@@ -116,7 +116,12 @@
                                     <div class="row update-account">
                                             <form action="#" th:action="@{/auth/view-account}" name="update-form"
                                                   method="post" th:object="${accountInfo}">
+                                                <div th:if="${recordError}" id="recordErrorAlert" class="alert alert-danger">
+                                                    <span th:text="${recordError}"></span>
+                                                </div>
                                                 <input type="hidden" th:field="*{email}">
+                                                <input class="recordNo" name="recordNo" id="recordNo" th:field="*{recordNo}" th:type="hidden">
+
                                                 <div class="mb-3">
                                                     <label class="form-label required-label">Full Name </label>
                                                     <input type="text" class="form-control" th:field="*{fullName}">
@@ -300,23 +305,6 @@
 </div>
 
 <script>
-    function showPopup() {
-        document.querySelector(".overlay").classList.add("active");
-    }
-
-    function hidePopup() {
-        document.querySelector(".overlay").classList.remove("active");
-    }
-
-    function confirmLogout() {
-        document.getElementById("logoutForm").submit();
-    }
-
-    function toggleDropdown(event) {
-        event.stopPropagation(); // Prevent event bubbling
-        document.getElementById("featuresDropdown").classList.toggle("show");
-    }
-
     window.addEventListener('click', function (event) {
         if (!event.target.matches('.dropdown-toggle') && !event.target.closest('.dropdown-menu')) {
             var dropdowns = document.getElementsByClassName("dropdown-menu");
@@ -359,7 +347,7 @@
             const redirectLoginBtn = document.getElementById('redirectLogin');
             if (redirectLoginBtn) {
                 redirectLoginBtn.addEventListener('click', function () {
-                    window.location.href = '/public/showMyloginPage';
+                    window.location.href = '/public/showMyLoginPage';
                 });
             }
             const successUpdate = document.querySelector('[th\\:if="${successUpdate}"]');
@@ -378,8 +366,6 @@
 <script th:src="@{/user_side/js/account-management.js}"></script>
 <script th:src="@{/user_side/js/dropdown.js}"></script>
 <script th:src="@{/user_side/js/address-load.js}"></script>
-<script th:src="@{/user_side/js/checkstatus.js}"></script>
-
 <!-- Bootstrap 5 JS for Tab functionality -->
 <script>
     // Simple implementation if Bootstrap JS is not fully loaded
@@ -409,5 +395,6 @@
         });
     });
 </script>
+
 </body>
 </html>

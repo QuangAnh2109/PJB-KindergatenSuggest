@@ -11,6 +11,7 @@ import fa.appcode.exceptions.ValidateParentException;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.EnrollSchoolService;
 import fa.appcode.services.SchoolInfoService;
+import fa.appcode.services.ValidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +42,9 @@ public class ParentController {
     private SchoolInfoService schoolInfoService;
 
     @Autowired
+    private ValidateService validateService;
+
+    @Autowired
     private GlobalConfig globalConfig;
 
     @GetMapping({"parent-list", "parent-list/parent-details"})
@@ -61,7 +65,9 @@ public class ParentController {
              * Get page from Service
              */
             String role = accountService.findAccountRoleString(principal.getName());
-
+            if(!validateService.validateSearchString(search)) {
+                throw new ValidateParentException(globalConfig.getSearchLengthLimit());
+            }
             Page<ParentVo> list;
             if (role.equals(Constant.ADMIN_ROLE)) {
                 list = accountService.findAllParentIfParentEnrollToSchoolOwnerOrNotByEmail(null,search, pageable);
@@ -106,7 +112,6 @@ public class ParentController {
             String role = accountService.findAccountRoleString(principal.getName());
             Page<EnrolledSchoolVo> listParentEnroll;
             List<EnrollSchoolInfoVo> schoolInfoList;
-
             if (Constant.ADMIN_ROLE.equals(role)) {
                 //get Data for Admin Role
                 listParentEnroll = enrollSchoolService.findParentEnrolledSchoolByParentIdAndSchoolOwner(id, null,pageable);
@@ -151,7 +156,7 @@ public class ParentController {
         try {
             String role = accountService.findAccountRoleString(principal.getName());
             String normalizedRole = role.toUpperCase().trim().replace(" ", "_");
-            int enrollSchoolId = Integer.parseInt(enrollId);
+
             if (Constant.ENROLL_PARENT_SCHOOL.equals(actionType)) {
                 //Enroll Parent to School
                 Log4jUtils.getLogger().info("Enrolling Parent: ");
@@ -161,7 +166,7 @@ public class ParentController {
                 redirectAttributes.addFlashAttribute(Constant.alertType, Constant.SUCCESS);
                 Log4jUtils.getLogger().info("Enroll Parent successful to School");
             } else if (Constant.UNENROLL_PARENT_SCHOOL.equals(actionType)) {
-                EnrollSchool enrollSchool = enrollSchoolService.findEnrollSchoolById(enrollSchoolId);
+                EnrollSchool enrollSchool = enrollSchoolService.findEnrollSchoolById(Integer.parseInt(enrollId));
                 //unenroll Parent
                 Log4jUtils.getLogger().info("Unenrolling Parent: ");
                 enrollSchoolService.evaluateParentEnroll(enrollSchool, LocalDate.now(), normalizedRole, Constant.ENROLL_STATUS_UNENROLL, principal.getName(), recordNo, id);
