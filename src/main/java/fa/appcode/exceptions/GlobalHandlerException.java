@@ -82,4 +82,10 @@ public class GlobalHandlerException {
         redirectAttributes.addFlashAttribute("alertType", Constant.DANGER);
         return "redirect:" + Constant.VIEW_PARENT_DETAIL_URL + e.getParentId();
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public String handleRuntimeException(RuntimeException e) {
+        logger.error("Undefined Error occurred: {}", e.getMessage(), e);
+        return Constant.ERROR_PAGE;
+    }
 }
