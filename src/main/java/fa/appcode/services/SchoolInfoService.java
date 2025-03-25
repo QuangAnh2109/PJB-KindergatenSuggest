@@ -1,10 +1,9 @@
 package fa.appcode.services;
 
-import fa.appcode.common.vo.EnrollSchoolInfoVo;
-import fa.appcode.common.vo.SchoolFormManager;
-import fa.appcode.common.vo.SchoolListManager;
+import fa.appcode.common.vo.*;
 import fa.appcode.entities.SchoolInfo;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -50,4 +49,10 @@ public interface SchoolInfoService {
     String getSchoolNameBySchoolIdAndNoDelete(int id);
 
     SchoolFormManager getSchoolFormBySchoolIdAndEmailAndNoDelete(int id, String email);
+
+    Page<MySchoolVo> searchSchoolInfoByCategories(String keyword,Integer cityId, Integer districtId, Pageable pageable);
+
+    HomeVo dataHomePage();
+
+    MySchoolVo findSchoolDetailBySchoolId(int schoolId);
 }

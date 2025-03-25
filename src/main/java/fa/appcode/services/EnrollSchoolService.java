@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface EnrollSchoolService {
     EnrollSchool findEnrollSchoolById(Integer id);
@@ -88,5 +89,7 @@ public interface EnrollSchoolService {
      * @return list schoolInfo
      */
     Page<MySchoolVo> findListSchoolParentPreEnrolledByParentId(int parentId,Pageable pageable);
+
+    Map<Integer, List<String>> getFacilitiesMapForSchools(Page<MySchoolVo> schoolPage);
 
 }
