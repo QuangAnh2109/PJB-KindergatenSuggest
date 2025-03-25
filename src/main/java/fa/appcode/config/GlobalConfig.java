@@ -125,4 +125,8 @@ public class GlobalConfig {
     private String DateInThePass;
     @Value("${ME_043}")
     private String passwordLengthLimit;
+    @Value("${ME_051}")
+    private String searchLengthLimit;
+    @Value("${ME_052}")
+    private String invalidPageNumber;
 }
