@@ -60,6 +60,16 @@
     background-color: rgba(0, 0, 0, 0.075);
 }
 
+.table th,
+.table td {
+    max-width: 150px; /* Điều chỉnh độ rộng tối đa theo nhu cầu */
+    white-space: nowrap; /* Không cho xuống dòng */
+    overflow: hidden; /* Ẩn nội dung thừa */
+    text-overflow: ellipsis; /* Hiển thị dấu "..." nếu quá dài */
+}
+
+
+
 .btn {
     font-size: 10px;
     padding: 8px 16px;
