@@ -85,7 +85,7 @@
                             </div>
                             <!--                            </form>-->
                             <div class="table-responsive table-container">
-                                <table class="table table-striped m-0">
+                                <table class="table table-striped m-0 table-bordered">
                                     <thead class="head">
                                     <tr>
                                         <th>Full Name</th>
@@ -222,6 +222,13 @@
         /*height: 10px;!* Adjust as needed *!*/
         text-align: center;
         min-width: 80px;
+    }
+    .table th, .table td {
+        /*word-wrap: break-word;*/
+        white-space: nowrap;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>
 </html>

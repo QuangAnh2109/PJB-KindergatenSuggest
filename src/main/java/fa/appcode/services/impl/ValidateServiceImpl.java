@@ -292,6 +292,11 @@ public class ValidateServiceImpl implements ValidateService {
         return errors;
     }
 
+    @Override
+    public boolean validateSearchString(String searchString) {
+        return searchString.length() <= 1000;
+    }
+
 
     /**
      * Validates that all required fields for password change are provided
