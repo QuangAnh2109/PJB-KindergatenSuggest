@@ -34,5 +34,5 @@ public interface ValidateService {
 
     Map<String, String> registerValidation(String fullName, String email, String phone, String password, String confirmPassword);
     Map<String, String> validateAccountVo(AccountVo accountVo);
-    String validateSearch(String search);
+
 }
