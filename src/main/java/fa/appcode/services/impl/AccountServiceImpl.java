@@ -11,10 +11,10 @@ import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
-import fa.appcode.exceptions.DuplicateException;
 import fa.appcode.exceptions.EntityNotFoundException;
 import fa.appcode.exceptions.TokenException;
 import fa.appcode.exceptions.ValidateParentException;
+import fa.appcode.exceptions.ValidationException;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.repositories.MasterDatumRepository;
 import fa.appcode.services.*;
@@ -164,10 +164,20 @@ public class AccountServiceImpl implements AccountService {
         if (!user.getRecordNo().equals(accountVo.getRecordNo())) {
             throw new IllegalStateException("Data has been modified by someone else!");
         }
-        // Update role or status of account
+
+        // check data has changes or not
+        boolean isModified = false;
+
+        if (!Objects.equals(user.getRoleId(), masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()))) isModified = true;
+        if (!Objects.equals(user.getStatusId(), masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()))) isModified = true;
+
+        if (!isModified) {
+            throw new IllegalStateException("No changes detected, update aborted.");
+        }
+
+        // if has changes, perform update
         user.setRoleId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
         user.setStatusId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
-
         int newRecordNo = user.getRecordNo() + 1;
         user.setRecordNo(newRecordNo);
         user.setUpdateId("SYSTEM_ADMIN");
@@ -177,6 +187,7 @@ public class AccountServiceImpl implements AccountService {
 
         return newRecordNo;
     }
+
 
 
     // Delete logic user account
@@ -190,9 +201,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void addUserFromAdmin(AccountVo accountVo, Principal principal) {
-        //Validate accountVo
-        if (accountRepository.findByEmail(accountVo.getEmail()) != null) {
-            throw new DuplicateException("Email already exists. Please use a different email.");
+        // Validate accountVo
+        Map<String, String> errors = validateService.validateAccountVo(accountVo);
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
         }
 
         // Generate password by system
@@ -216,16 +228,10 @@ public class AccountServiceImpl implements AccountService {
         accountInfo.setUpdateTime(Instant.now());
         accountRepository.save(accountInfo);
 
-        // Send mail
-        emailService.sendEmailToMany(SendMailInfo.builder()
-                .toMail(List.of(accountVo.getEmail()))
-                .ccMail(List.of())
-                .mailId(2)
-                .detail(Map.of(Placeholder.USER_NAME, accountVo.getEmail(),
-                        Placeholder.EMAIL, accountVo.getEmail(),
-                        Placeholder.PASSWORD, randomPassword,
-                        Placeholder.OWNER_ACCOUNT, this.getAccountInfo(principal).getFullName()))
-                .build());
+        // Send email
+        String ownerName = this.getAccountInfo(principal).getFullName();
+        SendMailInfo sendMailInfo = EmailBuilder.buildAddUserMail(accountVo.getEmail(), randomPassword, ownerName);
+        emailService.sendEmailToMany(sendMailInfo);
     }
 
 

@@ -55,12 +55,7 @@ public class UserManagementRestController {
 
         Log4jUtils.getLogger().info("Received request to save user: {}", accountVo);
 
-        Map<String, String> errors = validateService.validateAccountVo(accountVo);
-
-        if (!errors.isEmpty()) {
-            return ResponseEntity.badRequest().body(errors);
-        }
-
+        // Determine add or edit
         boolean isAdding = accountVo.getId() == null;
         Log4jUtils.getLogger().info("Is new user: {}", isAdding);
 
@@ -76,7 +71,12 @@ public class UserManagementRestController {
                 ));
             }
         } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", e.getMessage()));
+            // check
+            HttpStatus status = e.getMessage().contains("Data has been modified")
+                    ? HttpStatus.CONFLICT  // 409: data has bên modified by another one
+                    : HttpStatus.NOT_MODIFIED;  // 304: data has no change
+
+            return ResponseEntity.status(status).body(Map.of("message", e.getMessage()));
         }
 
     }
