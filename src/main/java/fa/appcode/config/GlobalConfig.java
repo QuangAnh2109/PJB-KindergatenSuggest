@@ -129,4 +129,7 @@ public class GlobalConfig {
     private String searchLengthLimit;
     @Value("${ME_052}")
     private String invalidPageNumber;
+    @Value("${ME_044}")
+    private String invalidRecordNo;
+
 }
