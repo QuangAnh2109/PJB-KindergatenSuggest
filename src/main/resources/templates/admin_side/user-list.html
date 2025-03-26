@@ -108,12 +108,12 @@
                                 </thead>
                                 <tbody>
                                 <tr class="clickable-row" th:each="account : ${listAccounts}" th:data-userid="${account.id}">
-                                    <td th:text="${account.fullName}"></td>
-                                    <td th:text="${account.email}"></td>
-                                    <td th:text="${account.phone}"></td>
-                                    <td th:text="${account.dob}"></td>
-                                    <td th:text="${account.fullAddress}"></td>
-                                    <td th:text="${account.role}"></td>
+                                    <td th:text="${account.fullName}" th:title="${account.fullName}"></td>
+                                    <td th:text="${account.email}"  th:title="${account.email}"></td>
+                                    <td th:text="${account.phone}" th:title="${account.phone}"></td>
+                                    <td th:text="${account.dob}"  th:title="${account.dob}"></td>
+                                    <td th:text="${account.fullAddress}"  th:title="${account.fullAddress}"></td>
+                                    <td th:text="${account.role}"  th:title="${account.role}"></td>
                                     <td>
                                         <span th:if="${account.status == 'Active'}" class="badge badge-success">Activated</span>
                                         <span th:if="${account.status != 'Active'}" class="badge badge-danger">Deactivated</span>
