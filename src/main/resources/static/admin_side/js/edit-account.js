@@ -41,7 +41,7 @@ $("body").on("submit", "#userForm", function (event) {
 
     // If performing edit , check has changes or not
     if (user.id && JSON.stringify(user) === JSON.stringify(initialUserData)) {
-        alert("There are no changes to update.");
+        showModalMessage("There are no changes to update.");
         return;
     }
 
@@ -51,15 +51,15 @@ $("body").on("submit", "#userForm", function (event) {
         contentType: "application/json",
         data: JSON.stringify(user),
         success: function (response) {
-            alert(response.message);
+            showModalMessage(response.message);
             $("#recordNo").val(response.recordNo);
         },
         error: function (xhr) {
             if (xhr.status === 409) {
-                alert("The data has been modified by someone else. Please reload the page!");
+                showModalMessage("The data has been modified by someone else. Please reload the page!");
                 location.reload();
             } else if (xhr.status === 304) {
-                alert(xhr.responseJSON.message);
+                showModalMessage(xhr.responseJSON.message);
             } else {
                 var errors = xhr.responseJSON;
                 if (errors) {
@@ -70,11 +70,17 @@ $("body").on("submit", "#userForm", function (event) {
                     $("#roleError").html(errors.roleError);
                     $("#statusError").html(errors.statusError);
                 } else {
-                    alert("An error occurred: " + xhr.responseText);
+                    showModalMessage("An error occurred: " + xhr.responseText);
                 }
             }
         }
     });
+
+    function showModalMessage(message) {
+        $("#modalMessage").text(message);
+        $("#notificationModal").modal("show");
+    }
+
 });
 
 document.getElementById("cancel-button").addEventListener("click", function () {
