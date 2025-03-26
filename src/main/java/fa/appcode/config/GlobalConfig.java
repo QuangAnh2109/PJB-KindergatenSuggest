@@ -12,10 +12,7 @@ import org.springframework.stereotype.Component;
 @PropertySource("classpath:messages.properties")
 @PropertySource("classpath:webconfig.properties")
 @PropertySource("classpath:application.properties")
-@ConfigurationProperties
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 public class GlobalConfig {
     @Value("${page.init}")
     private Integer initPage;
@@ -125,4 +122,124 @@ public class GlobalConfig {
     private String DateInThePass;
     @Value("${ME_043}")
     private String passwordLengthLimit;
+    @Value("${ME_080}")
+    private String deleteFailed;
+
+    @Value("${ME_081}")
+    private String feeFromLessThanFeeTo;
+
+    @Value("${ME_082}")
+    private String schoolNameNotNull;
+
+    @Value("${ME_083}")
+    private String schoolTypeNotNull;
+
+    @Value("${ME_084}")
+    private String cityNotNull;
+
+    @Value("${ME_085}")
+    private String districtNotNull;
+
+    @Value("${ME_086}")
+    private String wardNotNull;
+
+    @Value("${ME_087}")
+    private String addressNotNull;
+
+    @Value("${ME_088}")
+    private String emailNotNull;
+
+    @Value("${ME_089}")
+    private String phoneNumberNotNull;
+
+    @Value("${ME_090}")
+    private String childReceivingAgeNotNull;
+
+    @Value("${ME_091}")
+    private String educationMethodNotNull;
+
+    @Value("${ME_092}")
+    private String feeFromNotNull;
+
+    @Value("${ME_093}")
+    private String feeToNotNull;
+
+    @Value("${ME_094}")
+    private String schoolNameTooLong;
+
+    @Value("${ME_095}")
+    private String addressTooLong;
+
+    @Value("${ME_096}")
+    private String invalidEmailFormat;
+
+    @Value("${ME_097}")
+    private String emailTooLong;
+
+    @Value("${ME_098}")
+    private String invalidPhoneNumberFormat;
+
+    @Value("${ME_099}")
+    private String phoneNumberTooLong;
+
+    @Value("${ME_100}")
+    private String feeFromNegative;
+
+    @Value("${ME_101}")
+    private String feeFromExceedsLimit;
+
+    @Value("${ME_102}")
+    private String feeToNegative;
+
+    @Value("${ME_103}")
+    private String feeToExceedsLimit;
+
+    @Value("${ME_104}")
+    private String schoolIntroTooLong;
+
+    @Value("${ME_105}")
+    private String imageMustBePng;
+
+    @Value("${ME_106}")
+    private String approveSuccess;
+
+    @Value("${ME_107}")
+    private String approveFailed;
+
+    @Value("${ME_108}")
+    private String rejectSuccess;
+
+    @Value("${ME_109}")
+    private String rejectFailed;
+
+    @Value("${ME_110}")
+    private String publishSuccess;
+
+    @Value("${ME_111}")
+    private String publishFailed;
+
+    @Value("${ME_112}")
+    private String unpublishSuccess;
+
+    @Value("${ME_113}")
+    private String unpublishFailed;
+
+    @Value("${ME_114}")
+    private String deleteFailedAgain;
+
+    @Value("${ME_115}")
+    private String updateFailed;
+
+    @Value("${ME_116}")
+    private String saveSchoolFailed;
+
+    @Value("${ME_117}")
+    private String submitSuccess;
+
+    @Value("${ME_118}")
+    private String submitFailed;
+
+    @Value("${ME_119}")
+    private String fromDateInvalid;
+
 }

@@ -92,4 +92,6 @@ public class Constant {
     public static final String parentMessage ="message";
     public static final String parentCurrentPage ="currentPage";
     public static final String parentPageSize ="numberPage";
+
+    public static final String ERROR_PROPERTIES_CODE = "Message not found";
 }

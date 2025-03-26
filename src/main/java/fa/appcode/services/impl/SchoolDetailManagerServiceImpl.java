@@ -1,6 +1,5 @@
 package fa.appcode.services.impl;
 
-import fa.appcode.common.logging.Log4jUtils;
 import fa.appcode.common.utils.*;
 import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.config.GlobalConfig;
@@ -8,6 +7,8 @@ import fa.appcode.entities.*;
 import fa.appcode.repositories.*;
 import fa.appcode.services.*;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -56,6 +57,8 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
 
     private final SchoolInfoRepository schoolInfoRepository;
 
+    private final Logger log = LoggerFactory.getLogger(SchoolDetailManagerServiceImpl.class);
+
     @Override
     public String getSchoolCreateFormToModel(Model model) {
         model.addAttribute("citys", cityService.findAllByNoDelete());
@@ -103,36 +106,29 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
     @Transactional
     @Override
     public ResponseEntity<Map<String, Object>> createNewSchool(SchoolInfo schoolInfo, MultipartFile image, List<Integer> schoolFacilityId, List<Integer> schoolUtilityId) throws DataAccessException {
+        Map<String, Object> responseSuccess = new HashMap<>(Map.of("id", schoolInfo.getId())), responseFailed = new HashMap<>();
+        if(schoolInfo.getStatusId()==SchoolConstant.STATUS_SUBMITTED){
+            responseSuccess.put("message", globalConfig.getSubmitSuccess());
+            responseFailed.put("message", globalConfig.getSubmitFailed());
+        } else{
+            responseSuccess.put("message", globalConfig.getSaveSchoolSuccess());
+            responseFailed.put("message", globalConfig.getSaveSchoolFailed());
+        }
 
         try {
-            if(image != null && !image.isEmpty()){
-                // Get current account
-                String uploadDir = Constant.IMAGE_DIR;
-                String imagePath;
-
-                File uploadFolder = new File(uploadDir);
-                if (!uploadFolder.exists() && !uploadFolder.mkdirs()) {
-                    throw new IOException("Failed to create directory: " + uploadDir);
-                }
-
-                String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename().replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
-                Path filePath = Paths.get(uploadDir).resolve(fileName);
-                Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                imagePath = fileName; // Save file name to DB
-
-                // save to DB
-                schoolInfo.setImageUrl(imagePath);
-            }
-
             schoolInfoRepository.save(schoolInfo);
             schoolUtilityService.saveAllSchoolUtility(schoolUtilityId, schoolInfo);
             schoolFacilityService.saveAllSchoolFacility(schoolFacilityId,schoolInfo);
             if(schoolInfo.getStatusId()==SchoolConstant.STATUS_SUBMITTED){
                 sendEmailForSubmitted(schoolInfo.getId());
             }
-            return ResponseEntity.ok().body(Map.of("message", "Create school successfully!", "id", schoolInfo.getId()));
+            schoolInfo.setImageUrl(saveImage(image, schoolInfo.getId()));
+            schoolInfoRepository.save(schoolInfo);
+
+            return ResponseEntity.ok().body(responseSuccess);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save school due to file upload error.", e);
+            log.error(e.getMessage());
+            return ResponseEntity.ok().body(responseFailed);
         }
     }
 
@@ -164,24 +160,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
         );
         if(!schoolInfoNowForm.equals(schoolInfo) && !new HashSet<>(facilityIdDb).equals(new HashSet<>(schoolFacilityId)) && !new HashSet<>(utilityIdDb).equals(new HashSet<>(schoolUtilityId))) return ResponseEntity.badRequest().body(Map.of("message", "Don't have change!"));
         try {
-            if(image != null && !image.isEmpty()){
-                // Get current account
-                String uploadDir = Constant.IMAGE_DIR;
-                String imagePath;
-
-                File uploadFolder = new File(uploadDir);
-                if (!uploadFolder.exists() && !uploadFolder.mkdirs()) {
-                    throw new IOException("Failed to create directory: " + uploadDir);
-                }
-
-                String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename().replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
-                Path filePath = Paths.get(uploadDir).resolve(fileName);
-                Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                imagePath = fileName; // Save file name to DB
-
-                // save to DB
-                schoolInfo.setImgageUrl(imagePath);
-            }
+            schoolInfo.setImgageUrl(saveImage(image, schoolInfo.getId()));
 
             schoolInfoService.updateSchoolInfoBySchoolFormManager(schoolInfo);
             schoolUtilityService.saveAllSchoolUtility(schoolUtilityId, schoolInfoDb);
@@ -223,5 +202,22 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
         details.put(Placeholder.TITLE, "Review Submitted");
         details.put(Placeholder.LINK, globalConfig.getServerLink() + "/manager/school/view-detail?id=" + schoolId);
         emailService.sendEmailToMany(SendMailInfo.builder().toMail(sendTo).ccMail(List.of()).detail(details).build());
+    }
+
+    private String saveImage(MultipartFile image, int schoolId) throws IOException {
+        if(image != null && !image.isEmpty()){
+
+            File uploadFolder = new File(Constant.IMAGE_DIR);
+            if (!uploadFolder.exists() && !uploadFolder.mkdirs()) {
+                throw new IOException("Failed to create directory: " + Constant.IMAGE_DIR);
+            }
+
+            String fileName = System.currentTimeMillis() + "_" + schoolId;
+            Path filePath = Paths.get(Constant.IMAGE_DIR).resolve(fileName);
+            Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            return Constant.IMAGE_DIR + "/" + fileName;
+        }
+        return null;
     }
 }
