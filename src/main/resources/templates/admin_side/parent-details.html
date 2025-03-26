@@ -210,32 +210,32 @@
                                 </thead>
 
                                 <tbody th:if="${enrolledSchools != null}">
-                                <tr th:each="school : ${enrolledSchools}">
-                                    <td th:text="${school.enrollId}"></td>
-                                    <td th:text="${school.enrolledName}"></td>
+                                <tr th:each="school : ${enrolledSchools}" class="clickable-row">
+                                    <th th:title="${school.enrollId}" th:text="${school.enrollId}"></th>
+                                    <th th:title="${school.enrolledName}" th:text="${school.enrolledName}"></th>
                                     <!--                                    <td th:text="${role.latestRate}"></td>-->
-                                    <td th:if="${school.latestRate != null}">
+                                    <th th:if="${school.latestRate != null}">
                                         <th:block th:each="i : ${#numbers.sequence(1, 5)}">
                                             <i th:if="${i <= school.latestRate}" class="fa fa-star star-orange fa-2x"
                                                style="color: orangered"></i>
                                             <i th:if="${i - 0.5 == school.latestRate}"
                                                class="fa fa-star-half-o star-orange fa-2x" style="color: orangered"></i>
                                         </th:block>
-                                    </td>
-                                    <td th:unless="${school.latestRate != null}">Not Provided</td>
-                                    <td>
+                                    </th>
+                                    <th th:unless="${school.latestRate != null}">Not Provided</th>
+                                    <th>
                                         <div style="max-height: 100px; overflow-y: auto; white-space: normal; word-wrap: break-word;">
                                             <span th:text="${school.latestFeedback}"></span>
                                         </div>
-                                    </td>
-                                    <td>
+                                    </th>
+                                    <th>
                                         <button type="button"
                                                 class="btn btn-primary waves-effect waves-light justify-content-end"
                                                 data-toggle="modal" data-target="#unenrollModel"
                                                 th:onclick="|document.getElementById('unenrollSchoolName').value=${school.enrollId};document.getElementById('recordNo').value=${school.recordNo}|">
                                             Unenroll
                                         </button>
-                                    </td>
+                                    </th>
                                 </tr>
                                 </tbody>
                             </table>
@@ -551,9 +551,18 @@
         });
     });
 </script>
+
 <style>
     html {
         overflow-y: scroll;
+    }
+    .clickable-row {
+        cursor: default;
+        transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .clickable-row:hover {
+        font-weight: 600;
     }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
