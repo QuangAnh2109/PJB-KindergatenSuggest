@@ -98,6 +98,7 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     @Override
     public Page<MySchoolVo> searchSchoolInfoByCategories(String keyword, Integer cityId, Integer districtId, Pageable pageable) throws RuntimeException{
         Page<MySchoolVo> listResultSearchSchool = schoolInfoRepository.searchSchoolInfoByCategories(keyword, cityId, districtId, pageable);
+
         logger.info("Found " + listResultSearchSchool.getTotalElements() + " School Infos");
         return listResultSearchSchool;
     }

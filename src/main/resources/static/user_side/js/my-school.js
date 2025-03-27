@@ -192,7 +192,7 @@ function createSchoolHtml(school, isCurrentSchool) {
         <div class="col-md-9">
             <div class="school-card d-flex">
                 <div class="img-school col-md-2 justify-content-center align-content-center">
-                    <img src="${school.schoolImage}" class="me-3" alt="school-image">
+                    <img src="${school.schoolImage}" class="me-3" alt="school-image" onerror="this.onerror=null;this.src='/user_side/images/school-image/school-placeholder.png';">
                     <div class="star-rating">
                         ${starsHtml}
                         <span>${school.avgRating}</span>/5

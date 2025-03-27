@@ -150,17 +150,18 @@
                         <i class="fa fa-school" style="margin-right: 10px; color: #4CAF50;"></i>
                         <span style="font-weight: 600;">Found </span>
                         <span style="color: #4CAF50; font-weight: 700;"
-                              th:text="${listSearchResult.getTotalElements()}"></span>
+                              th:text="${listSearch.getTotalElements()}"></span>
                         <span style="font-weight: 600;"> schools that match your search criteria</span>
                     </div>
                 </div>
                 <div style="display: flex;justify-content: end;margin-bottom: 10px" ;>
-                    <select name="sortBy" class="form-select" id="sortBy" onchange="" style="width: auto;">
+                    <select name="sortBy" class="form-select" id="sortBy" style="width: auto;">
                         <option selected disabled value="">Sort By</option>
-                        <option>By Rating</option>
-                        <option>Newest to Oldest</option>
-                        <option>Monthly fee(Highest)</option>
-                        <option>Monthly fee(Lowest)</option>
+                        <option th:each="option : ${sortOptions}"
+                                th:value="${option}"
+                                th:text="${option.displayName}"
+                                th:selected="${option == currentSort}">
+                        </option>
                     </select>
                 </div>
                 <div class="row">
@@ -172,7 +173,7 @@
                                 <t>Type of school</t>
                                 <select name="schoolType" class="form-select">
                                     <option selected disabled value="">Type of school</option>
-                                    <option th:each="type_school : ${type_school}"
+                                    <option th:each="type_school : ${typeSchool}"
                                             th:value="${type_school.getTypeKey()}"
                                             th:text="${type_school.getTypeValue()}"></option>
                                 </select>
@@ -202,6 +203,7 @@
                                     <input type="range" class="range-min" min="1" max="20" value="1" step="1">
                                     <input type="range" class="range-max" min="1" max="20" value="20" step="1">
                                 </div>
+
 
                                 <t>Facilities</t>
                                 <div class="de_form">
@@ -239,8 +241,8 @@
 
                     <!-- Search Result space -->
                     <div class="col-md-9">
-                        <div class="row" style="overflow-y: auto; height: 1000px; width: 100%;">
-                            <div class="card school-card" th:each="searchItem : ${listSearchResult}"
+                        <div class="row" style="overflow-y: auto; height: 1000px; width: 100%;" id="search-result">
+                            <div class="card school-card" th:each="searchItem : ${listSearch}"
                                  style="overflow-y: auto; height: 350px">
                                 <div class="row g-0">
                                     <div class="col-md-4">
@@ -268,13 +270,15 @@
                                             </div>
 
                                             <div class="school-info">
-                                                <div class="d-flex align-items-center mb-2">
-                                                    <div class="info-icon text-center">
+                                                <div class="d-flex align-items-start" style="margin-bottom: 10px">
+                                                    <div class="me-2">
                                                         <i class="fas fa-map-marker-alt"></i>
                                                     </div>
                                                     <div>Address:</div>
-                                                    <div class="ms-2"><span
-                                                            th:text="${searchItem.getSchoolAddress()}"></span></div>
+                                                    <div class="text-wrap" style="word-wrap: break-word; overflow-wrap: break-word; width: 100%;">
+                                                        <span class="me-1"></span>
+                                                        <span th:text="${searchItem.getSchoolAddress()}"></span>
+                                                    </div>
                                                 </div>
 
                                                 <div class="d-flex align-items-center mb-2">
@@ -334,8 +338,16 @@
                                                     </div>
                                                     <div>Facilities and Utilities:</div>
                                                 </div>
-                                                <div class="facilities mt-2">
-                                                    <span class="badge badge-light-blue me-2 mb-2 py-2 px-3 rounded-pill">Cafeteria</span>
+                                                <div class="facilities mt-2" style="overflow-wrap: break-word">
+                                                    <th:block
+                                                            th:if="${listFacilities.containsKey(searchItem.getSchoolId())}">
+                                                    <span class="facility-badge" th:each="facility : ${listFacilities.get(searchItem.getSchoolId())}"
+                                                          th:text="${facility}"></span>
+                                                    </th:block>
+                                                    <th:block
+                                                            th:unless="${listFacilities.containsKey(searchItem.getSchoolId())}">
+                                                        <span>No facilities available</span>
+                                                    </th:block>
                                                 </div>
                                             </div>
                                         </div>
@@ -345,25 +357,15 @@
                         </div>
 
 
-                        <div class="pagination" style="margin-top: 20px">
+                        <nav aria-label="Page navigation example">
                             <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                </li>
+                                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
                                 <li class="page-item"><a class="page-link" href="#">1</a></li>
                                 <li class="page-item"><a class="page-link" href="#">2</a></li>
                                 <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </li>
+                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
                             </ul>
-                        </div>
+                        </nav>
 
 
                     </div>
@@ -591,7 +593,9 @@
             type: "get",
             data: {cityId: cityId},
             success: function (json) {
-                let selectedDistrict = getQueryParam("districtId"); // Lấy districtId từ URL
+                // Get selected district from URL using URLSearchParams
+                const urlParams = new URLSearchParams(window.location.search);
+                const selectedDistrict = urlParams.get('districtId');
 
                 let response = '<option value="" disabled>Select District</option>';
                 json.forEach(item => {
@@ -599,11 +603,13 @@
                     response += `<option value="${item.id}" ${isSelected}>${item.districtName}</option>`;
                 });
 
-                document.getElementById("district").innerHTML = response;
-                document.getElementById("district").removeAttribute("disabled");
+                const districtDropdown = document.getElementById("district");
+                districtDropdown.innerHTML = response;
+                districtDropdown.removeAttribute("disabled");
             },
             error: function (xhr) {
-                console.log("Load district failed: " + xhr);
+                console.error("Load district failed:", xhr);
+                document.getElementById("district").innerHTML = '<option value="" disabled>Error loading districts</option>';
             }
         });
     }
@@ -623,7 +629,6 @@
         let emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
         let mobileRegex = /^\d{10}$/;
 
-        // Xóa thông báo lỗi cũ
         document.querySelectorAll('.error-message').forEach(e => e.remove());
 
         let isValid = true;
@@ -656,7 +661,6 @@
             isValid = false;
         }
 
-        // if validate, submit form
         if (isValid) {
             let formData = new FormData(document.getElementById("counselingForm"));
 
@@ -666,10 +670,8 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        // Hiển thị thông báo
                         alert('My request is sent successfully!');
                         $('#counselingModal').modal('hide');
-                        // Xóa dữ liệu form
                         document.getElementById("counselingForm").reset();
 
                     } else {
@@ -681,15 +683,90 @@
     }
 
 </script>
+<script>
+    const rangeMin = document.querySelector(".range-min");
+    const rangeMax = document.querySelector(".range-max");
+    const inputMin = document.querySelector(".input-min");
+    const inputMax = document.querySelector(".input-max");
+    const progress = document.querySelector(".progress");
+
+    const minGap = 1;
+    const rangeMinValue = parseInt(rangeMin.min);
+    const rangeMaxValue = parseInt(rangeMax.max);
+
+    function updateProgress() {
+        let minVal = parseInt(rangeMin.value);
+        let maxVal = parseInt(rangeMax.value);
+        let range = rangeMaxValue - rangeMinValue;
+
+        progress.style.left = ((minVal - rangeMinValue) / range) * 100 + "%";
+        progress.style.right = 100 - ((maxVal - rangeMinValue) / range) * 100 + "%";
+    }
+
+    rangeMin.addEventListener("input", () => {
+        let minVal = parseInt(rangeMin.value);
+        let maxVal = parseInt(rangeMax.value);
+
+        if (maxVal - minVal < minGap) {
+            rangeMin.value = maxVal - minGap;
+        }
+
+        inputMin.value = rangeMin.value;
+        updateProgress();
+    });
+
+    rangeMax.addEventListener("input", () => {
+        let minVal = parseInt(rangeMin.value);
+        let maxVal = parseInt(rangeMax.value);
+
+        if (maxVal - minVal < minGap) {
+            rangeMax.value = minVal + minGap;
+        }
+
+        inputMax.value = rangeMax.value;
+        updateProgress();
+    });
+
+    inputMin.addEventListener("input", () => {
+        let minVal = parseInt(inputMin.value);
+        let maxVal = parseInt(rangeMax.value);
+
+        if (minVal < rangeMinValue) {
+            inputMin.value = rangeMinValue;
+        } else if (maxVal - minVal < minGap) {
+            inputMin.value = maxVal - minGap;
+        }
+
+        rangeMin.value = inputMin.value;
+        updateProgress();
+    });
+
+    inputMax.addEventListener("input", () => {
+        let minVal = parseInt(rangeMin.value);
+        let maxVal = parseInt(inputMax.value);
+
+        if (maxVal > rangeMaxValue) {
+            inputMax.value = rangeMaxValue;
+        } else if (maxVal - minVal < minGap) {
+            inputMax.value = minVal + minGap;
+        }
+
+        rangeMax.value = inputMax.value;
+        updateProgress();
+    });
+
+    updateProgress();
+
+</script>
 
 <!-- Javascript Files
 ================================================== -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/user_side/js/search.js"></script>
 <script src="/user_side/js/request-conseling.js"></script>
 <script src="/user_side/js/plugins.js"></script>
 <script src="/user_side/js/designesia.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 
 </body>
 

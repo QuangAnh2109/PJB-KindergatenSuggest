@@ -20,6 +20,8 @@
     <link th:href="@{/user_side/css/style.css}" rel="stylesheet" type="text/css">
     <link th:href="@{/user_side/css/coloring.css}" rel="stylesheet" type="text/css">
     <link th:href="@{/user_side/css/school-detail.css}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
     <!-- color scheme -->
     <link id="colors" th:href="@{/user_side/css/colors/scheme-01.css}" rel="stylesheet" type="text/css">
 
@@ -101,6 +103,9 @@
     </header>
     <!-- header close -->
     <!-- content begin -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
+        <!-- Toasts will be dynamically added here -->
+    </div>
     <div class="no-bottom no-top zebra" id="content">
         <div id="top"></div>
 
@@ -152,15 +157,16 @@
                             (<span th:text="${schoolInfo.getTotalRating()}"></span> ratings) </p>
                     </div>
 
-                    <div class="text-end d-flex flex-column align-items-end">
-                        <div>
-                            <div style="width: 150px">
-                                <button class="btn btn-primary btn-custom">Request Counseling</button>
-                            </div>
-                            <div style="width: 190px;margin-top: 10px">
-                                <button class="btn btn-block btn-custom" onclick="openRatingPopup()">Rate School
-                                </button>
-                            </div>
+                    <div>
+                        <div style="width: 150px">
+                            <button class="btn btn-primary btn-custom" onclick="handleRequestCounseling()">
+                                Request Counseling
+                            </button>
+                        </div>
+                        <div style="width: 190px; margin-top: 10px">
+                            <button class="btn btn-block btn-custom" onclick="handleRateSchool()">
+                                Rate School
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -183,7 +189,7 @@
                     <!-- Overview Tab -->
                     <div class="tab-pane fade show active" id="overview">
                         <h3>School Introduction</h3>
-                        <p><span th:text="${schoolInfo.getSchoolIntroduction()}"></span></p>
+                        <p><span th:utext="${schoolInfo.getSchoolIntroduction()}"></span></p>
 
                         <h3>Facilities</h3>
                         <div class="de_form" style="display: flex;justify-content: space-around;margin-bottom: 20px;">
@@ -281,7 +287,7 @@
                                 </div>
 
                                 <!-- Review Item -->
-                                <div style="height: 500px;overflow-y: auto;">
+                                <div style="height: 500px;overflow-y: auto;" id="review-item-list">
                                     <div class="border p-3 rounded review-item" th:each="reviewList : ${listFeedback}">
                                         <div class="d-flex align-items-center">
                                             <img th:src="${reviewList.getAccountImage()}"
@@ -313,31 +319,36 @@
                                                 <span>Learning program:</span>
                                                 <span><span style="font-size: 20px;"
                                                             th:each="i : ${#numbers.sequence(1, 5)}"
-                                                            th:class="${i <= reviewList.getLearningProgram() ? 'star-filled' : (i <= reviewList.getLearningProgram() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span th:text="${reviewList.getLearningProgram()}"></span>/5)</span>
+                                                            th:class="${i <= reviewList.getLearningProgram() ? 'star-filled' : (i <= reviewList.getLearningProgram() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span
+                                                        th:text="${reviewList.getLearningProgram()}"></span>/5)</span>
                                             </div>
                                             <div class="d-flex justify-content-between">
                                                 <span>Facilities and Utilities:</span>
                                                 <span><span><span style="font-size: 20px;"
                                                                   th:each="i : ${#numbers.sequence(1, 5)}"
-                                                                  th:class="${i <= reviewList.getFacilitiesUtilities() ? 'star-filled' : (i <= reviewList.getFacilitiesUtilities() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span th:text="${reviewList.getFacilitiesUtilities() }"></span>/5)</span></span>
+                                                                  th:class="${i <= reviewList.getFacilitiesUtilities() ? 'star-filled' : (i <= reviewList.getFacilitiesUtilities() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span
+                                                        th:text="${reviewList.getFacilitiesUtilities() }"></span>/5)</span></span>
                                             </div>
                                             <div class="d-flex justify-content-between">
                                                 <span>Extracurricular Activities:</span>
                                                 <span><span><span style="font-size: 20px;"
                                                                   th:each="i : ${#numbers.sequence(1, 5)}"
-                                                                  th:class="${i <= reviewList.getExtracurricularActivities() ? 'star-filled' : (i <= reviewList.getExtracurricularActivities() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span th:text="${reviewList.getExtracurricularActivities()}"></span>/5)</span></span>
+                                                                  th:class="${i <= reviewList.getExtracurricularActivities() ? 'star-filled' : (i <= reviewList.getExtracurricularActivities() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span
+                                                        th:text="${reviewList.getExtracurricularActivities()}"></span>/5)</span></span>
                                             </div>
                                             <div class="d-flex justify-content-between">
                                                 <span>Teachers and Staff:</span>
                                                 <span><span><span style="font-size: 20px;"
                                                                   th:each="i : ${#numbers.sequence(1, 5)}"
-                                                                  th:class="${i <= reviewList.getTeacherStaff() ? 'star-filled' : (i <= reviewList.getTeacherStaff() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span th:text="${reviewList.getTeacherStaff()}"></span>/5)</span></span>
+                                                                  th:class="${i <= reviewList.getTeacherStaff() ? 'star-filled' : (i <= reviewList.getTeacherStaff() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span
+                                                        th:text="${reviewList.getTeacherStaff()}"></span>/5)</span></span>
                                             </div>
                                             <div class="d-flex justify-content-between">
                                                 <span>Hygiene and Nutrition:</span>
                                                 <span><span><span style="font-size: 20px;"
                                                                   th:each="i : ${#numbers.sequence(1, 5)}"
-                                                                  th:class="${i <= reviewList.getHygieneNutrition() ? 'star-filled' : (i <= reviewList.getHygieneNutrition() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span th:text="${reviewList.getHygieneNutrition()}"></span>/5)</span></span>
+                                                                  th:class="${i <= reviewList.getHygieneNutrition() ? 'star-filled' : (i <= reviewList.getHygieneNutrition() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span
+                                                        th:text="${reviewList.getHygieneNutrition()}"></span>/5)</span></span>
                                             </div>
                                         </div>
                                     </div>
@@ -349,6 +360,7 @@
             </div>
         </section>
         <!-- content close -->
+
 
         <a href="#" id="back-to-top"></a>
 
@@ -564,6 +576,77 @@
             </div>
         </div>
 
+        <!-- Toast Container -->
+        <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
+            <div id="loginToast" class="toast align-items-center text-white bg-danger border-0 fade" role="alert"
+                 aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ⚠️ You need to log in to use this feature!
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                            aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="counselingModal" tabindex="-1" aria-labelledby="counselingModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="counselingModalLabel">Request Counseling</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted mb-4">Please check your details below and confirm to submit the
+                            request.</p>
+
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" th:value="${session.nameAccount}"
+                                   placeholder="Enter your full name..." name="fullName">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="email" placeholder="info@gmail.com"
+                                   name="email">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mobile" class="form-label">Mobile No. :</label>
+                            <input type="tel" class="form-control" id="mobile" placeholder="0xxxxxxxxx"
+                                   name="phone">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="inquiries" class="form-label">Inquiries</label>
+                            <textarea class="form-control" id="inquiries" rows="5" name="inquiries"></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <p class="small text-muted">
+                                Our staff will contact with you within 24 hrs. If you need urgent
+                                assistance, please contact us via our hotline <a href="tel:09123456888" class="hotline">09123456888</a>
+                            </p>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-cancel" data-bs-dismiss="modal"
+                                    style="width: 45%; height: 50px">Cancel
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="submitRequestCounselingForm()"
+                                    style="width: 45%;height: 50px">Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- content close -->
+
         <script>
             // Show pop-up logout
             function showPopup() {
@@ -593,13 +676,184 @@
                     }
                 }
             }
+
+            // Function for request counseling (placeholder for now)
+            function requestCounseling() {
+                // Show the counseling modal
+                const counselingModal = new bootstrap.Modal(document.getElementById('counselingModal'));
+                counselingModal.show();
+            }
+
+            function submitRequestCounselingForm() {
+                // Clear previous error messages
+                document.querySelectorAll('.error-message').forEach(e => e.remove());
+
+                let fullName = document.getElementById("fullName").value.trim();
+                let email = document.getElementById("email").value.trim();
+                let mobile = document.getElementById("mobile").value.trim();
+                let inquiries = document.getElementById("inquiries").value.trim();
+                let schoolId = [[${schoolInfo.getSchoolId()}]];
+
+                // Create FormData object
+                const formData = new FormData();
+                formData.append("fullName", fullName);
+                formData.append("email", email);
+                formData.append("phone", mobile);
+                formData.append("inquiries", inquiries);
+                formData.append("schoolId", schoolId);
+
+                // Send the request
+                fetch('/api/createRequest', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        // Check if response is ok (status 200-299)
+                        if (response.ok) {
+                            return response.text().then(text => {
+                                // Show success toast
+                                showToast('success', 'Request sent successfully!');
+
+                                // Hide the modal
+                                const counselingModal = bootstrap.Modal.getInstance(document.getElementById('counselingModal'));
+                                counselingModal.hide();
+
+                                // Reset the form fields
+                                document.getElementById("email").value = "";
+                                document.getElementById("mobile").value = "";
+                                document.getElementById("inquiries").value = "";
+
+                                return { success: true };
+                            });
+                        } else {
+                            // For error responses, try to parse as JSON
+                            return response.json().then(errorData => {
+                                if (errorData.error) {
+                                    // General error message
+                                    showToast('error', errorData.error);
+                                } else {
+                                    // Field-specific validation errors
+                                    Object.keys(errorData).forEach(field => {
+                                        showErrorMessage(field, errorData[field]);
+                                    });
+                                    showToast('error', 'Please correct the errors in the form');
+                                }
+                                return { success: false };
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('error', 'An error occurred. Please try again.');
+                    });
+            }
+
+            // Function to show field-specific error messages
+            function showErrorMessage(inputId, message) {
+                // Map backend field names to frontend input IDs
+                const fieldMapping = {
+                    'phone': 'mobile'  // Backend 'phone' field maps to 'mobile' input ID
+                };
+
+                // Get the correct input ID using the mapping, or use the original if not mapped
+                const actualInputId = fieldMapping[inputId] || inputId;
+
+                const inputElement = document.getElementById(actualInputId);
+                if (inputElement) {
+                    const errorElement = document.createElement("div");
+                    errorElement.className = "error-message text-danger mt-1 small";
+                    errorElement.innerText = message;
+                    inputElement.parentElement.appendChild(errorElement);
+                } else {
+                    console.warn(`Input element with ID '${actualInputId}' not found for field '${inputId}'`);
+                }
+            }
+
+            // Universal toast function for both success and error messages
+            function showToast(type, message) {
+                const toastContainer = document.querySelector('.position-fixed.top-0.end-0.p-3');
+
+                const bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
+                const icon = type === 'success' ? '✅' : '❌';
+
+                const toastElement = document.createElement('div');
+                toastElement.className = `toast align-items-center text-white ${bgClass} border-0`;
+                toastElement.setAttribute('role', 'alert');
+                toastElement.setAttribute('aria-live', 'assertive');
+                toastElement.setAttribute('aria-atomic', 'true');
+
+                toastElement.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                ${icon} ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
+
+                toastContainer.appendChild(toastElement);
+
+                const toast = new bootstrap.Toast(toastElement, {
+                    autohide: true,
+                    delay: 5000
+                });
+                toast.show();
+
+                // Remove the toast element after it's hidden
+                toastElement.addEventListener('hidden.bs.toast', function () {
+                    toastElement.remove();
+                });
+            }
+
+
         </script>
+        <script>
+            function showLoginToast() {
+                let toastElement = document.getElementById('loginToast');
+                let toast = new bootstrap.Toast(toastElement);
+
+                // Add animation classes before showing
+                toastElement.classList.add('animate__animated', 'animate__fadeInDown');
+
+                toast.show();
+
+                // Hide the toast after 2 seconds with fade-out effect
+                setTimeout(() => {
+                    toastElement.classList.remove('animate__fadeInDown');
+                    toastElement.classList.add('animate__fadeOutUp');
+
+                    // Redirect after animation ends (0.5s delay)
+                    setTimeout(() => {
+                        window.location.href = '/showMyLoginPage';
+                    }, 500);
+                }, 2000);
+            }
+
+            function handleRequestCounseling() {
+                if ([[${#authorization.expression('isAuthenticated()')}]]) {
+                    requestCounseling();
+                } else {
+                    showLoginToast();
+                }
+            }
+
+            function handleRateSchool() {
+                if ([[${#authorization.expression('isAuthenticated()')}]]) {
+                    openRatingPopup();
+                } else {
+                    showLoginToast();
+                }
+            }
+        </script>
+
+
     </div>
     <!-- Javascript Files-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/user_side/js/plugins.js"></script>
     <script src="/user_side/js/designesia.js"></script>
     <script src="/user_side/js/rating-client.js"></script>
+    <script src="/user_side/js/feedback-list.js"></script>
 </div>
 </body>
 

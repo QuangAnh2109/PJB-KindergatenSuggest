@@ -153,7 +153,7 @@
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     line-height: 1.2;
-    margin : 10px 1px;
+    margin: 10px 1px;
 }
 
 .school-image {
@@ -290,7 +290,7 @@
     color: #ccc;
 }
 
-.img-school{
+.img-school {
     margin: 10px;
     width: 250px;
     height: 250px;
@@ -303,10 +303,54 @@
     height: 100%;
     object-fit: cover;
 }
-.btn-primary{
+
+.btn-primary {
     background-color: #1ECB15;
 }
 
-.btn-primary:hover{
+.btn-primary:hover {
     background-color: #1ECB15;
+}
+
+.slider {
+    position: relative;
+    height: 6px;
+    background: #ddd;
+    border-radius: 5px;
+    /*margin: 10px 0;*/
+}
+
+.slider .progress {
+    position: absolute;
+    height: 6px;
+    background: #4caf50;
+    border-radius: 5px;
+    left: 0%;
+    right: 0%;
+}
+
+.facilities {
+    overflow-wrap: anywhere;
+    max-width: 100%;
+    white-space: normal;
+    line-height: 2;
+}
+
+.facility-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.facility-badge {
+    display: inline-block;
+    background-color: #D6EDFF;
+    color: #007BFF;
+    padding: 4px 6px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    margin: 5px 5px;
 }

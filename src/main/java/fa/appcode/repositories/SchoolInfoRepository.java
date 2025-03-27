@@ -225,9 +225,9 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
 
 
     @Query("""
-            SELECT new fa.appcode.common.vo.MySchoolVo(si.id,si.schoolName,si.schoolEmail,si.schoolAddress,si.feeFrom,
+            SELECT new fa.appcode.common.vo.MySchoolVo(si.id,si.schoolName,si.schoolEmail,CONCAT(si.schoolAddress, ', ', si.ward.wardName, ', ', si.district.districtName, ', ', si.city.cityName),si.feeFrom,
                     ageRange.typeValue,typeSchool.typeValue,si.imageUrl,
-                    COALESCE(CAST(AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5) AS double), 0.0),
+                    COALESCE(CAST(AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5) AS double), 0.0) as avgRating,
                     COALESCE(CAST(COUNT(DISTINCT f.id) AS integer), 0),si.schoolPhone,"",0.0,null,null,null)
             FROM SchoolInfo si
             LEFT JOIN City c ON si.city.id = c.id
@@ -240,7 +240,7 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
                     WHERE f2.id.schoolId = si.id AND f2.id.accountId = f.id.accountId
                     GROUP BY f2.id.accountId
                 )
-                    WHERE (:keyword IS NULL OR si.schoolName LIKE CONCAT('%', :keyword, '%'))
+                    WHERE (:keyword IS NULL OR si.schoolName LIKE CONCAT('%', :keyword, '%') OR si.schoolAddress LIKE CONCAT('%', :keyword, '%') OR si.schoolEmail LIKE CONCAT('%', :keyword, '%') OR si.schoolPhone LIKE CONCAT('%', :keyword, '%'))
                        AND (:cityId IS NULL OR si.city.id = :cityId)
                        AND (:districtId IS NULL OR si.district.id = :districtId)
                        AND si.statusId = 5
@@ -264,13 +264,13 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
         si.id,
         si.schoolName,
         si.schoolEmail,
-        si.schoolAddress,
+        CONCAT(si.schoolAddress, ', ', si.ward.wardName, ', ', si.district.districtName, ', ', si.city.cityName),
         si.feeFrom,
         ageRange.typeValue,
         schoolType.typeValue,
         si.imageUrl,
         COALESCE(CAST(AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5) AS double), 0.0),
-        COALESCE(CAST(COUNT(DISTINCT f.id) AS integer), null),si.schoolPhone,si.schoolIntroduction,
+        COALESCE(CAST(COUNT(DISTINCT f.id) AS integer), null),si.schoolIntroduction,si.schoolPhone,
         0.0,
         null,
         null,

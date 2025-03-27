@@ -29,7 +29,13 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public List<FeedbackListVo> findListFeedbackBySchoolId(Integer schoolId) throws DataAccessException {
+
         return feedbackRepository.findListFeedbackBySchoolId(schoolId);
+    }
+
+    @Override
+    public List<FeedbackListVo> findListFeedbackBySchoolIdAndRating(Integer schoolId, Double minRating, Double maxRating) {
+        return feedbackRepository.findListFeedbackBySchoolIdAndRating(schoolId, minRating, maxRating);
     }
 
 
