@@ -13,13 +13,21 @@
                 </span>
         </a>
     </div>
-    <div class="logout-container">
-        <button class="logout-btn" style="border: none; outline: none; background: none; cursor: pointer;"
-                data-toggle="modal" data-target="#exampleModal1">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            <span>Logout</span>
-        </button>
-    </div>
+    <ul class="list-unstyled topnav-menu topnav-menu-left m-0" style="display: flex; justify-content: space-between">
+        <li>
+            <button class="button-menu-mobile">
+                <i class="mdi mdi-menu"></i>
+            </button>
+        </li>
+        <li class="logout-container" style="margin-left: auto">
+            <button class="logout-btn" style="border: none; outline: none; background: none; cursor: pointer;"
+                    data-toggle="modal" data-target="#exampleModal1">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
+        </li>
+    </ul>
+
     <!-- Modal -->
     <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
