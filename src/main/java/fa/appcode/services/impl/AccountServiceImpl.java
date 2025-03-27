@@ -23,8 +23,9 @@ import fa.appcode.services.AccountService;
 import fa.appcode.services.EmailService;
 import fa.appcode.services.MasterDatumService;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.Logger;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.core.Authentication;
@@ -51,7 +52,7 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepository accountRepository;
     private final ValidateService validateService;
-    private static final Logger LOGGER = Log4jUtils.getLogger(AccountServiceImpl.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     private final GlobalConfig globalConfig;
     private final CityService cityService;
     private final EmailService emailService;
@@ -137,7 +138,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountVo getAccountById(Integer id) {
         AccountInfo accountInfo = accountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException(globalConfig.getUserNotFound()));
 
         AccountVo accountVo = new AccountVo();
         accountVo.setId(accountInfo.getId());
@@ -157,12 +158,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public int updateAccount(AccountVo accountVo) {
         AccountInfo user = accountRepository.findById(accountVo.getId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException(globalConfig.getUserNotFound()));
 
-        Log4jUtils.getLogger().info("recordNo get in DB : {}", user.getRecordNo());
+        LOGGER.info("recordNo get in DB : {}", user.getRecordNo());
 
         if (!user.getRecordNo().equals(accountVo.getRecordNo())) {
-            throw new IllegalStateException("Data has been modified by someone else!");
+            throw new IllegalStateException(globalConfig.getInvalidRecordNo());
         }
 
         // check data has changes or not
@@ -194,7 +195,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void deleteAccount(Integer id) {
         AccountInfo account = accountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException(globalConfig.getUserNotFound()));
         account.setDeleteFlg(true);
         accountRepository.save(account);
     }

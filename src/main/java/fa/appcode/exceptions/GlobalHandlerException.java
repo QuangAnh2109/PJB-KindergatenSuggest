@@ -40,12 +40,11 @@ public class GlobalHandlerException {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException e) {
         logger.error("Entity not found: {}", e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entity not found: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
-
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<Map<String,String>> handleDuplicateException(ValidationException e) {
+    public ResponseEntity<Map<String,String>> handleValidationException(ValidationException e) {
         logger.error("validate exception: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
     }

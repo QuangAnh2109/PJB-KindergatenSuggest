@@ -97,7 +97,7 @@ public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Inte
                 LEFT JOIN Feedback f3 on f3.school.id = s.id AND f3.accountInfo.id = e.account.id AND f3.id.feedbackTime = (
                         SELECT MAX(f4.id.feedbackTime)
                         FROM Feedback f4
-                        WHERE f4.id.schoolId = s.id AND f4.id.accountId = s.account.id
+                        WHERE f4.id.schoolId = s.id AND f4.id.accountId = :id
                 )                          
                 WHERE e.account.id= :id AND s.deleteFlg=false AND e.status = 3 AND s.statusId = 5
                GROUP BY s.id              
@@ -122,7 +122,7 @@ public interface EnrollSchoolRepository extends JpaRepository<EnrollSchool, Inte
                 LEFT JOIN Feedback f3 on f3.school.id = s.id AND f3.accountInfo.id = e.account.id AND f3.id.feedbackTime = (
                         SELECT MAX(f4.id.feedbackTime)
                         FROM Feedback f4
-                        WHERE f4.id.schoolId = s.id AND f4.id.accountId = s.account.id
+                        WHERE f4.id.schoolId = s.id AND f4.id.accountId = :id
                 )
                 WHERE e.account.id= :id AND s.deleteFlg=false AND e.status = 4 AND s.statusId = 5
                GROUP BY s.id

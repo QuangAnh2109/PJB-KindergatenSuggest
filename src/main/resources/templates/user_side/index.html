@@ -278,7 +278,7 @@
                                         <div style="width: 60%; display: flex;">
                                             <select id="citySelect" name="city" onchange="loadDistrict(this.value)"
                                                     class="form-select" style="width: 70%;">
-                                                <option selected disabled value="">----Select City/Province-----
+                                                <option selected disabled value="0">----Select City/Province-----
                                                 </option>
                                                 <option th:each="city : ${listCity}" th:value="${city.getId()}"
                                                         th:text="${city.getCityName()}"></option>
@@ -555,13 +555,53 @@
         }
     }
 
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const cityIdFromUrl = urlParams.get('cityId');
+
+        // Get the city select element
+        const citySelect = document.getElementById("citySelect");
+
+        // Get saved values from localStorage
+        const savedCityId = localStorage.getItem('selectedCityId');
+
+        // Determine which cityId to use (URL parameter takes precedence)
+        const cityIdToUse = cityIdFromUrl || savedCityId;
+
+        // If we have a city ID, set it as selected
+        if (cityIdToUse) {
+            citySelect.value = cityIdToUse;
+            // Save to localStorage
+            localStorage.setItem('selectedCityId', cityIdToUse);
+
+            // Load districts based on the selected city
+            loadDistrict(cityIdToUse);
+        }
+
+        // Add change event listeners
+        citySelect.addEventListener('change', function() {
+            localStorage.setItem('selectedCityId', this.value);
+            // Clear district selection when city changes
+            localStorage.removeItem('selectedDistrictId');
+        });
+    });
+
     //load district by city id
     function loadDistrict(cityId) {
+        if (!cityId || cityId == 0) {
+            document.getElementById("district").innerHTML = '<option value="" disabled selected>Select a city first</option>';
+            return;
+        }
+
+        // Try to get district from localStorage
+        const savedDistrictId = localStorage.getItem('selectedDistrictId');
+
         $.ajax({
             url: "/public/districts",
             type: "GET",
             data: { cityId: cityId },
-            success: function (json) {
+            success: function(json) {
                 if (!json || json.length === 0) {
                     console.warn("No districts found for cityId:", cityId);
                     return;
@@ -570,29 +610,38 @@
                 const districtSelect = document.getElementById("district");
                 if (!districtSelect) return;
 
-                const selectedDistrict = districtSelect.value;
-
                 let options = '<option value="" disabled>District</option>';
-                options += json.map(item => {
-                    const isSelected = item.id == selectedDistrict ? 'selected' : '';
-                    return `<option value="${item.id}" ${isSelected}>${item.districtName}</option>`;
-                }).join('');
+                let districtFound = false;
+
+                json.forEach(item => {
+                    const isSelected = savedDistrictId && item.id == savedDistrictId ? 'selected' : '';
+                    if (isSelected) districtFound = true;
+                    options += `<option value="${item.id}" ${isSelected}>${item.districtName}</option>`;
+                });
 
                 districtSelect.innerHTML = options;
                 districtSelect.removeAttribute("disabled");
 
-                // Reset address field
-                const addressInput = document.getElementById("address");
-                if (addressInput) {
-                    addressInput.disabled = true;
-                    addressInput.value = "";
+                // If we didn't find the saved district in the options, clear the localStorage
+                if (!districtFound && savedDistrictId) {
+                    localStorage.removeItem('selectedDistrictId');
                 }
             },
-            error: function (xhr) {
+            error: function(xhr) {
                 console.error("Load district failed:", xhr);
             },
         });
     }
+
+    // Add event listener for district selection changes
+    document.addEventListener('DOMContentLoaded', function() {
+        const districtSelect = document.getElementById('district');
+        if (districtSelect) {
+            districtSelect.addEventListener('change', function() {
+                localStorage.setItem('selectedDistrictId', this.value);
+            });
+        }
+    });
 
 
     function searchRedirect() {
@@ -606,6 +655,12 @@
     function searchRedirectByAddress() {
         let cityId = document.getElementById("citySelect").value;
         let district = document.getElementById("district").value;
+
+        // Save district ID to localStorage before redirecting
+        if (district) {
+            localStorage.setItem('selectedDistrictId', district);
+        }
+
         const uri = `/public/school/search?cityId=${cityId}&districtId=${district}`;
         window.location.href = uri;
     }

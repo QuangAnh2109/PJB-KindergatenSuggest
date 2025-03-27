@@ -845,6 +845,20 @@
                 }
             }
         </script>
+        <!-- Loading Tab Rating when load page -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Check if URL has a hash and it's #ratings
+                if (window.location.hash === '#ratings') {
+                    // Select the ratings tab
+                    const ratingsTab = document.querySelector('a[href="#ratings"]');
+                    if (ratingsTab) {
+                        const tab = new bootstrap.Tab(ratingsTab);
+                        tab.show();
+                    }
+                }
+            });
+        </script>
 
 
     </div>

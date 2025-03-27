@@ -176,8 +176,7 @@ function createSchoolHtml(school, isCurrentSchool) {
                         ${generateUserRatingStars(school.yourRating)}
                         <span>${school.yourRating}</span>/5
                     </div>
-                    <button class="btn-primary w-100"><a href="/school/details/${school.schoolId}">View Rating Details</a></button>
-                </div>
+<button class="btn-primary w-100"><a href="/public/school/details/${school.schoolId}#ratings">View Rating Details</a></button>                </div>
             `;
         } else {
             ratingHtml = `

@@ -127,7 +127,7 @@
                                    placeholder="Enter a school name" style="height: 38px">
                             <select id="citySelect" name="city" class="form-select" onchange="loadDistrict(this.value)"
                                     style="width: 5%;">
-                                <option selected disabled>----Select City/Province-----</option>
+                                <option selected disabled value="0">----Select City/Province-----</option>
                                 <option th:selected="${cityId == city.getId()}" th:each="city : ${listCity}"
                                         th:value="${city.getId()}"
                                         th:text="${city.getCityName()}"></option>
@@ -583,7 +583,7 @@
 <script th:inline="javascript">
 
     function loadDistrict(cityId) {
-        if (!cityId) {
+        if (!cityId || cityId == 0) {
             document.getElementById("district").innerHTML = '<option value="" disabled selected>Select a city first</option>';
             return;
         }

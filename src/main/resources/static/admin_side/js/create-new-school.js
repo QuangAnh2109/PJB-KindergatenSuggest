@@ -13,8 +13,7 @@ function addNewSchool(status){
     formData.append("educationMethodId", document.getElementById("educationMethod").value);
     formData.append("feeTo", document.getElementById("feeTo").value);
     formData.append("feeFrom", document.getElementById("feeFrom").value);
-    formData.append("introduction", document.getElementById("editor").innerHTML);
-    formData.append("schoolFacilities", getSelected(true));
+    formData.append("introduction", quill.root.innerHTML);
     formData.append("schoolUtilities", getSelected(false));
     formData.append("statusId", status);
 
