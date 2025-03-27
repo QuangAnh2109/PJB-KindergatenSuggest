@@ -1,9 +1,7 @@
 package fa.appcode.services.impl;
 
-import fa.appcode.common.utils.Constant;
 import fa.appcode.common.utils.Placeholder;
 import fa.appcode.common.utils.SendMailInfo;
-import fa.appcode.common.utils.TokenUtils;
 import fa.appcode.common.vo.MasterMailVo;
 import fa.appcode.config.EmailConfig;
 import fa.appcode.exceptions.LackPlaceholderException;
@@ -14,7 +12,6 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
