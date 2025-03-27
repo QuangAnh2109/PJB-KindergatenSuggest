@@ -92,7 +92,10 @@ public class ValidateServiceImpl implements ValidateService {
 
     @Override
     public Map<String, String> dobValidation(LocalDate dob) {
-        if (dob != null && !dob.isBefore(LocalDate.of(2006, 1, 1))) {
+        if (dob == null) {
+            return Map.of("dobError", globalConfig.getRequiredField());
+        }
+        if (!dob.isBefore(LocalDate.of(2006, 1, 1))) {
             return Map.of("dobError", globalConfig.getInvalidDate());
         }
         return Collections.emptyMap();
@@ -212,10 +215,10 @@ public class ValidateServiceImpl implements ValidateService {
      * Validates account fields including full name, phone numbers, and date of birth.
      * Combines multiple validation methods into a single map.
      *
-     * @param fullName      The full name of the user.
-     * @param currentPhone  The current phone number of the user.
-     * @param newPhone      The new phone number to be updated.
-     * @param dob           The date of birth of the user.
+     * @param fullName     The full name of the user.
+     * @param currentPhone The current phone number of the user.
+     * @param newPhone     The new phone number to be updated.
+     * @param dob          The date of birth of the user.
      * @return A map containing field names as keys and validation error messages as values.
      */
     @Override
@@ -252,24 +255,12 @@ public class ValidateServiceImpl implements ValidateService {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));  // Merge into a single map
     }
 
-
-    public Map<String, String> validDob(String dob) {
-        if (dob == null || dob.trim().isEmpty()) {
-            return Map.of("dobError", globalConfig.getRequiredField());
-        }
-        try {
-            LocalDate parsedDob = LocalDate.parse(dob);
-            if (!parsedDob.isBefore(LocalDate.now())) {
-                return Map.of("dobError", globalConfig.getDateInThePass());
-            }
-        } catch (DateTimeParseException e) {
-            return Map.of("dobError", "Invalid date format");
-        }
-        return Collections.emptyMap();
-    }
-
-
-
+    /**
+     * Validates the information of new user for add
+     *
+     * @param accountVo
+     * @return A map containing error messages if validation fails.
+     */
     @Override
     public Map<String, String> validateAccountVo(AccountVo accountVo) {
         Map<String, String> errors = new HashMap<>();
@@ -280,7 +271,11 @@ public class ValidateServiceImpl implements ValidateService {
 
         errors.putAll(phoneValidation(accountVo.getPhone()));
 
-        errors.putAll(validDob(accountVo.getDob()));
+        errors.putAll(dobValidation(
+                (accountVo.getDob() == null || accountVo.getDob().trim().isEmpty())
+                        ? null
+                        : LocalDate.parse(accountVo.getDob())
+        ));
 
         if (accountVo.getRole() == null || accountVo.getRole().trim().isEmpty()) {
             errors.put("roleError", globalConfig.getRequiredField());
@@ -292,9 +287,15 @@ public class ValidateServiceImpl implements ValidateService {
         return errors;
     }
 
+    @Override
+    public boolean validateSearchString(String searchString) {
+        return searchString.length() <= 1000;
+    }
+
 
     /**
      * Validates that all required fields for password change are provided
+     *
      * @param oldPassword     The current password
      * @param newPassword     The new password
      * @param confirmPassword The confirmation of the new password
@@ -418,8 +419,6 @@ public class ValidateServiceImpl implements ValidateService {
         }
         return matches;
     }
-
-
 
 
 }

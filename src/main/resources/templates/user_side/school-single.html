@@ -4,11 +4,11 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <title>Rentaly - Multipurpose Vehicle Car Rental Website Template</title>
+    <title>School Details</title>
     <link rel="icon" href="images/icon.png" type="image/gif" sizes="16x16">
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Rentaly - Multipurpose Vehicle Car Rental Website Template" name="description">
+    <meta content="School Details" name="description">
     <meta content="" name="keywords">
     <meta content="" name="author">
     <!-- Font Awesome CDN -->
@@ -19,182 +19,10 @@
     <link th:href="@{/user_side/css/plugins.css}" rel="stylesheet" type="text/css">
     <link th:href="@{/user_side/css/style.css}" rel="stylesheet" type="text/css">
     <link th:href="@{/user_side/css/coloring.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/user_side/css/school-detail.css}" rel="stylesheet" type="text/css">
     <!-- color scheme -->
     <link id="colors" th:href="@{/user_side/css/colors/scheme-01.css}" rel="stylesheet" type="text/css">
 
-    <style>
-        #img-school {
-            display: flex;
-            justify-content: center;
-            border-radius: 5px;
-            border: 1px solid #1ECB15;
-        }
-
-        #img-school img {
-            width: 90%;
-            margin: 10px;
-        }
-
-        .tab-btn {
-            border: none;
-            background: none;
-            padding: 10px 20px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .tab-btn.active {
-            border-bottom: 2px solid #007bff;
-        }
-
-        .rating-stars {
-            color: gold;
-        }
-
-        .rating-bar {
-            height: 10px;
-            background-color: #ddd;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .rating-fill {
-            height: 100%;
-            background-color: gold;
-        }
-
-        .filter-btn {
-            border: 1px solid #007bff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            background: white;
-            cursor: pointer;
-            font-weight: bold;
-            margin-right: 5px;
-        }
-
-        .filter-btn.active, .filter-btn:hover {
-            background: #007bff;
-            color: white;
-        }
-
-        #school-detail-info {
-            border: 1px solid #1ECB15;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            margin-top: 20px;
-        }
-
-        .school-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            background: white;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-custom {
-            border-radius: 20px;
-            font-size: 14px;
-            padding: 8px 15px;
-        }
-
-        .rating {
-            color: #f4b400; /* Màu vàng */
-        }
-
-        .btn-yes {
-            background-color: #d9534f;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            width: 100px;
-        }
-
-        .btn-cancel {
-            width: 100px;
-            background-color: #5bc0de;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        /* Rating stars styling */
-        .star-rating {
-            display: flex;
-            gap: 8px;
-        }
-
-        .star {
-            font-size: 24px;
-            cursor: pointer;
-            color: #dee2e6;
-            transition: color 0.2s ease;
-            user-select: none;
-        }
-
-        .star.active {
-            color: #ffc107;
-        }
-
-        /* Rating value display */
-        .rating-value {
-            min-width: 32px;
-            padding: 2px 8px;
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #495057;
-            text-align: center;
-        }
-
-        /* Modal customization */
-        .modal-content {
-            border-radius: 12px;
-            border: none;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-header .btn-close {
-            padding: 0.75rem;
-        }
-
-        .rating-item label {
-            color: #495057;
-            margin-bottom: 0;
-        }
-
-        /* Form elements */
-        .form-control {
-            border-radius: 8px;
-            border-color: #dee2e6;
-            padding: 0.75rem;
-        }
-
-        .form-control:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        }
-
-        /* Buttons */
-
-        .btn-outline-secondary {
-            color: #6c757d;
-            border-color: #dee2e6;
-        }
-
-        .btn-outline-secondary:hover {
-            color: #495057;
-            background-color: #f8f9fa;
-            border-color: #dee2e6;
-        }
-    </style>
 </head>
 
 <body>
@@ -294,166 +122,232 @@
 
         <section id="section-car-details">
             <div class="container">
-                <div id="img-school">
-                    <img src="https://apu.edu.vn/uploads/gallery/slider_home-1-1724144804.jpg">
+                <div class="img-school">
+                    <img th:src="${schoolInfo.getSchoolImage()}"
+                         class="img-fluid school-image"
+                         alt="School view"
+                         onerror="this.onerror=null;this.src='/user_side/images/school-image/school-placeholder.png';">
+                </div>
+            </div>
+
+            <div class="container mt-4">
+                <div class="school-card d-flex justify-content-between align-items-start">
+                    <!-- Information of School -->
+                    <div class="school-card-details">
+                        <h2><strong><span th:text="${schoolInfo.getSchoolName()}"></span></strong></h2>
+                        <p><strong>📍 Address:</strong> <span th:text="${schoolInfo.getSchoolAddress()}"></span></p>
+                        <p><strong>📧 Email:</strong> <span th:text="${schoolInfo.getSchoolEmail()}"></span></p>
+                        <p><strong>📞 Contact:</strong> <span th:text="${schoolInfo.getSchoolPhone()}"></span></p>
+                        <p><strong>💰 Tuition fee:</strong> From <span
+                                th:text="${#numbers.formatInteger(schoolInfo.getFeeFrom(), 3, 'COMMA')}"></span>
+                            VND/month</p>
+                        <p><strong>🎓 Admission age:</strong> From <span th:text="${schoolInfo.getAgeRange()}"></span>
+                        </p>
+                        <p><strong>🏫 School type:</strong> <span th:text="${schoolInfo.getSchoolType()}"></span></p>
+                        <p><strong><i class="fa fa-star" aria-hidden="true"></i> Rating:</strong> <span
+                                class="star-rating"
+                                th:each="i : ${#numbers.sequence(1, 5)}"
+                                th:class="${i <= schoolInfo.getAvgRating() ? 'star-filled' : (i <= schoolInfo.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
+                            <span th:text="${schoolInfo.getAvgRating()}"></span>/5
+                            (<span th:text="${schoolInfo.getTotalRating()}"></span> ratings) </p>
+                    </div>
+
+                    <div class="text-end d-flex flex-column align-items-end">
+                        <div>
+                            <div style="width: 150px">
+                                <button class="btn btn-primary btn-custom">Request Counseling</button>
+                            </div>
+                            <div style="width: 190px;margin-top: 10px">
+                                <button class="btn btn-block btn-custom" onclick="openRatingPopup()">Rate School
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="container mt-4" id="school-detail-info">
+                <!-- Tabs -->
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#overview">Overview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#ratings">Ratings</a>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content mt-3">
+                    <!-- Overview Tab -->
+                    <div class="tab-pane fade show active" id="overview">
+                        <h3>School Introduction</h3>
+                        <p><span th:text="${schoolInfo.getSchoolIntroduction()}"></span></p>
+
+                        <h3>Facilities</h3>
+                        <div class="de_form" style="display: flex;justify-content: space-around;margin-bottom: 20px;">
+                            <div class="de_checkbox" th:each="facility, facilityStatus : ${facilities}">
+                                <input name="facilities" type="checkbox"
+                                       th:id="${'facility_' + facilityStatus.index}"
+                                       th:value="${facility.getTypeKey()}" disabled
+                                       th:checked="${facilitiesId.contains(facility.getTypeKey())}">
+                                <label th:for="${'facility_' + facilityStatus.index}">
+                                    <span th:text="${facility.getTypeValue()}"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <h3>Utilities</h3>
+                        <div class="de_form" style="display: flex;justify-content: space-around; margin-bottom: 20px;">
+                            <div class="de_checkbox" th:each="utility, utilityStatus : ${utilities}">
+                                <input name="utilities" type="checkbox"
+                                       th:id="${'utility_' + utilityStatus.index}"
+                                       th:value="${utility.getTypeKey()}" disabled
+                                       th:checked="${utilitiesId.contains(utility.getTypeKey())}">
+                                <label th:for="${'utility_' + utilityStatus.index}">
+                                    <span th:text="${utility.getTypeValue()}"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ratings Tab -->
+                    <div class="tab-pane fade" id="ratings">
+                        <h3>Average ratings</h3>
+                        <h3><span th:text="${schoolInfo.getAvgRating()}"></span> Stars (<span
+                                th:text="${schoolInfo.getTotalRating()}"></span> Ratings)</h3>
+                        <div class="rating-stars"><span style="font-size: 25px;"
+                                                        th:each="i : ${#numbers.sequence(1, 5)}"
+                                                        th:class="${i <= schoolInfo.getAvgRating() ? 'star-filled' : (i <= schoolInfo.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
+                        </div>
+
+                        <div class="mt-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Learning program:</span>
+                                <span>(<span th:text="${ratingOfSchool.getLearningProgram()}"></span>/5)</span>
+                            </div>
+                            <div class="rating-bar">
+                                <div class="rating-fill"
+                                     th:style="'width: ' + (${ratingOfSchool.getLearningProgram()} * 20) + '%;'"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Facilities and Utilities:</span>
+                                <span>(<span th:text="${ratingOfSchool.getFacilitiesAndUtilities()}"></span>/5)</span>
+                            </div>
+                            <div class="rating-bar">
+                                <div class="rating-fill"
+                                     th:style="'width: ' + (${ratingOfSchool.getFacilitiesAndUtilities()} * 20) + '%;'"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Extracurricular Activities:</span>
+                                <span>(<span
+                                        th:text="${ratingOfSchool.getExtracurricularActivities()}"></span>/5)</span>
+                            </div>
+                            <div class="rating-bar">
+                                <div class="rating-fill"
+                                     th:style="'width: ' + (${ratingOfSchool.getExtracurricularActivities()} * 20) + '%;'"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Teachers and Staff:</span>
+                                <span>(<span th:text="${ratingOfSchool.getTeachersAndStaff()}"></span>/5)</span>
+                            </div>
+                            <div class="rating-bar">
+                                <div class="rating-fill"
+                                     th:style="'width: ' + (${ratingOfSchool.getTeachersAndStaff()} * 20) + '%;'"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Hygiene and Nutrition:</span>
+                                <span>(<span th:text="${ratingOfSchool.getHygieneAndNutrition()}"></span>/5)</span>
+                            </div>
+                            <div class="rating-bar">
+                                <div class="rating-fill"
+                                     th:style="'width: ' + (${ratingOfSchool.getHygieneAndNutrition()} * 20) + '%;'"></div>
+                            </div>
+                            <!-- Details -->
+                            <div class="mt-4">
+                                <h5>Details</h5>
+                                <div class="mb-3">
+                                    <button class="filter-btn active">All</button>
+                                    <button class="filter-btn">5 ⭐</button>
+                                    <button class="filter-btn">4 ⭐</button>
+                                    <button class="filter-btn">3 ⭐</button>
+                                    <button class="filter-btn">2 ⭐</button>
+                                    <button class="filter-btn">1 ⭐</button>
+                                </div>
+
+                                <!-- Review Item -->
+                                <div style="height: 500px;overflow-y: auto;">
+                                    <div class="border p-3 rounded review-item" th:each="reviewList : ${listFeedback}">
+                                        <div class="d-flex align-items-center">
+                                            <img th:src="${reviewList.getAccountImage()}"
+                                                 class="rounded-circle me-2 img-user"
+                                                 alt="User"
+                                                 onerror="this.onerror=null;this.src='/user_side/images/profile/User_Placeholder.png'">
+
+                                            <div>
+                                                <strong th:text="${reviewList.getAccountName()}"></strong>
+                                                <div class="text-muted"><span
+                                                        th:text="${#temporals.format(reviewList.getFeedbackTime(), 'dd/MM/yyyy HH:mm:ss')}"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="mt-2">
+                                            <span th:text="${reviewList.getFeedback()}"></span>
+                                        </p>
+
+                                        <div class="d-flex align-items-center">
+                                            <div class="rating-stars me-2"><span style="font-size: 25px;"
+                                                                                 th:each="i : ${#numbers.sequence(1, 5)}"
+                                                                                 th:class="${i <= reviewList.getAvgRating() ? 'star-filled' : (i <= reviewList.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
+                                            </div>
+                                            <span><span th:text="${reviewList.getAvgRating()}"></span>/5</span>
+                                        </div>
+
+                                        <div class="mt-3">
+                                            <div class="d-flex justify-content-between">
+                                                <span>Learning program:</span>
+                                                <span><span style="font-size: 20px;"
+                                                            th:each="i : ${#numbers.sequence(1, 5)}"
+                                                            th:class="${i <= reviewList.getLearningProgram() ? 'star-filled' : (i <= reviewList.getLearningProgram() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span th:text="${reviewList.getLearningProgram()}"></span>/5)</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Facilities and Utilities:</span>
+                                                <span><span><span style="font-size: 20px;"
+                                                                  th:each="i : ${#numbers.sequence(1, 5)}"
+                                                                  th:class="${i <= reviewList.getFacilitiesUtilities() ? 'star-filled' : (i <= reviewList.getFacilitiesUtilities() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span th:text="${reviewList.getFacilitiesUtilities() }"></span>/5)</span></span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Extracurricular Activities:</span>
+                                                <span><span><span style="font-size: 20px;"
+                                                                  th:each="i : ${#numbers.sequence(1, 5)}"
+                                                                  th:class="${i <= reviewList.getExtracurricularActivities() ? 'star-filled' : (i <= reviewList.getExtracurricularActivities() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span th:text="${reviewList.getExtracurricularActivities()}"></span>/5)</span></span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Teachers and Staff:</span>
+                                                <span><span><span style="font-size: 20px;"
+                                                                  th:each="i : ${#numbers.sequence(1, 5)}"
+                                                                  th:class="${i <= reviewList.getTeacherStaff() ? 'star-filled' : (i <= reviewList.getTeacherStaff() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span th:text="${reviewList.getTeacherStaff()}"></span>/5)</span></span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Hygiene and Nutrition:</span>
+                                                <span><span><span style="font-size: 20px;"
+                                                                  th:each="i : ${#numbers.sequence(1, 5)}"
+                                                                  th:class="${i <= reviewList.getHygieneNutrition() ? 'star-filled' : (i <= reviewList.getHygieneNutrition() + 0.5 ? 'star-half' : 'star-empty')}">★</span> (<span th:text="${reviewList.getHygieneNutrition()}"></span>/5)</span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
-        <div class="container mt-4">
-            <div class="school-card d-flex justify-content-between align-items-start">
-                <!-- Thông tin trường học -->
-                <div class="school-card-details">
-                    <h2><strong>Fort Street Public School</strong></h2>
-                    <p><strong>📍 Address:</strong> 24 Fordham Avenue CAMBERWELL VIC 3124</p>
-                    <p><strong>📧 Email:</strong> FortStreet@school.com</p>
-                    <p><strong>📞 Contact:</strong> 0123456789</p>
-                    <p><strong>💰 Tuition fee:</strong> From 4,000,000 VND/month</p>
-                    <p><strong>🎓 Admission age:</strong> From 6 months to 5 years</p>
-                    <p><strong>🏫 School type:</strong> Public</p>
-                </div>
-
-                <div class="text-end d-flex flex-column align-items-end">
-                    <div>
-                        <div style="width: 150px">
-                            <button class="btn btn-primary btn-custom">Request Counseling</button>
-                        </div>
-                        <div style="width: 190px;margin-top: 10px">
-                            <button class="btn btn-block btn-custom" onclick="openRatingPopup()">Rate School</button>
-                        </div>
-                    </div>
-                    <div class="mt-auto">
-                        <span class="rating">⭐⭐⭐⭐⭐</span>
-                        <span>5.0/5 (120 ratings)</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="container mt-4" id="school-detail-info">
-            <!-- Tabs -->
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#overview">Overview</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#ratings">Ratings</a>
-                </li>
-            </ul>
-
-            <!-- Tab Content -->
-            <div class="tab-content mt-3">
-                <!-- Overview Tab -->
-                <div class="tab-pane fade show active" id="overview">
-                    <h3>School Introduction</h3>
-                    <p>Thông tin tổng quan về trường học.</p>
-                </div>
-
-                <!-- Ratings Tab -->
-                <div class="tab-pane fade" id="ratings">
-                    <h3>Average ratings</h3>
-                    <h3>4.5 Stars (120 Ratings)</h3>
-                    <div class="rating-stars">⭐⭐⭐⭐⭐</div>
-
-                    <div class="mt-3">
-                        <div class="d-flex justify-content-between">
-                            <span>Learning program:</span>
-                            <span>(5/5)</span>
-                        </div>
-                        <div class="rating-bar">
-                            <div class="rating-fill" style="width: 100%;"></div>
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-2">
-                            <span>Facilities and Utilities:</span>
-                            <span>(4/5)</span>
-                        </div>
-                        <div class="rating-bar">
-                            <div class="rating-fill" style="width: 80%;"></div>
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-2">
-                            <span>Extracurricular Activities:</span>
-                            <span>(4/5)</span>
-                        </div>
-                        <div class="rating-bar">
-                            <div class="rating-fill" style="width: 80%;"></div>
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-2">
-                            <span>Teachers and Staff:</span>
-                            <span>(4/5)</span>
-                        </div>
-                        <div class="rating-bar">
-                            <div class="rating-fill" style="width: 80%;"></div>
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-2">
-                            <span>Hygiene and Nutrition:</span>
-                            <span>(5/5)</span>
-                        </div>
-                        <div class="rating-bar">
-                            <div class="rating-fill" style="width: 100%;"></div>
-                        </div>
-                        <!-- Details -->
-                        <div class="mt-4">
-                            <h5>Details</h5>
-                            <div class="mb-3">
-                                <button class="filter-btn active">All</button>
-                                <button class="filter-btn">5 ⭐</button>
-                                <button class="filter-btn">4 ⭐</button>
-                                <button class="filter-btn">3 ⭐</button>
-                                <button class="filter-btn">2 ⭐</button>
-                                <button class="filter-btn">1 ⭐</button>
-                            </div>
-
-                            <!-- Review Item -->
-                            <div class="border p-3 rounded">
-                                <div class="d-flex align-items-center">
-                                    <img src="https://via.placeholder.com/50" class="rounded-circle me-2" alt="User">
-                                    <div>
-                                        <strong>Will Kenny</strong>
-                                        <div class="text-muted">Oct 10th, 2022 12:00AM</div>
-                                    </div>
-                                </div>
-                                <p class="mt-2">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna aliqua...
-                                </p>
-
-                                <div class="d-flex align-items-center">
-                                    <div class="rating-stars me-2">⭐⭐⭐⭐⭐</div>
-                                    <span>4.5/5</span>
-                                </div>
-
-                                <div class="mt-3">
-                                    <div class="d-flex justify-content-between">
-                                        <span>Learning program:</span>
-                                        <span>⭐⭐⭐⭐⭐ (5/5)</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <span>Facilities and Utilities:</span>
-                                        <span>⭐⭐⭐⭐ (4/5)</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <span>Extracurricular Activities:</span>
-                                        <span>⭐⭐⭐⭐ (4/5)</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <span>Teachers and Staff:</span>
-                                        <span>⭐⭐⭐⭐⭐ (5/5)</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <span>Hygiene and Nutrition:</span>
-                                        <span>⭐⭐⭐⭐ (4/5)</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- content close -->
 
         <a href="#" id="back-to-top"></a>
@@ -464,10 +358,12 @@
                 <div class="row g-custom-x">
                     <div class="col-lg-3">
                         <div class="widget">
-                            <h5>About Rentaly</h5>
-                            <p>Where quality meets affordability. We understand the importance of a smooth and enjoyable
-                                journey without the burden of excessive costs. That's why we have meticulously crafted
-                                our offerings to provide you with top-notch vehicles at minimum expense.</p>
+                            <h5>About KS System</h5>
+                            <p>The best way to find the perfect kindergarten for your child! We understand that every
+                                child
+                                has unique needs, so our system is designed to help you search easily, quickly, and
+                                accurately—matching your preferences in teaching quality, curriculum, location, and
+                                affordability.</p>
                         </div>
                     </div>
 
@@ -489,14 +385,12 @@
                     <div class="col-lg-3">
                         <h5>Quick Links</h5>
                         <div class="row">
-                            <div class="col-lg-12">
+                            <div class="col-lg-6">
                                 <div class="widget">
                                     <ul>
-                                        <li><a href="#">About</a></li>
-                                        <li><a href="#">Blog</a></li>
-                                        <li><a href="#">Careers</a></li>
-                                        <li><a href="#">News</a></li>
-                                        <li><a href="#">Partners</a></li>
+                                        <li><a href="/public/school/search">School Search</a></li>
+                                        <li><a href="#">Community</a></li>
+                                        <li><a href="#">About Us</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -523,8 +417,8 @@
                         <div class="col-md-12">
                             <div class="de-flex">
                                 <div class="de-flex-col">
-                                    <a href="index.html">
-                                        Copyright 2024 - Rentaly by Designesia
+                                    <a href="/public/home">
+                                        Copyright 2025 - Kindergarten Suggestion System
                                     </a>
                                 </div>
                                 <ul class="menu-simple">

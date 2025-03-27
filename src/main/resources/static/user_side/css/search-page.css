@@ -1,0 +1,312 @@
+#messages {
+    text-align: center;
+    font-style: italic;
+    padding: 0;
+    margin-top: 30px;
+}
+
+/* Drop-down */
+.logout-container {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown {
+
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    background-color: #1ECB15;
+    color: white;
+    padding: 8px 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.arrow-down {
+    display: inline-block;
+    margin-left: 8px;
+    border: solid #212529;
+    border-width: 0 2px 2px 0;
+    padding: 3px;
+    transform: rotate(45deg);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 4px;
+    margin-top: 2px;
+}
+
+.dropdown-menu a {
+    color: #212529;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-menu-right {
+    right: 0;
+    left: auto;
+}
+
+.show {
+    display: block;
+}
+
+.btn-primary {
+    height: 38px; /* Match input height */
+    padding: 0 20px;
+    transition: none; /* Disable any transitions */
+    transform: none !important; /* Prevent transformations */
+    width: auto; /* Let it size based on content */
+    white-space: nowrap;
+    border-radius: 4px;
+    margin-left: 5px;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    transform: none !important;
+    scale: 1 !important; /* Prevent scaling */
+    zoom: 1 !important; /* Prevent zooming */
+}
+
+.overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 9999;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+
+.overlay.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.popup {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 300px;
+}
+
+.button-container {
+    margin-top: 15px;
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-yes {
+    width: 80px;
+    background-color: #d9534f;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn-cancel {
+    width: 80px;
+    background-color: #5bc0de;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.school-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    line-height: 1.2;
+    margin : 10px 1px;
+}
+
+.school-image {
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+
+.school-title {
+    color: #1ECB15;
+    font-weight: bold;
+}
+
+.rating-stars {
+    color: #ffc107;
+}
+
+.badge-light-blue {
+    background-color: #e6f4ff;
+    color: #0d99ff;
+    font-weight: normal;
+}
+
+.info-icon {
+    width: 24px;
+    color: #6c757d;
+    margin-right: 10px;
+}
+
+.request-btn {
+    background-color: #1ECB15;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.pagination ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+}
+
+.pagination .page-item {
+    margin: 0 2px; /* Create distance between buttons */
+}
+
+.pagination .page-link {
+    display: block;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: #007bff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.pagination .page-link:hover {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #0056b3;
+    color: white;
+    border-color: #0056b3;
+    font-weight: bold;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #ccc;
+    pointer-events: none;
+    background-color: #f8f9fa;
+}
+
+.modal-dialog {
+    max-width: 500px;
+}
+
+.form-control {
+    background-color: #f5f5f5;
+    border: none;
+}
+
+.btn-primary {
+    background-color: #0d9bdb;
+    border-color: #0d9bdb;
+}
+
+.btn-primary:hover {
+    background-color: #0b89c3;
+    border-color: #0b89c3;
+}
+
+.modal-header {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.hotline {
+    color: #0d9bdb;
+}
+
+.school-image-container {
+    border-radius: 12px;
+    margin: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    line-height: 1.5;
+}
+
+
+.star-rating {
+    color: #ffc107;
+}
+
+.star-filled {
+    color: gold;
+}
+
+.star-half {
+    background: linear-gradient(90deg, gold 50%, #ccc 50%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.star-empty {
+    color: #ccc;
+}
+
+.img-school{
+    margin: 10px;
+    width: 250px;
+    height: 250px;
+    overflow: hidden;
+}
+
+
+.img-school img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.btn-primary{
+    background-color: #1ECB15;
+}
+
+.btn-primary:hover{
+    background-color: #1ECB15;
+}

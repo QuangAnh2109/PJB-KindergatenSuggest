@@ -19,18 +19,16 @@ $(document).ready(function () {
         }
     });
 
-
-
     var selectedUserId = null;
 
-    // Khi người dùng nhấn vào icon delete
+    // when click on trash icon
     $("body").on("click", "a.delete-user-btn", function (event) {
         event.preventDefault();
         selectedUserId = $(this).data("userid");
         $("#deleteUserModal").modal("show");
     });
 
-    // Khi người dùng xác nhận xóa
+    // Confirm delete
     $("#confirmDeleteUser").click(function () {
         if (selectedUserId) {
 
@@ -56,7 +54,7 @@ $(document).ready(function () {
     var timeout = null;
     var num = $('#userSearchField').val();
 
-// Khi nhập vào ô search và nhấn Enter
+// when input in search field and press Enter
     $("#userSearchField").on("keydown", function (event) {
         if (event.key === "Enter") {
             event.preventDefault(); // Ngăn chặn reload trang
@@ -64,14 +62,14 @@ $(document).ready(function () {
         }
     });
 
-// Khi bấm vào nút search
+// Khi click on button search instead of press Enter
     $("#userSearchButton").on("click", function () {
         findAll($("#userSearchField").val(), 0);
     });
 
     $('#userSearchField').focus().val('').val(num);
 
-// Xử lý phân trang bằng AJAX
+// Pagination with ajax
     $("body").on("click", "a.user-page-item", function (event) {
         event.preventDefault(); // Ngăn tải lại trang
         let page = $(this).data("page");

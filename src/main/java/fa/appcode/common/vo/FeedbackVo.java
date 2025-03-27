@@ -12,6 +12,8 @@ public class FeedbackVo {
     @NotNull
     private Integer schoolId;
     @NotNull
+    private Integer accountId;
+    @NotNull
     private Double learningProgramRating;
     @NotNull
     private Double facultyAndUtilityRating;
@@ -23,4 +25,5 @@ public class FeedbackVo {
     private Double hygieneRating;
     @NotNull
     private String feedback;
+
 }

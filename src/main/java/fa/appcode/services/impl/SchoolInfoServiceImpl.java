@@ -1,28 +1,31 @@
 package fa.appcode.services.impl;
 
 import fa.appcode.common.utils.Constant;
-import fa.appcode.common.vo.EnrollSchoolInfoVo;
-import fa.appcode.common.vo.SchoolFormManager;
-import fa.appcode.common.vo.SchoolListManager;
-import fa.appcode.common.vo.SchoolStatusUpdateRequest;
+import fa.appcode.common.vo.*;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.SchoolInfo;
+import fa.appcode.exceptions.TokenException;
 import fa.appcode.repositories.SchoolInfoRepository;
 import fa.appcode.services.SchoolInfoService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
 public class SchoolInfoServiceImpl implements SchoolInfoService {
 
     private final SchoolInfoRepository schoolInfoRepository;
+
+    private final Logger logger = Logger.getLogger(SchoolInfoServiceImpl.class.getName());
 
     private final GlobalConfig globalConfig;
 
@@ -90,5 +93,27 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     @Override
     public SchoolFormManager getSchoolFormBySchoolIdAndEmailAndNoDelete(int id, String email) {
         return schoolInfoRepository.getSchoolFormBySchoolIdAndEmailAndDeleteFlg(id, email, false);
+    }
+
+    @Override
+    public Page<MySchoolVo> searchSchoolInfoByCategories(String keyword, Integer cityId, Integer districtId, Pageable pageable) throws RuntimeException{
+        Page<MySchoolVo> listResultSearchSchool = schoolInfoRepository.searchSchoolInfoByCategories(keyword, cityId, districtId, pageable);
+        logger.info("Found " + listResultSearchSchool.getTotalElements() + " School Infos");
+        return listResultSearchSchool;
+    }
+
+    @Override
+    public HomeVo dataHomePage() {
+        return schoolInfoRepository.dataHomePage();
+    }
+
+    @Override
+    public MySchoolVo findSchoolDetailBySchoolId(int schoolId) {
+        MySchoolVo schoolInfo = schoolInfoRepository.findSchoolDetailBySchoolId(schoolId);
+        if(schoolInfo.getSchoolId() != null) {
+            return schoolInfo;
+        }else {
+            throw new RuntimeException("School not found or unpublish");
+        }
     }
 }

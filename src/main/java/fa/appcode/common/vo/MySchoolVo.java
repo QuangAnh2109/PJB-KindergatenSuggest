@@ -1,15 +1,15 @@
 package fa.appcode.common.vo;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-
+@Setter
 public class MySchoolVo {
 
     @NotNull
@@ -29,10 +29,16 @@ public class MySchoolVo {
     @NotNull
     private String schoolImage;
     @NotNull
-    private double avgRating;
+    private Double avgRating;
     @NotNull
-    private int totalRating;
-    @NotNull
-    private double yourRating;
+    private Integer totalRating;
+
+    private String schoolIntroduction;
+    private String schoolPhone;
+    private Double yourRating;
+    private LocalDate enrollDate;
+    private LocalDate enrollEndDate;
+    private List<String> facilities;
+
 
 }
