@@ -138,7 +138,6 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         LOGGER.info("Find List Parent Enrolled School By ParentId: {}", parentId);
         Page<MySchoolVo> results = enrollSchoolRepository.findListSchoolParentEnrolledByParentId(parentId, pageable);
         // Fetch facilities map but no need to set it on schools since there's no setter
-        getFacilitiesMapForSchools(results);
         LOGGER.info("Found {} records of school for Parent ID: {}", results.getTotalElements(), parentId);
         return results;
     }
@@ -148,31 +147,26 @@ public class EnrollSchoolServiceImpl implements EnrollSchoolService {
         LOGGER.info("Find List Parent Previous Enrolled School By ParentId: {}", parentId);
         Page<MySchoolVo> results = enrollSchoolRepository.findListSchoolParentPreEnrolledByParentId(parentId, pageable);
         // Fetch facilities map but no need to set it on schools since there's no setter
-        getFacilitiesMapForSchools(results);
         LOGGER.info("Found {} records of pre-school for Parent ID: {}", results.getTotalElements(), parentId);
         return results;
     }
 
-    /**
-     * Helper method to fetch facilities and utilities for schools
-     * @param schoolPage Page of schools
-     * @return Map of school IDs to their facilities/utilities
-     */
-    private Map<Integer, List<String>> getFacilitiesMapForSchools(Page<MySchoolVo> schoolPage) {
+    public Map<Integer, List<String>> getFacilitiesMapForSchools(Page<MySchoolVo> schoolPage) {
         List<MySchoolVo> schools = schoolPage.getContent();
         if (schools.isEmpty()) {
             return Collections.emptyMap();
         }
 
-        // Extract IDs efficiently
+        // Extract school IDs
         List<Integer> schoolIds = schools.stream()
                 .map(MySchoolVo::getSchoolId)
-                .distinct() // Remove any potential duplicates
+                .distinct()
                 .toList();
 
-        // Get facilities map in single query
+        // Get facilities map with proper school-to-facilities mapping
         return schoolInfoRepository.findFacilitiesAndUtilitiesBySchoolIds(schoolIds);
     }
+
 
     //check if Parent is Enrolled to school or not
     @Override

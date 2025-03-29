@@ -11,4 +11,6 @@ public interface SchoolFacilityRepository extends JpaRepository<SchoolFacility, 
     @Query("SELECT sf.id.facilitiesId FROM SchoolFacility sf WHERE sf.id.schoolId=?1 AND sf.deleteFlg=?2")
     List<Integer> getAllSchoolFacilityIdBySchoolId(int schoolId, boolean deleteFlg);
 
+
+
 }

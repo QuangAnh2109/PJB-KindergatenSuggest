@@ -2,6 +2,7 @@ package fa.appcode.repositories;
 
 import fa.appcode.common.vo.*;
 import fa.appcode.entities.SchoolInfo;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,9 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository("schoolInfoRepository")
@@ -178,34 +177,115 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
 
     SchoolInfo findSchoolInfoByIdAndRecordNoAndDeleteFlg(int id, int recordNo, boolean deleteFlg);
 
-     // This method to get list facilities and utilities of each school
-    @Query("""
-            SELECT m.typeValue as typeValue
-            FROM SchoolFacility sf
-            JOIN MasterDatum m ON sf.id.facilitiesId = m.typeKey AND m.typeName = 'FACILITIES'
-            WHERE sf.school.id IN :schoolId
-            UNION
-            SELECT m1.typeValue as typeValue
-            FROM SchoolUtility su
-            JOIN MasterDatum m1 ON su.id.utilitiesId = m1.typeKey AND m1.typeName = 'UTILITIES'
-            WHERE su.school.id IN :schoolId
-            """)
-    List<Object[]> findFacilitiesAndUtilitiesBySchoolId(List<Integer> schoolId);
 
+     // This method to get list facilities and utilities of each school
+     @Query("""
+        SELECT sf.school.id as schoolId, m.typeValue as typeValue
+        FROM SchoolFacility sf
+        JOIN MasterDatum m ON sf.id.facilitiesId = m.typeKey AND m.typeName = 'FACILITIES'
+        WHERE sf.school.id IN :schoolIds
+        UNION
+        SELECT su.school.id as schoolId, m1.typeValue as typeValue
+        FROM SchoolUtility su
+        JOIN MasterDatum m1 ON su.id.utilitiesId = m1.typeKey AND m1.typeName = 'UTILITIES'
+        WHERE su.school.id IN :schoolIds
+        """)
+     List<Object[]> findFacilitiesAndUtilitiesBySchoolIdsRaw(List<Integer> schoolIds);
+
+
+     //This method to Map SchoolId with Facilities And Utitlities List
     default Map<Integer, List<String>> findFacilitiesAndUtilitiesBySchoolIds(List<Integer> schoolIds) {
         if (schoolIds.isEmpty()) {
             return Collections.emptyMap();
         }
 
-        List<Object[]> rawResults = findFacilitiesAndUtilitiesBySchoolId(schoolIds);
+        List<Object[]> rawResults = findFacilitiesAndUtilitiesBySchoolIdsRaw(schoolIds);
+        Map<Integer, List<String>> resultMap = new HashMap<>();
 
-        return rawResults.stream()
-                .collect(Collectors.groupingBy(
-                        result -> (Integer) result[0],
-                        Collectors.mapping(
-                                result -> (String) result[1],
-                                Collectors.toList()
-                        )
-                ));
+        for (Object[] result : rawResults) {
+            // Ensure proper type conversion for schoolId
+            Integer schoolId;
+            if (result[0] instanceof Integer) {
+                schoolId = (Integer) result[0];
+            } else if (result[0] instanceof Number) {
+                schoolId = ((Number) result[0]).intValue();
+            } else {
+                schoolId = Integer.valueOf(result[0].toString());
+            }
+
+            String typeValue = (String) result[1];
+
+            // Get or create the list for this school
+            List<String> facilityList = resultMap.computeIfAbsent(schoolId, k -> new ArrayList<>());
+            facilityList.add(typeValue);
+        }
+
+        return resultMap;
     }
+
+
+    @Query("""
+            SELECT new fa.appcode.common.vo.MySchoolVo(si.id,si.schoolName,si.schoolEmail,si.schoolAddress,si.feeFrom,
+                    ageRange.typeValue,typeSchool.typeValue,si.imageUrl,
+                    COALESCE(CAST(AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5) AS double), 0.0),
+                    COALESCE(CAST(COUNT(DISTINCT f.id) AS integer), 0),si.schoolPhone,"",0.0,null,null,null)
+            FROM SchoolInfo si
+            LEFT JOIN City c ON si.city.id = c.id
+            LEFT JOIN District d ON si.district.id = d.id
+            JOIN MasterDatum ageRange ON ageRange.typeKey = si.childReceivingAgeId AND ageRange.typeName = 'CHILD RECEIVING AGE'
+            JOIN MasterDatum typeSchool ON typeSchool.typeKey = si.typeId AND typeSchool.typeName = 'SCHOOL TYPE'
+            LEFT JOIN Feedback f ON f.school.id = si.id AND f.id.feedbackTime = (
+                    SELECT MAX(f2.id.feedbackTime)
+                    FROM Feedback f2
+                    WHERE f2.id.schoolId = si.id AND f2.id.accountId = f.id.accountId
+                    GROUP BY f2.id.accountId
+                )
+                    WHERE (:keyword IS NULL OR si.schoolName LIKE CONCAT('%', :keyword, '%'))
+                       AND (:cityId IS NULL OR si.city.id = :cityId)
+                       AND (:districtId IS NULL OR si.district.id = :districtId)
+                       AND si.statusId = 5
+                    GROUP BY si.id, si.schoolName, si.schoolEmail, si.schoolAddress, si.feeFrom,
+                       ageRange.typeValue, typeSchool.typeValue, si.imageUrl
+            """)
+    Page<MySchoolVo> searchSchoolInfoByCategories(@Param("keyword") String keyword,
+                                                  @Param("cityId") Integer cityId,
+                                                  @Param("districtId") Integer districtId,
+                                                  Pageable pageable);
+    @Query("""
+        SELECT new fa.appcode.common.vo.HomeVo(COUNT(DISTINCT si.id),COUNT(DISTINCT ai.id))
+        FROM SchoolInfo si,AccountInfo ai
+        WHERE ai.roleId = 3
+    """)
+    HomeVo dataHomePage();
+
+
+    @Query("""
+    SELECT new fa.appcode.common.vo.MySchoolVo(
+        si.id,
+        si.schoolName,
+        si.schoolEmail,
+        si.schoolAddress,
+        si.feeFrom,
+        ageRange.typeValue,
+        schoolType.typeValue,
+        si.imageUrl,
+        COALESCE(CAST(AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5) AS double), 0.0),
+        COALESCE(CAST(COUNT(DISTINCT f.id) AS integer), null),si.schoolPhone,si.schoolIntroduction,
+        0.0,
+        null,
+        null,
+        null
+    )
+    FROM SchoolInfo si
+    JOIN MasterDatum ageRange on ageRange.typeKey = si.childReceivingAgeId AND ageRange.typeName = 'CHILD RECEIVING AGE'
+    JOIN MasterDatum schoolType on schoolType.typeKey = si.typeId AND schoolType.typeName = 'SCHOOL TYPE'
+    LEFT JOIN Feedback f ON f.school.id = si.id AND f.id.feedbackTime = (
+                SELECT MAX(f2.id.feedbackTime)
+                FROM Feedback f2
+                WHERE f2.id.schoolId = si.id AND f2.id.accountId = f.id.accountId
+                GROUP BY f2.id.accountId
+         )
+    WHERE si.statusId = 5 AND si.id = :schoolId
+""")
+    MySchoolVo findSchoolDetailBySchoolId(@Param("schoolId") Integer schoolId);
 }
