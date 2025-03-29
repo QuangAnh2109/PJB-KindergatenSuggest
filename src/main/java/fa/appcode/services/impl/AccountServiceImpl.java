@@ -469,6 +469,9 @@ public class AccountServiceImpl implements AccountService {
         );
         // If there are validation errors, return them immediately
         if (!validationResult.isEmpty()) {
+            retainExistingAddressIfEmpty(accountInfo, currentAccount);
+            LOGGER.info("Current Address: {}", currentAccount.getAddress());
+            LOGGER.info("Updated Address: {}", accountInfo.getAddress());
             return validationResult;
         }
         // Retain the existing address details if they are not provided in the updated data

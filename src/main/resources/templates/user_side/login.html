@@ -24,7 +24,7 @@
     <div id="de-preloader"></div>
     <div class="no-bottom no-top" id="content">
         <div id="top"></div>
-        <div th:replace="user_side/header :: header"></div>
+        <div th:insert="~{user_side/header :: header}"></div>
         <section id="section-hero" aria-label="section" class="jarallax">
             <img th:src="@{/user_side/images/background/background3.jpg}" class="jarallax-img" alt="">
             <div class="v-center">
@@ -91,6 +91,24 @@
         </section>
     </div>
 </div>
+<!-- Modal Xác nhận -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logoutModalLabel">Notice</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="logoutMessageText"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Javascript Files -->
 <script th:src="@{/user_side/js/dropdown.js}"></script>
 <script th:src="@{/user_side/js/plugins.js}"></script>
@@ -111,15 +129,34 @@
             toggleIcon.classList.add("fa-eye");
         }
     }
-
-        window.onload = function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('timeout') === 'true' && !sessionStorage.getItem("sessionTimeoutAlerted")) {
-                alert("Session has expired. Please log in again.");
-                sessionStorage.setItem("sessionTimeoutAlerted", "true");
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-        };
 </script>
+<script>
+    window.onload = function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('timeout') === 'true' && !sessionStorage.getItem("sessionTimeoutAlerted")) {
+            alert("Session has expired. Please log in again.");
+            sessionStorage.setItem("sessionTimeoutAlerted", "true");
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+        let logoutMessage = document.getElementById("logoutMessage");
+        if (logoutMessage) {
+            let messageText = logoutMessage.innerText;
+            if (messageText.trim() !== "") {
+                document.getElementById("logoutMessageText").innerText = messageText;
+                let logoutModal = new bootstrap.Modal(document.getElementById("logoutModal"));
+                logoutModal.show();
+            }
+        }
+    };
+</script>
+<script th:inline="javascript">
+    var messages = {
+        requiredField: /*[[#{ME_003}]]*/ "This field is required",
+        invalidEmail: /*[[#{ME_028}]]*/ "Please enter a valid email address",
+        passwordLength: /*[[#{ME_043}]]*/ "Password length must be between 12 and 72 characters"
+    };
+</script>
+<script src="/user_side/js/login.js"></script>
+
 </body>
 </html>

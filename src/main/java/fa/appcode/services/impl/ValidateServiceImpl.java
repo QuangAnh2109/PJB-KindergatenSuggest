@@ -89,7 +89,6 @@ public class ValidateServiceImpl implements ValidateService {
         LOGGER.debug("Validating phone number: {}", phoneNumber);
         return Pattern.matches(Constant.PHONE_REGEX, phoneNumber);
     }
-
     @Override
     public Map<String, String> dobValidation(LocalDate dob) {
         if (dob != null && !dob.isBefore(LocalDate.of(2006, 1, 1))) {
@@ -186,12 +185,10 @@ public class ValidateServiceImpl implements ValidateService {
             LOGGER.warn("New password is required but not provided");
             return Map.of(NEW_PASSWORD_ERROR, globalConfig.getRequiredField());
         }
-
         if (requiredField(confirmPassword)) {
             LOGGER.warn("Confirm password is required but not provided");
             return Map.of(CONFIRM_PASSWORD_ERROR, globalConfig.getRequiredField());
         }
-
         if (!validPassword(newPassword)) {
             LOGGER.warn("New password is not valid");
             return Map.of(NEW_PASSWORD_ERROR, globalConfig.getValidatePassword());
