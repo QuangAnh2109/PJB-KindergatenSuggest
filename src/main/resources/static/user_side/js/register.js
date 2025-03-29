@@ -10,7 +10,6 @@ function reloadHande() {
             fetch(form.action, {
                 method: 'POST',
                 body: new FormData(form)
-
             })
                 .then(response => response.text())
                 .then(html => {
@@ -18,11 +17,26 @@ function reloadHande() {
                     tempDiv.innerHTML = html;
                     document.querySelector('.register').innerHTML =
                         tempDiv.querySelector('.register').innerHTML;
+                    const successAlert = tempDiv.querySelector('.alert.alert-success');
+                    if (successAlert) {
+                        const successMessage = successAlert.textContent.trim();
+                        Swal.fire({
+                            title: "Success",
+                            text: successMessage,
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        })
+                    }
                     reloadHande();
                 })
                 .catch(error => {
-                    console.error('error:', error);
-                    alert('An error occur. PLease try again.');
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: "Error",
+                        text: "An error occurred. Please try again.",
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
                 })
                 .finally(() => {
                     submitBtn.disabled = false;
