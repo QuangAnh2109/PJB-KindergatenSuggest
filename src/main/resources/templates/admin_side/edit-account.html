@@ -30,7 +30,7 @@
 <body>
 
 <!-- Begin page -->
-<div id="wrapper">
+<div id="wrapper" style="overflow-x:hidden; position: relative">
 
     <!-- Topbar Start -->
     <!-- Topbar -->
@@ -243,6 +243,36 @@
 <!-- App js -->
 <script src="/admin_side/js/app.min.js"></script>
 <script src="/admin_side/js/edit-account.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var currentPath = window.location.pathname;
+
+        // Kiểm tra nếu đang ở trang liên quan đến User Management
+        if (currentPath.includes("/admin/user-list") ||
+            currentPath.includes("/admin/edit-user") ||
+            currentPath.includes("/admin/add-user")||
+            currentPath.includes("/admin/user-details")) {
+
+            let userManagementLink = document.querySelector("#side-menu a[href='/admin/user-list']");
+            if (userManagementLink) {
+                userManagementLink.classList.add("active");
+                let parentLi = userManagementLink.closest("li");
+                if (parentLi) {
+                    parentLi.classList.add("mm-active");
+                    let parentUl = parentLi.closest("ul");
+                    if (parentUl) {
+                        parentUl.classList.add("mm-show");
+                        let parentLi2 = parentUl.closest("li");
+                        if (parentLi2) {
+                            parentLi2.classList.add("mm-active");
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
 
 </body>
 </html>
