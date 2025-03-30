@@ -4,19 +4,25 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeSuccessModal();
     checkForRecordError();
 });
-
 function checkForRecordError() {
     const recordErrorAlert = document.getElementById('recordErrorAlert');
     if (recordErrorAlert) {
         const errorMessage = recordErrorAlert.textContent.trim();
-        recordErrorAlert.style.display = 'none';
-
-        alert(errorMessage);
-
-        // Reload the page after user clicks OK
-        window.location.reload();
+        console.log("Error Message:", errorMessage); // Debug xem có nội dung không
+        if (errorMessage) {
+            recordErrorAlert.style.display = 'none';
+            Swal.fire({
+                title: "Error",
+                text: errorMessage,
+                icon: "error",
+                confirmButtonText: "OK"
+            }).then(() => {
+                window.location.reload();
+            });
+        }
     }
 }
+
 function initializeFormHandlers() {
     // Xử lý form update account
     const updateForm = document.querySelector('form[name="update-form"]');
@@ -43,7 +49,6 @@ function initializeFormHandlers() {
                 if (key === '_csrf' || key === 'recordNo') {
                     continue;
                 }
-
                 if (originalValues[key] !== value) {
                     hasChanges = true;
                     break;
@@ -51,9 +56,15 @@ function initializeFormHandlers() {
             }
 
             if (!hasChanges) {
-                alert("You didn't change anything");
+                Swal.fire({
+                    title: "No Changes",
+                    text: "You didn't change anything.",
+                    icon: "info",
+                    confirmButtonText: "OK"
+                });
                 return;
             }
+
             updateBtn.disabled = true;
             fetch(updateForm.action, {
                 method: 'POST',
@@ -71,8 +82,14 @@ function initializeFormHandlers() {
                     const recordError = tempDiv.querySelector('#recordErrorAlert');
                     if (recordError) {
                         const errorMessage = recordError.textContent.trim();
-                        alert(errorMessage);
-                        window.location.reload();
+                        Swal.fire({
+                            title: "Error",
+                            text: errorMessage,
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.reload();
+                        });
                         return;
                     }
 
@@ -80,22 +97,30 @@ function initializeFormHandlers() {
                     if (newProfileTab) {
                         document.querySelector('#profile').innerHTML = newProfileTab.innerHTML;
                     }
-
+                    var successMessage = document.getElementById("successMessage").textContent;
                     if (tempDiv.querySelector('.alert-success')) {
-                        const successAlert = document.querySelector('.alert-success');
-                        if (successAlert) {
-                            successAlert.classList.add('fade-in');
-                            setTimeout(() => {
-                                successAlert.classList.remove('fade-in');
-                            }, 3000);
-                        }
+                        Swal.fire({
+                            title: successMessage,
+                            icon: "success",
+                            timer: 3000,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                $(".swal2-popup").draggable();
+                            }
+                        });
                     }
+
                     initializeFormHandlers();
                     checkForRecordError();
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('An error occurred. Please try again.');
+                    Swal.fire({
+                        title: "Error",
+                        text: "An error occurred. Please try again.",
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
                 })
                 .finally(() => {
                     updateBtn.disabled = false;
@@ -135,12 +160,16 @@ function initializeFormHandlers() {
                         });
                         successModal.show();
                     }
-
                     initializeFormHandlers();
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('An error occurred. Please try again.');
+                    Swal.fire({
+                        title: "Error",
+                        text: "An error occurred. Please try again.",
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
                 })
                 .finally(() => {
                     submitBtn.disabled = false;

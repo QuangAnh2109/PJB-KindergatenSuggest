@@ -83,6 +83,8 @@
                 </div>
             </div>
         </section>
+        <span id="successMessage" th:text="#{ME_021}" hidden></span>
+
         <!-- section close -->
         <section id="section-settings" class="bg-gray-100">
             <div class="container">
@@ -116,7 +118,7 @@
                                     <div class="row update-account">
                                             <form action="#" th:action="@{/auth/view-account}" name="update-form"
                                                   method="post" th:object="${accountInfo}">
-                                                <div th:if="${recordError}" id="recordErrorAlert" class="alert alert-danger">
+                                                <div th:if="${recordError}" id="recordErrorAlert" class="alert alert-danger" th:hidden="true">
                                                     <span th:text="${recordError}"></span>
                                                 </div>
                                                 <input type="hidden" th:field="*{email}">
@@ -183,17 +185,9 @@
                                                                placeholder="Enter you address..." maxlength="255" required
                                                                disabled>
                                                     </div>
-                                                    <div th:if="${param.success}" class="alert alert-success">
-                                                        Update Successfully!
+                                                    <div th:if="${param.success}" class="alert alert-success" th:hidden="true">
                                                     </div>
 
-                                                    <div th:if="${successMessage}" id="success-alert"
-                                                         class="alert alert-success alert-dismissible fade show mt-3"
-                                                         role="alert">
-                                                        <strong>Success!</strong> <span th:text="${successMessage}"></span>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                                aria-label="Close"></button>
-                                                    </div>
                                                     <div class="text-center">
                                                         <button type="reset" class="btn btn-primary">Cancel</button>
                                                         <button type="submit" id="updateButton" class="btn btn-primary">
@@ -243,7 +237,7 @@
                                                                 </div>
                                                             </div>
                                                             <div th:if="${successUpdate}"
-                                                                 class="alert alert-success mt-3">
+                                                                 class="alert alert-success mt-3" th:hidden="true">
                                                             </div>
                                                             <div th:if="${exceptionError}" class="text-danger mt-3">
                                                                 <p th:text="${exceptionError}"></p>
@@ -251,14 +245,12 @@
                                                             <div class="col-md-12 d-flex justify-content-center mt-4">
                                                                 <div class="col-md-4 mb60 d-flex gap-4 justify-content-center"
                                                                      id="actionButtons">
-                                                                    <!-- Normal buttons, will be hidden via JS when successful -->
                                                                     <div id="normalButtons">
                                                                         <input type="reset" value="Cancel"
                                                                                class="btn-main">
                                                                         <input type="submit" id="submitButton"
                                                                                value="Save" class="btn-main">
                                                                     </div>
-                                                                    <!-- Login button, will be shown via JS when successful -->
                                                                     <div th:if="${successUpdate}" id="loginButton">
                                                                         <a th:href="@{/public/showMyloginPage}"
                                                                            class="btn-main">Back to Login</a>
@@ -280,7 +272,6 @@
         </section>
     </div>
 </div>
-
 <!-- Success Modal for Password Change -->
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true"
      data-backdrop="static" data-keyboard="false">
@@ -292,7 +283,7 @@
                         <i class="bi bi-check-circle-fill text-success fs-1"></i>
                     </div>
                 </div>
-                <h4 class="fw-bold text-success">Password Update Successfully!</h4>
+                <h4 class="fw-bold text-success" th:text="#{ME_021}"></h4>
                 <p class="text-muted mb-4">You need to log in again.</p>
             </div>
             <div class="modal-footer d-flex justify-content-center border-0 pb-4">
@@ -303,6 +294,17 @@
         </div>
     </div>
 </div>
+
+<!-- Javascript Files
+================================================== -->
+<script th:src="@{/user_side/js/plugins.js}"></script>
+<script th:src="@{/user_side/js/designesia.js}"></script>
+<script th:src="@{/user_side/js/account-management.js}"></script>
+<script th:src="@{/user_side/js/dropdown.js}"></script>
+<script th:src="@{/user_side/js/address-load.js}"></script>
+<!-- Bootstrap 5 JS for Tab functionality -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 <script>
     window.addEventListener('click', function (event) {
@@ -359,14 +361,6 @@
     })
 </script>
 
-<!-- Javascript Files
-================================================== -->
-<script th:src="@{/user_side/js/plugins.js}"></script>
-<script th:src="@{/user_side/js/designesia.js}"></script>
-<script th:src="@{/user_side/js/account-management.js}"></script>
-<script th:src="@{/user_side/js/dropdown.js}"></script>
-<script th:src="@{/user_side/js/address-load.js}"></script>
-<!-- Bootstrap 5 JS for Tab functionality -->
 <script>
     // Simple implementation if Bootstrap JS is not fully loaded
     document.addEventListener('DOMContentLoaded', function () {

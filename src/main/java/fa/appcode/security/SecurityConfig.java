@@ -11,6 +11,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -81,6 +82,7 @@ public class SecurityConfig {
                         .permitAll()
                 ).sessionManagement(session -> session
                         .invalidSessionUrl("/public/showMyLoginPage?timeout=true")
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
                 .exceptionHandling(configurer -> configurer
                         .accessDeniedPage("/public/access-denied")
