@@ -36,6 +36,8 @@ public class SchoolDetailBySchoolOwnerController {
 
     private final GlobalConfig globalConfig;
 
+    private final EntityValidateService entityValidateService;
+
     @GetMapping("/form")
     public String getSchoolForm(Model model) {
         return schoolDetailManagerService.getSchoolCreateFormToModel(model);
@@ -76,6 +78,8 @@ public class SchoolDetailBySchoolOwnerController {
                 ageTypeKey, educationTypeKey, typeKey, statusId, 0,
                 RoleConstant.SCHOOL_OWNER, Instant.now(), RoleConstant.SCHOOL_OWNER, Instant.now(), false
         );
+
+        entityValidateService.validateUpdateSchool(schoolInfo, image);
 
         return schoolDetailManagerService.createNewSchool(schoolInfo, image, schoolFacilityID, schoolUtilityID);
     }

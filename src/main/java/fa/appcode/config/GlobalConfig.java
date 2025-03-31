@@ -294,7 +294,7 @@ public class GlobalConfig {
     private String submitFailed;
 
     @Value("${ME_119}")
-    private String fromDateInvalid;
+    private String fromDateGreaterThanToDate;
 
     @Value("${ME_051}")
     private String searchLengthLimit;
@@ -304,4 +304,10 @@ public class GlobalConfig {
 
     @Value("${ME_044}")
     private String invalidRecordNo;
+
+    @Value("${ME_120}")
+    private String invalidFromDate;
+
+    @Value("${ME_121}")
+    private String invalidToDate;
 }

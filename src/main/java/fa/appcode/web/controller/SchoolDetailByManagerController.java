@@ -6,6 +6,8 @@ import fa.appcode.common.utils.RoleConstant;
 import fa.appcode.common.utils.SchoolConstant;
 import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.config.GlobalConfig;
+import fa.appcode.entities.District;
+import fa.appcode.entities.SchoolInfo;
 import fa.appcode.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,8 @@ public class SchoolDetailByManagerController {
     private final GlobalConfig globalConfig;
 
     private final AccountService accountService;
+
+    private final EntityValidateService entityValidateService;
 
     private final CityService cityService;
 
@@ -65,8 +69,8 @@ public class SchoolDetailByManagerController {
             @RequestParam("phone") String phone,
             @RequestParam("childReceivingAgeId") Integer ageTypeKey,
             @RequestParam("educationMethodId") Integer educationTypeKey,
-            @RequestParam("feeFrom") BigDecimal feeFrom,
-            @RequestParam("feeTo") BigDecimal feeTo,
+            @RequestParam(value = "feeFrom", required = false) BigDecimal feeFrom,
+            @RequestParam(value = "feeTo", required = false) BigDecimal feeTo,
             @RequestParam("introduction") String schoolIntroduction,
             @RequestParam("statusId") Integer statusId,
             @RequestParam(value = "image", required = false) MultipartFile image,
@@ -83,13 +87,30 @@ public class SchoolDetailByManagerController {
         }
 
         // Create SchoolInfo object
-        SchoolFormManager schoolInfo = new SchoolFormManager(
+        SchoolFormManager schoolFrom = new SchoolFormManager(
                 false, null, recordNo, id,
                 typeKey, name, address, cityID, districtID, wardID,
                 email, phone, ageTypeKey, educationTypeKey, feeTo,
                 feeFrom, schoolIntroduction, null, Instant.now(), updateId
         );
-        return schoolDetailManagerService.updateSchool(schoolInfo, image, schoolFacilityID, schoolUtilityID);
+        SchoolInfo schoolInfo = new SchoolInfo();
+        schoolInfo.setSchoolName(name);
+        schoolInfo.setSchoolEmail(email);
+        schoolInfo.setSchoolPhone(phone);
+        schoolInfo.setSchoolAddress(address);
+        schoolInfo.setFeeFrom(feeFrom);
+        schoolInfo.setFeeTo(feeTo);
+        schoolInfo.setSchoolIntroduction(schoolIntroduction);
+        schoolInfo.setChildReceivingAgeId(ageTypeKey);
+        schoolInfo.setEducationMethodId(educationTypeKey);
+        schoolInfo.setTypeId(typeKey);
+        schoolInfo.setCity(cityService.findByIdAndNoDeleteFlg(cityID));
+        schoolInfo.setDistrict(districtService.findByIdAndNoDeleteFlag(districtID));
+        schoolInfo.setWard(wardService.findByIdAndNoDeleteFlg(wardID));
+
+        entityValidateService.validateUpdateSchool(schoolInfo, image);
+
+        return schoolDetailManagerService.updateSchool(schoolFrom, image, schoolFacilityID, schoolUtilityID);
     }
 
     @ResponseBody

@@ -9,9 +9,12 @@ import fa.appcode.services.SchoolUtilityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,21 +28,38 @@ public class SchoolUtilityServiceImpl implements SchoolUtilityService {
     }
 
     @Override
+    @Transactional
     public int saveAllSchoolUtility(List<Integer> schoolUtilityId, SchoolInfo schoolInfo) throws DataAccessException {
-        return schoolUtilityRepository.saveAll(schoolUtilityId.stream()
-                .map(utilityId -> {
+        List<SchoolUtility> currentUtilities = schoolUtilityRepository.findBySchoolId(schoolInfo.getId());
+
+        Set<Integer> currentIds = currentUtilities.stream()
+                .map(su -> su.getId().getUtilitiesId())
+                .collect(Collectors.toSet());
+        Set<Integer> newIds = new HashSet<>(schoolUtilityId);
+
+        currentUtilities.stream()
+                .filter(su -> !newIds.contains(su.getId().getUtilitiesId()))
+                .forEach(schoolUtilityRepository::delete);
+
+        List<SchoolUtility> newUtilities = schoolUtilityId.stream()
+                .filter(id -> !currentIds.contains(id))
+                .map(id -> {
                     SchoolUtility su = new SchoolUtility();
-                    su.setId(new SchoolUtilityId(schoolInfo.getId(), utilityId));
+                    su.setId(new SchoolUtilityId(schoolInfo.getId(), id));
                     su.setSchool(schoolInfo);
-                    su.setCreateId(RoleConstant.SCHOOL_OWNER);
+                    su.setCreateId(schoolInfo.getUpdateId());
                     su.setCreateTime(Instant.now());
-                    su.setUpdateId(RoleConstant.SCHOOL_OWNER);
+                    su.setUpdateId(schoolInfo.getUpdateId());
                     su.setUpdateTime(Instant.now());
                     su.setDeleteFlg(false);
                     su.setRecordNo(1);
                     return su;
                 })
-                .collect(Collectors.toList())
-        ).size();
+                .collect(Collectors.toList());
+
+        schoolUtilityRepository.saveAll(newUtilities);
+
+        return newUtilities.size();
     }
+
 }
