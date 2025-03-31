@@ -70,8 +70,11 @@
                 <table class="col-12 school-form">
                     <tr>
                         <td>School Name</td>
-                        <td><input type="text" name="name" id="schoolName" class="form-control" placeholder="Enter School Name Here..."
-                                   maxlength="255" ></td>
+                        <td>
+                            <input type="text" name="name" id="schoolName" class="form-control" placeholder="Enter School Name Here..."
+                                   maxlength="255" >
+                            <span id="schoolName-error" class="error-message" style="color:red; display:none;"></span>
+                        </td>
                     </tr>
                     <tr>
                         <td>School Type</td>
@@ -80,6 +83,7 @@
                                 <option value="" disabled selected>Select a school type</option>
                                 <option th:each="schoolType:${schoolTypes}" th:value="${schoolType.typeKey}" th:text="${schoolType.typeValue}"></option>
                             </select>
+                            <span id="type-error" class="error-message" style="color:red; display:none;"></span>
                         </td>
                     </tr>
                     <tr>
@@ -89,6 +93,7 @@
                                 <option value="" disabled selected>Province/City</option>
                                 <option th:each="city:${citys}" th:value="${city.id}" th:text="${city.cityName}"></option>
                             </select>
+                            <span id="city-error" class="error-message" style="color:red; display:none;"></span>
                         </td>
                     </tr>
                     <tr>
@@ -98,6 +103,7 @@
                                      disabled>
                                 <option value="" disabled selected>District</option>
                             </select>
+                            <span id="district-error" class="error-message" style="color:red; display:none;"></span>
                         </td>
                     </tr>
                     <tr>
@@ -107,24 +113,34 @@
                                      disabled>
                                 <option value="" disabled selected>Ward</option>
                             </select>
+                            <span id="ward-error" class="error-message" style="color:red; display:none;"></span>
                         </td>
                     </tr>
                     <tr>
                         <td>
 
                         </td>
-                        <td><input type="text" name="address" id="address" class="form-control"
-                                   placeholder="Enter School Address Here..." maxlength="255"  disabled></td>
+                        <td>
+                            <input type="text" name="address" id="address" class="form-control"
+                                   placeholder="Enter School Address Here..." maxlength="255"  disabled>
+                            <span id="address-error" class="error-message" style="color:red; display:none;"></span>
+                        </td>
                     </tr>
                     <tr>
                         <td>Email</td>
-                        <td><input id="email" type="email" name="email" class="form-control"
-                                   placeholder="Enter School Email Here..." th:pattern="${emailRegex}" ></td>
+                        <td>
+                            <input id="email" type="email" name="email" class="form-control"
+                                   placeholder="Enter School Email Here..." th:pattern="${emailRegex}" >
+                            <span id="email-error" class="error-message" style="color:red; display:none;"></span>
+                        </td>
                     </tr>
                     <tr>
                         <td>Phone No.</td>
-                        <td><input id="phone" type="text" name="phone" class="form-control"
-                                   placeholder="Enter Phone Number Here..." th:pattern="${phoneRegex}" ></td>
+                        <td>
+                            <input id="phone" type="text" name="phone" class="form-control"
+                                   placeholder="Enter Phone Number Here..." th:pattern="${phoneRegex}" >
+                            <span id="phone-error" class="error-message" style="color:red; display:none;"></span>
+                        </td>
                     </tr>
                     <tr>
                         <td>Child-receiving age</td>
@@ -134,6 +150,7 @@
                                 <option th:each="age:${childReceivingAges}" th:value="${age.typeKey}"
                                         th:text="${age.typeValue}">
                             </select>
+                            <span id="childReceivingAge-error" class="error-message" style="color:red; display:none;"></span>
                         </td>
                     </tr>
                     <tr>
@@ -144,6 +161,7 @@
                                 <option th:each="method:${educationMethods}" th:value="${method.typeKey}"
                                         th:text="${method.typeValue}">
                             </select>
+                            <span id="educationMethod-error" class="error-message" style="color:red; display:none;"></span>
                         </td>
                     </tr>
                     <tr>
@@ -153,6 +171,9 @@
                             <input id="feeFrom" name="feeFrom" class="col-3 form-control" type="number" pattern="[0-9]+" >
                             <label class="col-1 col-form-label">To</label>
                             <input id="feeTo" name="feeTo" class="col-3 form-control" type="number" pattern="[0-9]+" >
+                            <span id="feeTo-error" class="error-message col-12" style="color:red; display:none;"></span>
+                            <span id="feeFrom-error" class="error-message col-12" style="color:red; display:none;"></span>
+                            <span id="fee-error" class="error-message col-12" style="color:red; display:none;"></span>
                         </td>
                     </tr>
                     <tr>
@@ -185,6 +206,7 @@
                         <td>School Introduction</td>
                         <td>
                             <div id="editor"></div>
+                            <span id="introduction-error" class="error-message" style="color:red; display:none;"></span>
                         </td>
                     </tr>
                     <tr>
@@ -192,6 +214,7 @@
                         <td>
                             <input name="image" type="file" class="form-control" id="image"
                                    accept="image/gif, image/jpeg, image/png"/>
+                            <span id="image-error" class="error-message" style="color:red; display:none;"></span>
                         </td>
                     </tr>
                 </table>

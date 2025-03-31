@@ -32,6 +32,7 @@ public class Constant {
     public static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
     public static final String PARENT_LIST_URL = "/manager/parent-list";
     public static final String REQUEST_REMINDER_URL = "http://localhost:8080/manager/request-reminder";
+    public static final String VIEW_DETAIL_URL = "/manager/school/view-detail?id=";
 
     //ADMIN SIDE
     public static final String SCHOOL_FEEDBACK_RATING_MANAGER_PAGE = "admin_side/school-feedback-rating";

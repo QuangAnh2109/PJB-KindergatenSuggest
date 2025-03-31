@@ -29,7 +29,9 @@ public class SchoolUtilityServiceImpl implements SchoolUtilityService {
 
     @Override
     @Transactional
-    public int saveAllSchoolUtility(List<Integer> schoolUtilityId, SchoolInfo schoolInfo) throws DataAccessException {
+    public void saveAllSchoolUtility(List<Integer> schoolUtilityId, SchoolInfo schoolInfo) throws DataAccessException {
+        if (schoolUtilityId == null || schoolUtilityId.isEmpty()) return;
+
         List<SchoolUtility> currentUtilities = schoolUtilityRepository.findBySchoolId(schoolInfo.getId());
 
         Set<Integer> currentIds = currentUtilities.stream()
@@ -58,8 +60,6 @@ public class SchoolUtilityServiceImpl implements SchoolUtilityService {
                 .collect(Collectors.toList());
 
         schoolUtilityRepository.saveAll(newUtilities);
-
-        return newUtilities.size();
     }
 
 }

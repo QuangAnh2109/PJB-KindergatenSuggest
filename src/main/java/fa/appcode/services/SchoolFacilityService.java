@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface SchoolFacilityService {
     List<Integer> getAllSchoolFacilityIdBySchoolIdAndNoDeleteFlg(int schoolId);
-    int saveAllSchoolFacility(List<Integer> schoolUtilityId, SchoolInfo schoolInfo) throws DataAccessException;
+    void saveAllSchoolFacility(List<Integer> schoolUtilityId, SchoolInfo schoolInfo) throws DataAccessException;
 }

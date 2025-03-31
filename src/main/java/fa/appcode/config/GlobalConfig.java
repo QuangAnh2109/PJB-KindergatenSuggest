@@ -279,7 +279,7 @@ public class GlobalConfig {
     private String unpublishFailed;
 
     @Value("${ME_114}")
-    private String deleteFailedAgain;
+    private String deleteSuccess;
 
     @Value("${ME_115}")
     private String updateFailed;

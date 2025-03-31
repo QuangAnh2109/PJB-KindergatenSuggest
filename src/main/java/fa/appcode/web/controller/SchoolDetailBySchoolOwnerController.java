@@ -5,6 +5,7 @@ import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.*;
 import fa.appcode.services.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Controller
 @RequestMapping("/school-owner/school")
 @RequiredArgsConstructor
@@ -45,20 +47,20 @@ public class SchoolDetailBySchoolOwnerController {
 
     @ResponseBody
     @PostMapping("/add-new")
-    public ResponseEntity addNewSchool(@RequestParam("name") String name,
-                                       @RequestParam("typeId") Integer typeKey,
-                                       @RequestParam("cityId") Integer cityID,
-                                       @RequestParam("districtId") Integer districtID,
-                                       @RequestParam("wardId") Integer wardID,
-                                       @RequestParam("address") String address,
-                                       @RequestParam("email") String email,
-                                       @RequestParam("phone") String phone,
-                                       @RequestParam("childReceivingAgeId") Integer ageTypeKey,
-                                       @RequestParam("educationMethodId") Integer educationTypeKey,
-                                       @RequestParam("feeFrom") BigDecimal feeFrom,
-                                       @RequestParam("feeTo") BigDecimal feeTo,
-                                       @RequestParam("introduction") String schoolIntroduction,
-                                       @RequestParam("statusId") Integer statusId,
+    public ResponseEntity<Map<String, Object>> addNewSchool(@RequestParam(value = "name", required = false) String name,
+                                       @RequestParam(value = "typeId", required = false) Integer typeKey,
+                                       @RequestParam(value = "cityId", required = false) Integer cityID,
+                                       @RequestParam(value = "districtId", required = false) Integer districtID,
+                                       @RequestParam(value = "wardId", required = false) Integer wardID,
+                                       @RequestParam(value = "address", required = false) String address,
+                                       @RequestParam(value = "email", required = false) String email,
+                                       @RequestParam(value = "phone", required = false) String phone,
+                                       @RequestParam(value = "childReceivingAgeId", required = false) Integer ageTypeKey,
+                                       @RequestParam(value = "educationMethodId", required = false) Integer educationTypeKey,
+                                       @RequestParam(value = "feeFrom", required = false) BigDecimal feeFrom,
+                                       @RequestParam(value = "feeTo", required = false) BigDecimal feeTo,
+                                       @RequestParam(value = "introduction", required = false) String schoolIntroduction,
+                                       @RequestParam(value = "statusId", required = false) Integer statusId,
                                        @RequestParam(value = "image", required = false) MultipartFile image,
                                        @RequestParam(value = "schoolFacilities",required = false) List<Integer> schoolFacilityID,
                                        @RequestParam(value = "schoolUtilities",required = false) List<Integer> schoolUtilityID,
@@ -67,9 +69,9 @@ public class SchoolDetailBySchoolOwnerController {
         AccountInfo currentAccount = accountService.getAccountInfo(principal);
 
         // Get location info
-        Ward ward = wardService.findByIdAndNoDeleteFlg(wardID);
-        District district = districtService.findByIdAndNoDeleteFlag(districtID);
-        City city = cityService.findByIdAndNoDeleteFlg(cityID);
+        Ward ward = wardID != null ? wardService.findByIdAndNoDeleteFlg(wardID) : null;
+        District district = districtID != null ? districtService.findByIdAndNoDeleteFlag(districtID) : null;
+        City city = cityID != null ? cityService.findByIdAndNoDeleteFlg(cityID) : null;
 
         // Create SchoolInfo object
         SchoolInfo schoolInfo = new SchoolInfo(
@@ -88,7 +90,7 @@ public class SchoolDetailBySchoolOwnerController {
     @PostMapping("/submit")
     public ResponseEntity<Map<String,Object>> submitSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
         List<Integer> inStatus = List.of(SchoolConstant.STATUS_SAVED);
-        Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "waiting for approve", Placeholder.LINK,  globalConfig.getServerLink()+ "/manager/school/view-detail?id=" + id);
+        Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "waiting for approve", Placeholder.LINK,  globalConfig.getServerLink()+ Constant.VIEW_DETAIL_URL + id);
         List<String> toMail = accountService.getAllAccountEmailsByRole(RoleConstant.ADMIN_ROLE.getKey());
         return schoolDetailManagerService.changeSchoolStatus(id, recordNo, SchoolConstant.STATUS_SUBMITTED, inStatus, MailConstant.MAIL_SUBMIT_SCHOOL, detail, toMail, List.of());
     }

@@ -19,12 +19,43 @@
     <link th:href="@{/admin_side/css/icons.min.css}" rel="stylesheet" type="text/css" />
     <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css" id="app-stylesheet" />
 
-    <link th:href="@{/admin_side/css/request-list.css}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
     <style>
         .button-search{
             pointer-events: auto;
             cursor: pointer;
+        }
+        .logout-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 20px;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            color: #3498db;
+            margin-top: 20px;
+        }
+
+        .logout-btn i {
+            font-size: 22px;
+            color: #333;
+        }
+        .table-wrapper {
+            max-height: 600px;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            table-layout: auto;
         }
     </style>
 </head>
@@ -93,7 +124,7 @@
                 </div>
                 <!-- end row -->
                 <div th:fragment="main-content" id="main-content-school-table">
-                    <div class="table-responsive">
+                    <div class="table-responsive table-wrapper">
                         <table class="table table-striped m-0">
                             <thead>
                             <tr>

@@ -27,7 +27,9 @@ public class SchoolFacilityServiceImpl implements SchoolFacilityService {
 
     @Override
     @Transactional
-    public int saveAllSchoolFacility(List<Integer> schoolFacilityId, SchoolInfo schoolInfo) throws DataAccessException {
+    public void saveAllSchoolFacility(List<Integer> schoolFacilityId, SchoolInfo schoolInfo) throws DataAccessException {
+        if (schoolFacilityId == null || schoolFacilityId.isEmpty()) return;
+
         List<SchoolFacility> currentFacilities = schoolFacilityRepository.findBySchoolId(schoolInfo.getId());
 
         Set<Integer> currentIds = currentFacilities.stream()
@@ -56,8 +58,6 @@ public class SchoolFacilityServiceImpl implements SchoolFacilityService {
                 .collect(Collectors.toList());
 
         schoolFacilityRepository.saveAll(newFacilities);
-
-        return newFacilities.size();
     }
 
 }

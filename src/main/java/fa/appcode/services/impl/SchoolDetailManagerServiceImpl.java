@@ -27,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -127,6 +126,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             schoolInfo.setImageUrl(saveImage(image, schoolInfo.getId()));
             schoolInfoRepository.save(schoolInfo);
 
+            responseSuccess.put("id", schoolInfo.getId());
             return ResponseEntity.ok().body(responseSuccess);
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -187,15 +187,15 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
                 emailService.sendEmailToMany(SendMailInfo.builder().toMail(toMail).ccMail(ccMail).mailId(mailId).detail(detail).build());
 
             }
-            return ResponseEntity.ok(Map.of("message", "Successfully!"));
-        } else return ResponseEntity.badRequest().body(Map.of("message", "Failed!"));
+            return ResponseEntity.ok().body(Map.of("message", getUpdateStatusSuccessMsg(newStatus)));
+        } else return ResponseEntity.badRequest().body(Map.of("message", getUpdateStatusFailMsg(newStatus)));
     }
 
     private void sendEmailForSubmitted(int schoolId) {
         List<String> sendTo = accountService.getAllAccountEmailsByRole(RoleConstant.ADMIN_ROLE.getKey());
         Map<Placeholder, String> details = new HashMap<Placeholder, String>();
         details.put(Placeholder.TITLE, "Review Submitted");
-        details.put(Placeholder.LINK, globalConfig.getServerLink() + "/manager/school/view-detail?id=" + schoolId);
+        details.put(Placeholder.LINK, globalConfig.getServerLink() + Constant.VIEW_DETAIL_URL + schoolId);
         emailService.sendEmailToMany(SendMailInfo.builder().toMail(sendTo).ccMail(List.of()).detail(details).build());
     }
 
@@ -214,5 +214,50 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             return Constant.IMAGE_DIR + "/" + fileName;
         }
         return null;
+    }
+
+    private String getUpdateStatusSuccessMsg(int statusId){
+        String msg = "Success";
+        if(statusId == SchoolConstant.STATUS_SUBMITTED){
+            msg = globalConfig.getSubmitSuccess();
+        }
+        else if(statusId == SchoolConstant.STATUS_APPROVED){
+            msg = globalConfig.getApproveSuccess();
+        }
+        else if(statusId == SchoolConstant.STATUS_REJECTED){
+            msg = globalConfig.getRejectSuccess();
+        }
+        else if(statusId == SchoolConstant.STATUS_PUBLISHED){
+            msg = globalConfig.getPublishSuccess();
+        }
+        else if(statusId == SchoolConstant.STATUS_UNPUBLISHED){
+            msg = globalConfig.getUnpublishSuccess();
+        }
+        else if(statusId == SchoolConstant.STATUS_DELETED){
+            msg = globalConfig.getDeleteSuccess();
+        }
+        return msg;
+    }
+    private String getUpdateStatusFailMsg(int statusId){
+        String msg = "Failed";
+        if(statusId == SchoolConstant.STATUS_SUBMITTED){
+            msg = globalConfig.getSubmitFailed();
+        }
+        else if(statusId == SchoolConstant.STATUS_APPROVED){
+            msg = globalConfig.getApproveFailed();
+        }
+        else if(statusId == SchoolConstant.STATUS_REJECTED){
+            msg = globalConfig.getRejectFailed();
+        }
+        else if(statusId == SchoolConstant.STATUS_PUBLISHED){
+            msg = globalConfig.getPublishFailed();
+        }
+        else if(statusId == SchoolConstant.STATUS_UNPUBLISHED){
+            msg = globalConfig.getUnpublishFailed();
+        }
+        else if(statusId == SchoolConstant.STATUS_DELETED){
+            msg = globalConfig.getDeleteFailed();
+        }
+        return msg;
     }
 }

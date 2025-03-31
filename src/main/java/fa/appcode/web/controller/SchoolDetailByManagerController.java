@@ -1,9 +1,6 @@
 package fa.appcode.web.controller;
 
-import fa.appcode.common.utils.MailConstant;
-import fa.appcode.common.utils.Placeholder;
-import fa.appcode.common.utils.RoleConstant;
-import fa.appcode.common.utils.SchoolConstant;
+import fa.appcode.common.utils.*;
 import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.District;
@@ -120,7 +117,7 @@ public class SchoolDetailByManagerController {
         String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
 
         List<Integer> inStatus = List.of(SchoolConstant.STATUS_APPROVED, SchoolConstant.STATUS_UNPUBLISHED);
-        Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "Admin Public School", Placeholder.SCHOOL_NAME, schoolInfoService.getSchoolNameBySchoolIdAndNoDelete(id), Placeholder.USER_NAME, accountService.getAccountNameByEmailAndNoDelete(SecurityContextHolder.getContext().getAuthentication().getName()), Placeholder.LINK, globalConfig.getServerLink() + "/school-owner/school/detail/" + id);
+        Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "Admin Public School", Placeholder.SCHOOL_NAME, schoolInfoService.getSchoolNameBySchoolIdAndNoDelete(id), Placeholder.USER_NAME, accountService.getAccountNameByEmailAndNoDelete(SecurityContextHolder.getContext().getAuthentication().getName()), Placeholder.LINK, globalConfig.getServerLink() + Constant.VIEW_DETAIL_URL + id);
         return schoolDetailManagerService.changeSchoolStatus(id, recordNo, SchoolConstant.STATUS_PUBLISHED, inStatus, MailConstant.MAIL_PUBLISH_SCHOOL, detail, List.of(email), List.of());
     }
 

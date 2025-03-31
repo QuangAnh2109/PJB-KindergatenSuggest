@@ -1,10 +1,22 @@
+function changeStatusButton(role, type, schoolId, recordNo, modal){
+    changeSchoolStatusAjax(role, type, schoolId, recordNo);
+    modal.hide();
+}
+
 function changeSchoolStatus(role, type, schoolId, recordNo){
-    if(schoolId == null){
-        schoolId = document.getElementById("schoolId").value;
-    }
-    if(recordNo == null){
-        recordNo = document.getElementById("recordNo").value;
-    }
+    var modalElement = document.getElementById('confirmModel');
+
+    var modal = new bootstrap.Modal(modalElement);
+    document.getElementById("title-popup-2").textContent =  type + " school";
+    document.getElementById("button-2-popup-2").addEventListener("click", () => changeStatusButton(role, type, schoolId, recordNo, modal));
+    document.getElementById("button-2-popup-2").addEventListener("click", function(){
+        document.getElementById("button-2-popup-2").removeEventListener("click", () => changeStatusButton(role, type, schoolId, recordNo, modal))
+    });
+
+    modal.show();
+}
+
+function changeSchoolStatusAjax(role, type, schoolId, recordNo){
     $.ajax({
         url: role + "/school/" + type,
         type: "post",
@@ -13,12 +25,28 @@ function changeSchoolStatus(role, type, schoolId, recordNo){
             recordNo: recordNo,
         },
         success: function (json){
-            console.log("load ok " + json);
-            location.reload();
+            console.log(json);
+            document.getElementById("msg-popup-1").textContent = json.message;
+            document.getElementById("button-popup-1").addEventListener("click", function(){
+                location.reload();
+            });
+            var modalElement = document.getElementById('notificationModel');
+
+            var modal = new bootstrap.Modal(modalElement);
+
+            modal.show();
         },
         error: function (xhr){
-            console.log("load failed " + xhr);
-            $('#deleteModel').modal('show');
+            console.log(xhr);
+            document.getElementById("msg-popup-1").textContent = xhr.responseJSON.message;
+            document.getElementById("button-popup-1").addEventListener("click", function(){
+                location.reload();
+            });
+            var modalElement = document.getElementById('notificationModel');
+
+            var modal = new bootstrap.Modal(modalElement);
+
+            modal.show();
         },
     });
 }
@@ -106,8 +134,6 @@ function updateSchool(){
         contentType: false,
         dataType: 'json',
         success: function (json){
-            console.log(json);
-
             document.getElementById("msg-popup-1").textContent = json.message;
             document.getElementById("button-popup-1").addEventListener("click", function(){
                 location.reload();
@@ -119,8 +145,6 @@ function updateSchool(){
             modal.show();
         },
         error: function (xhr){
-            console.log(xhr);
-
             if(xhr.status === 422){
                 if(xhr.responseJSON.name != null){
                     var nameError = document.getElementById("schoolName-error");
@@ -207,9 +231,6 @@ function updateSchool(){
 
                 modal.show('notificationModel');
             }
-
-
-
         },
     });
 }
