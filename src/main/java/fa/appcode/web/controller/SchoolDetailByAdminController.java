@@ -1,6 +1,7 @@
 package fa.appcode.web.controller;
 
 import fa.appcode.common.utils.*;
+import fa.appcode.config.GlobalConfig;
 import fa.appcode.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ public class SchoolDetailByAdminController {
     private final AccountService accountService;
 
     private final SchoolDetailManagerService schoolDetailManagerService;
+    private final GlobalConfig globalConfig;
 
     @ResponseBody
     @PostMapping("/reject")
@@ -25,7 +27,7 @@ public class SchoolDetailByAdminController {
         // Get school owner email
         String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
         // Send email to school owner
-        Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "Admin Reject School");
+        Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "Admin reject School");
         return schoolDetailManagerService.changeSchoolStatus(id, recordNo, SchoolConstant.STATUS_REJECTED, List.of(SchoolConstant.STATUS_SUBMITTED), MailConstant.MAIL_REJECT_SCHOOL, detail, List.of(email), List.of());
     }
 
@@ -36,7 +38,7 @@ public class SchoolDetailByAdminController {
         // Get school owner email
         String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
         // Send email to school owner
-        Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "Admin Reject School");
+        Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "Admin approve School", Placeholder.LINK, globalConfig.getServerLink() + Constant.VIEW_DETAIL_URL + id);
         return schoolDetailManagerService.changeSchoolStatus(id, recordNo, SchoolConstant.STATUS_APPROVED, List.of(SchoolConstant.STATUS_SUBMITTED), MailConstant.MAIL_APPROVE_SCHOOL, detail, List.of(email), List.of());
     }
 
