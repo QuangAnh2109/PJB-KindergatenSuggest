@@ -37,7 +37,7 @@
                     </div>
 
                     <!-- Success Message -->
-                    <div th:if="${successMessage}" class="alert alert-success">
+                    <div th:if="${successMessage}" class="alert alert-success" th:hidden="true">
                         <span th:text="${successMessage}"></span>
                     </div>
                     <form th:action="@{/public/register}" th:object="${accountVo}" method="post"
@@ -89,7 +89,7 @@
         </div>
     </section>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script th:src="@{/user_side/js/plugins.js}"></script>
 <script th:src="@{/user_side/js/designesia.js}"></script>
 <script th:src="@{/user_side/js/register.js}"></script>

@@ -12,5 +12,5 @@ public interface SchoolFacilityRepository extends JpaRepository<SchoolFacility, 
     List<Integer> getAllSchoolFacilityIdBySchoolId(int schoolId, boolean deleteFlg);
 
 
-
+    List<SchoolFacility> findBySchoolId(Integer id);
 }
