@@ -566,5 +566,10 @@
     }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        let links = document.querySelectorAll(".metismenu a[href='/manager/parent-list']");
+        if (links.length) links[0].classList.add("active");
+    });
+</script>
 </html>
