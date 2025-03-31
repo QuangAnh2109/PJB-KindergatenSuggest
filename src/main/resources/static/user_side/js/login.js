@@ -16,6 +16,9 @@ document.addEventListener("DOMContentLoaded", function () {
     form.addEventListener("submit", async function (event) {
         event.preventDefault();
 
+        if (loginBtn.disabled) return;
+
+        loginBtn.disabled = true;
         document.querySelectorAll(".error-message").forEach(el => el.remove());
         let serverError = document.querySelector(".alert-danger");
         if (serverError) serverError.remove();
@@ -26,33 +29,32 @@ document.addEventListener("DOMContentLoaded", function () {
         let isValid = true;
 
         if (!emailInput.value.trim()) {
-            showError(emailInput, "This field is required");
+            showError(emailInput, messages.requiredField);
             isValid = false;
         } else if (!validateEmail(emailInput.value.trim())) {
-            showError(emailInput, "Please enter a valid email address");
+            showError(emailInput, messages.invalidEmail);
             isValid = false;
         }
 
         if (!passwordInput.value.trim()) {
-            showError(passwordInput, "This field is required");
+            showError(passwordInput, messages.requiredField);
             isValid = false;
         } else if (passwordInput.value.length < 12 || passwordInput.value.length > 72) {
-            showError(passwordInput, "Password length must be between 12 and 72 characters");
+            showError(passwordInput, messages.passwordLength);
             isValid = false;
         }
 
-        if (!isValid) return;
-
-        loginBtn.disabled = true;
+        if (!isValid) {
+            loginBtn.disabled = false;
+            return;
+        }
 
         try {
             const formData = new FormData(form);
             const response = await fetch(form.action, {
                 method: "POST",
                 body: formData,
-                headers: {
-                    "Accept": "application/json"
-                }
+                headers: { "Accept": "application/json" }
             });
 
             const result = await response.json();

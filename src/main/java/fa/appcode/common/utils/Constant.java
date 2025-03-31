@@ -83,6 +83,8 @@ public class Constant {
     public static final String UNENROLL_PARENT_SCHOOL ="unenroll";
     public static final String ENROLL_PARENT_SCHOOL ="enroll";
     public static final Integer SCHOOL_PUBLISH_STATUS = 5;
+    public static final int PAGE_DEFAULT = 0;
+    public static final String SEARCH_ALL = "";
     public static final String SUCCESS = "success";
     public static final String DANGER = "danger";
     public static final int ENROLL_STATUS_ENROLL=3;
