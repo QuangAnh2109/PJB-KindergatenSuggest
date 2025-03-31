@@ -71,7 +71,7 @@ function updateFeedbackList(feedbackList, container) {
     if (!feedbackList || !Array.isArray(feedbackList) || feedbackList.length === 0) {
         container.innerHTML = `
             <div class="alert alert-info text-center">
-                <i class="fas fa-info-circle me-2"></i>
+                <i class="fa-solid fa-circle-info"></i>
                 No feedback found for this rating filter.
             </div>`;
         return;
@@ -155,3 +155,5 @@ function createStarRatingHtml(rating, fontSize) {
     }
     return html;
 }
+
+

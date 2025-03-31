@@ -199,3 +199,37 @@
 .review-item{
     margin-bottom: 20px;
 }
+
+/* Add this to your CSS file or to a style tag in the HTML head */
+.fade-in-content {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.loading-animation {
+    padding: 30px 0;
+}
+
+.loading-animation .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    color: #007bff;
+}
+
+@font-face {
+    font-family: "Font Awesome 6 Free";
+    src: url("/static/user_side/webfonts/fa-regular-400.woff2") format("woff2"),
+    url("/static/user_side/webfonts/fa-regular-400.ttf") format("ttf");
+    url("/static/user_side/webfonts/fa-brands-400.ttf") format("ttf");
+    url("/static/user_side/webfonts/fa-brands-400.woff2") format("woff2");
+    url("/static/user_side/webfonts/fa-v4compatibility.woff2") format("woff2");
+    url("/static/user_side/webfonts/fa-v4compatibility.ttf") format("ttf");
+    url("/static/user_side/webfonts/fa-solid-900.ttf") format("ttf");
+    url("/static/user_side/webfonts/fa-solid-900.woff2") format("woff2");
+    font-weight: 900;
+    font-style: normal;
+}

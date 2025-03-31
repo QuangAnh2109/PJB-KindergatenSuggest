@@ -19,7 +19,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public void createFeedback(Feedback feedback) {
-
+        feedbackRepository.save(feedback);
     }
 
     @Override

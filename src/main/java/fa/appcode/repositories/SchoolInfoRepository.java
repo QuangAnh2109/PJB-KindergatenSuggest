@@ -225,7 +225,9 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
 
 
     @Query("""
-            SELECT new fa.appcode.common.vo.MySchoolVo(si.id,si.schoolName,si.schoolEmail,CONCAT(si.schoolAddress, ', ', si.ward.wardName, ', ', si.district.districtName, ', ', si.city.cityName),si.feeFrom,
+            SELECT new fa.appcode.common.vo.MySchoolVo(si.id,si.schoolName,si.schoolEmail,
+                    CONCAT(si.schoolAddress, ', ', si.ward.wardName, ', ', si.district.districtName, ', ', si.city.cityName),
+                    si.feeFrom,
                     ageRange.typeValue,typeSchool.typeValue,si.imageUrl,
                     COALESCE(CAST(AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5) AS double), 0.0) as avgRating,
                     COALESCE(CAST(COUNT(DISTINCT f.id) AS integer), 0),si.schoolPhone,"",0.0,null,null,null)
@@ -246,6 +248,7 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
                        AND si.statusId = 5
                     GROUP BY si.id, si.schoolName, si.schoolEmail, si.schoolAddress, si.feeFrom,
                        ageRange.typeValue, typeSchool.typeValue, si.imageUrl
+            ORDER BY avgRating DESC
             """)
     Page<MySchoolVo> searchSchoolInfoByCategories(@Param("keyword") String keyword,
                                                   @Param("cityId") Integer cityId,

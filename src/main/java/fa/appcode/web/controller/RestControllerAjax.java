@@ -143,31 +143,24 @@ public class RestControllerAjax {
                 errors.put("schoolId", "School ID is required");
             }
 
+            // Check if the feedback message is provided and within length limit
             if (feedbackVo.getFeedbackMessage() == null || feedbackVo.getFeedbackMessage().trim().isEmpty()) {
                 errors.put("feedbackMessage", "Feedback message is required");
             } else if (feedbackVo.getFeedbackMessage().trim().length() > 4000) {
                 errors.put("feedbackMessage", "Feedback message must be less than 4000 characters");
             }
 
-            // Validate rating values (should be between 1 and 5)
-            if (feedbackVo.getLearningProgram() < 1 || feedbackVo.getLearningProgram() > 5) {
-                errors.put("learningProgram", "Rating must be between 1 and 5");
-            }
+            // Validate rating values (should be between 0.5 and 5, with 0.5 increments)
+            validateRating(errors, feedbackVo.getLearningProgram(), "learningProgram");
+            validateRating(errors, feedbackVo.getFacilitiesUtilities(), "facilitiesUtilities");
+            validateRating(errors, feedbackVo.getExtracurricularActivities(), "extracurricularActivities");
+            validateRating(errors, feedbackVo.getTeacherStaff(), "teacherStaff");
+            validateRating(errors, feedbackVo.getHygieneNutrition(), "hygieneNutrition");
 
-            if (feedbackVo.getFacilitiesUtilities() < 1 || feedbackVo.getFacilitiesUtilities() > 5) {
-                errors.put("facilitiesUtilities", "Rating must be between 1 and 5");
-            }
-
-            if (feedbackVo.getExtracurricularActivities() < 1 || feedbackVo.getExtracurricularActivities() > 5) {
-                errors.put("extracurricularActivities", "Rating must be between 1 and 5");
-            }
-
-            if (feedbackVo.getTeacherStaff() < 1 || feedbackVo.getTeacherStaff() > 5) {
-                errors.put("teacherStaff", "Rating must be between 1 and 5");
-            }
-
-            if (feedbackVo.getHygieneNutrition() < 1 || feedbackVo.getHygieneNutrition() > 5) {
-                errors.put("hygieneNutrition", "Rating must be between 1 and 5");
+            // Check if the user is enrolled in the school
+            boolean isEnrolled = enrollSchoolService.isEnrolled(accountId, feedbackVo.getSchoolId());
+            if (!isEnrolled) {
+                errors.put("schoolId", "You can only rate schools you are currently enrolled in");
             }
 
             if (!errors.isEmpty()) {
@@ -218,6 +211,20 @@ public class RestControllerAjax {
             return ResponseEntity.ok("Feedback created successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", "Failed to create feedback: " + e.getMessage()));
+        }
+    }
+
+    // Helper method to validate ratings
+    private void validateRating(Map<String, String> errors, double rating, String fieldName) {
+        // Check if the rating is between 0.5 and 5
+        if (rating < 0.5 || rating > 5) {
+            errors.put(fieldName, "Rating must be between 0.5 and 5");
+        }
+
+        // Check if the rating is in 0.5 increments
+        double fractionalPart = rating % 1;
+        if (fractionalPart != 0 && fractionalPart != 0.5) {
+            errors.put(fieldName, "Rating must be in 0.5 increments");
         }
     }
     
