@@ -161,6 +161,9 @@ public class GlobalConfig {
     @Value("${ME_050}")
     private String invalidActionType;
 
+    @Value("${ME_045}")
+    private String ResetSuccessTitle;
+
     @Value("${ME_077}")
     private String failedSearchParent;
 
@@ -304,4 +307,6 @@ public class GlobalConfig {
 
     @Value("${ME_044}")
     private String invalidRecordNo;
+    @Value("${ME_053}")
+    private String dontChangeAnything;
 }

@@ -25,7 +25,7 @@ public class GlobalHandlerException {
         logger.error("Database failed: {}" ,ex.getMessage(),ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Database Failed: " + ex.getMessage());
     }
-
+    
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<String> handleDataAccessException(DataAccessException e) {
         logger.error("Query data failed: {}", e.getMessage(), e);
