@@ -1,359 +1,458 @@
-
-// Global variables to track the current search state
-let currentPage = 0;
-let currentSearchParams = {};
-
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Set up search button
-    const searchButton = document.querySelector('.input-group .btn-primary');
-    if (searchButton) {
-        searchButton.addEventListener('click', performSearch);
-    }
-
-    // Set up enter key for search input
-    const searchInput = document.querySelector('.input-group input[type="text"]');
-    if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                performSearch();
-            }
-        });
-    }
-
-    // Set up sort dropdown
-    const sortDropdown = document.getElementById('sortBy');
-    if (sortDropdown) {
-        sortDropdown.addEventListener('change', function() {
-            currentSearchParams.sortBy = this.value;
-            performSearch();
-        });
-    }
-
-    // Set up filter form buttons
-    const applyFilterBtn = document.getElementById('applyFilterBtn');
-    if (applyFilterBtn) {
-        applyFilterBtn.addEventListener('click', applyFilters);
-    }
-
-    const clearFilterBtn = document.getElementById('clearFilterBtn');
-    if (clearFilterBtn) {
-        clearFilterBtn.addEventListener('click', clearFilters);
-    }
-
-    // Initialize pagination if there's data already loaded
-    initializePagination();
-});
-
-// Perform search using all current parameters
-function performSearch() {
-    // Get basic search parameters
-    const keyword = document.querySelector('.input-group input[type="text"]').value;
-    const cityId = document.getElementById('citySelect').value;
-    const districtId = document.getElementById('district').value;
-
-    // Update the current search parameters
-    currentSearchParams = {
-        ...currentSearchParams,
-        keyword: keyword,
-        cityId: cityId !== "----Select City/Province-----" ? cityId : null,
-        districtId: districtId !== "Please choose city/province" ? districtId : null,
-        page: 0 // Reset to first page on new search
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
     };
-
-    // Execute the search
-    fetchSearchResults();
 }
 
-// Apply filters from the filter form
-function applyFilters() {
-    // Get values from filter form
-    const filterForm = document.getElementById('filterForm');
-    const formData = new FormData(filterForm);
+// Get all filter values (no caching to ensure fresh values)
+function getFilterValues() {
+    const keyword = document.querySelector('input[placeholder="Enter a school name"]').value || '';
+    const cityId = document.querySelector('#citySelect').value || '0';
+    const districtId = document.querySelector('#district').value || '0';
+    const schoolType = document.querySelector('select[name="schoolType"]').value || '';
+    const admissionAge = document.querySelector('select[name="admissionAge"]').value || '';
+    const minFee = document.querySelector('input[name="minFee"]').value || '';
+    const maxFee = document.querySelector('input[name="maxFee"]').value || '';
 
-    // School type
-    const schoolType = formData.get('schoolType');
-    currentSearchParams.typeSchool = schoolType || null;
+    // Get checkbox values directly
+    const facilities = Array.from(
+        document.querySelectorAll('input[name="facilities"]:checked'),
+        checkbox => checkbox.value
+    );
 
-    // Admission age
-    const admissionAge = formData.get('admissionAge');
-    currentSearchParams.ageRange = admissionAge || null;
+    const utilities = Array.from(
+        document.querySelectorAll('input[name="utilities"]:checked'),
+        checkbox => checkbox.value
+    );
 
-    // Fees
-    currentSearchParams.fee_from = formData.get('minFee') || 1;
-    currentSearchParams.fee_to = formData.get('maxFee') || 20;
+    const sortBy = document.querySelector('#sortBy').value || '';
 
-    // Get all selected facilities
-    const facilities = formData.getAll('facilities');
-    currentSearchParams.facilities = facilities.length > 0 ? facilities : null;
-
-    // Get all selected utilities
-    const utilities = formData.getAll('utilities');
-    currentSearchParams.utilities = utilities.length > 0 ? utilities : null;
-
-    // Reset page to 0 and perform search
-    currentSearchParams.page = 0;
-    fetchSearchResults();
-}
-
-// Clear all filters
-function clearFilters() {
-    const filterForm = document.getElementById('filterForm');
-    filterForm.reset();
-
-    // Reset range sliders UI
-    const rangeMin = document.querySelector(".range-min");
-    const rangeMax = document.querySelector(".range-max");
-    const inputMin = document.querySelector(".input-min");
-    const inputMax = document.querySelector(".input-max");
-
-    rangeMin.value = 1;
-    rangeMax.value = 20;
-    inputMin.value = 1;
-    inputMax.value = 20;
-
-    updateProgress();
-
-    // Remove filter parameters but keep basic search parameters
-    const { keyword, cityId, districtId, sortBy } = currentSearchParams;
-    currentSearchParams = {
-        keyword,
-        cityId,
-        districtId,
-        sortBy,
-        page: 0,
-        fee_from: 1,
-        fee_to: 20
+    return {
+        keyword, cityId, districtId, schoolType, admissionAge,
+        minFee, maxFee, facilities, utilities, sortBy
     };
-
-    fetchSearchResults();
 }
 
-// Fetch search results from the server
-function fetchSearchResults() {
-    // Show loading state
-    const resultsContainer = document.getElementById('search-result');
-    resultsContainer.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading results...</div>';
+// Create URL parameters from filter values
+function createParams(filterValues) {
+    const params = new URLSearchParams();
 
-    // Build URL with parameters
-    let url = '/api/search-result?';
+    // Add basic parameters if they exist
+    if (filterValues.keyword) params.append('keyword', filterValues.keyword);
+    if (filterValues.cityId) params.append('cityId', filterValues.cityId);
+    if (filterValues.districtId) params.append('districtId', filterValues.districtId);
+    if (filterValues.schoolType) params.append('schoolType', filterValues.schoolType);
+    if (filterValues.admissionAge) params.append('admissionAge', filterValues.admissionAge);
+    if (filterValues.minFee) params.append('minFee', filterValues.minFee);
+    if (filterValues.maxFee) params.append('maxFee', filterValues.maxFee);
+    if (filterValues.page !== undefined) params.append('page', filterValues.page);
 
-    // Add all parameters to URL
-    Object.keys(currentSearchParams).forEach(key => {
-        if (currentSearchParams[key] !== null && currentSearchParams[key] !== undefined) {
-            // Handle arrays (facilities, utilities)
-            if (Array.isArray(currentSearchParams[key])) {
-                currentSearchParams[key].forEach(value => {
-                    url += `${key}=${encodeURIComponent(value)}&`;
-                });
-            } else {
-                url += `${key}=${encodeURIComponent(currentSearchParams[key])}&`;
+    // Add array parameters
+    filterValues.facilities.forEach(facility => params.append('facilities', facility));
+    filterValues.utilities.forEach(utility => params.append('utilities', utility));
+
+    // Add sort parameter
+    if (filterValues.sortBy) params.append('sortBy', filterValues.sortBy);
+
+    return params;
+}
+
+// Navigate to a specific page with current filters
+function navigateToPage(page) {
+    const filterValues = getFilterValues();
+    filterValues.page = page;
+
+    // Show loading indicator
+    const resultsContainer = document.querySelector('#search-content');
+    if (resultsContainer) {
+        resultsContainer.innerHTML = '<div class="text-center p-5"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading results...</p></div>';
+    }
+
+    // Create URL parameters
+    const params = createParams(filterValues);
+
+    // Update URL without page reload
+    const searchUrl = `/public/school/search?${params.toString()}`;
+    history.pushState({}, '', searchUrl);
+
+    // Fetch API data
+    fetchResults(`/api/search-results?${params.toString()}`);
+}
+
+// Main filter submission function - always starts at page 0
+function submitFilters() {
+    navigateToPage(0);
+}
+
+// Function for the sort dropdown
+function submitFiltersWithPage() {
+    const currentPage = new URLSearchParams(window.location.search).get('page') || 0;
+    navigateToPage(parseInt(currentPage));
+}
+
+// Fetch search results from API
+function fetchResults(apiUrl) {
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        }
-    });
-
-    // Fetch results
-    fetch(url)
-        .then(response => response.json())
+            return response.json();
+        })
         .then(data => {
-            // Update results count
-            updateResultsCount(data.totalElements);
-
-            // Update search results
-            displaySearchResults(data.content);
-
-            // Update pagination
-            updatePagination('searchPagination', data.totalPages, data.currentPage, loadPage);
+            updateResults(data.schools, data.facilities);
+            updateResultCount(data.totalElements);
+            updatePagination(data.currentPage, data.totalPages);
         })
         .catch(error => {
             console.error('Error fetching search results:', error);
-            resultsContainer.innerHTML = '<div class="error-message">An error occurred while fetching results. Please try again.</div>';
+            const resultsContainer = document.querySelector('#search-content');
+            if (resultsContainer) {
+                resultsContainer.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        Error loading results. Please try again later.
+                    </div>
+                `;
+            }
         });
 }
 
-// Display search results in the container
-function displaySearchResults(schools) {
-    const resultsContainer = document.getElementById('search-result');
+// Update the search results in the DOM
+function updateResults(schools, facilitiesMap) {
+    const resultsContainer = document.querySelector('#search-content');
+    if (!resultsContainer) return;
 
-    if (!schools || schools.length === 0) {
-        resultsContainer.innerHTML = '<div class="no-results">No schools found matching your criteria.</div>';
-        return;
+    if (schools && schools.length > 0) {
+        resultsContainer.innerHTML = '';
+        schools.forEach(school => {
+            const schoolCard = createSchoolCard(school, facilitiesMap);
+            resultsContainer.appendChild(schoolCard);
+        });
+    } else {
+        resultsContainer.innerHTML = `
+            <div class="alert alert-info" role="alert">
+                No schools found matching your criteria. Try adjusting your filters.
+            </div>
+        `;
+    }
+}
+
+// Update the result count display
+function updateResultCount(totalElements) {
+    const countElement = document.querySelector('#messages .result-message span:nth-of-type(2)');
+    if (countElement && totalElements !== undefined) {
+        countElement.textContent = totalElements;
+    }
+}
+
+// Create a school card element
+function createSchoolCard(school, facilitiesMap) {
+    const card = document.createElement('div');
+    card.className = 'card school-card';
+    card.style = 'overflow-y: auto; height: 350px';
+
+    // Create facilities HTML
+    let facilitiesHTML = '';
+    if (facilitiesMap && facilitiesMap[school.schoolId]) {
+        facilitiesHTML = facilitiesMap[school.schoolId]
+            .map(facility => `<span class="facility-badge">${facility}</span>`)
+            .join('');
+    } else {
+        facilitiesHTML = '<span>No facilities available</span>';
     }
 
-    let html = '';
+    // Create rating stars HTML
+    const starsHTML = generateStarsHTML(school.avgRating);
 
-    schools.forEach(school => {
-        // Format the facilities list
-        let facilitiesHtml = '';
-        if (school.facilities && school.facilities.length > 0) {
-            school.facilities.forEach(facility => {
-                facilitiesHtml += `<span class="facility-badge">${facility}</span>`;
-            });
-        } else {
-            facilitiesHtml = '<span>No facilities available</span>';
-        }
-
-        // Generate stars for rating
-        let starsHtml = generateStarRating(school.avgRating);
-
-        // Build the school card HTML
-        html += `
-        <div class="card school-card" style="overflow-y: auto; height: 350px">
-            <div class="row g-0">
-                <div class="col-md-4">
-                    <div class="img-school">
-                        <img src="${school.schoolImage}" class="img-fluid school-image" alt="School view"
-                             onerror="this.onerror=null;this.src='/user_side/images/school-image/school-placeholder.png';">
-                    </div>
+    card.innerHTML = `
+        <div class="row g-0">
+            <div class="col-md-4">
+                <div class="img-school">
+                    <img src="${school.schoolImage || '/user_side/images/school-image/school-placeholder.png'}" 
+                         class="img-fluid school-image" 
+                         alt="School view"
+                         onerror="this.onerror=null;this.src='/user_side/images/school-image/school-placeholder.png';">
                 </div>
-                <div class="col-md-8">
-                    <div class="card-body p-4">
-                        <div class="d-flex mb-3" style="display: flex;justify-content: space-between;align-items: center">
-                            <a href="/public/school/details/${school.schoolId}">
-                                <h3 class="card-title school-title">${school.schoolName}</h3>
-                            </a>
-                            <div>
-                                <button class="request-btn text-white" onclick="openCounselingForm()">Request Counseling</button>
+            </div>
+            <div class="col-md-8">
+                <div class="card-body p-4">
+                    <div class="d-flex mb-3" style="display: flex;justify-content: space-between;align-items: center">
+                        <a href="/public/school/details/${school.schoolId}">
+                            <h3 class="card-title school-title"><span>${school.schoolName}</span></h3>
+                        </a>
+                        <div>
+                            <button class="request-btn text-white" onclick="openCounselingForm()">Request Counseling</button>
+                        </div>
+                    </div>
+                    <div class="school-info">
+                        <div class="d-flex align-items-start" style="margin-bottom: 10px">
+                            <div class="me-2">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>Address:</div>
+                            <div class="text-wrap" style="word-wrap: break-word; overflow-wrap: break-word; width: 100%;">
+                                <span class="me-1"></span>
+                                <span>${school.schoolAddress}</span>
                             </div>
                         </div>
-                        <div class="school-info">
-                            <div class="d-flex align-items-start" style="margin-bottom: 10px">
-                                <div class="me-2">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                </div>
-                                <div>Address:</div>
-                                <div class="text-wrap" style="word-wrap: break-word; overflow-wrap: break-word; width: 100%;">
-                                    <span class="me-1"></span>
-                                    <span>${school.schoolAddress}</span>
-                                </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="info-icon text-center">
+                                <i class="fas fa-mail-bulk"></i>
                             </div>
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="info-icon text-center">
-                                    <i class="fas fa-mail-bulk"></i>
-                                </div>
-                                <div>Email:</div>
-                                <div class="ms-2">
-                                    <a href="#" class="text-decoration-none" style="color: #1ECB15;">${school.schoolEmail}</a>
-                                </div>
+                            <div>Email:</div>
+                            <div class="ms-2">
+                                <a href="#" class="text-decoration-none" style="color: #1ECB15;">${school.schoolEmail}</a>
                             </div>
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="info-icon text-center">
-                                    <i class="fas fa-money-bill-wave"></i>
-                                </div>
-                                <div>Tuition fee:</div>
-                                <div class="ms-2">From ${formatNumber(school.feeFrom)} VND/ month</div>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="info-icon text-center">
+                                <i class="fas fa-money-bill-wave"></i>
                             </div>
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="info-icon text-center">
-                                    <i class="fas fa-user-graduate"></i>
-                                </div>
-                                <div>Admission age:</div>
-                                <div class="ms-2">From ${school.ageRange}</div>
+                            <div>Tuition fee:</div>
+                            <div class="ms-2">From ${formatNumber(school.feeFrom)} VND/ month</div>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="info-icon text-center">
+                                <i class="fas fa-user-graduate"></i>
                             </div>
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="info-icon text-center">
-                                    <i class="fas fa-school"></i>
-                                </div>
-                                <div>School type:</div>
-                                <div class="ms-2">${school.schoolType}</div>
+                            <div>Admission age:</div>
+                            <div class="ms-2">From ${school.ageRange}</div>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="info-icon text-center">
+                                <i class="fas fa-school"></i>
                             </div>
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="info-icon text-center">
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <div>Rating:</div>
-                                <div class="ms-2 star-rating">
-                                    ${starsHtml}
-                                    <span>${school.avgRating}</span>/5
-                                    (<span>${school.totalRating}</span> ratings)
-                                </div>
+                            <div>School type:</div>
+                            <div class="ms-2">${school.schoolType}</div>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="info-icon text-center">
+                                <i class="fa-solid fa-star"></i>
                             </div>
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="info-icon text-center">
-                                    <i class="fas fa-building"></i>
-                                </div>
-                                <div>Facilities and Utilities:</div>
+                            <div>Rating:</div>
+                            <div class="ms-2 star-rating">
+                                ${starsHTML}
+                                <span>${school.avgRating}</span>/5
+                                (<span>${school.totalRating}</span> ratings)
                             </div>
-                            <div class="facilities mt-2" style="overflow-wrap: break-word">
-                                ${facilitiesHtml}
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="info-icon text-center">
+                                <i class="fas fa-building"></i>
                             </div>
+                            <div>Facilities and Utilities:</div>
+                        </div>
+                        <div class="facilities mt-2" style="overflow-wrap: break-word">
+                            ${facilitiesHTML}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        `;
-    });
+    `;
 
-    resultsContainer.innerHTML = html;
+    return card;
 }
 
-// Generate star rating HTML
-function generateStarRating(rating) {
-    let starsHtml = '';
+// Format numbers with commas for readability
+function formatNumber(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+// Generate HTML for star ratings
+function generateStarsHTML(rating) {
+    let html = '';
     for (let i = 1; i <= 5; i++) {
         if (i <= rating) {
-            starsHtml += '<span class="star-filled">★</span>';
+            html += '<span class="star-filled">★</span>';
         } else if (i <= rating + 0.5) {
-            starsHtml += '<span class="star-half">★</span>';
+            html += '<span class="star-half">★</span>';
         } else {
-            starsHtml += '<span class="star-empty">★</span>';
+            html += '<span class="star-empty">★</span>';
         }
     }
-    return starsHtml;
+    return html;
 }
 
-// Update the results count message
-function updateResultsCount(totalElements) {
-    const messagesDiv = document.getElementById('messages');
-    if (messagesDiv) {
-        const messageSpan = messagesDiv.querySelector('.result-message span:nth-child(2)');
-        if (messageSpan) {
-            messageSpan.textContent = totalElements;
-        }
+// Update pagination controls
+function updatePagination(currentPage, totalPages) {
+    const paginationContainer = document.querySelector('.pagination');
+    if (!paginationContainer) return;
+
+    let paginationHTML = '';
+
+    // Previous button
+    paginationHTML += `
+        <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
+            <a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>
+        </li>
+    `;
+
+    // Show first page
+    paginationHTML += `
+        <li class="page-item ${currentPage == 0 ? 'active' : ''}">
+            <a class="page-link" href="#" data-page="0">1</a>
+        </li>
+    `;
+
+    // Show ellipsis if needed
+    if (currentPage > 2) {
+        paginationHTML += `
+            <li class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>
+        `;
     }
+
+    // Show page before current if available
+    if (currentPage > 0) {
+        paginationHTML += `
+            <li class="page-item">
+                <a class="page-link" href="#" data-page="${currentPage - 1}">${currentPage}</a>
+            </li>
+        `;
+    }
+
+    // Show current page if not first or last
+    if (currentPage > 0 && currentPage < totalPages - 1) {
+        paginationHTML += `
+            <li class="page-item active">
+                <a class="page-link" href="#" data-page="${currentPage}">${currentPage + 1}</a>
+            </li>
+        `;
+    }
+
+    // Show page after current if available
+    if (currentPage < totalPages - 2) {
+        paginationHTML += `
+            <li class="page-item">
+                <a class="page-link" href="#" data-page="${currentPage + 1}">${currentPage + 2}</a>
+            </li>
+        `;
+    }
+
+    // Show ellipsis if needed
+    if (currentPage < totalPages - 3) {
+        paginationHTML += `
+            <li class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>
+        `;
+    }
+
+    // Show last page if not first
+    if (totalPages > 1) {
+        paginationHTML += `
+            <li class="page-item ${currentPage == totalPages - 1 ? 'active' : ''}">
+                <a class="page-link" href="#" data-page="${totalPages - 1}">${totalPages}</a>
+            </li>
+        `;
+    }
+
+    // Next button
+    paginationHTML += `
+        <li class="page-item ${currentPage >= totalPages - 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>
+        </li>
+    `;
+
+    paginationContainer.innerHTML = paginationHTML;
 }
 
-// Initialize pagination on page load
-function initializePagination() {
-    // Check if there's already pagination in the HTML
+// Clear all filters
+function clearFilters() {
+    // Reset search input
+    const searchInput = document.querySelector('input[placeholder="Enter a school name"]');
+    if (searchInput) searchInput.value = '';
+
+    // Reset select dropdowns
+    const selects = ['select[name="schoolType"]', 'select[name="admissionAge"]', '#sortBy'];
+    selects.forEach(selector => {
+        const select = document.querySelector(selector);
+        if (select) select.selectedIndex = 0;
+    });
+
+    // Reset city and district
+    const citySelect = document.querySelector('#citySelect');
+    const districtSelect = document.querySelector('#district');
+    if (citySelect) citySelect.selectedIndex = 0;
+    if (districtSelect) {
+        districtSelect.innerHTML = '<option value="0" disabled selected>Please choose city/province</option>';
+    }
+
+    // Reset range sliders
+    const rangeMin = document.querySelector('.range-min');
+    const rangeMax = document.querySelector('.range-max');
+    const inputMin = document.querySelector('.input-min');
+    const inputMax = document.querySelector('.input-max');
+
+    if (rangeMin && rangeMax && inputMin && inputMax) {
+        rangeMin.value = rangeMin.min;
+        rangeMax.value = rangeMax.max;
+        inputMin.value = rangeMin.min;
+        inputMax.value = rangeMax.max;
+        updateProgress();
+    }
+
+    // Uncheck all checkboxes (facilities and utilities)
+    const checkboxSelectors = ['input[name="facilities"]', 'input[name="utilities"]'];
+    checkboxSelectors.forEach(selector => {
+        document.querySelectorAll(selector).forEach(checkbox => {
+            checkbox.checked = false;
+        });
+    });
+
+    // Apply the cleared filters
+    submitFilters();
+}
+
+// Initialize all event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Set up event listener for pagination using event delegation
     const paginationContainer = document.querySelector('.pagination');
     if (paginationContainer) {
-        // Replace the static pagination with an element we can control
-        const paginationParent = paginationContainer.parentElement;
-        paginationParent.innerHTML = '<ul id="searchPagination" class="pagination"></ul>';
+        paginationContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('page-link') && !e.target.parentElement.classList.contains('disabled')) {
+                e.preventDefault();
+                const page = e.target.getAttribute('data-page');
+                if (page !== null) {
+                    navigateToPage(parseInt(page));
+                }
+            }
+        });
     }
-}
 
-// Load a specific page of results
-function loadPage(page) {
-    currentSearchParams.page = page;
-    fetchSearchResults();
+    // Setup debounced filter inputs
+    const debouncedSubmit = debounce(submitFilters, 300);
 
-    // Scroll to top of results
-    document.getElementById('search-result').scrollIntoView({ behavior: 'smooth' });
-}
+    // Text inputs
+    const textInputs = ['input[placeholder="Enter a school name"]', 'input[name="minFee"]', 'input[name="maxFee"]'];
+    textInputs.forEach(selector => {
+        const input = document.querySelector(selector);
+        if (input) input.addEventListener('input', debouncedSubmit);
+    });
 
-// Open the counseling form modal
-function openCounselingForm() {
-    const counselingModal = new bootstrap.Modal(document.getElementById('counselingModal'));
-    counselingModal.show();
-}
+    // Select inputs
+    const selectInputs = ['#citySelect', '#district', 'select[name="schoolType"]', 'select[name="admissionAge"]', '#sortBy'];
+    selectInputs.forEach(selector => {
+        const select = document.querySelector(selector);
+        if (select) select.addEventListener('change', debouncedSubmit);
+    });
 
-// Helper function to update slider progress
-function updateProgress() {
-    const rangeMin = document.querySelector(".range-min");
-    const rangeMax = document.querySelector(".range-max");
-    const progress = document.querySelector(".progress");
+    // Checkboxes (facilities and utilities)
+    const checkboxSelectors = ['input[name="facilities"]', 'input[name="utilities"]'];
+    checkboxSelectors.forEach(selector => {
+        document.querySelectorAll(selector).forEach(checkbox => {
+            checkbox.addEventListener('change', debouncedSubmit);
+        });
+    });
 
-    if (rangeMin && rangeMax && progress) {
-        let minVal = parseInt(rangeMin.value);
-        let maxVal = parseInt(rangeMax.value);
-        let rangeMinValue = parseInt(rangeMin.min);
-        let rangeMaxValue = parseInt(rangeMax.max);
-        let range = rangeMaxValue - rangeMinValue;
+    // Button handlers
+    const applyBtn = document.querySelector('#applyFilterBtn');
+    if (applyBtn) applyBtn.addEventListener('click', submitFilters);
 
-        progress.style.left = ((minVal - rangeMinValue) / range) * 100 + "%";
-        progress.style.right = 100 - ((maxVal - rangeMinValue) / range) * 100 + "%";
-    }
-}
+    const clearBtn = document.querySelector('#clearFilterBtn');
+    if (clearBtn) clearBtn.addEventListener('click', clearFilters);
+});

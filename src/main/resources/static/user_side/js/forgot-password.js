@@ -18,14 +18,27 @@ function attachFormHandler() {
                 const html = await response.text();
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = html;
-
                 document.querySelector('.padding40').innerHTML =
                     tempDiv.querySelector('.padding40').innerHTML;
-
+                    const successAlert = tempDiv.querySelector('.alert.alert-success');
+                if (successAlert) {
+                    const successMessage = successAlert.textContent.trim();
+                    Swal.fire({
+                        title: "Success",
+                        text: successMessage,
+                        icon: "success",
+                        confirmButtonText: "OK"
+                    })
+                }
                 attachFormHandler();
             } catch (error) {
-                console.error('Fetch error:', error);
-                alert("Having an error while processing. Please try again");
+                console.error('Error:', error);
+                Swal.fire({
+                    title: "Error",
+                    text: "An error occurred. Please try again.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
             } finally {
                 submitBtn.disabled = false;
             }

@@ -267,9 +267,10 @@
 
 .school-image-container {
     border-radius: 12px;
-    margin: 10px;
+    margin: 15px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    line-height: 1.5;
+    max-height: 100%;
+    max-width: 100%;
 }
 
 
@@ -293,8 +294,8 @@
 
 .img-school {
     margin: 10px;
-    width: 250px;
-    height: 250px;
+    width: 90%;
+    height: 90%;
     overflow: hidden;
 }
 
@@ -401,14 +402,3 @@
 }
 
 
-@font-face {
-    font-family: "Font Awesome 6 Free";
-    src: url("/static/user_side/webfonts/fa-regular-400.woff2") format("woff2"),
-    url("/static/user_side/webfonts/fa-regular-400.ttf") format("ttf");
-url("/static/user_side/webfonts/fa-brands-400.ttf") format("ttf");
-url("/static/user_side/webfonts/fa-brands-400.woff2") format("woff2");
-url("/static/user_side/webfonts/fa-v4compatibility.woff2") format("woff2");
-url("/static/user_side/webfonts/fa-v4compatibility.ttf") format("ttf");
-    font-weight: 900;
-    font-style: normal;
-}

@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequestMapping("/api")
 @AllArgsConstructor
@@ -36,57 +38,66 @@ public class RestControllerAjax {
     private final SchoolInfoService schoolInfoService;
     private final AccountService accountService;
 
-    @GetMapping("/search-result")
-    public ResponseEntity<?> searchResult(
+    @GetMapping("/search-results")
+    public ResponseEntity<Map<String, Object>> searchResults(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Integer cityId,
             @RequestParam(required = false) Integer districtId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "BY_RATING") SortOption sortBy,
-            @RequestParam(required = false) Integer typeSchool,
-            @RequestParam(required = false) Integer ageRange,
-            @RequestParam(defaultValue = "1") BigDecimal fee_from,
-            @RequestParam(defaultValue = "20") BigDecimal fee_to,
-            @RequestParam(required = false) List<String> facilities,
-            @RequestParam(required = false) List<String> utilities) {
+            @RequestParam(required = false) Integer schoolType,
+            @RequestParam(required = false) Integer admissionAge,
+            @RequestParam(required = false) Double minFee,
+            @RequestParam(required = false) Double maxFee,
+            @RequestParam(required = false) List<Integer> facilities,
+            @RequestParam(required = false) List<Integer> utilities,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size) {
 
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy.getSortField()).ascending());
-//
-//        Page<MySchoolVo> pageResult = schoolInfoService.searchSchoolInfoByAllCategories(
-//                keyword, cityId, districtId, pageable, typeSchool, ageRange, fee_from, fee_to, facilities, utilities);
+        // Create pageable object based on page, size and sort
+        Pageable pageable;
+        if(sortBy.equals("BY_RATING_DESC")){
+            pageable = PageRequest.of(page, size);
+        }else{
+            Sort sort = Sort.by(SortOption.valueOf(sortBy).getDirection(),
+                    SortOption.valueOf(sortBy).getFieldName());
+            pageable = PageRequest.of(page, size, sort);
+        }
+        //Validate
+        minFee = minFee*1000000;
+        maxFee = maxFee*1000000;
 
-//        Map<Integer, List<String>> listFacilitiesOfSchool = enrollSchoolService.getFacilitiesMapForSchools(pageResult);
-//
-//        pageResult.getContent().forEach(school -> {
-//            school.setFacilities(listFacilitiesOfSchool.getOrDefault(school.getSchoolId(), List.of()));
-//        });
-//
-//        PageVo<MySchoolVo> pageVo = new PageVo<>();
-//        pageVo.setContent(pageResult.getContent());
-//        pageVo.setTotalPages(pageResult.getTotalPages());
-//        pageVo.setTotalElements(pageResult.getTotalElements());
-//        pageVo.setCurrentPage(page);
-//
-        return ResponseEntity.ok("pageVo");
-    }
+        if(cityId ==0){
+            cityId = null;
+        }
 
-    @GetMapping("/my-request")
-    public ResponseEntity<PageVo<MyRequestVo>> myRequest(
-            @SessionAttribute(name = "idAccount", required = true) Integer accountId,
-            @RequestParam(defaultValue = Constant.INIT_PAGE) int page,
-            @RequestParam(defaultValue = Constant.PAGE_SIZE) int size) {
+        if(districtId ==0){
+            districtId = null;
+        }
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createTime").descending());
-        Page<MyRequestVo> requestPage = requestService.findRequestByAccountId(accountId, pageable);
+        // Perform search with filters
+        Page<MySchoolVo> results = schoolInfoService.searchSchoolInfoByCategories(
+                keyword, cityId, districtId, schoolType, admissionAge,
+                minFee, maxFee, facilities, utilities, pageable);
 
-        PageVo<MyRequestVo> pageDto = new PageVo<>();
-        pageDto.setContent(requestPage.getContent());
-        pageDto.setTotalPages(requestPage.getTotalPages());
-        pageDto.setTotalElements(requestPage.getTotalElements());
-        pageDto.setCurrentPage(page);
+        // Get facilities for schools in current page
+        List<Integer> schoolIds = results.getContent().stream()
+                .map(MySchoolVo::getSchoolId)
+                .collect(Collectors.toList());
 
-        return ResponseEntity.ok(pageDto);
+        Map<Integer, List<String>> facilitiesMap = Collections.emptyMap();
+        if (!schoolIds.isEmpty()) {
+            facilitiesMap = enrollSchoolService.getFacilitiesMapForSchools(results);
+        }
+
+        // Create response with pagination info
+        Map<String, Object> response = new HashMap<>();
+        response.put("schools", results.getContent());
+        response.put("currentPage", page);
+        response.put("totalPages", results.getTotalPages());
+        response.put("totalElements", results.getTotalElements());
+        response.put("facilities", facilitiesMap);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/current-schools")
@@ -227,16 +238,16 @@ public class RestControllerAjax {
             errors.put(fieldName, "Rating must be in 0.5 increments");
         }
     }
-    
+
     @GetMapping("/filter-feedback")
     public ResponseEntity<List<FeedbackListVo>> filterFeedback(
             @RequestParam Integer schoolId,
             @RequestParam(defaultValue = "0") String filter) {
-        
+
         double minRating = 0.0;
         double maxRating = 5.0;
         boolean filterByRating = true;
-        
+
         switch (filter) {
             case "5":
                 minRating = 5.0;
@@ -264,14 +275,14 @@ public class RestControllerAjax {
                 filterByRating = false;
                 break;
         }
-        
+
         List<FeedbackListVo> filteredFeedback;
         if (filterByRating) {
             filteredFeedback = feedbackService.findListFeedbackBySchoolIdAndRating(schoolId, minRating, maxRating);
         } else {
             filteredFeedback = feedbackService.findListFeedbackBySchoolId(schoolId);
         }
-        
+
         return ResponseEntity.ok(filteredFeedback);
     }
 

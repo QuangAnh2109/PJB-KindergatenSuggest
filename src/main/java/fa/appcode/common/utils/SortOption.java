@@ -3,8 +3,8 @@ package fa.appcode.common.utils;
 import org.springframework.data.domain.Sort;
 
 public enum SortOption {
-    BY_RATING_DESC("Highest Rating", "avgRating", Sort.Direction.DESC),
-    NEWEST_TO_OLDEST("Newest to Oldest", "createdDate", Sort.Direction.DESC),
+    BY_RATING_DESC("By Rating", "null", Sort.Direction.DESC),
+    NEWEST_TO_OLDEST("Newest to Oldest", "postedDate", Sort.Direction.DESC),
     TUITION_FEE_DESC("Tuition Fee (Highest)", "feeFrom", Sort.Direction.DESC),
     TUITION_FEE_ASC("Tuition Fee (Lowest)", "feeFrom", Sort.Direction.ASC),
     NAME_ASC("School Name (A-Z)", "schoolName", Sort.Direction.ASC),

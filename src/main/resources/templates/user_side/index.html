@@ -6,7 +6,7 @@
 
 <head>
     <title>Kindergarten Suggestion - The Perfect Place for Your Child’s First Steps in Learning!</title>
-    <link rel="icon" th:href="@{/user_side/images/icon.png}" type="image/gif" sizes="16x16">
+    <link rel="icon" href="/user_side/images/icon.png" type="image/gif" sizes="16x16">
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Kindergarten Suggestion - The Perfect Place for Your Child’s First Steps in Learning!"
@@ -279,14 +279,14 @@
                                         <div style="width: 60%; display: flex;">
                                             <select id="citySelect" name="city" onchange="loadDistrict(this.value)"
                                                     class="form-select" style="width: 70%;">
-                                                <option selected disabled value="0">----Select City/Province-----
+                                                <option selected value="0">----Select City/Province-----
                                                 </option>
                                                 <option th:each="city : ${listCity}" th:value="${city.getId()}"
                                                         th:text="${city.getCityName()}"></option>
                                             </select>
 
                                             <select name="district" id="district" class="form-select">
-                                                <option selected disabled value="">Select District</option>
+                                                <option selected value="null">Select District</option>
                                             </select>
                                             <button class="btn-main" style="width: 15%;margin-left: 15px"
                                                     onclick="searchRedirectByAddress()">
@@ -591,7 +591,7 @@
     //load district by city id
     function loadDistrict(cityId) {
         if (!cityId || cityId == 0) {
-            document.getElementById("district").innerHTML = '<option value="" disabled selected>Select a city first</option>';
+            document.getElementById("district").innerHTML = '<option value="0" selected>Select a city first</option>';
             return;
         }
 
@@ -611,7 +611,7 @@
                 const districtSelect = document.getElementById("district");
                 if (!districtSelect) return;
 
-                let options = '<option value="" disabled>District</option>';
+                let options = '<option value="0">District</option>';
                 let districtFound = false;
 
                 json.forEach(item => {

@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository("schoolInfoRepository")
-public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer> {
+public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>{
 
 
     //find all schools by account email that have school status of published
@@ -242,17 +242,31 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
                     WHERE f2.id.schoolId = si.id AND f2.id.accountId = f.id.accountId
                     GROUP BY f2.id.accountId
                 )
-                    WHERE (:keyword IS NULL OR si.schoolName LIKE CONCAT('%', :keyword, '%') OR si.schoolAddress LIKE CONCAT('%', :keyword, '%') OR si.schoolEmail LIKE CONCAT('%', :keyword, '%') OR si.schoolPhone LIKE CONCAT('%', :keyword, '%'))
-                       AND (:cityId IS NULL OR si.city.id = :cityId)
-                       AND (:districtId IS NULL OR si.district.id = :districtId)
-                       AND si.statusId = 5
-                    GROUP BY si.id, si.schoolName, si.schoolEmail, si.schoolAddress, si.feeFrom,
-                       ageRange.typeValue, typeSchool.typeValue, si.imageUrl
+            LEFT JOIN SchoolFacility sf ON sf.id.schoolId = si.id
+            LEFT JOIN SchoolUtility su ON su.id.schoolId  = si.id
+            WHERE (:keyword IS NULL OR si.schoolName LIKE CONCAT('%', :keyword, '%') OR si.schoolAddress LIKE CONCAT('%', :keyword, '%') OR si.schoolEmail LIKE CONCAT('%', :keyword, '%') OR si.schoolPhone LIKE CONCAT('%', :keyword, '%'))
+               AND (:cityId IS NULL OR si.city.id = :cityId)
+               AND (:districtId IS NULL OR si.district.id = :districtId)
+               AND (:schoolType IS NULL OR si.typeId = :schoolType)
+               AND (:admissionAge IS NULL OR si.childReceivingAgeId = :admissionAge)
+               AND (:minFee IS NULL OR si.feeFrom >= :minFee)
+               AND (:maxFee IS NULL OR si.feeTo <= :maxFee)
+               AND (:facilities IS NULL OR sf.id.facilitiesId IN :facilities)
+               AND (:utilities IS NULL OR su.id.utilitiesId IN :utilities)
+               AND si.statusId = 5
+            GROUP BY si.id, si.schoolName, si.schoolEmail, si.schoolAddress, si.feeFrom,
+               ageRange.typeValue, typeSchool.typeValue, si.imageUrl
             ORDER BY avgRating DESC
             """)
     Page<MySchoolVo> searchSchoolInfoByCategories(@Param("keyword") String keyword,
                                                   @Param("cityId") Integer cityId,
                                                   @Param("districtId") Integer districtId,
+                                                  @Param("schoolType") Integer schoolType,
+                                                  @Param("admissionAge") Integer admissionAge,
+                                                  @Param("minFee") Double minFee,
+                                                  @Param("maxFee") Double maxFee,
+                                                  @Param("facilities") List<Integer> facilities,
+                                                  @Param("utilities") List<Integer> utilities,
                                                   Pageable pageable);
     @Query("""
         SELECT new fa.appcode.common.vo.HomeVo(COUNT(DISTINCT si.id),COUNT(DISTINCT ai.id))

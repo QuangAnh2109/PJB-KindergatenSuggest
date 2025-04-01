@@ -50,7 +50,9 @@ public interface SchoolInfoService {
 
     SchoolFormManager getSchoolFormBySchoolIdAndEmailAndNoDelete(int id, String email);
 
-    Page<MySchoolVo> searchSchoolInfoByCategories(String keyword,Integer cityId, Integer districtId, Pageable pageable);
+    public Page<MySchoolVo> searchSchoolInfoByCategories(String keyword, Integer cityId, Integer districtId,
+                                                         Integer schoolType, Integer admissionAge, Double minFee,
+                                                         Double maxFee,List<Integer> facilities,List<Integer> utilities,Pageable pageable);
 
     HomeVo dataHomePage();
 

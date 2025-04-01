@@ -60,8 +60,8 @@ public class UserHomeController {
     @GetMapping("/school/search")
     public String showSearchResults(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Integer cityId,
-            @RequestParam(required = false) Integer districtId,
+            @RequestParam(required = false,defaultValue = "0") Integer cityId,
+            @RequestParam(required = false,defaultValue = "0") Integer districtId,
             Model model,
             @RequestParam(defaultValue = Constant.INIT_PAGE) int page,
             @RequestParam(defaultValue = Constant.PAGE_SIZE) int size,
@@ -71,10 +71,17 @@ public class UserHomeController {
         loadCommonData(model);
 
         // Load pageable
-        Pageable pageable = PageRequest.of(page, size, sortBy.toSort());
+        Pageable pageable = PageRequest.of(page, size);
 
+        //Validate
+        if(cityId == 0){
+            cityId = null;
+        }
+        if(districtId == 0){
+            districtId = null;
+        }
         //Search
-        Page<MySchoolVo> listSearchResult = schoolInfoService.searchSchoolInfoByCategories(keyword,cityId,districtId,pageable);
+        Page<MySchoolVo> listSearchResult = schoolInfoService.searchSchoolInfoByCategories(keyword,cityId,districtId,null,null,null,null,null,null,pageable);
         Map<Integer,List<String>> listFacilitiesOfSchool = enrollSchoolService.getFacilitiesMapForSchools(listSearchResult);
 
         //Response
