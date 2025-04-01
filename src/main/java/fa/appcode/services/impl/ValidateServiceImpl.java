@@ -105,7 +105,7 @@ public class ValidateServiceImpl implements ValidateService {
         if (requiredField(fullName)) {
             return Map.of(FULL_NAME_ERROR, globalConfig.getRequiredField());
         }
-        if (fullName.length() > 255) {
+        if (fullName.length() > 100) {
             return Map.of(FULL_NAME_ERROR, globalConfig.getInvalidFullName());
         }
         return Collections.emptyMap();

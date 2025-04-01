@@ -1,15 +1,11 @@
 package fa.appcode.services.impl;
 
-import com.cloudinary.utils.StringUtils;
-import fa.appcode.common.logging.Log4jUtils;
 import fa.appcode.common.utils.*;
 
 import fa.appcode.config.GlobalConfig;
-import fa.appcode.common.utils.Placeholder;
 import fa.appcode.common.utils.SendMailInfo;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.common.vo.AccountVo;
-import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
 import fa.appcode.exceptions.EntityNotFoundException;
 import fa.appcode.exceptions.TokenException;
@@ -17,31 +13,27 @@ import fa.appcode.exceptions.ValidateParentException;
 import fa.appcode.exceptions.ValidationException;
 import fa.appcode.repositories.AccountRepository;
 import fa.appcode.repositories.MasterDatumRepository;
+import fa.appcode.security.UserSessionService;
 import fa.appcode.services.*;
 import jakarta.transaction.Transactional;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.EmailService;
-import fa.appcode.services.MasterDatumService;
 import lombok.RequiredArgsConstructor;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.core.Authentication;
+
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -58,9 +50,12 @@ public class AccountServiceImpl implements AccountService {
     private final EmailService emailService;
     private Map<String, Object> lastValidationResult;
 
-
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private static final String ERROR_ATTRIBUTE = "error";
+
+    @Lazy
+    @Autowired
+    private UserSessionService userSessionService;
 
     public AccountInfo getAccountById(int id) {
         return accountRepository.getAccountInfoById(id,Constant.STATUS_ACTIVE);
@@ -173,7 +168,7 @@ public class AccountServiceImpl implements AccountService {
         if (!Objects.equals(user.getStatusId(), masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()))) isModified = true;
 
         if (!isModified) {
-            throw new IllegalStateException("No changes detected, update aborted.");
+            throw new IllegalStateException(globalConfig.getNoChangeToUpdate());
         }
 
         // if has changes, perform update
@@ -185,6 +180,10 @@ public class AccountServiceImpl implements AccountService {
         user.setUpdateTime(Instant.now());
 
         accountRepository.save(user);
+
+        if (user.getStatusId().equals(Constant.STATUS_INACTIVE)) {
+            userSessionService.expireUserSessions(user.getEmail());
+        }
 
         return newRecordNo;
     }
@@ -198,8 +197,11 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new EntityNotFoundException(globalConfig.getUserNotFound()));
         account.setDeleteFlg(true);
         accountRepository.save(account);
+
+        userSessionService.expireUserSessions(account.getEmail());
     }
 
+    // Create new account by Admin
     @Override
     public void addUserFromAdmin(AccountVo accountVo, Principal principal) {
         // Validate accountVo

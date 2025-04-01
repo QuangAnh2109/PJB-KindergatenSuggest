@@ -304,4 +304,8 @@ public class GlobalConfig {
 
     @Value("${ME_044}")
     private String invalidRecordNo;
+
+    @Value("${ME_045}")
+    private String noChangeToUpdate;
 }
+

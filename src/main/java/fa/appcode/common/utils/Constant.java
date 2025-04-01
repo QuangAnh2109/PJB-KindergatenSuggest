@@ -63,7 +63,7 @@ public class Constant {
     public static final String SCHOOL_OWNER_ROLE = "School owner";
     public static final String ADMIN_ROLE = "Admin";
     public static final Integer STATUS_ACTIVE = 1;
-    public static final Integer STATUS_INACTIVE = 0;
+    public static final Integer STATUS_INACTIVE = 2;
     public static final Integer STATUS_DELETED = 0;
     public static final String WEB_SYSTEM = "WEB_SYSTEM";
     public static final int SEND_EMAIL_FORGOT = 1;
