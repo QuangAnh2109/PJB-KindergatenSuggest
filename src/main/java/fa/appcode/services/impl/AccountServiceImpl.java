@@ -503,6 +503,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<String> getAllAccountEmailsByRole(int roleId) {
-        return accountRepository.getAllEmailByRoleAndDeleteFlg(roleId, false);
+        return accountRepository.getAllEmailByRoleAndDeleteFlgAndStatusId(roleId, false, 1);
     }
 }

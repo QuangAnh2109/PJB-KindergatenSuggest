@@ -26,9 +26,11 @@ public class SchoolDetailByAdminController {
     public ResponseEntity<Map<String, Object>> rejectSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
         // Get school owner email
         String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
+        List<String> toEmail = email != null ? List.of(email) : null;
+
         // Send email to school owner
         Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "Admin reject School");
-        return schoolDetailManagerService.changeSchoolStatus(id, recordNo, SchoolConstant.STATUS_REJECTED, List.of(SchoolConstant.STATUS_SUBMITTED), MailConstant.MAIL_REJECT_SCHOOL, detail, List.of(email), List.of());
+        return schoolDetailManagerService.changeSchoolStatus(id, recordNo, SchoolConstant.STATUS_REJECTED, List.of(SchoolConstant.STATUS_SUBMITTED), MailConstant.MAIL_REJECT_SCHOOL, detail, toEmail, List.of());
     }
 
 
@@ -37,9 +39,10 @@ public class SchoolDetailByAdminController {
     public ResponseEntity<Map<String, Object>> approveSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
         // Get school owner email
         String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
+        List<String> toEmail = email != null ? List.of(email) : null;
         // Send email to school owner
         Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "Admin approve School", Placeholder.LINK, globalConfig.getServerLink() + Constant.VIEW_DETAIL_URL + id);
-        return schoolDetailManagerService.changeSchoolStatus(id, recordNo, SchoolConstant.STATUS_APPROVED, List.of(SchoolConstant.STATUS_SUBMITTED), MailConstant.MAIL_APPROVE_SCHOOL, detail, List.of(email), List.of());
+        return schoolDetailManagerService.changeSchoolStatus(id, recordNo, SchoolConstant.STATUS_APPROVED, List.of(SchoolConstant.STATUS_SUBMITTED), MailConstant.MAIL_APPROVE_SCHOOL, detail, toEmail, List.of());
     }
 
 
