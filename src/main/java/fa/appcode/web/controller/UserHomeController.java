@@ -60,13 +60,12 @@ public class UserHomeController {
     @GetMapping("/school/search")
     public String showSearchResults(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Integer cityId,
-            @RequestParam(required = false) Integer districtId,
+            @RequestParam(required = false,defaultValue = "0") Integer cityId,
+            @RequestParam(required = false,defaultValue = "0") Integer districtId,
             Model model,
             @RequestParam(defaultValue = Constant.INIT_PAGE) int page,
             @RequestParam(defaultValue = Constant.PAGE_SIZE) int size,
-            @RequestParam(defaultValue = "BY_RATING") SortOption sortBy) {
-
+            @RequestParam(defaultValue = "BY_RATING_DESC") SortOption sortBy) {
 
         //Init data
         loadCommonData(model);
@@ -74,18 +73,27 @@ public class UserHomeController {
         // Load pageable
         Pageable pageable = PageRequest.of(page, size);
 
+        //Validate
+        if(cityId == 0){
+            cityId = null;
+        }
+        if(districtId == 0){
+            districtId = null;
+        }
         //Search
-        Page<MySchoolVo> listSearchResult = schoolInfoService.searchSchoolInfoByCategories(keyword,cityId,districtId,pageable);
-        Map<Integer,List<String>> listFacilitiesOfCurrentSchool = enrollSchoolService.getFacilitiesMapForSchools(listSearchResult);
-        logger.info(listFacilitiesOfCurrentSchool.toString());
+        Page<MySchoolVo> listSearchResult = schoolInfoService.searchSchoolInfoByCategories(keyword,cityId,districtId,null,null,null,null,null,null,pageable);
+        Map<Integer,List<String>> listFacilitiesOfSchool = enrollSchoolService.getFacilitiesMapForSchools(listSearchResult);
+
         //Response
-        model.addAttribute("listSearchResult", listSearchResult)
+        model.addAttribute("listSearch", listSearchResult)
                 .addAttribute("keyword", keyword)
                 .addAttribute("cityId", cityId)
                 .addAttribute("districtId", districtId)
                 .addAttribute("currentPage", page)
                 .addAttribute("totalPages", size)
-                .addAttribute("sortOptions", SortOption.valueOf(sortBy.name()))
+                .addAttribute("listFacilities",listFacilitiesOfSchool)
+                .addAttribute("sortOptions", SortOption.values())
+                .addAttribute("currentSort", sortBy)
                 .addAttribute("emailErrorMessage", globalConfig.getInValidEmail())
                 .addAttribute("mobileErrorMessage", globalConfig.getInvalidPhoneNumber());
 
@@ -102,7 +110,7 @@ public class UserHomeController {
         List<MasterDataVo> listUtilities = masterDatumService.findAllByTypeNameNoDelete("UTILITIES");
 
         model.addAttribute("facilities", listFacilities);
-        model.addAttribute("type_school", listTypeSchool);
+        model.addAttribute("typeSchool", listTypeSchool);
         model.addAttribute("data_age", listDataAge);
         model.addAttribute("utilities", listUtilities);
         model.addAttribute("listCity", listCity);

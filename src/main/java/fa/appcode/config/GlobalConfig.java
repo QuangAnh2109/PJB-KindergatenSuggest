@@ -304,6 +304,28 @@ public class GlobalConfig {
 
     @Value("${ME_052}")
     private String invalidPageNumber;
+    @Value("${ME_126}")
+    private String inquiriesRequired;
+    @Value("${ME_127}")
+    private String inquiriesLength;
+    @Value("${ME_128}")
+    private String requestSuccess;
+    @Value("${ME_129}")
+    private String requestFailed;
+    @Value("${ME_130}")
+    private String phoneLength;
+    @Value("${ME_120}")
+    private String phoneFormat;
+    @Value("${ME_121}")
+    private String emailRequired;
+    @Value("${ME_122}")
+    private String emailLength;
+    @Value("${ME_123}")
+    private String emailFormat;
+    @Value("${ME_124}")
+    private String fullNameRequired;
+    @Value("${ME_125}")
+    private String fullNameLength;
 
     @Value("${ME_044}")
     private String invalidRecordNo;

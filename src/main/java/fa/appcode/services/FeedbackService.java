@@ -13,4 +13,6 @@ public interface FeedbackService {
     RatingVo findRatingBySchoolId(Integer schoolId);
 
     List<FeedbackListVo> findListFeedbackBySchoolId(@Param("schoolId") Integer schoolId);
+
+    List<FeedbackListVo> findListFeedbackBySchoolIdAndRating(@Param("schoolId") Integer schoolId, @Param("minRating") Double minRating, @Param("maxRating") Double maxRating);
 }
