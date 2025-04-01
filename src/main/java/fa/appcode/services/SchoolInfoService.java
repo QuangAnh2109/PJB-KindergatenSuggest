@@ -54,6 +54,10 @@ public interface SchoolInfoService {
                                                          Integer schoolType, Integer admissionAge, Double minFee,
                                                          Double maxFee,List<Integer> facilities,List<Integer> utilities,Pageable pageable);
 
+    public Page<MySchoolVo> searchSchoolInfoByCategoriesAndSortBy(String keyword, Integer cityId, Integer districtId,
+                                                         Integer schoolType, Integer admissionAge, Double minFee,
+                                                         Double maxFee,List<Integer> facilities,List<Integer> utilities,Pageable pageable);
+
     HomeVo dataHomePage();
 
     MySchoolVo findSchoolDetailBySchoolId(int schoolId);

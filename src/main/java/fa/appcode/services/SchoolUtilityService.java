@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface SchoolUtilityService {
     List<Integer> getAllSchoolUtilityIdBySchoolIdAndNoDelete(int schoolId);
-    int saveAllSchoolUtility(List<Integer> schoolUtilityId, SchoolInfo schoolInfo) throws DataAccessException;
+    void saveAllSchoolUtility(List<Integer> schoolUtilityId, SchoolInfo schoolInfo) throws DataAccessException;
 }

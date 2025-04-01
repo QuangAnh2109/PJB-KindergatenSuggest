@@ -108,6 +108,14 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     }
 
     @Override
+    public Page<MySchoolVo> searchSchoolInfoByCategoriesAndSortBy(String keyword, Integer cityId, Integer districtId, Integer schoolType, Integer admissionAge, Double minFee, Double maxFee, List<Integer> facilities, List<Integer> utilities, Pageable pageable) {
+        Page<MySchoolVo> listResultSearchSchool = schoolInfoRepository.searchSchoolInfoByCategoriesAndSortBy(keyword, cityId, districtId,
+                schoolType,admissionAge,minFee,maxFee,facilities,utilities, pageable);
+        logger.info("Found " + listResultSearchSchool.getTotalElements() + " School Infos");
+        return listResultSearchSchool;
+    }
+
+    @Override
     public HomeVo dataHomePage() {
         return schoolInfoRepository.dataHomePage();
     }

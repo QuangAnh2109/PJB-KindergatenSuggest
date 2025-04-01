@@ -74,8 +74,7 @@ function navigateToPage(page) {
     const params = createParams(filterValues);
 
     // Update URL without page reload
-    const searchUrl = `/public/school/search?${params.toString()}`;
-    history.pushState({}, '', searchUrl);
+
 
     // Fetch API data
     fetchResults(`/api/search-results?${params.toString()}`);

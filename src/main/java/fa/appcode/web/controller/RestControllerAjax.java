@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RequestMapping("/api")
@@ -37,6 +38,7 @@ public class RestControllerAjax {
     private final FeedbackService feedbackService;
     private final SchoolInfoService schoolInfoService;
     private final AccountService accountService;
+    private final Logger logger = Logger.getLogger(RestControllerAjax.class.getName());
 
     @GetMapping("/search-results")
     public ResponseEntity<Map<String, Object>> searchResults(
@@ -53,31 +55,43 @@ public class RestControllerAjax {
             @RequestParam(required = false, defaultValue = "0") Integer page,
             @RequestParam(required = false, defaultValue = "10") Integer size) {
 
-        // Create pageable object based on page, size and sort
-        Pageable pageable;
-        if(sortBy.equals("BY_RATING_DESC")){
-            pageable = PageRequest.of(page, size);
-        }else{
-            Sort sort = Sort.by(SortOption.valueOf(sortBy).getDirection(),
-                    SortOption.valueOf(sortBy).getFieldName());
-            pageable = PageRequest.of(page, size, sort);
-        }
         //Validate
-        minFee = minFee*1000000;
-        maxFee = maxFee*1000000;
+        // Convert fee values if they are not null
+        if (minFee != null) minFee = minFee * 1000000;
+        if (maxFee != null) maxFee = maxFee * 1000000;
 
-        if(cityId ==0){
+        if (cityId != null && cityId == 0) {
             cityId = null;
         }
 
-        if(districtId ==0){
+        if (districtId != null && districtId == 0) {
             districtId = null;
         }
 
-        // Perform search with filters
-        Page<MySchoolVo> results = schoolInfoService.searchSchoolInfoByCategories(
-                keyword, cityId, districtId, schoolType, admissionAge,
-                minFee, maxFee, facilities, utilities, pageable);
+        // Create pageable object based on page, size and sort
+        Pageable pageable;
+        Page<MySchoolVo> results;
+
+        // Default to sorting by rating if sortBy is null
+        if (sortBy == null || sortBy.equals("BY_RATING_DESC")) {
+            pageable = PageRequest.of(page, size);
+            logger.info("BY_RATING_DESC");
+            // Perform search with filters
+            results = schoolInfoService.searchSchoolInfoByCategories(
+                    keyword, cityId, districtId, schoolType, admissionAge,
+                    minFee, maxFee, facilities, utilities, pageable);
+
+        } else {
+            Sort sort = Sort.by(SortOption.valueOf(sortBy).getDirection(),
+                    SortOption.valueOf(sortBy).getFieldName());
+            pageable = PageRequest.of(page, size, sort);
+            logger.info(sort.toString());
+            // Perform search with filters
+            results = schoolInfoService.searchSchoolInfoByCategoriesAndSortBy(
+                    keyword, cityId, districtId, schoolType, admissionAge,
+                    minFee, maxFee, facilities, utilities, pageable);
+            Logger.getLogger(results.toString());
+        }
 
         // Get facilities for schools in current page
         List<Integer> schoolIds = results.getContent().stream()

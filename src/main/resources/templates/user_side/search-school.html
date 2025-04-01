@@ -155,7 +155,7 @@
                 </div>
                 <div style="display: flex;justify-content: end;margin-bottom: 5px;width: 105%" ;>
                     <select name="sortBy" class="form-select" id="sortBy" onchange="submitFiltersWithPage()" style="width: auto;">
-                        <option selected disabled value="BY_RATING_DESC">By Rating</option>
+                        <option selected disabled value="BY_RATING_DESC">Sort By</option>
                         <option th:each="option : ${sortOptions}"
                                 th:value="${option}"
                                 th:text="${option.displayName}"

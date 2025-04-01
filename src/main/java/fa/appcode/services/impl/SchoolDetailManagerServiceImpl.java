@@ -27,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -106,7 +105,9 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
     @Transactional
     @Override
     public ResponseEntity<Map<String, Object>> createNewSchool(SchoolInfo schoolInfo, MultipartFile image, List<Integer> schoolFacilityId, List<Integer> schoolUtilityId) throws DataAccessException {
-        Map<String, Object> responseSuccess = new HashMap<>(Map.of("id", schoolInfo.getId())), responseFailed = new HashMap<>();
+
+        Map<String, Object> responseSuccess = new HashMap<>(), responseFailed = new HashMap<>();
+        responseSuccess.put("id", schoolInfo.getId());
         if(schoolInfo.getStatusId()==SchoolConstant.STATUS_SUBMITTED){
             responseSuccess.put("message", globalConfig.getSubmitSuccess());
             responseFailed.put("message", globalConfig.getSubmitFailed());
@@ -125,6 +126,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             schoolInfo.setImageUrl(saveImage(image, schoolInfo.getId()));
             schoolInfoRepository.save(schoolInfo);
 
+            responseSuccess.put("id", schoolInfo.getId());
             return ResponseEntity.ok().body(responseSuccess);
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -135,42 +137,35 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
     @Transactional
     @Override
     public ResponseEntity<Map<String, Object>> updateSchool(SchoolFormManager schoolInfo, MultipartFile image, List<Integer> schoolFacilityId, List<Integer> schoolUtilityId) throws DataAccessException {
-        // Get the current user's authentication
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        int status = SchoolConstant.STATUS_SUBMITTED;
-        for(GrantedAuthority grantedAuthority: authentication.getAuthorities()){
-            if(grantedAuthority.getAuthority().equals(Constant.ADMIN_ROLE)){
-                status = SchoolConstant.STATUS_APPROVED;
-                break;
-            }
-        }
-        schoolInfo.setStatusId(status);
-
-        // Get school info from DB
-        SchoolInfo schoolInfoDb = schoolInfoRepository.findSchoolInfoByIdAndRecordNoAndDeleteFlg(schoolInfo.getId(), schoolInfo.getRecordNo(), false);
-        List<Integer> facilityIdDb = schoolFacilityService.getAllSchoolFacilityIdBySchoolIdAndNoDeleteFlg(schoolInfo.getId()), utilityIdDb = schoolUtilityService.getAllSchoolUtilityIdBySchoolIdAndNoDelete(schoolInfo.getId());
-        if(schoolInfoDb == null) return ResponseEntity.badRequest().body(Map.of("message", "School not found!"));
-        
-        // Check if there is no change
-        SchoolFormManager schoolInfoNowForm = new SchoolFormManager(
-                false, null, schoolInfoDb.getRecordNo(), schoolInfoDb.getId(),
-                schoolInfoDb.getTypeId(), schoolInfoDb.getSchoolName(), schoolInfoDb.getSchoolAddress(), schoolInfoDb.getCity().getId(), schoolInfoDb.getDistrict().getId(), schoolInfoDb.getWard().getId(),
-                schoolInfoDb.getSchoolEmail(), schoolInfoDb.getSchoolPhone(), schoolInfoDb.getChildReceivingAgeId(), schoolInfoDb.getEducationMethodId(), schoolInfoDb.getFeeTo(),
-                schoolInfoDb.getFeeFrom(), schoolInfoDb.getSchoolIntroduction(), schoolInfoDb.getImageUrl(), schoolInfo.getUpdateTime(), schoolInfo.getUpdateId()
-        );
-        if(!schoolInfoNowForm.equals(schoolInfo) && !new HashSet<>(facilityIdDb).equals(new HashSet<>(schoolFacilityId)) && !new HashSet<>(utilityIdDb).equals(new HashSet<>(schoolUtilityId))) return ResponseEntity.badRequest().body(Map.of("message", "Don't have change!"));
         try {
+            // Get the current user's authentication
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            int status = SchoolConstant.STATUS_SUBMITTED;
+            for(GrantedAuthority grantedAuthority: authentication.getAuthorities()){
+                if(grantedAuthority.getAuthority().equals(Constant.ADMIN_ROLE)){
+                    status = SchoolConstant.STATUS_APPROVED;
+                    break;
+                }
+            }
+            schoolInfo.setStatusId(status);
+
+            // Get school info from DB
+            SchoolInfo schoolInfoDb = schoolInfoRepository.findSchoolInfoByIdAndRecordNoAndDeleteFlg(schoolInfo.getId(), schoolInfo.getRecordNo(), false);
+            if(schoolInfoDb == null) throw new Exception();
+
             schoolInfo.setImgageUrl(saveImage(image, schoolInfo.getId()));
 
-            schoolInfoService.updateSchoolInfoBySchoolFormManager(schoolInfo);
             schoolUtilityService.saveAllSchoolUtility(schoolUtilityId, schoolInfoDb);
             schoolFacilityService.saveAllSchoolFacility(schoolFacilityId,schoolInfoDb);
+
+            schoolInfoService.updateSchoolInfoBySchoolFormManager(schoolInfo);
+
             if(schoolInfo.getStatusId() == SchoolConstant.STATUS_SUBMITTED){
                 sendEmailForSubmitted(schoolInfo.getId());
             }
-            return ResponseEntity.ok().body(Map.of("message", "Update school successfully!"));
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save school due to file upload error.", e);
+            return ResponseEntity.ok().body(Map.of("message", globalConfig.getUpdateSuccess()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", globalConfig.getUpdateFailed()));
         }
     }
 
@@ -192,15 +187,15 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
                 emailService.sendEmailToMany(SendMailInfo.builder().toMail(toMail).ccMail(ccMail).mailId(mailId).detail(detail).build());
 
             }
-            return ResponseEntity.ok(Map.of("message", "Successfully!"));
-        } else return ResponseEntity.badRequest().body(Map.of("message", "Failed!"));
+            return ResponseEntity.ok().body(Map.of("message", getUpdateStatusSuccessMsg(newStatus)));
+        } else return ResponseEntity.badRequest().body(Map.of("message", getUpdateStatusFailMsg(newStatus)));
     }
 
     private void sendEmailForSubmitted(int schoolId) {
         List<String> sendTo = accountService.getAllAccountEmailsByRole(RoleConstant.ADMIN_ROLE.getKey());
         Map<Placeholder, String> details = new HashMap<Placeholder, String>();
         details.put(Placeholder.TITLE, "Review Submitted");
-        details.put(Placeholder.LINK, globalConfig.getServerLink() + "/manager/school/view-detail?id=" + schoolId);
+        details.put(Placeholder.LINK, globalConfig.getServerLink() + Constant.VIEW_DETAIL_URL + schoolId);
         emailService.sendEmailToMany(SendMailInfo.builder().toMail(sendTo).ccMail(List.of()).detail(details).build());
     }
 
@@ -219,5 +214,50 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             return Constant.IMAGE_DIR + "/" + fileName;
         }
         return null;
+    }
+
+    private String getUpdateStatusSuccessMsg(int statusId){
+        String msg = "Success";
+        if(statusId == SchoolConstant.STATUS_SUBMITTED){
+            msg = globalConfig.getSubmitSuccess();
+        }
+        else if(statusId == SchoolConstant.STATUS_APPROVED){
+            msg = globalConfig.getApproveSuccess();
+        }
+        else if(statusId == SchoolConstant.STATUS_REJECTED){
+            msg = globalConfig.getRejectSuccess();
+        }
+        else if(statusId == SchoolConstant.STATUS_PUBLISHED){
+            msg = globalConfig.getPublishSuccess();
+        }
+        else if(statusId == SchoolConstant.STATUS_UNPUBLISHED){
+            msg = globalConfig.getUnpublishSuccess();
+        }
+        else if(statusId == SchoolConstant.STATUS_DELETED){
+            msg = globalConfig.getDeleteSuccess();
+        }
+        return msg;
+    }
+    private String getUpdateStatusFailMsg(int statusId){
+        String msg = "Failed";
+        if(statusId == SchoolConstant.STATUS_SUBMITTED){
+            msg = globalConfig.getSubmitFailed();
+        }
+        else if(statusId == SchoolConstant.STATUS_APPROVED){
+            msg = globalConfig.getApproveFailed();
+        }
+        else if(statusId == SchoolConstant.STATUS_REJECTED){
+            msg = globalConfig.getRejectFailed();
+        }
+        else if(statusId == SchoolConstant.STATUS_PUBLISHED){
+            msg = globalConfig.getPublishFailed();
+        }
+        else if(statusId == SchoolConstant.STATUS_UNPUBLISHED){
+            msg = globalConfig.getUnpublishFailed();
+        }
+        else if(statusId == SchoolConstant.STATUS_DELETED){
+            msg = globalConfig.getDeleteFailed();
+        }
+        return msg;
     }
 }
