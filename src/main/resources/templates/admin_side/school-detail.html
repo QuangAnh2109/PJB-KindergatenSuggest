@@ -91,7 +91,10 @@
                 <table class="col-12 school-form">
                     <tr>
                         <td>School Name</td>
-                        <td><input id="schoolName" type="text" name="name" class="form-control" th:value="${school.name}" placeholder="Enter School Name Here..." disabled></td>
+                        <td>
+                            <input id="schoolName" type="text" name="name" class="form-control" th:value="${school.name}" placeholder="Enter School Name Here..." disabled>
+                            <span id="schoolName-error" class="error-message" style="color:red; display:none;"></span>
+                        </td>
                     </tr>
                     <tr>
                         <td>School Type</td>
@@ -100,6 +103,8 @@
                                 <option value="" disabled selected>Select a school type</option>
                                 <option th:each="schoolType:${schoolTypes}" th:value="${schoolType.typeKey}" th:text="${schoolType.typeValue}" th:selected="${school.typeId == schoolType.typeKey}"></option>
                             </select>
+                            <span id="type-error" class="error-message" style="color:red; display:none;"></span>
+                        </td>
                         </td>
                     </tr>
                     <tr>
@@ -109,6 +114,8 @@
                                 <option value="" disabled selected>Province/City</option>
                                 <option th:each="city:${citys}" th:value="${city.id}" th:text="${city.cityName}" th:selected="${school.cityName == city.cityName}"></option>
                             </select>
+                            <span id="city-error" class="error-message" style="color:red; display:none;"></span>
+                        </td>
                         </td>
                     </tr>
                     <tr>
@@ -118,6 +125,8 @@
                                 <option value="" disabled selected>District</option>
                                 <option th:each="district:${districts}" th:value="${district.id}" th:text="${district.districtName}" th:selected="${school.districtName == district.districtName}"></option>
                             </select>
+                            <span id="district-error" class="error-message" style="color:red; display:none;"></span>
+                        </td>
                         </td>
                     </tr>
                     <tr>
@@ -127,21 +136,33 @@
                                 <option value="" disabled selected>Ward</option>
                                 <option th:each="ward:${wards}" th:value="${ward.id}" th:text="${ward.wardName}" th:selected="${school.wardName == ward.wardName}"></option>
                             </select>
+                            <span id="ward-error" class="error-message" style="color:red; display:none;"></span>
+                        </td>
                         </td>
                     </tr>
                     <tr>
                         <td>
 
                         </td>
-                        <td><input type="text" name="address" id="address" class="form-control" placeholder="Enter School Address Here..." th:value="${school.address}" disabled></input></td>
+                        <td>
+                            <input type="text" name="address" id="address" class="form-control" placeholder="Enter School Address Here..." th:value="${school.address}" disabled>
+                            <span id="address-error" class="error-message" style="color:red; display:none;"></span>
+                        </td>
+                        </td>
                     </tr>
                     <tr>
                         <td>Email</td>
-                        <td><input id="email" type="email" name="email" class="form-control" placeholder="Enter School Email Here..." th:value="${school.email}" disabled></td>
+                        <td>
+                            <input id="email" type="email" name="email" class="form-control" placeholder="Enter School Email Here..." th:value="${school.email}" disabled>
+                            <span id="email-error" class="error-message" style="color:red; display:none;"></span>
+                        </td>
                     </tr>
                     <tr>
                         <td>Phone No.</td>
-                        <td><input id="phone" type="text" name="phone" class="form-control" placeholder="Enter Phone Number Here..." th:value="${school.phone}" disabled></td>
+                        <td>
+                            <input id="phone" type="text" name="phone" class="form-control" placeholder="Enter Phone Number Here..." th:value="${school.phone}" disabled>
+                            <span id="phone-error" class="error-message" style="color:red; display:none;"></span>
+                        </td>
                     </tr>
                     <tr>
                         <td>Child-receiving age</td>
@@ -151,6 +172,7 @@
                                 <option th:each="age:${childReceivingAges}" th:value="${age.typeKey}"
                                         th:text="${age.typeValue}" th:selected="${school.childReceivingAgeId == age.typeKey}">
                             </select>
+                            <span id="childReceivingAge-error" class="error-message" style="color:red; display:none;"></span>
                         </td>
                     </tr>
                     <tr>
@@ -161,15 +183,19 @@
                                 <option th:each="method:${educationMethods}" th:value="${method.typeKey}"
                                         th:text="${method.typeValue}" th:selected="${school.typeId == method.typeKey}">
                             </select>
+                            <span id="educationMethod-error" class="error-message" style="color:red; display:none;"></span>
                         </td>
                     </tr>
                     <tr>
                         <td>Fee/month(VND)</td>
                         <td class="row">
                             <label class="col-1 col-form-label">From</label>
-                            <input id="feeFrom" name="feeFrom" class="col-3 form-control" type="text" th:value="${school.feeFrom}" disabled>
+                            <input id="feeFrom" name="feeFrom" class="col-3 form-control" type="number" th:value="${school.feeFrom}" disabled>
                             <label class="col-1 col-form-label">To</label>
-                            <input id="feeTo" name="feeTo" class="col-3 form-control" type="text" th:value="${school.feeTo}" disabled>
+                            <input id="feeTo" name="feeTo" class="col-3 form-control" type="number" th:value="${school.feeTo}" disabled>
+                            <span id="feeTo-error" class="error-message col-12" style="color:red; display:none;"></span>
+                            <span id="feeFrom-error" class="error-message col-12" style="color:red; display:none;"></span>
+                            <span id="fee-error" class="error-message col-12" style="color:red; display:none;"></span>
                         </td>
                     </tr>
                     <tr>
@@ -191,7 +217,7 @@
                             <div th:each="utility:${utilities}" class="checkbox checkbox-success"
                                  style="margin-left: 12px;">
                                 <input th:id="'utility-checkbox' + ${utility.typeKey}" th:value="${utility.typeKey}"
-                                       name="schoolUtilities" type="checkbox" disabled>
+                                       name="schoolUtilities" type="checkbox" disabled th:checked="${schoolUtilities.contains(utility.typeKey)}">
                                 <label th:for="'utility-checkbox' + ${utility.typeKey}"
                                        th:text="${utility.typeValue}">
                                 </label>
@@ -202,6 +228,7 @@
                         <td>School Introduction</td>
                         <td>
                             <div id="editor" style="background-color: #f5f5f5;" th:utext="${school.introduction}"></div>
+                            <span id="introduction-error" class="error-message" style="color:red; display:none;"></span>
                         </td>
                     </tr>
                     <tr>
@@ -209,6 +236,7 @@
                         <td>
                             <input name="image" type="file" class="form-control" id="image"
                                    accept="image/gif, image/jpeg, image/png" disabled/>
+                            <span id="image-error" class="error-message" style="color:red; display:none;"></span>
                         </td>
                     </tr>
                 </table>
@@ -271,7 +299,34 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+
 <!-- END popup 1 -->
+
+<!-- popup 2 -->
+<div id="confirmModel" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="title-popup-2"></h5>
+            </div>
+            <div class="modal-body">
+                <h6 id="msg-popup-2" th:text="#{ME_122}"></h6>
+
+            </div>
+            <div class="modal-footer">
+                <button id="button-1-popup-2" class="btn btn-secondary waves-effect"
+                        data-dismiss="modal">No, Take me back!
+                </button>
+                <button id="button-2-popup-2" class="btn btn-primary waves-effect waves-light">Yes
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- END popup 2 -->
 
 <!-- Vendor js -->
 <script src="/admin_side/js/vendor.min.js"></script>

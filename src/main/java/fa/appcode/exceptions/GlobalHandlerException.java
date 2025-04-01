@@ -47,7 +47,7 @@ public class GlobalHandlerException {
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<Map<String,String>> handleValidationException(ValidationException e) {
         logger.error("validate exception: {}", e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getErrors());
     }
 
     @ExceptionHandler(NoResourceFoundException.class)

@@ -32,6 +32,7 @@ public class Constant {
     public static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
     public static final String PARENT_LIST_URL = "/manager/parent-list";
     public static final String REQUEST_REMINDER_URL = "http://localhost:8080/manager/request-reminder";
+    public static final String VIEW_DETAIL_URL = "/manager/school/view-detail?id=";
 
     //ADMIN SIDE
     public static final String SCHOOL_FEEDBACK_RATING_MANAGER_PAGE = "admin_side/school-feedback-rating";
@@ -47,14 +48,16 @@ public class Constant {
     public static final String REQUEST_LIST_CONTROLLER = "/manager/request-list";
     public static final String SEARCH_REQUEST_LIST_CONTROLLER = "/manager/searchRequestList";
     //REGEX
+    public static final String NULL_REGEX = "^(?!\\s*$).+";
     public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{12,72}$";
     public static final String HOME_PAGE = "user_side/index";
     public static final String HOME_PAGE_URL = "/home";
-    public static final String EMAIL_REGEX_HTML = "\\w[\\w0-9]*@gmail.com";
-    public static final String PHONE_REGEX_HTML = "/(84|0)[0-9]{9}/g";
-    public static final String EMAIL_REGEX = "^[a-z][a-z0-9]*@gmail.com$";
+    public static final String EMAIL_REGEX = "^[a-z][a-z0-9]{0,244}@gmail.com$";
+    public static final String SCHOOL_NAME_REGEX = "^[a-zA-Z][a-zA-Z0-9\\s]{0,254}$";
     public static final String PHONE_REGEX = "^(0|\\+84)\\d{9}$";
     public static final String MAIL_REGEX = "^(?=.{1,255}$)[a-zA-Z0-9._%+-]+@gmail\\.com$";
+    public static final String ADDRESS_REGEX = "^.{1,255}$";
+    public static final String SCHOOL_INTRODUCTION_REGEX = "^.{1,65535}$";
     //CONSTANT VALUE
     public static final Integer PARENT_ROLE_ID = 3;
     public static final Integer SCHOOL_OWNER_ID = 2;
@@ -94,4 +97,24 @@ public class Constant {
     public static final String parentPageSize ="numberPage";
 
     public static final String ERROR_PROPERTIES_CODE = "Message not found";
+    //message key
+    public static final String NAME_MESSAGE_KEY = "name";
+    public static final String ADDRESS_MESSAGE_KEY = "address";
+    public static final String EMAIL_MESSAGE_KEY = "email";
+    public static final String PHONE_MESSAGE_KEY = "phone";
+    public static final String FEE_MESSAGE_KEY = "fee";
+    public static final String FEE_FROM_MESSAGE_KEY = "feeFrom";
+    public static final String FEE_TO_MESSAGE_KEY = "feeTo";
+    public static final String INTRODUCTION_MESSAGE_KEY = "introduction";
+    public static final String IMAGE_MESSAGE_KEY = "image";
+    public static final String SEARCH_MESSAGE_KEY = "search";
+    public static final String DATE_MESSAGE_KEY = "date";
+    public static final String DATE_FROM_MESSAGE_KEY = "dateFrom";
+    public static final String DATE_TO_MESSAGE_KEY = "dateTo";
+    public static final String SCHOOL_TYPE_MESSAGE_KEY = "schoolType";
+    public static final String CITY_MESSAGE_KEY = "city";
+    public static final String DISTRICT_MESSAGE_KEY = "district";
+    public static final String WARD_MESSAGE_KEY = "ward";
+    public static final String CHILD_RECEIVING_AGE_MESSAGE_KEY = "childReceivingAge";
+    public static final String EDUCATION_METHOD_MESSAGE_KEY = "educationMethod";
 }
