@@ -6,6 +6,7 @@ function reloadReset() {
         e.preventDefault();
         const submitBtn = document.getElementById('reset-button');
         submitBtn.disabled = true;
+
         fetch(form.action, {
             method: 'POST',
             body: new FormData(form)
@@ -16,13 +17,15 @@ function reloadReset() {
                 tempDiv.innerHTML = html;
                 document.querySelector('.padding').innerHTML =
                     tempDiv.querySelector('.padding').innerHTML;
-                if (tempDiv.querySelector('.alert-success')) {
-                    const successModal = new bootstrap.Modal(document.getElementById('successModal'), {
-                        backdrop: 'static',
-                        keyboard: false
-                    });
-                    successModal.show();
-                    document.getElementById('redirectLogin').addEventListener('click', function () {
+                if (tempDiv.querySelector('.success')) {
+                    let successMessage = tempDiv.querySelector('.success').textContent.trim();
+                    Swal.fire({
+                        title: "Password Reset Successfully",
+                        text: successMessage,
+                        icon: "success",
+                        confirmButtonText: "Login Now",
+                        allowOutsideClick: false
+                    }).then(() => {
                         window.location.href = "/public/showMyLoginPage";
                     });
                 }
@@ -30,7 +33,12 @@ function reloadReset() {
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error has occurred. Please try again.');
+                Swal.fire({
+                    title: "Error",
+                    text: errorMessage,
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
             })
             .finally(() => {
                 submitBtn.disabled = false;

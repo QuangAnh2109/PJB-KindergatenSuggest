@@ -8,7 +8,7 @@ function checkForRecordError() {
     const recordErrorAlert = document.getElementById('recordErrorAlert');
     if (recordErrorAlert) {
         const errorMessage = recordErrorAlert.textContent.trim();
-        console.log("Error Message:", errorMessage); // Debug xem có nội dung không
+        console.log("Error Message:", errorMessage);
         if (errorMessage) {
             recordErrorAlert.style.display = 'none';
             Swal.fire({
@@ -58,7 +58,7 @@ function initializeFormHandlers() {
             if (!hasChanges) {
                 Swal.fire({
                     title: "No Changes",
-                    text: "You didn't change anything.",
+                    text: message.dontChange,
                     icon: "info",
                     confirmButtonText: "OK"
                 });
@@ -117,7 +117,7 @@ function initializeFormHandlers() {
                     console.error('Error:', error);
                     Swal.fire({
                         title: "Error",
-                        text: "An error occurred. Please try again.",
+                        text: messages.errorOccur,
                         icon: "error",
                         confirmButtonText: "OK"
                     });
@@ -147,18 +147,21 @@ function initializeFormHandlers() {
                 .then(html => {
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = html;
-
                     const newPasswordTab = tempDiv.querySelector('#password');
                     if (newPasswordTab) {
                         document.querySelector('#password').innerHTML = newPasswordTab.innerHTML;
                     }
-
-                    if (tempDiv.querySelector('.alert-success') || tempDiv.querySelector('[th\\:if="${successUpdate}"]')) {
-                        const successModal = new bootstrap.Modal(document.getElementById('successModal'), {
-                            backdrop: 'static',
-                            keyboard: false
+                    if (tempDiv.querySelector('.success3') || tempDiv.querySelector('[th\\:if="${successMessage}"]')) {
+                        let successMessage= tempDiv.querySelector('.success3').textContent;
+                        Swal.fire({
+                            title: message.updateSuccess,
+                            text: message.loginBackMessage,
+                            icon: "success",
+                            confirmButtonText: "Login Now",
+                            allowOutsideClick: false
+                        }).then(() => {
+                            window.location.href = "/public/showMyLoginPage";
                         });
-                        successModal.show();
                     }
                     initializeFormHandlers();
                 })
@@ -166,7 +169,7 @@ function initializeFormHandlers() {
                     console.error('Error:', error);
                     Swal.fire({
                         title: "Error",
-                        text: "An error occurred. Please try again.",
+                        text: messages.errorOccur,
                         icon: "error",
                         confirmButtonText: "OK"
                     });
@@ -202,7 +205,7 @@ function initializeTabSwitching() {
             targetPane.classList.add('active');
         });
     });
-
+    
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
 

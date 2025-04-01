@@ -39,8 +39,8 @@
                                     <span th:text="${error}"></span>
 
                                 </div>
-                                <div th:if="${message}" class="alert alert-success text-center" id="logoutMessage">
-                                    <span th:text="${message}"></span>
+                                <div th:if="${message}"  th:hidden="true" class="alert alert-success text-center" id="logoutMessage">
+                                    <span th:text="${message}" ></span>
 
                                 </div>
                                 <form action="#" th:action="@{/authenticateTheUser}" method="post" name="loginForm">
@@ -92,28 +92,14 @@
     </div>
 </div>
 <!-- Modal Xác nhận -->
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="logoutModalLabel">Notice</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p id="logoutMessageText"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Javascript Files -->
 <script th:src="@{/user_side/js/dropdown.js}"></script>
 <script th:src="@{/user_side/js/plugins.js}"></script>
 <script th:src="@{/user_side/js/designesia.js}"></script>
 <script th:src="@{/user_side/js/login.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/user_side/js/validate.js}"></script>
+
 <script>
     function togglePassword() {
         var passwordInput = document.getElementById("password");
@@ -140,11 +126,13 @@
         }
         let logoutMessage = document.getElementById("logoutMessage");
         if (logoutMessage) {
-            let messageText = logoutMessage.innerText;
-            if (messageText.trim() !== "") {
-                document.getElementById("logoutMessageText").innerText = messageText;
-                let logoutModal = new bootstrap.Modal(document.getElementById("logoutModal"));
-                logoutModal.show();
+            {
+                Swal.fire({
+                    title: "Success",
+                    text: logoutMessage.textContent,
+                    icon: "success",
+                    confirmButtonText: "OK"
+                })
             }
         }
     };
@@ -153,10 +141,9 @@
     var messages = {
         requiredField: /*[[#{ME_003}]]*/ "This field is required",
         invalidEmail: /*[[#{ME_028}]]*/ "Please enter a valid email address",
-        passwordLength: /*[[#{ME_043}]]*/ "Password length must be between 12 and 72 characters"
+        passwordLength: /*[[#{ME_043}]]*/ "Password length must be between 12 and 72 characters",
+        errorOccur: /*[[#{ ME_017}]]*/ "An unexpected error occurred. Please try again later."
     };
 </script>
-<script src="/user_side/js/login.js"></script>
-
 </body>
 </html>
