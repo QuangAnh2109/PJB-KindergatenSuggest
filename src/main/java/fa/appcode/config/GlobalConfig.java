@@ -307,6 +307,9 @@ public class GlobalConfig {
 
     @Value("${ME_044}")
     private String invalidRecordNo;
+
+    @Value("${ME_046}")
+    private String noChangeToUpdate;
     @Value("${ME_053}")
     private String dontChangeAnything;
 
@@ -316,3 +319,4 @@ public class GlobalConfig {
     @Value("${ME_121}")
     private String invalidToDate;
 }
+

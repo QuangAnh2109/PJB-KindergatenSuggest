@@ -48,7 +48,7 @@ public class UserManagementController {
 
 
         Pageable pageable = PageRequest.of(currentPage, globalConfig.getSizeOfPage());
-        String role = accountService.getAccountInfo(principal).getRoleId().equals(Constant.ADMIN_ROLE_ID) ? "Admin" : "School owner";
+        String role = accountService.findAccountRoleString(principal.getName());
 
         Page<AccountVo> accounts = accountService.getAllAccounts(search, pageable);
         List<AccountVo> listAccount = accounts.getContent();
@@ -72,7 +72,7 @@ public class UserManagementController {
      */
     @GetMapping("user-details/{id}")
     public String showUserDetails(@PathVariable("id") Integer id, Model model, Principal principal) {
-        String role = accountService.getAccountInfo(principal).getRoleId().equals(Constant.ADMIN_ROLE_ID) ? "Admin" : "School owner";
+        String role = accountService.findAccountRoleString(principal.getName());
         AccountVo user = accountService.getAccountById(id);
 
         model.addAttribute("role", role);
@@ -93,7 +93,7 @@ public class UserManagementController {
      */
     @GetMapping({"add-user", "edit-user/{id}"})
     public String showUserForm(@PathVariable(name = "id", required = false) Integer id, Model model, Principal principal) {
-        String role = accountService.getAccountInfo(principal).getRoleId().equals(Constant.ADMIN_ROLE_ID) ? "Admin" : "School owner";
+        String role = accountService.findAccountRoleString(principal.getName());
 
         AccountVo user = (id != null) ? accountService.getAccountById(id) : new AccountVo();
 

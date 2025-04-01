@@ -26,8 +26,6 @@ public class UserManagementRestController {
     private AccountService accountService;
     @Autowired
     private GlobalConfig globalConfig;
-    @Autowired
-    private ValidateService validateService;
 
     /**
      * Delete account
@@ -72,7 +70,7 @@ public class UserManagementRestController {
             }
         } catch (IllegalStateException e) {
             // check
-            HttpStatus status = e.getMessage().contains("Data has been modified")
+            HttpStatus status = e.getMessage().contains(globalConfig.getInvalidRecordNo())
                     ? HttpStatus.CONFLICT  // 409: data has bên modified by another one
                     : HttpStatus.NOT_MODIFIED;  // 304: data has no change
 

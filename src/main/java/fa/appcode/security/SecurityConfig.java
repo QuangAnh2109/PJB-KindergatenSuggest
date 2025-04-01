@@ -12,11 +12,14 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +29,8 @@ public class SecurityConfig {
     private final CustomAuthenticationSuccessHandler successHandler;
     private final AuthenticationHandler authenticationHandler;
     private final AccountRepository accountRepository;
+    private final SessionRegistry sessionRegistry;
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -56,6 +61,11 @@ public class SecurityConfig {
     }
 
     @Bean
+    public static HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
@@ -69,7 +79,7 @@ public class SecurityConfig {
                         .requestMatchers("/manager/**").hasAnyAuthority(Constant.SCHOOL_OWNER_ROLE, Constant.ADMIN_ROLE)
                         .requestMatchers("/admin/**").hasAuthority(Constant.ADMIN_ROLE)
                         .anyRequest().authenticated()
-                ).addFilterBefore(new AuthenticationValidationFilter(), UsernamePasswordAuthenticationFilter.class)
+                )
                 .formLogin(form -> form
                         .loginPage("/public/showMyLoginPage")
                         .loginProcessingUrl("/authenticateTheUser")
@@ -88,6 +98,9 @@ public class SecurityConfig {
                 ).sessionManagement(session -> session
                         .invalidSessionUrl("/public/showMyLoginPage?timeout=true")
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .maximumSessions(1)
+                        .expiredUrl("/public/showMyLoginPage?expired=true")
+                        .sessionRegistry(sessionRegistry)
                 )
                 .exceptionHandling(configurer -> configurer
                         .accessDeniedPage("/public/access-denied")
