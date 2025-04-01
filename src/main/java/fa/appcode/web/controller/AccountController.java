@@ -32,7 +32,7 @@ public class AccountController {
     }
 
     @PostMapping("/view-account")
-    public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo, Model model) {
+    public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo, Model model){
         Map<String, String> accountValidationErrors = accountService.updateAccountProcess(accountInfo);
         if(accountValidationErrors.containsKey("recordChange")) {
             model.addAttribute("recordError", globalConfig.getUpdateFailMessage());

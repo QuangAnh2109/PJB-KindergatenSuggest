@@ -161,6 +161,9 @@ public class GlobalConfig {
     @Value("${ME_050}")
     private String invalidActionType;
 
+    @Value("${ME_045}")
+    private String ResetSuccessTitle;
+
     @Value("${ME_077}")
     private String failedSearchParent;
 
@@ -279,7 +282,7 @@ public class GlobalConfig {
     private String unpublishFailed;
 
     @Value("${ME_114}")
-    private String deleteFailedAgain;
+    private String deleteSuccess;
 
     @Value("${ME_115}")
     private String updateFailed;
@@ -294,7 +297,7 @@ public class GlobalConfig {
     private String submitFailed;
 
     @Value("${ME_119}")
-    private String fromDateInvalid;
+    private String fromDateGreaterThanToDate;
 
     @Value("${ME_051}")
     private String searchLengthLimit;
@@ -305,7 +308,15 @@ public class GlobalConfig {
     @Value("${ME_044}")
     private String invalidRecordNo;
 
-    @Value("${ME_045}")
+    @Value("${ME_046}")
     private String noChangeToUpdate;
+    @Value("${ME_053}")
+    private String dontChangeAnything;
+
+    @Value("${ME_120}")
+    private String invalidFromDate;
+
+    @Value("${ME_121}")
+    private String invalidToDate;
 }
 

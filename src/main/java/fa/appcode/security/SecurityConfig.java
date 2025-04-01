@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
@@ -48,6 +49,10 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
+    @Bean
+    public AuthenticationValidationFilter authenticationValidationFilter() {
+        return new AuthenticationValidationFilter();
+    }
 
 
     @Bean
@@ -65,7 +70,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/public/showMyLoginPage", "/public/forgot-password", "/public/register", "/public/reset-password", "/public/verify-account/**").anonymous()
+                        .requestMatchers("/public/forgot-password", "/public/register", "/public/reset-password", "/public/verify-account/**").anonymous()
                         .requestMatchers("/", "/user_side/**", "/public/**", "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/user/**").not().hasAnyAuthority(Constant.SCHOOL_OWNER_ROLE, Constant.ADMIN_ROLE)
                         .requestMatchers("/auth/**").hasAnyAuthority(Constant.PARENT_ROLE, Constant.SCHOOL_OWNER_ROLE, Constant.ADMIN_ROLE)

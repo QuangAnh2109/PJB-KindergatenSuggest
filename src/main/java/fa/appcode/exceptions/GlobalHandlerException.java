@@ -25,7 +25,7 @@ public class GlobalHandlerException {
         logger.error("Database failed: {}" ,ex.getMessage(),ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Database Failed: " + ex.getMessage());
     }
-
+    
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<String> handleDataAccessException(DataAccessException e) {
         logger.error("Query data failed: {}", e.getMessage(), e);
@@ -47,7 +47,7 @@ public class GlobalHandlerException {
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<Map<String,String>> handleValidationException(ValidationException e) {
         logger.error("validate exception: {}", e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getErrors());
     }
 
     @ExceptionHandler(NoResourceFoundException.class)

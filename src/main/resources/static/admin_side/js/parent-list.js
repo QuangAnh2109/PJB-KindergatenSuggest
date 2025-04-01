@@ -25,24 +25,35 @@ $(document).ready(function () {
     });
 
     function findAll(search, currentPage, updateUrl = false) {
-        if (updateUrl) {
-            updateUrlParams(search, currentPage);
+        if (search.length > 1000) {
+            showModalMessage();
+            return;
         }
-
         $.get({
             url: "/manager/parent-list",
             data: { search: search, currentPage: currentPage },
             success: function (responseData) {
+                if (updateUrl) {
+                    updateUrlParams(search, currentPage);
+                }
                 console.log("LOADED!");
                 $("#main-content").html($(responseData).find("#main-content").html());
             },
             error: function () {
-                alert("Failed to Search user: " + search);
+                showModalMessage();
             }
         });
     }
 
+    function showModalMessage() {
+        $("#modalMessage").text();
+        $("#notificationModal").modal("show");
+    }
+
     function updateUrlParams(search, currentPage) {
+        if(search!=null && search.length>1000){
+        search = search.trim().substring(0, 1000);
+        }
         let newUrl = window.location.pathname + "?search=" + encodeURIComponent(search) + "&currentPage=" + currentPage;
         window.history.pushState({ path: newUrl }, "", newUrl);
     }
