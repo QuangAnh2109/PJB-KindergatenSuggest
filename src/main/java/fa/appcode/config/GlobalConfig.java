@@ -315,4 +315,7 @@ public class GlobalConfig {
 
     @Value("${ME_121}")
     private String invalidToDate;
+
+    @Value("${ME_123}")
+    private String fullAddressLengthLimit;
 }

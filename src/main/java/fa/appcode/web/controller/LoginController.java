@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LoginController {
     private final GlobalConfig globalConfig;
 
-    @GetMapping("/public/showMyLoginPage")
+    @GetMapping("/public/sign-in")
     public String showMyLoginPage(HttpServletRequest request, Model model,
                                   @RequestParam(value = "logout", required = false) String logout) {
         HttpSession session = request.getSession();

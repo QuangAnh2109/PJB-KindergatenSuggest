@@ -44,10 +44,6 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
-    @Bean
-    public AuthenticationValidationFilter authenticationValidationFilter() {
-        return new AuthenticationValidationFilter();
-    }
 
 
     @Bean
@@ -69,9 +65,8 @@ public class SecurityConfig {
                         .requestMatchers("/manager/**").hasAnyAuthority(Constant.SCHOOL_OWNER_ROLE, Constant.ADMIN_ROLE)
                         .requestMatchers("/admin/**").hasAuthority(Constant.ADMIN_ROLE)
                         .anyRequest().authenticated()
-                ).addFilterBefore(new AuthenticationValidationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .formLogin(form -> form
-                        .loginPage("/public/showMyLoginPage")
+                ).formLogin(form -> form
+                        .loginPage("/public/sign-in")
                         .loginProcessingUrl("/authenticateTheUser")
                         .usernameParameter("username")
                         .passwordParameter("password")
@@ -83,16 +78,15 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
-                        .logoutSuccessUrl("/public/showMyLoginPage?logout")
+                        .logoutSuccessUrl("/public/sign-in?logout")
                         .permitAll()
                 ).sessionManagement(session -> session
-                        .invalidSessionUrl("/public/showMyLoginPage?timeout=true")
+                        .invalidSessionUrl("/public/sign-in?timeout=true")
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
                 .exceptionHandling(configurer -> configurer
                         .accessDeniedPage("/public/access-denied")
                 );
-
         return http.build();
     }
 }
