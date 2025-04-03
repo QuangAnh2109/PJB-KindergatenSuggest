@@ -160,7 +160,7 @@ function initializeFormHandlers() {
                             confirmButtonText: "Login Now",
                             allowOutsideClick: false
                         }).then(() => {
-                            window.location.href = "/public/showMyLoginPage";
+                            window.location.href = "/public/sign-in";
                         });
                     }
                     initializeFormHandlers();
@@ -218,7 +218,7 @@ function initializeSuccessModal() {
     const redirectLoginBtn = document.getElementById('redirectLogin');
     if (redirectLoginBtn) {
         redirectLoginBtn.addEventListener('click', function() {
-            window.location.href = '/public/showMyLoginPage';
+            window.location.href = '/public/sign-in';
         });
     }
     const successUpdate = document.querySelector('[th\\:if="${successUpdate}"]');
