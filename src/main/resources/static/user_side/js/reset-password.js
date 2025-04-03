@@ -26,7 +26,7 @@ function reloadReset() {
                         confirmButtonText: "Login Now",
                         allowOutsideClick: false
                     }).then(() => {
-                        window.location.href = "/public/showMyLoginPage";
+                        window.location.href = "/public/sign-in";
                     });
                 }
                 reloadReset();

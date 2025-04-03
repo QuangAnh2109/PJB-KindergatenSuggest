@@ -182,8 +182,11 @@
                                                     <div class="mb-3">
                                                         <input type="text" name="address" id="address" class="form-control"
                                                                th:value="${accountInfo.address != null ? accountInfo.address : ''}"
-                                                               placeholder="Enter you address..." maxlength="255" required
+                                                               placeholder="Enter you address..."  required
                                                                disabled>
+                                                        <div th:if="${fullAddressError}" class="text-danger">
+                                                            <span th:text="${fullAddressError}"></span>
+                                                        </div>
                                                     </div>
                                                     <div th:if="${param.success}" class="alert alert-success" th:hidden="true">
                                                     </div>
@@ -252,7 +255,7 @@
                                                                                value="Save" class="btn-main">
                                                                     </div>
                                                                     <div th:if="${successUpdate}" id="loginButton">
-                                                                        <a th:href="@{/public/showMyloginPage}"
+                                                                        <a th:href="@{/public/sign-in}"
                                                                            class="btn-main">Back to Login</a>
                                                                     </div>
                                                                 </div>
@@ -325,7 +328,7 @@
             const redirectLoginBtn = document.getElementById('redirectLogin');
             if (redirectLoginBtn) {
                 redirectLoginBtn.addEventListener('click', function () {
-                    window.location.href = '/public/showMyLoginPage';
+                    window.location.href = '/public/sign-in';
                 });
             }
         })

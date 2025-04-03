@@ -474,7 +474,7 @@ public class AccountServiceImpl implements AccountService {
         // Validate the updated account fields
         Map<String, String> validationResult = validateService.validateAccountField(
                 accountInfo.getFullName(), accountInfo.getPhone(),
-                currentAccount.getPhone(), accountInfo.getDob()
+                currentAccount.getPhone(), accountInfo.getDob(),accountInfo.getAddress()
         );
         // If there are validation errors, return them immediately
         if (!validationResult.isEmpty()) {

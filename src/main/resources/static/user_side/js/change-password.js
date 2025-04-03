@@ -29,7 +29,7 @@ function reloadHande() {
                         });
                         successModal.show();
                         document.getElementById('redirectLogin').addEventListener('click', function () {
-                            window.location.href = "/public/showMyLoginPage";
+                            window.location.href = "/public/sign-in";
                         });
                     }
 
