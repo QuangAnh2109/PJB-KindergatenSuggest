@@ -53,9 +53,9 @@ public class Constant {
     public static final String HOME_PAGE = "user_side/index";
     public static final String HOME_PAGE_URL = "/home";
     public static final String EMAIL_REGEX = "^[a-z][a-z0-9]{0,244}@gmail.com$";
-    public static final String PHONE_REGEX = "^(84|0)\\d{9}$";
     public static final String SCHOOL_NAME_REGEX = "^[a-zA-Z][a-zA-Z0-9\\s]{0,254}$";
-    public static final String MAIL_REGEX = "^(?=.{1,255}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    public static final String PHONE_REGEX = "^(0|\\+84)\\d{9}$";
+    public static final String MAIL_REGEX = "^(?=.{1,255}$)[a-zA-Z0-9._%+-]+@gmail\\.com$";
     public static final String ADDRESS_REGEX = "^.{1,255}$";
     public static final String SCHOOL_INTRODUCTION_REGEX = "^.{1,65535}$";
     //CONSTANT VALUE
@@ -66,7 +66,7 @@ public class Constant {
     public static final String SCHOOL_OWNER_ROLE = "School owner";
     public static final String ADMIN_ROLE = "Admin";
     public static final Integer STATUS_ACTIVE = 1;
-    public static final Integer STATUS_INACTIVE = 0;
+    public static final Integer STATUS_INACTIVE = 2;
     public static final Integer STATUS_DELETED = 0;
     public static final String WEB_SYSTEM = "WEB_SYSTEM";
     public static final int SEND_EMAIL_FORGOT = 1;

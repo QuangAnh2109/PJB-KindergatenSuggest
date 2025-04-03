@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository("schoolInfoRepository")
-public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer> {
+public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>{
 
 
     //find all schools by account email that have school status of published
@@ -225,9 +225,11 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
 
 
     @Query("""
-            SELECT new fa.appcode.common.vo.MySchoolVo(si.id,si.schoolName,si.schoolEmail,si.schoolAddress,si.feeFrom,
+            SELECT new fa.appcode.common.vo.MySchoolVo(si.id,si.schoolName,si.schoolEmail,
+                    CONCAT(si.schoolAddress, ', ', si.ward.wardName, ', ', si.district.districtName, ', ', si.city.cityName),
+                    si.feeFrom,
                     ageRange.typeValue,typeSchool.typeValue,si.imageUrl,
-                    COALESCE(CAST(AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5) AS double), 0.0),
+                    COALESCE(CAST(AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5) AS double), 0.0) as avgRating,
                     COALESCE(CAST(COUNT(DISTINCT f.id) AS integer), 0),si.schoolPhone,"",0.0,null,null,null)
             FROM SchoolInfo si
             LEFT JOIN City c ON si.city.id = c.id
@@ -240,17 +242,79 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
                     WHERE f2.id.schoolId = si.id AND f2.id.accountId = f.id.accountId
                     GROUP BY f2.id.accountId
                 )
-                    WHERE (:keyword IS NULL OR si.schoolName LIKE CONCAT('%', :keyword, '%'))
-                       AND (:cityId IS NULL OR si.city.id = :cityId)
-                       AND (:districtId IS NULL OR si.district.id = :districtId)
-                       AND si.statusId = 5
-                    GROUP BY si.id, si.schoolName, si.schoolEmail, si.schoolAddress, si.feeFrom,
-                       ageRange.typeValue, typeSchool.typeValue, si.imageUrl
+            LEFT JOIN SchoolFacility sf ON sf.id.schoolId = si.id
+            LEFT JOIN SchoolUtility su ON su.id.schoolId  = si.id
+            WHERE (:keyword IS NULL OR si.schoolName LIKE CONCAT('%', :keyword, '%') OR si.schoolAddress LIKE CONCAT('%', :keyword, '%') OR si.schoolEmail LIKE CONCAT('%', :keyword, '%') OR si.schoolPhone LIKE CONCAT('%', :keyword, '%'))
+               AND (:cityId IS NULL OR si.city.id = :cityId)
+               AND (:districtId IS NULL OR si.district.id = :districtId)
+               AND (:schoolType IS NULL OR si.typeId = :schoolType)
+               AND (:admissionAge IS NULL OR si.childReceivingAgeId = :admissionAge)
+               AND (:minFee IS NULL OR si.feeFrom >= :minFee)
+               AND (:maxFee IS NULL OR si.feeTo <= :maxFee)
+               AND (:facilities IS NULL OR sf.id.facilitiesId IN :facilities)
+               AND (:utilities IS NULL OR su.id.utilitiesId IN :utilities)
+               AND si.statusId = 5
+            GROUP BY si.id, si.schoolName, si.schoolEmail, si.schoolAddress, si.feeFrom,
+               ageRange.typeValue, typeSchool.typeValue, si.imageUrl
+            ORDER BY avgRating DESC
             """)
     Page<MySchoolVo> searchSchoolInfoByCategories(@Param("keyword") String keyword,
                                                   @Param("cityId") Integer cityId,
                                                   @Param("districtId") Integer districtId,
+                                                  @Param("schoolType") Integer schoolType,
+                                                  @Param("admissionAge") Integer admissionAge,
+                                                  @Param("minFee") Double minFee,
+                                                  @Param("maxFee") Double maxFee,
+                                                  @Param("facilities") List<Integer> facilities,
+                                                  @Param("utilities") List<Integer> utilities,
                                                   Pageable pageable);
+
+    @Query("""
+            SELECT new fa.appcode.common.vo.MySchoolVo(si.id,si.schoolName,si.schoolEmail,
+                    CONCAT(si.schoolAddress, ', ', si.ward.wardName, ', ', si.district.districtName, ', ', si.city.cityName),
+                    si.feeFrom,
+                    ageRange.typeValue,typeSchool.typeValue,si.imageUrl,
+                    COALESCE(CAST(AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5) AS double), 0.0) as avgRating,
+                    COALESCE(CAST(COUNT(DISTINCT f.id) AS integer), 0),si.schoolPhone,"",0.0,null,null,null)
+            FROM SchoolInfo si
+            LEFT JOIN City c ON si.city.id = c.id
+            LEFT JOIN District d ON si.district.id = d.id
+            JOIN MasterDatum ageRange ON ageRange.typeKey = si.childReceivingAgeId AND ageRange.typeName = 'CHILD RECEIVING AGE'
+            JOIN MasterDatum typeSchool ON typeSchool.typeKey = si.typeId AND typeSchool.typeName = 'SCHOOL TYPE'
+            LEFT JOIN Feedback f ON f.school.id = si.id AND f.id.feedbackTime = (
+                    SELECT MAX(f2.id.feedbackTime)
+                    FROM Feedback f2
+                    WHERE f2.id.schoolId = si.id AND f2.id.accountId = f.id.accountId
+                    GROUP BY f2.id.accountId
+                )
+            LEFT JOIN SchoolFacility sf ON sf.id.schoolId = si.id
+            LEFT JOIN SchoolUtility su ON su.id.schoolId  = si.id
+            WHERE (:keyword IS NULL OR si.schoolName LIKE CONCAT('%', :keyword, '%') OR si.schoolAddress LIKE CONCAT('%', :keyword, '%') OR si.schoolEmail LIKE CONCAT('%', :keyword, '%') OR si.schoolPhone LIKE CONCAT('%', :keyword, '%'))
+               AND (:cityId IS NULL OR si.city.id = :cityId)
+               AND (:districtId IS NULL OR si.district.id = :districtId)
+               AND (:schoolType IS NULL OR si.typeId = :schoolType)
+               AND (:admissionAge IS NULL OR si.childReceivingAgeId = :admissionAge)
+               AND (:minFee IS NULL OR si.feeFrom >= :minFee)
+               AND (:maxFee IS NULL OR si.feeTo <= :maxFee)
+               AND (:facilities IS NULL OR sf.id.facilitiesId IN :facilities)
+               AND (:utilities IS NULL OR su.id.utilitiesId IN :utilities)
+               AND si.statusId = 5
+            GROUP BY si.id, si.schoolName, si.schoolEmail, si.schoolAddress, si.feeFrom,
+               ageRange.typeValue, typeSchool.typeValue, si.imageUrl
+            """)
+    Page<MySchoolVo> searchSchoolInfoByCategoriesAndSortBy(@Param("keyword") String keyword,
+                                                  @Param("cityId") Integer cityId,
+                                                  @Param("districtId") Integer districtId,
+                                                  @Param("schoolType") Integer schoolType,
+                                                  @Param("admissionAge") Integer admissionAge,
+                                                  @Param("minFee") Double minFee,
+                                                  @Param("maxFee") Double maxFee,
+                                                  @Param("facilities") List<Integer> facilities,
+                                                  @Param("utilities") List<Integer> utilities,
+                                                  Pageable pageable);
+
+
+
     @Query("""
         SELECT new fa.appcode.common.vo.HomeVo(COUNT(DISTINCT si.id),COUNT(DISTINCT ai.id))
         FROM SchoolInfo si,AccountInfo ai
@@ -264,13 +328,13 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
         si.id,
         si.schoolName,
         si.schoolEmail,
-        si.schoolAddress,
+        CONCAT(si.schoolAddress, ', ', si.ward.wardName, ', ', si.district.districtName, ', ', si.city.cityName),
         si.feeFrom,
         ageRange.typeValue,
         schoolType.typeValue,
         si.imageUrl,
         COALESCE(CAST(AVG((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5) AS double), 0.0),
-        COALESCE(CAST(COUNT(DISTINCT f.id) AS integer), null),si.schoolPhone,si.schoolIntroduction,
+        COALESCE(CAST(COUNT(DISTINCT f.id) AS integer), null),si.schoolIntroduction,si.schoolPhone,
         0.0,
         null,
         null,

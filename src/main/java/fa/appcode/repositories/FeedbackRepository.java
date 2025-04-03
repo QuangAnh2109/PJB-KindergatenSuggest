@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
-    Page<Feedback> findByAccountInfo_Id(Integer accountInfoId, Pageable pageable);
 
     @Query("""
     SELECT new fa.appcode.common.vo.RatingVo(
@@ -41,6 +40,19 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
         FROM Feedback f
         JOIN AccountInfo ai ON f.id.accountId = ai.id
         WHERE f.id.schoolId = :schoolId
+        AND (COALESCE(CAST((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 AS double), 0.0) >= :minRating
+        AND COALESCE(CAST((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 AS double), 0.0) < :maxRating)
+    """)
+    List<FeedbackListVo> findListFeedbackBySchoolIdAndRating(@Param("schoolId") Integer schoolId, @Param("minRating") Double minRating, @Param("maxRating") Double maxRating);
+
+    @Query("""
+        SELECT new fa.appcode.common.vo.FeedbackListVo(f.id.accountId,f.accountInfo.fullName,f.accountInfo.imageUrl,f.id.feedbackTime,f.learningProgram,f.facilitiesUtilities,f.extracurricularActivities,f.teacherStaff,f.hygieneNutrition,
+        COALESCE(CAST((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 AS double), 0.0)
+        ,f.feedbackMessage)
+        FROM Feedback f
+        JOIN AccountInfo ai ON f.id.accountId = ai.id
+        WHERE f.id.schoolId = :schoolId
+        ORDER BY f.id.feedbackTime DESC
     """)
     List<FeedbackListVo> findListFeedbackBySchoolId(@Param("schoolId") Integer schoolId);
 }

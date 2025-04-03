@@ -1,3 +1,46 @@
+
+// Show and hide loading animation
+function showLoading(containerId) {
+    const container = document.getElementById(containerId);
+
+    // Create loader if it doesn't exist
+    if (!container.querySelector('.loader-container')) {
+        const loaderContainer = document.createElement('div');
+        loaderContainer.className = 'loader-container';
+        loaderContainer.innerHTML = `
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading schools...</p>
+        `;
+
+        // Clear existing content temporarily
+        const existingContent = container.querySelector('.row');
+        if (existingContent) {
+            existingContent.style.display = 'none';
+        }
+
+        // Add loader before pagination
+        container.insertBefore(loaderContainer, container.querySelector('nav'));
+    }
+}
+
+function hideLoading(containerId) {
+    const container = document.getElementById(containerId);
+    const loader = container.querySelector('.loader-container');
+
+    if (loader) {
+        loader.remove();
+
+        // Restore content visibility
+        const existingContent = container.querySelector('.row');
+        if (existingContent) {
+            existingContent.style.display = '';
+        }
+    }
+}
+
+
 // Global variables to track pagination state
 let currentPage = {
     currentSchools: 0,
@@ -24,32 +67,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Function to load current schools
 function loadCurrentSchools(page) {
+    showLoading('currentSchools');
+
     fetch(`/api/api/current-schools?page=${page}`)
         .then(response => response.json())
         .then(data => {
             currentPage.currentSchools = data.currentPage;
+            hideLoading('currentSchools');
             displayCurrentSchools(data);
             updatePagination('current-school-tab', data.totalPages, data.currentPage, loadCurrentSchools);
         })
         .catch(error => {
             console.error('Error loading current schools:', error);
+            hideLoading('currentSchools');
+            // Show error message
+            const container = document.getElementById('currentSchools');
+            const content = container.querySelector('.row') || document.createElement('div');
+            content.className = 'row';
+            content.innerHTML = '<div class="alert alert-danger">Failed to load schools. Please try again later.</div>';
+            container.insertBefore(content, container.querySelector('nav'));
         });
 }
 
 // Function to load previous schools
 function loadPreviousSchools(page) {
+    showLoading('previousSchools');
+
     fetch(`/api/api/previous-schools?page=${page}`)
         .then(response => response.json())
         .then(data => {
             currentPage.previousSchools = data.currentPage;
+            hideLoading('previousSchools');
             displayPreviousSchools(data);
             updatePagination('previous-school-tab', data.totalPages, data.currentPage, loadPreviousSchools);
         })
         .catch(error => {
             console.error('Error loading previous schools:', error);
+            hideLoading('previousSchools');
+            // Show error message
+            const container = document.getElementById('previousSchools');
+            const content = container.querySelector('.row') || document.createElement('div');
+            content.className = 'row';
+            content.innerHTML = '<div class="alert alert-danger">Failed to load schools. Please try again later.</div>';
+            container.insertBefore(content, container.querySelector('nav'));
         });
 }
-
 // Display current schools in the UI
 function displayCurrentSchools(data) {
     const container = document.getElementById('currentSchools');
@@ -154,7 +216,7 @@ function createSchoolHtml(school, isCurrentSchool) {
                         ${generateUserRatingStars(school.yourRating)}
                         <span>${school.yourRating}</span>/5
                     </div>
-                    <button class="btn-primary w-100"><a href="/public/school/details/${school.schoolId}">View Rating Details</a></button>
+                    <button class="btn-primary w-100"><a style="color: #FFFFFF" href="/public/school/details/${school.schoolId}#ratings">View Rating Details</a></button>
                 </div>
             `;
         } else {
@@ -176,8 +238,8 @@ function createSchoolHtml(school, isCurrentSchool) {
                         ${generateUserRatingStars(school.yourRating)}
                         <span>${school.yourRating}</span>/5
                     </div>
-                    <button class="btn-primary w-100"><a href="/school/details/${school.schoolId}">View Rating Details</a></button>
-                </div>
+                    <button class="btn-primary w-100"><a style="color: #FFFFFF" href="/public/school/details/${school.schoolId}#ratings">View Rating Details</a></button>                
+                    </div>
             `;
         } else {
             ratingHtml = `
@@ -192,7 +254,7 @@ function createSchoolHtml(school, isCurrentSchool) {
         <div class="col-md-9">
             <div class="school-card d-flex">
                 <div class="img-school col-md-2 justify-content-center align-content-center">
-                    <img src="${school.schoolImage}" class="me-3" alt="school-image">
+                    <img src="${school.schoolImage}" class="me-3" alt="school-image" onerror="this.onerror=null;this.src='/user_side/images/school-image/school-placeholder.png';">
                     <div class="star-rating">
                         ${starsHtml}
                         <span>${school.avgRating}</span>/5

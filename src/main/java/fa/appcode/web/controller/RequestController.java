@@ -193,7 +193,7 @@ public class RequestController {
                                           @RequestParam Integer schoolId,
                                           Principal principal){
         AccountInfo accountID = accountService.getAccountInfo(principal);
-        SchoolInfo school = schoolInfoService.getSchoolInfoById(1);
+        SchoolInfo school = schoolInfoService.getSchoolInfoById(schoolId);
         Request request = new Request(accountID, school, fullName, email, phone, inquiries, 1, 1, "PARENT", Instant.now());
         requestService.createRequest(request);
         return "redirect:/public/school/search";

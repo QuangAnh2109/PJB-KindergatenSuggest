@@ -237,7 +237,7 @@
                                                                 </div>
                                                             </div>
                                                             <div th:if="${successUpdate}"
-                                                                 class="alert alert-success mt-3" th:hidden="true">
+                                                                 class="alert alert-success success3" th:hidden="true">
                                                             </div>
                                                             <div th:if="${exceptionError}" class="text-danger mt-3">
                                                                 <p th:text="${exceptionError}"></p>
@@ -272,29 +272,6 @@
         </section>
     </div>
 </div>
-<!-- Success Modal for Password Change -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true"
-     data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content shadow-lg rounded-4 border-0 overflow-hidden">
-            <div class="modal-body text-center p-5">
-                <div class="d-flex justify-content-center mb-3">
-                    <div class="success-icon">
-                        <i class="bi bi-check-circle-fill text-success fs-1"></i>
-                    </div>
-                </div>
-                <h4 class="fw-bold text-success" th:text="#{ME_021}"></h4>
-                <p class="text-muted mb-4">You need to log in again.</p>
-            </div>
-            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
-                <button type="button" class="btn btn-lg btn-success px-5 py-2 fw-bold shadow-sm" id="redirectLogin">
-                    Login Now
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Javascript Files
 ================================================== -->
 <script th:src="@{/user_side/js/plugins.js}"></script>
@@ -344,18 +321,12 @@
             if (document.getElementById('successUpdate') || document.getElementById('passwordError')) {
                 passwordTab.click();
             }
-
             // Add click event listener to redirect login button
             const redirectLoginBtn = document.getElementById('redirectLogin');
             if (redirectLoginBtn) {
                 redirectLoginBtn.addEventListener('click', function () {
                     window.location.href = '/public/showMyLoginPage';
                 });
-            }
-            const successUpdate = document.querySelector('[th\\:if="${successUpdate}"]');
-            if (successUpdate) {
-                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                successModal.show();
             }
         })
     })
@@ -389,6 +360,14 @@
         });
     });
 </script>
-
+<script th:inline="javascript">
+    var message =
+    {
+         updateSuccess :/*[[#{ME_074}]]*/ "Update Successfully!",
+         loginBackMessage :/*[[#{ME_015}]]*/ "You can now log in using your new password.",
+         errorMessage : /*[[#{ME_017}]]*/ "An error has occurred. Please try again.",
+        dontChange : /*[[#{ME_053}]]*/ "You don't change anything."
+    }
+</script>
 </body>
 </html>

@@ -7,6 +7,8 @@
 
 .school-card-details {
     line-height: 1.1;
+    height: 900px;
+    overflow: auto;
 }
 
 
@@ -62,14 +64,18 @@ li.facilities {
     margin-top: 20px;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
     border-radius: 20px;
-    display: block;
-    width: 90%; /* Hoặc giá trị phù hợp */
-    max-width: 400px; /* Giới hạn kích thước */
-    padding: 15px; /* Tạo khoảng cách nội dung bên trong */
-    overflow: hidden; /* Ngăn chặn tràn nội dung */
-    background: white; /* Giữ nền trắng nếu cần */
+    width: 90%;
+    max-width: 400px;
+    padding: 15px;
+    overflow: hidden;
+    background: white;
     border: lightgrey 1px solid;
+    display: flex;
+    flex-direction: column;  /* Sắp xếp theo chiều dọc */
+    justify-content: center; /* Căn giữa theo chiều dọc */
+    align-items: center;  /* Căn giữa theo chiều ngang */
 }
+
 
 
 .img-school img {
@@ -84,7 +90,7 @@ li.facilities {
 /* Rating stars styling */
 .star-rating {
     display: flex;
-    gap: 4px;
+    gap: 2px;
     margin-top: 10px;
 }
 
@@ -149,13 +155,14 @@ li.facilities {
 }
 
 .btn-primary {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+    background-color: #1ECB15;
+    border-color: #1ECB15;
+
 }
 
 .btn-primary:hover {
-    background-color: #0b5ed7;
-    border-color: #0a58ca;
+    background-color: darkgreen;
+    border-color: darkgreen;
 }
 
 .btn-outline-secondary {
@@ -198,7 +205,19 @@ li.facilities {
     margin: 5px 0;
 }
 
-
+.loader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    width: 100%;
+    text-align: center;
+}
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
 
 
 

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -95,9 +96,21 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
         return schoolInfoRepository.getSchoolFormBySchoolIdAndEmailAndDeleteFlg(id, email, false);
     }
 
+
     @Override
-    public Page<MySchoolVo> searchSchoolInfoByCategories(String keyword, Integer cityId, Integer districtId, Pageable pageable) throws RuntimeException{
-        Page<MySchoolVo> listResultSearchSchool = schoolInfoRepository.searchSchoolInfoByCategories(keyword, cityId, districtId, pageable);
+    public Page<MySchoolVo> searchSchoolInfoByCategories(String keyword, Integer cityId, Integer districtId,
+                                                         Integer schoolType, Integer admissionAge, Double minFee,
+                                                         Double maxFee,List<Integer> facilities,List<Integer> utilities,Pageable pageable) throws RuntimeException{
+        Page<MySchoolVo> listResultSearchSchool = schoolInfoRepository.searchSchoolInfoByCategories(keyword, cityId, districtId,
+                                                    schoolType,admissionAge,minFee,maxFee,facilities,utilities, pageable);
+        logger.info("Found " + listResultSearchSchool.getTotalElements() + " School Infos");
+        return listResultSearchSchool;
+    }
+
+    @Override
+    public Page<MySchoolVo> searchSchoolInfoByCategoriesAndSortBy(String keyword, Integer cityId, Integer districtId, Integer schoolType, Integer admissionAge, Double minFee, Double maxFee, List<Integer> facilities, List<Integer> utilities, Pageable pageable) {
+        Page<MySchoolVo> listResultSearchSchool = schoolInfoRepository.searchSchoolInfoByCategoriesAndSortBy(keyword, cityId, districtId,
+                schoolType,admissionAge,minFee,maxFee,facilities,utilities, pageable);
         logger.info("Found " + listResultSearchSchool.getTotalElements() + " School Infos");
         return listResultSearchSchool;
     }

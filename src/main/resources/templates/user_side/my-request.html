@@ -164,7 +164,7 @@
                                 <p class="content" id="textContent" style="overflow-y:auto;">
                                     <span th:text="${request.getInquires()}"></span>
                                 </p>
-                                <a class="see-more" id="seeMoreBtn" onclick="toggleContent()">See more...</a>
+                                <a class="see-more" id="seeMoreBtn" th:onclick="toggleContent(${request.getId()})">See more...</a>
                             </div>
                         </div>
                         <div class="col-md-5">

@@ -1,8 +1,8 @@
 package fa.appcode.exceptions;
 
-import fa.appcode.common.logging.Log4jUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import fa.appcode.common.utils.Constant;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -18,14 +17,14 @@ import java.util.Map;
 public class GlobalHandlerException {
 
 
-    private static final Logger logger = Log4jUtils.getLogger(GlobalHandlerException.class);
+    private final Logger logger = LoggerFactory.getLogger(GlobalHandlerException.class);
 
     @ExceptionHandler(CustomDataException.class)
     public ResponseEntity<String> handleCustomDataException(CustomDataException ex) {
         logger.error("Database failed: {}" ,ex.getMessage(),ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Database Failed: " + ex.getMessage());
     }
-
+    
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<String> handleDataAccessException(DataAccessException e) {
         logger.error("Query data failed: {}", e.getMessage(), e);
