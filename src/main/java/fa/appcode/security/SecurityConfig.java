@@ -82,7 +82,7 @@ public class SecurityConfig {
                         .permitAll()
                 ).sessionManagement(session -> session
                         .invalidSessionUrl("/public/sign-in?timeout=true")
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 )
                 .exceptionHandling(configurer -> configurer
                         .accessDeniedPage("/public/access-denied")
