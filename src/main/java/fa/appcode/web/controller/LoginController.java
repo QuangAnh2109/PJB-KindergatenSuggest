@@ -32,7 +32,7 @@ public class LoginController {
             model.addAttribute(email, emailInput);
             session.removeAttribute(email);
         }
-        return "/user_side/login";
+        return "user_side/login";
     }
     @GetMapping("/public/access-denied")
     public String accessDenied() {
