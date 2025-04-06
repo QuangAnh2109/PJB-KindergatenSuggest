@@ -295,7 +295,7 @@ public class ValidateServiceImpl implements ValidateService {
 
     @Override
     public boolean validateSearchString(String searchString) {
-        return searchString.length() <= 1000;
+        return searchString.length() <= 400;
     }
 
 
