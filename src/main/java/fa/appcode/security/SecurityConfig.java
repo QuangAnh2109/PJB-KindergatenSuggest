@@ -12,14 +12,11 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
 @EnableWebSecurity
@@ -29,8 +26,6 @@ public class SecurityConfig {
     private final CustomAuthenticationSuccessHandler successHandler;
     private final AuthenticationHandler authenticationHandler;
     private final AccountRepository accountRepository;
-    private final SessionRegistry sessionRegistry;
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -57,17 +52,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public static HttpSessionEventPublisher httpSessionEventPublisher() {
-        return new HttpSessionEventPublisher();
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/forgot-password", "/public/register", "/public/reset-password", "/public/verify-account/**").anonymous()
-                        .requestMatchers("/", "/user_side/**", "/public/**", "/resources/**", "/static/**", "/css/**","/api/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/user_side/**", "/public/**", "/resources/**", "/static/**","/api/**", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/user/**").not().hasAnyAuthority(Constant.SCHOOL_OWNER_ROLE, Constant.ADMIN_ROLE)
                         .requestMatchers("/auth/**").hasAnyAuthority(Constant.PARENT_ROLE, Constant.SCHOOL_OWNER_ROLE, Constant.ADMIN_ROLE)
                         .requestMatchers("/parent/**").hasAuthority(Constant.PARENT_ROLE)
@@ -100,3 +90,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
