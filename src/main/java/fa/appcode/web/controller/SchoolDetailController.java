@@ -1,17 +1,16 @@
 package fa.appcode.web.controller;
 
-import fa.appcode.common.vo.FeedbackListVo;
-import fa.appcode.common.vo.MasterDataVo;
-import fa.appcode.common.vo.MySchoolVo;
-import fa.appcode.common.vo.RatingVo;
+import fa.appcode.common.vo.*;
 import fa.appcode.repositories.SchoolFacilityRepository;
 import fa.appcode.services.*;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,10 +27,11 @@ public class SchoolDetailController {
     private final MasterDatumService masterDatumService;
     private final SchoolFacilityService schoolFacilityService;
     private final SchoolUtilityService schoolUtilityService;
+    private final EnrollSchoolService enrollSchoolService;
 
 
     @GetMapping("/school/details/{schoolId}")
-    public String schoolDetail(@PathVariable("schoolId") Integer schoolId, Model model) {
+    public String schoolDetail(@SessionAttribute(name = "idAccount",required = false)Integer accountId, @PathVariable("schoolId") Integer schoolId, Model model) {
 
         RatingVo ratingOfSchool = feedbackService.findRatingBySchoolId(schoolId);
         MySchoolVo schoolInfo = schoolInfoService.findSchoolDetailBySchoolId(schoolId);
@@ -42,6 +42,11 @@ public class SchoolDetailController {
         RatingVo ratingSchool = feedbackService.findRatingBySchoolId(schoolId);
         List<FeedbackListVo> listFeedback = feedbackService.findListFeedbackBySchoolId(schoolId);
 
+
+        if(accountId != null) {
+            Boolean isEnroll = enrollSchoolService.isEnrolled(accountId, schoolId);
+            model.addAttribute("isEnroll", isEnroll);
+        }
 
         model.addAttribute("facilitiesId", facilitiesId);
         model.addAttribute("ratingOfSchool", ratingSchool);

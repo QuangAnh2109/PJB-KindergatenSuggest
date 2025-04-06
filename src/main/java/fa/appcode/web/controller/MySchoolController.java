@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,11 +34,12 @@ public class MySchoolController {
                            Model model,
                            @RequestParam(defaultValue = Constant.INIT_PAGE) int currentPage,
                            @RequestParam(defaultValue = "enrolled") String activeTab) {
-      Pageable pageable = PageRequest.of(currentPage,globalConfig.getSizeOfPage());
+        Pageable pageable = PageRequest.of(currentPage,globalConfig.getSizeOfPage());
         Page<MySchoolVo> listSchoolEnrollByParentId = enrollSchoolService.findListSchoolParentEnrolledByParentId(id,pageable);
         Page<MySchoolVo> listSchoolPreEnrollByParentId = enrollSchoolService.findListSchoolParentPreEnrolledByParentId(id,pageable);
         Map<Integer,List<String>> listFacilitiesOfCurrentSchool = enrollSchoolServiceImpl.getFacilitiesMapForSchools(listSchoolEnrollByParentId);
         Map<Integer,List<String>> listFacilitiesOfPreSchool = enrollSchoolServiceImpl.getFacilitiesMapForSchools(listSchoolPreEnrollByParentId);
+
 
         //Response data
         model.addAttribute("facilitiesMapCurrentSchool",listFacilitiesOfCurrentSchool);

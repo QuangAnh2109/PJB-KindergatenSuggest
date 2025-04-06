@@ -93,12 +93,22 @@
     overflow-y: auto;
     width: 100%;
 }
-.email-column {
-    max-width: 250px; /* Giới hạn chiều rộng */
-    word-wrap: break-word; /* Cho phép xuống dòng */
-    overflow-wrap: break-word; /* Đảm bảo xuống dòng */
-    white-space: normal; /* Cho phép nội dung xuống dòng */
-    display: block; /* Giúp nội dung xuống dòng đúng */
+.table-container {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.table td, .table th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;/* Điều chỉnh độ rộng tối đa của cột */
+    font-size: 14px;
+}
+
+.table-container {
+    max-width: 100%;
+    overflow-x: auto;
 }
 .clickable-row {
     cursor: pointer;
@@ -109,5 +119,40 @@
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4); /* Đổ bóng rõ hơn */
     font-weight: 600;
 }
+@media screen and (max-width: 768px) {
+    .table-container {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+    }
 
+    .table {
+        width: 100%;
+        min-width: 600px; /* Đảm bảo bảng không quá nhỏ */
+    }
+
+    /* Xóa dấu ... khi responsive */
+    .table th, .table td {
+        text-overflow: unset; /* Bỏ dấu ... khi responsive */
+        white-space: normal; /* Cho phép xuống dòng */
+        word-break: break-word; /* Cho phép từ xuống dòng nếu cần */
+    }
+}
+
+/* Khi màn hình nhỏ hơn 480px (mobile nhỏ) */
+@media screen and (max-width: 480px) {
+    .table-container {
+        overflow-x: auto;
+    }
+
+    th, td {
+        font-size: 12px; /* Giảm kích thước chữ */
+        padding: 6px; /* Thu nhỏ padding */
+    }
+
+    .btn {
+        font-size: 10px; /* Thu nhỏ nút */
+        min-width: 60px; /* Giữ kích thước nút */
+    }
+}
 

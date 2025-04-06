@@ -32,5 +32,21 @@ build/
 ### VS Code ###
 .vscode/
 
-### Logging File ###
-*logs/
+### Logging Files ###
+logs/
+*.log
+log/
+*.log.*
+logging.properties
+log4j*.properties
+log4j*.xml
+logback*.xml
+*.log.gz
+*.log.tmp
+application-logs/
+system-logs/
+debug.log
+error.log
+info.log
+warn.log
+

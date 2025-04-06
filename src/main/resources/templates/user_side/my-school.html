@@ -172,6 +172,7 @@
 
         .star-rating {
             color: #ffc107;
+            margin-bottom: 20px;
         }
 
         .star-filled {
@@ -227,11 +228,11 @@
                         </div>
                         <div class="de-flex-col">
                             <div class="menu_side_area" sec:authorize="!isAuthenticated()">
-                                <a th:href="@{/sign-in}" class="btn-main">Login</a>
+                                <a th:href="@{/public/sign-in}" class="btn-main">Login</a>
                                 <span class="menu-btn"></span>
                             </div>
                             <div class="menu_side_area" sec:authorize="!isAuthenticated()">
-                                <a th:href="@{/register}" class="btn-main">Sign Up</a>
+                                <a th:href="@{/public/register}" class="btn-main">Sign Up</a>
                                 <span class="menu-btn"></span>
                             </div>
                             <div class="logout-container" sec:authorize="isAuthenticated()">
@@ -265,6 +266,11 @@
     </header>
     <!-- header close -->
     <!-- content begin -->
+
+    <!-- Add this right before the end of the body tag in my-school.html -->
+    <!-- Toast container -->
+    <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3"></div>
+
     <div class="no-bottom no-top zebra" id="content">
         <div id="top"></div>
 
@@ -306,7 +312,7 @@
                             <div class="col-md-9">
                                 <div class="school-card d-flex">
                                     <div class="img-school col-md-2 justify-content-center align-content-center">
-                                        <img th:src="${schoolItem.getSchoolImage()}" class="me-3" alt="school-image">
+                                        <img th:src="${schoolItem.getSchoolImage()}" class="me-3" alt="school-image" onerror="this.onerror=null;this.src='/user_side/images/school-image/school-placeholder.png';">
                                         <div class="star-rating">
                                             <span th:each="i : ${#numbers.sequence(1, 5)}"
                                                   th:class="${i <= schoolItem.getAvgRating() ? 'star-filled' : (i <= schoolItem.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
@@ -358,24 +364,26 @@
                                         <p>Your Average Rating</p>
                                         <div class="star-rating">
                                             <span th:each="i : ${#numbers.sequence(1, 5)}"
-                                                  th:class="${i <= schoolItem.getYourRating() ? 'star-filled' : (i <= schoolItem.getYourRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
+                                                  th:class="${i <= schoolItem.getYourRating() ? 'star-filled' : (i - 0.5 == schoolItem.getYourRating() ? 'star-half' : 'star-empty')}">
+                                                ★
+                                            </span>
                                             <span th:text="${schoolItem.getYourRating()}"></span>/5
                                         </div>
-                                        <button class="btn-primary w-100"><a
-                                                th:href="/public/school/details/${schoolItem.getSchoolId()}">View Rating
-                                            Details</a></button>
+                                        <a class="btn btn-primary w-100"
+                                           th:href="@{/public/school/details/{id}(id=${schoolItem.getSchoolId()})}">
+                                            View Rating Details
+                                        </a>
                                     </div>
                                 </div>
-                                <div>
-                                    <div class="my-rating" th:if="${schoolItem.getYourRating() == 0}">
-                                        <p>Your haven’t rated the school yet. Please share with us your feedback</p>
-                                        <button class="btn-primary w-100"
-                                                th:onclick="|openRatingModal(${schoolItem.getSchoolId()})|">
-                                            Rate School
-                                        </button>
-                                    </div>
+                                <div class="my-rating" th:if="${schoolItem.getYourRating() == 0}">
+                                    <p>You haven’t rated the school yet. Please share with us your feedback</p>
+                                    <button class="btn-primary w-100"
+                                            th:onclick="|openRatingModal('${schoolItem.getSchoolId()}')|">
+                                        Rate School
+                                    </button>
                                 </div>
                             </div>
+
                         </div>
                         <nav aria-label="Page navigation">
                             <ul class="pagination justify-content-center mt-3" id="current-school-tab">
@@ -550,10 +558,11 @@
             <div class="row g-custom-x">
                 <div class="col-lg-3">
                     <div class="widget">
-                        <h5>About Rentaly</h5>
-                        <p>Where quality meets affordability. We understand the importance of a smooth and enjoyable
-                            journey without the burden of excessive costs. That's why we have meticulously crafted our
-                            offerings to provide you with top-notch vehicles at minimum expense.</p>
+                        <h5>About KS System</h5>
+                        <p>The best way to find the perfect kindergarten for your child! We understand that every child
+                            has unique needs, so our system is designed to help you search easily, quickly, and
+                            accurately—matching your preferences in teaching quality, curriculum, location, and
+                            affordability.</p>
                     </div>
                 </div>
 
@@ -576,11 +585,9 @@
                         <div class="col-lg-6">
                             <div class="widget">
                                 <ul>
-                                    <li><a href="#">About</a></li>
-                                    <li><a href="#">Blog</a></li>
-                                    <li><a href="#">Careers</a></li>
-                                    <li><a href="#">News</a></li>
-                                    <li><a href="#">Partners</a></li>
+                                    <li><a href="/public/school/search">School Search</a></li>
+                                    <li><a href="#">Community</a></li>
+                                    <li><a href="#">About Us</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -607,8 +614,8 @@
                     <div class="col-md-12">
                         <div class="de-flex">
                             <div class="de-flex-col">
-                                <a href="index.html">
-                                    Copyright 2024 - Rentaly by Designesia
+                                <a href="/public/home">
+                                    Copyright 2025 - Kindergarten Suggestion System
                                 </a>
                             </div>
                             <ul class="menu-simple">

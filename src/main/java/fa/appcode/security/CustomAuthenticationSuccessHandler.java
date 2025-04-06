@@ -20,6 +20,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final AccountService accountService;
+    private final UserSessionService userSessionService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -49,6 +50,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         }
         session.setAttribute("idAccount", accountInfo.getId());
         session.setAttribute("nameAccount", accountInfo.getFullName());
+
+        userSessionService.registerSession(email, session);
+
         response.getWriter().write("{\"redirectUrl\": \"" + request.getContextPath() + redirectUrl + "\"}");
     }
 

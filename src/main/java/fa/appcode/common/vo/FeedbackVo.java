@@ -2,28 +2,20 @@ package fa.appcode.common.vo;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @AllArgsConstructor
 @Setter
 @Getter
+@Data
 public class FeedbackVo {
-    @NotNull
     private Integer schoolId;
-    @NotNull
-    private Integer accountId;
-    @NotNull
-    private Double learningProgramRating;
-    @NotNull
-    private Double facultyAndUtilityRating;
-    @NotNull
-    private Double extracurricularRating;
-    @NotNull
-    private Double teacherRating;
-    @NotNull
-    private Double hygieneRating;
-    @NotNull
-    private String feedback;
-
+    private Float learningProgram;
+    private Float facilitiesUtilities;
+    private Float extracurricularActivities;
+    private Float teacherStaff;
+    private Float hygieneNutrition;
+    private String feedbackMessage;
 }
