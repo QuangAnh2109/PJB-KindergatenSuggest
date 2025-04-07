@@ -6,7 +6,7 @@
 
 <head>
     <title>Kindergarten Suggestion - The Perfect Place for Your Child’s First Steps in Learning!</title>
-    <link rel="icon" th:href="@{/user_side/images/icon1.png}" type="image/gif" sizes="16x16">
+    <link rel="icon" href="/user_side/images/icon.png" type="image/gif" sizes="16x16">
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Kindergarten Suggestion - The Perfect Place for Your Child’s First Steps in Learning!"
@@ -14,14 +14,15 @@
     <meta content="" name="keywords">
     <meta content="" name="author">
     <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/user_side/css/all.min.css" media="print" onload="this.media='all'">
     <!-- CSS Files -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link th:href="@{/user_side/css/plugins.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/user_side/css/style.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/user_side/css/coloring.css}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/user_side/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/user_side/css/style.css">
+    <link rel="stylesheet" href="/user_side/css/plugins.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="/user_side/css/coloring.css" media="print" onload="this.media='all'">
+
     <!-- Color scheme -->
-    <link id="colors" th:href="@{/user_side/css/colors/scheme-01.css}" rel="stylesheet" type="text/css">
+    <link id="colors" rel="stylesheet" href="/user_side/css/colors/scheme-01.css" media="print" onload="this.media='all'">
     <style>
         .dialog-box-search {
             display: flex;
@@ -176,8 +177,8 @@
                                 <!-- logo begin -->
                                 <div id="logo">
                                     <a th:href="@{/public/home}">
-                                        <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
-                                        <img class="logo-2" src="/user_side/images/logo1.png" alt="">
+                                        <img class="logo-1" src="/user_side/images/logo-light.png" loading="lazy" alt="">
+                                        <img class="logo-2" src="/user_side/images/logo1.png" loading="lazy" alt="">
                                     </a>
                                 </div>
                                 <!-- logo close -->
@@ -189,17 +190,17 @@
                                 </li>
                                 <li><a class="menu-item" href="#">Community</a>
                                 </li>
-                                <li><a class="menu-item" href="#">About Us</a>
+                                <li><a class="menu-item" href="/public/home#our-features">About Us</a>
                                 </li>
                             </ul>
                         </div>
                         <div class="de-flex-col">
                             <div class="menu_side_area" sec:authorize="!isAuthenticated()">
-                                <a th:href="@{/showMyLoginPage}" class="btn-main">Login</a>
+                                <a th:href="@{/sign-in}" class="btn-main">Login</a>
                                 <span class="menu-btn"></span>
                             </div>
                             <div class="menu_side_area" sec:authorize="!isAuthenticated()">
-                                <a th:href="@{/register}" class="btn-main">Sign Up</a>
+                                <a th:href="@{/public/register}" class="btn-main">Sign Up</a>
                                 <span class="menu-btn"></span>
                             </div>
                             <div class="logout-container" sec:authorize="isAuthenticated()">
@@ -278,14 +279,14 @@
                                         <div style="width: 60%; display: flex;">
                                             <select id="citySelect" name="city" onchange="loadDistrict(this.value)"
                                                     class="form-select" style="width: 70%;">
-                                                <option selected disabled value="">----Select City/Province-----
+                                                <option selected value="0">----Select City/Province-----
                                                 </option>
                                                 <option th:each="city : ${listCity}" th:value="${city.getId()}"
                                                         th:text="${city.getCityName()}"></option>
                                             </select>
 
                                             <select name="district" id="district" class="form-select">
-                                                <option selected disabled value="">Select District</option>
+                                                <option selected value="null">Select District</option>
                                             </select>
                                             <button class="btn-main" style="width: 15%;margin-left: 15px"
                                                     onclick="searchRedirectByAddress()">
@@ -329,12 +330,12 @@
                 </div>
             </div>
         </section>
-        <section aria-label="section">
+        <section aria-label="section" id="our-features">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-6 offset-lg-3 text-center">
                         <span class="subtitle">Why Choose Us</h2></span>
-                        <h2>Our Features</h2>
+                        <h2>Our Feature:</h2>
                         <p>Discover a world of convenience, safety, and customization, paving the way for unforgettable
                             adventures and seamless mobility solutions.</p>
                         <div class="spacer-20"></div>
@@ -344,38 +345,34 @@
                         <div class="box-icon s2 p-small mb20 wow fadeInRight" data-wow-delay=".5s">
                             <i class="fa bg-color fa-trophy"></i>
                             <div class="d-inner">
-                                <h4>First class services</h4>
-                                Where luxury meets exceptional care, creating unforgettable moments and exceeding your
-                                every expectation.
+                                <h4>Our School Networks</h4>
+                                800 + Preschools and Kindergarten<br>
                             </div>
                         </div>
                         <div class="box-icon s2 p-small mb20 wow fadeInL fadeInRight" data-wow-delay=".75s">
                             <i class="fa bg-color fa-road"></i>
                             <div class="d-inner">
-                                <h4>24/7 road assistance</h4>
-                                Reliable support when you need it most, keeping you on the move with confidence and
-                                peace of mind.
+                                <h4>Special Consultations</h4>
+                                    30+ Consultants with 5-10 yrs of experience in education. Our consultant with deep knowledge on pre-school education will help parents to choose the right school for their children
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <img src="/user_side/images/school-model.png" alt="" class="img-fluid wow fadeInUp">
+                        <img src="/user_side/images/school-model.png" alt="" loading="lazy" class="img-fluid wow fadeInUp">
                     </div>
                     <div class="col-lg-3">
                         <div class="box-icon s2 d-invert p-small mb20 wow fadeInL fadeInLeft" data-wow-delay="1s">
                             <i class="fa bg-color fa-tag"></i>
                             <div class="d-inner">
-                                <h4>Quality at Minimum Expense</h4>
-                                Unlocking affordable brilliance with elevating quality while minimizing costs for
-                                maximum value.
+                                <h4>Parent Community</h4>
+                                1500 + School profiles of parents and kids<br>
                             </div>
                         </div>
                         <div class="box-icon s2 d-invert p-small mb20 wow fadeInL fadeInLeft" data-wow-delay="1.25s">
                             <i class="fa bg-color fa-map-pin"></i>
                             <div class="d-inner">
                                 <h4>Free Pick-Up & Drop-Off</h4>
-                                Enjoy free pickup and drop-off services, adding an extra layer of ease to your car
-                                rental experience.
+                                Search for a preschool for your child based on basic criteria such as: quality, reviews of other parents, location, tuition fees, ...
                             </div>
                         </div>
                     </div>
@@ -383,7 +380,7 @@
             </div>
         </section>
         <section class="text-light jarallax">
-            <img src="/user_side/images/background/2.jpg" class="jarallax-img" alt="">
+            <img src="/user_side/images/background/2.jpg" class="jarallax-img" loading="lazy" alt="">
             <div class="container">
                 <div class="row g-5">
                     <div class="col-lg-6 wow fadeInRight">
@@ -559,72 +556,161 @@
         }
     }
 
-    //load district by city id
+    // Replace the existing DOMContentLoaded event listener
+    document.addEventListener("DOMContentLoaded", function() {
+        // Setup the city select change handler
+        const citySelect = document.getElementById("citySelect");
+        if (citySelect) {
+            citySelect.addEventListener('change', function() {
+                loadDistrict(this.value);
+            });
+        }
+
+        // Reset the form fields to default values
+        citySelect.value = "0"; // Set to default option
+
+        // Get the district select and reset it too
+        const districtSelect = document.getElementById("district");
+        if (districtSelect) {
+            districtSelect.innerHTML = '<option value="0" selected>Select a city first</option>';
+            districtSelect.setAttribute("disabled", "disabled");
+        }
+
+        // Reset keyword field if it exists
+        const keywordInput = document.getElementById("keyword");
+        if (keywordInput) {
+            keywordInput.value = '';
+        }
+
+        // Completely ignore URL parameters - always reset to defaults
+        // Remove the URL parameter handling code to ensure full reset
+    });
+
     function loadDistrict(cityId) {
+        if (!cityId || cityId == 0) {
+            const districtSelect = document.getElementById("district");
+            districtSelect.innerHTML = '<option value="0" selected>Select a city first</option>';
+            districtSelect.setAttribute("disabled", "disabled");
+            return;
+        }
+
+        // Show loading animation
+        const districtSelect = document.getElementById("district");
+        districtSelect.innerHTML = '<option value="0">Loading districts...</option>';
+        districtSelect.setAttribute("disabled", "disabled");
+
+        // Add a loading class or spinner
+        districtSelect.classList.add("loading");
+
         $.ajax({
             url: "/public/districts",
             type: "GET",
             data: { cityId: cityId },
-            success: function (json) {
+            success: function(json) {
+                // Remove loading class
+                districtSelect.classList.remove("loading");
+
                 if (!json || json.length === 0) {
                     console.warn("No districts found for cityId:", cityId);
+                    districtSelect.innerHTML = '<option value="0">No districts available</option>';
                     return;
                 }
 
-                const districtSelect = document.getElementById("district");
-                if (!districtSelect) return;
+                let options = '<option value="0">District</option>';
 
-                const selectedDistrict = districtSelect.value;
-
-                let options = '<option value="" disabled>District</option>';
-                options += json.map(item => {
-                    const isSelected = item.id == selectedDistrict ? 'selected' : '';
-                    return `<option value="${item.id}" ${isSelected}>${item.districtName}</option>`;
-                }).join('');
+                json.forEach(item => {
+                    options += `<option value="${item.id}">${item.districtName}</option>`;
+                });
 
                 districtSelect.innerHTML = options;
                 districtSelect.removeAttribute("disabled");
-
-                // Reset address field
-                const addressInput = document.getElementById("address");
-                if (addressInput) {
-                    addressInput.disabled = true;
-                    addressInput.value = "";
-                }
             },
-            error: function (xhr) {
+            error: function(xhr) {
+                // Remove loading class
+                districtSelect.classList.remove("loading");
+                districtSelect.innerHTML = '<option value="0">Error loading districts</option>';
                 console.error("Load district failed:", xhr);
             },
+            complete: function() {
+                // Ensure loading class is removed in all cases
+                districtSelect.classList.remove("loading");
+            }
         });
     }
 
-
-    function searchRedirect() {
-        const input = document.getElementById("keyword").value;
-        const cityId = document.getElementById("citySelect").value;
-        const district = document.getElementById("district").value;
-        const uri = `/public/school/search?keyword=${encodeURIComponent(input)}&cityId=${cityId}&districtId=${district}`;
-        window.location.href = uri;
-    }
-
+    // Update search functions to handle loading state
     function searchRedirectByAddress() {
-        let cityId = document.getElementById("citySelect").value;
-        let district = document.getElementById("district").value;
+        const citySelect = document.getElementById("citySelect");
+        const districtSelect = document.getElementById("district");
+
+        // Disable if loading
+        if (districtSelect.classList.contains("loading")) {
+            alert("Please wait for districts to load");
+            return;
+        }
+
+        const cityId = citySelect.value;
+        const district = districtSelect.value;
         const uri = `/public/school/search?cityId=${cityId}&districtId=${district}`;
         window.location.href = uri;
     }
 
     function searchRedirectByKeyword() {
         const input = document.getElementById("keyword").value;
+        if (!input.trim()) {
+            alert("Please enter a keyword to search");
+            return;
+        }
         const uri = `/public/school/search?keyword=${encodeURIComponent(input)}`;
         window.location.href = uri;
     }
 
-    //Catch event EnterKey
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') {
-            searchRedirect();
+    // Add this script to force form reset when page loads or when returning via back button
+    window.addEventListener('pageshow', function(event) {
+        // This triggers on page load AND when navigating back to the page
+        // The persisted property tells us if this is a back/forward navigation
+        if (event.persisted) {
+            // Coming back via browser back button - force reset
+            resetFormFields();
+        } else {
+            // Normal page load
+            resetFormFields();
         }
+    });
+
+    function resetFormFields() {
+        // Reset city select
+        const citySelect = document.getElementById("citySelect");
+        if (citySelect) {
+            citySelect.value = "0";
+        }
+
+        // Reset district select
+        const districtSelect = document.getElementById("district");
+        if (districtSelect) {
+            districtSelect.innerHTML = '<option value="0" selected>Select a city first</option>';
+            districtSelect.setAttribute("disabled", "disabled");
+        }
+
+        // Reset keyword field
+        const keywordInput = document.getElementById("keyword");
+        if (keywordInput) {
+            keywordInput.value = '';
+        }
+    }
+
+    // Keep your existing DOMContentLoaded listener, but call resetFormFields there too
+    document.addEventListener("DOMContentLoaded", function() {
+        // Setup the city select change handler
+        const citySelect = document.getElementById("citySelect");
+        if (citySelect) {
+            citySelect.addEventListener('change', function() {
+                loadDistrict(this.value);
+            });
+        }
+
+        // Reset all form fields
+        resetFormFields();
     });
 </script>
 
@@ -632,7 +718,7 @@
 ================================================== -->
 <script src="/user_side/js/plugins.js"></script>
 <script src="/user_side/js/designesia.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/user_side/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

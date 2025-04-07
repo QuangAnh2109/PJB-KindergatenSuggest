@@ -222,16 +222,22 @@ public class ValidateServiceImpl implements ValidateService {
      * @return A map containing field names as keys and validation error messages as values.
      */
     @Override
-    public Map<String, String> validateAccountField(String fullName, String currentPhone, String newPhone, LocalDate dob) {
+    public Map<String, String> validateAccountField(String fullName, String currentPhone, String newPhone, LocalDate dob , String fullAddress) {
         return Stream.of(
                         fullNameValidation(fullName),  // Validate full name
                         validatePhone(currentPhone, newPhone),  // Validate phone numbers
-                        dobValidation(dob)  // Validate date of birth
+                        dobValidation(dob), // Validate date of birth,
+                    fullAddressValidation(fullAddress)
                 )
                 .flatMap(map -> map.entrySet().stream())  // Flatten maps into a stream of entries
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1));  // Merge into a single map
     }
-
+    public Map<String,String> fullAddressValidation(String fullAddress) {
+        if(fullAddress.length() > 255) {
+            return Map.of("fullAddressError",globalConfig.getFullAddressLengthLimit());
+        }
+        return Collections.emptyMap();
+    }
     /**
      * Validates registration fields including full name, email, phone number, and password confirmation.
      * Combines multiple validation methods into a single map.
@@ -289,7 +295,7 @@ public class ValidateServiceImpl implements ValidateService {
 
     @Override
     public boolean validateSearchString(String searchString) {
-        return searchString.length() <= 1000;
+        return searchString.length() <= 400;
     }
 
 

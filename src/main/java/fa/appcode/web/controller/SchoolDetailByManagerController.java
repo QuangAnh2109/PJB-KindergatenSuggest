@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -115,10 +117,14 @@ public class SchoolDetailByManagerController {
     public ResponseEntity<Map<String, Object>> publicSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
         // Get school owner email
         String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
+        List<String> toEmail = email != null ? List.of(email) : null;
+
+        System.out.println(toEmail);
+        System.out.println("public 123455");
 
         List<Integer> inStatus = List.of(SchoolConstant.STATUS_APPROVED, SchoolConstant.STATUS_UNPUBLISHED);
         Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "Admin Public School", Placeholder.SCHOOL_NAME, schoolInfoService.getSchoolNameBySchoolIdAndNoDelete(id), Placeholder.USER_NAME, accountService.getAccountNameByEmailAndNoDelete(SecurityContextHolder.getContext().getAuthentication().getName()), Placeholder.LINK, globalConfig.getServerLink() + Constant.VIEW_DETAIL_URL + id);
-        return schoolDetailManagerService.changeSchoolStatus(id, recordNo, SchoolConstant.STATUS_PUBLISHED, inStatus, MailConstant.MAIL_PUBLISH_SCHOOL, detail, List.of(email), List.of());
+        return schoolDetailManagerService.changeSchoolStatus(id, recordNo, SchoolConstant.STATUS_PUBLISHED, inStatus, MailConstant.MAIL_PUBLISH_SCHOOL, detail, toEmail, List.of());
     }
 
     @ResponseBody

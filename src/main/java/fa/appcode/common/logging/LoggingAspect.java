@@ -1,5 +1,7 @@
 package fa.appcode.common.logging;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.io.File;
 
@@ -71,7 +73,9 @@ public class LoggingAspect {
             " || within(fa.appcode.repositories..*)" +
             " || within(fa.appcode.security..*)" +
             " || within(fa.appcode.exceptions..*)" +
-            " || within(fa.appcode.web.controller..*)")
+            " || within(fa.appcode.web.controller..*)"+
+            "@annotation(org.springframework.web.bind.annotation.PostMapping) || " +
+            "@annotation(org.springframework.web.bind.annotation.GetMapping)")
     public void applicationPackagePointcut() {
         // Method is empty as this is just a Pointcut, the implementations are in the
         // advices.
@@ -89,6 +93,11 @@ public class LoggingAspect {
                 joinPoint.getSignature().getName(), e.getCause() != null ? e.getCause() : "NULL");
         if (e.getMessage() != null) {
             log.error("Exception message: {}", e.getMessage());
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            String sStackTrace = sw.toString(); // stack trace as a string
+            log.error("Trace Exception : {}", sStackTrace);
         }
         // Log stack trace for better debugging
         log.debug("Exception stack trace:", e);

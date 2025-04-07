@@ -1,10 +1,7 @@
 package fa.appcode.config;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
@@ -304,6 +301,28 @@ public class GlobalConfig {
 
     @Value("${ME_052}")
     private String invalidPageNumber;
+    @Value("${ME_126}")
+    private String inquiriesRequired;
+    @Value("${ME_127}")
+    private String inquiriesLength;
+    @Value("${ME_128}")
+    private String requestSuccess;
+    @Value("${ME_129}")
+    private String requestFailed;
+    @Value("${ME_130}")
+    private String phoneLength;
+    @Value("${ME_131}")
+    private String phoneFormat;
+    @Value("${ME_132}")
+    private String emailRequired;
+    @Value("${ME_133}")
+    private String emailLength;
+    @Value("${ME_134}")
+    private String emailFormat;
+    @Value("${ME_135}")
+    private String fullNameRequired;
+    @Value("${ME_136}")
+    private String fullNameLength;
 
     @Value("${ME_044}")
     private String invalidRecordNo;
@@ -318,5 +337,8 @@ public class GlobalConfig {
 
     @Value("${ME_121}")
     private String invalidToDate;
+
+    @Value("${ME_123}")
+    private String fullAddressLengthLimit;
 }
 
