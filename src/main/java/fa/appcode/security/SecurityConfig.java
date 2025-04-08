@@ -93,13 +93,7 @@ public class SecurityConfig {
                 ).sessionManagement(session -> session
                         .invalidSessionUrl("/public/sign-in?timeout=true")
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                        .maximumSessions(1)
-                        .expiredUrl("/public/sign-in?expired=true")
-                        .sessionRegistry(sessionRegistry)
 
-                )
-                .sessionManagement(session -> session
-                        .sessionFixation().migrateSession()
                 )
                 .exceptionHandling(configurer -> configurer
                         .accessDeniedPage("/public/access-denied")

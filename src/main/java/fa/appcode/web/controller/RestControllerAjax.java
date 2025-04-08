@@ -302,6 +302,24 @@ public class RestControllerAjax {
         return ResponseEntity.ok(filteredFeedback);
     }
 
+    @GetMapping("/my-request")
+    public ResponseEntity<PageVo<MyRequestVo>> myRequest(
+            @SessionAttribute(name = "idAccount", required = true) Integer accountId,
+            @RequestParam(defaultValue = Constant.INIT_PAGE) int page,
+            @RequestParam(defaultValue = Constant.PAGE_SIZE) int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createTime").descending());
+        Page<MyRequestVo> requestPage = requestService.findRequestByAccountId(accountId, pageable);
+
+        PageVo<MyRequestVo> pageDto = new PageVo<>();
+        pageDto.setContent(requestPage.getContent());
+        pageDto.setTotalPages(requestPage.getTotalPages());
+        pageDto.setTotalElements(requestPage.getTotalElements());
+        pageDto.setCurrentPage(page);
+
+        return ResponseEntity.ok(pageDto);
+    }
+
 
     /**
      * Create a new counseling request.
