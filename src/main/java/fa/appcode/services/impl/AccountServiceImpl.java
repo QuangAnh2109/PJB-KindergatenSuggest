@@ -46,9 +46,8 @@ public class AccountServiceImpl implements AccountService {
     private final ValidateService validateService;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     private final GlobalConfig globalConfig;
-    private final CityService cityService;
+
     private final EmailService emailService;
-    private Map<String, Object> lastValidationResult;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private static final String ERROR_ATTRIBUTE = "error";
@@ -129,7 +128,7 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findAllWithFullAddress(search, pageable);
     }
 
-    // Find account by Id
+    // Find account by id
     @Override
     public AccountVo getAccountById(Integer id) {
         AccountInfo accountInfo = accountRepository.findById(id)
@@ -171,7 +170,7 @@ public class AccountServiceImpl implements AccountService {
             throw new IllegalStateException(globalConfig.getNoChangeToUpdate());
         }
 
-        // if has changes, perform update
+        //  If changes, perform update
         user.setRoleId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
         user.setStatusId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
         int newRecordNo = user.getRecordNo() + 1;
@@ -269,8 +268,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountInfo getAccountInfo(Principal principal) {
         String user = principal.getName();
-        AccountInfo account = findByEmail(user);
-        return account;
+        return findByEmail(user);
     }
 
     @Override
