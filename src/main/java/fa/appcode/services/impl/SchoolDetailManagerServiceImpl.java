@@ -204,7 +204,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
 
     private String saveImage(MultipartFile image, int schoolId) throws IOException {
         if(image != null && !image.isEmpty()){
-            String imageDir = System.getProperty("user.dir") + Constant.IMAGE_DIR;
+            String imageDir = Constant.IMAGE_DIR;
 
             File uploadFolder = new File(imageDir);
             if (!uploadFolder.exists() && !uploadFolder.mkdirs()) {
@@ -215,7 +215,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             Path filePath = Paths.get(imageDir).resolve(fileName);
             Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            return Constant.IMAGE_DIR + "/" + fileName;
+            return imageDir + "/" + fileName;
         }
         return null;
     }

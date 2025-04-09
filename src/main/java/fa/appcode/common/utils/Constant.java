@@ -90,7 +90,7 @@ public class Constant {
     public static final int ENROLL_STATUS_ENROLL=3;
     public static final int ENROLL_STATUS_UNENROLL=4;
 
-    public static final String IMAGE_DIR = "/images";
+    public static final String IMAGE_DIR = "images";
     public static final String alertType = "alertType";
     public static final String parentMessage ="message";
     public static final String parentCurrentPage ="currentPage";
