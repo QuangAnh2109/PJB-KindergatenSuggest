@@ -61,7 +61,6 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
     @Override
     public String getSchoolCreateFormToModel(Model model) {
         model.addAttribute("citys", cityService.findAllByNoDelete());
-        model.addAttribute("serverLink", globalConfig.getServerLink());
         masterDatumService.setMasterDataToModel(model);
         return Constant.SCHOOL_CREATE_PAGE;
     }
