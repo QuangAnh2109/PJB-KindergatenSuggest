@@ -196,11 +196,11 @@
                         </div>
                         <div class="de-flex-col">
                             <div class="menu_side_area" sec:authorize="!isAuthenticated()">
-                                <a th:href="@{/sign-in}" class="btn-main">Login</a>
+                                <a th:href="@{/public/sign-in}" class="btn-main">Login</a>
                                 <span class="menu-btn"></span>
                             </div>
                             <div class="menu_side_area" sec:authorize="!isAuthenticated()">
-                                <a th:href="@{/register}" class="btn-main">Sign Up</a>
+                                <a th:href="@{/public/register}" class="btn-main">Sign Up</a>
                                 <span class="menu-btn"></span>
                             </div>
                             <div class="logout-container" sec:authorize="isAuthenticated()">
@@ -304,24 +304,20 @@
                             <div class="container-timeline">
                                 <ul>
                                     <li>
-                                        <h4>Choose a school</h4>
-                                        <p>Unlock unparalleled adventures and memorable journeys with our vast fleet of
-                                            vehicles tailored to suit every need, taste, and destination.</p>
+                                        <h4>Choose a School</h4>
+                                        <p>Find the perfect school for your child with our comprehensive database, tailored to match every educational need, location, and aspiration.</p>
                                     </li>
                                     <li>
-                                        <h4>Pick location &amp; date</h4>
-                                        <p>Pick your ideal location and date, and let us take you on a journey filled
-                                            with convenience, flexibility, and unforgettable experiences.</p>
+                                        <h4>Pick Location & School</h4>
+                                        <p>Select your preferred city or district, and explore a wide range of schools that best match your child’s needs and your family’s expectations.</p>
                                     </li>
                                     <li>
-                                        <h4>Make a booking</h4>
-                                        <p>Secure your reservation with ease, unlocking a world of possibilities and
-                                            embarking on your next adventure with confidence.</p>
+                                        <h4>Make a Request</h4>
+                                        <p>Submit your request to receive detailed information, schedule a visit, or connect directly with your chosen school — it's simple and hassle-free.</p>
                                     </li>
                                     <li>
-                                        <h4>Sit back &amp; relax</h4>
-                                        <p>Hassle-free convenience as we take care of every detail, allowing you to
-                                            unwind and embrace a journey filled comfort.</p>
+                                        <h4>Sit Back & Relax</h4>
+                                        <p>We’ll handle the rest — from connecting with schools to scheduling visits — so you can focus on what truly matters: your child’s future.</p>
                                     </li>
                                 </ul>
                             </div>

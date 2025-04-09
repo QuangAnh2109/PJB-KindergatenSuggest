@@ -24,14 +24,14 @@ public class Constant {
 
     //URL
     public static final String VIEW_ACCOUNT_URL = "/auth/view-account";
-    public static final String REGISTER_VERIFY_URL = "http://localhost:8080/public/register/verify?token=";
+    public static final String REGISTER_VERIFY_URL = "http://kindergartensuggestion.site/public/register/verify?token=";
     public static final String VIEW_PARENT_DETAIL_URL = "/manager/parent-list/parent-details/";
     private static final String CHANGE_PASSWORD_URL = "/auth/change-password";
     private static final String HOME_URL = "/public/home";
     private static final String MANAGER_REQUEST_LIST_URL = "/manager/request-list";
-    public static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
+    public static final String RESET_PASSWORD_URL = "http://kindergartensuggestion.site/public/reset-password?token=";
     public static final String PARENT_LIST_URL = "/manager/parent-list";
-    public static final String REQUEST_REMINDER_URL = "http://localhost:8080/manager/request-reminder";
+    public static final String REQUEST_REMINDER_URL = "http://kindergartensuggestion.site/manager/request-reminder";
     public static final String VIEW_DETAIL_URL = "/manager/school/view-detail?id=";
 
     //ADMIN SIDE
