@@ -215,7 +215,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             Path filePath = Paths.get(imageDir).resolve(fileName);
             Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            return imageDir + "/" + fileName;
+            return "/" + imageDir + "/" + fileName;
         }
         return null;
     }
