@@ -232,12 +232,15 @@ public class ValidateServiceImpl implements ValidateService {
                 .flatMap(map -> map.entrySet().stream())  // Flatten maps into a stream of entries
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1));  // Merge into a single map
     }
-    public Map<String,String> fullAddressValidation(String fullAddress) {
-        if(fullAddress.length() > 255) {
-            return Map.of("fullAddressError",globalConfig.getFullAddressLengthLimit());
+    public Map<String, String> fullAddressValidation(String fullAddress) {
+        if (fullAddress != null && !fullAddress.trim().isEmpty()) {
+            if (fullAddress.length() > 255) {
+                return Map.of("fullAddressError", globalConfig.getFullAddressLengthLimit());
+            }
         }
         return Collections.emptyMap();
     }
+
     /**
      * Validates registration fields including full name, email, phone number, and password confirmation.
      * Combines multiple validation methods into a single map.

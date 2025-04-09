@@ -15,7 +15,6 @@ public class Constant {
     public static final String FORGOT_PASSWORD_PAGE = "user_side/forgot-password";
     public static final String RESET_PASSWORD_PAGE = "user_side/reset-password";
     public static final String TOKEN_INVALID_PAGE = "user_side/token-invalid";
-    public static final String CHANGE_PASSWORD_PAGE = "user_side/change-password";
     public static final String LOGIN_PAGE = "user_side/login";
     public static final String REGISTER_PAGE = "user_side/register";
     public static final String VERIFY_ACCOUNT_PAGE = "user_side/verify-account";
@@ -70,7 +69,7 @@ public class Constant {
     public static final Integer STATUS_DELETED = 0;
     public static final String WEB_SYSTEM = "WEB_SYSTEM";
     public static final int SEND_EMAIL_FORGOT = 1;
-    public static final int SEND_EMAIL_REGISTER = 1;
+    public static final int SEND_EMAIL_REGISTER = 7;
     public static final String REQUEST_LIST_PAGE = "requestList";
     public static final String REQUEST_REMINDER_PAGE = "requestReminder";
     public static final String message= "message";
