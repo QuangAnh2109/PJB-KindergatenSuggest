@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,7 +129,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             responseSuccess.put("id", schoolInfo.getId());
             return ResponseEntity.ok().body(responseSuccess);
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error("{}: {}", e.getClass(), e.getMessage());
             return ResponseEntity.ok().body(responseFailed);
         }
     }
@@ -166,6 +167,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             }
             return ResponseEntity.ok().body(Map.of("message", globalConfig.getUpdateSuccess()));
         } catch (Exception e) {
+            log.error("{}: {}", e.getClass(), e.getMessage());
             return ResponseEntity.badRequest().body(Map.of("message", globalConfig.getUpdateFailed()));
         }
     }
@@ -202,17 +204,18 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
 
     private String saveImage(MultipartFile image, int schoolId) throws IOException {
         if(image != null && !image.isEmpty()){
+            String imageDir = Constant.IMAGE_DIR;
 
-            File uploadFolder = new File(Constant.IMAGE_DIR);
+            File uploadFolder = new File(imageDir);
             if (!uploadFolder.exists() && !uploadFolder.mkdirs()) {
-                throw new IOException("Failed to create directory: " + Constant.IMAGE_DIR);
+                throw new IOException("Failed to create directory: " + imageDir);
             }
 
             String fileName = System.currentTimeMillis() + "-" + schoolId + ".png";
-            Path filePath = Paths.get(Constant.IMAGE_DIR).resolve(fileName);
+            Path filePath = Paths.get(imageDir).resolve(fileName);
             Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            return Constant.IMAGE_DIR_DB + "/" + fileName;
+            return "/" + imageDir + "/" + fileName;
         }
         return null;
     }
