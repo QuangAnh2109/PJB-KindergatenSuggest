@@ -2,7 +2,6 @@ function getRatingByTime(schoolId) {
     let fromDateElement = document.getElementById("fromDate");
     let toDateElement = document.getElementById("toDate");
 
-    // Lấy giá trị date và chuyển đổi thành ISO format nếu có
     let fromDate = fromDateElement && fromDateElement.value ? new Date(fromDateElement.value).toISOString() : null;
     let toDate = toDateElement && toDateElement.value ? new Date(toDateElement.value).toISOString() : null;
 
@@ -44,7 +43,7 @@ function searchFeedback(schoolId, pageNumber, callback) {
             rating: getSelectedRatings()
         }),
         success: function (html) {
-            callback(html); // Gọi callback để cập nhật HTML
+            callback(html);
         },
         error: function (xhr) {
             console.log(xhr.responseText);
