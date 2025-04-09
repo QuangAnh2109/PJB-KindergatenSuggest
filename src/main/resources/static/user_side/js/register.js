@@ -33,7 +33,7 @@ function reloadHande() {
                     console.error('Error:', error);
                     Swal.fire({
                         title: "Error",
-                        text: "An error occurred. Please try again.",
+                        text: message.errorMessage,
                         icon: "error",
                         confirmButtonText: "OK"
                     });

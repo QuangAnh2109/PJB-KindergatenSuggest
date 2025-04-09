@@ -35,7 +35,7 @@ public class EmailBuilder {
 
         return SendMailInfo.builder()
                 .toMail(Collections.singletonList(email))
-                .mailId(Constant.SEND_EMAIL_REGISTER)
+                .mailId(MailConstant.MAIL_VERIFY_ACCOUNT)
                 .ccMail(Collections.emptyList())
                 .detail(placeholders)
                 .build();
@@ -54,7 +54,7 @@ public class EmailBuilder {
         Map<Placeholder, String> placeholders = Map.of(Placeholder.LINK, resetLink);
         return SendMailInfo.builder()
                 .toMail(Collections.singletonList(email))
-                .mailId(Constant.SEND_EMAIL_FORGOT)
+                .mailId(MailConstant.MAIL_PASSWORD_RESET)
                 .ccMail(Collections.emptyList())
                 .detail(placeholders)
                 .build();

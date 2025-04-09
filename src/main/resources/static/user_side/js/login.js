@@ -24,18 +24,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: formData,
                 headers: { "Accept": "application/json" }
             });
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Invalid JSON response");
+            }
 
             const result = await response.json();
-            if (response.ok) {
+            if (response.ok && result.redirectUrl) {
                 window.location.href = result.redirectUrl;
             } else {
-                showServerError(result.error);
+                showServerError(result.error || "Unknown error");
             }
         } catch (error) {
             console.error("Fetch error:", error);
             Swal.fire({
                 title: "Error",
-                text: messages.errorOccur,
+                text: "An unexpected error occurred. Please try again!",
                 icon: "error",
                 confirmButtonText: "OK"
             });
