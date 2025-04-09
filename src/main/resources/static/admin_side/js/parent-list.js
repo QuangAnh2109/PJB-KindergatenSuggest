@@ -25,7 +25,7 @@ $(document).ready(function () {
     });
 
     function findAll(search, currentPage, updateUrl = false) {
-        if (search.length > 1000) {
+        if (search.length > 400) {
             showModalMessage();
             return;
         }
@@ -51,8 +51,8 @@ $(document).ready(function () {
     }
 
     function updateUrlParams(search, currentPage) {
-        if(search!=null && search.length>1000){
-        search = search.trim().substring(0, 1000);
+        if(search!=null && search.length>400){
+        search = search.trim().substring(0, 400);
         }
         let newUrl = window.location.pathname + "?search=" + encodeURIComponent(search) + "&currentPage=" + currentPage;
         window.history.pushState({ path: newUrl }, "", newUrl);

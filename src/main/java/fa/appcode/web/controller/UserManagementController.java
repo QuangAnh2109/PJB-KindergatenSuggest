@@ -7,7 +7,6 @@ import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.MasterDatum;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.MasterDatumService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

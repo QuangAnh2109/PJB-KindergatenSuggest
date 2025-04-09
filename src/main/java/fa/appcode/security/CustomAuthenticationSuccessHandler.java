@@ -51,7 +51,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         session.setAttribute("idAccount", accountInfo.getId());
         session.setAttribute("nameAccount", accountInfo.getFullName());
 
+        //Register session and user details for later tracking and control
         userSessionService.registerSession(email, session);
+        userSessionService.registerUserDetails((CustomUserDetails) authentication.getPrincipal());
 
         response.getWriter().write("{\"redirectUrl\": \"" + request.getContextPath() + redirectUrl + "\"}");
     }

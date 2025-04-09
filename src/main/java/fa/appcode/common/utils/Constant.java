@@ -31,7 +31,7 @@ public class Constant {
     private static final String MANAGER_REQUEST_LIST_URL = "/manager/request-list";
     public static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
     public static final String PARENT_LIST_URL = "/manager/parent-list";
-    public static final String REQUEST_REMINDER_URL = "http://localhost:8080/manager/request-reminder";
+    public static final String REQUEST_REMINDER_URL = "/manager/request-list";
     public static final String VIEW_DETAIL_URL = "/manager/school/view-detail?id=";
 
     //ADMIN SIDE
@@ -46,6 +46,7 @@ public class Constant {
     public static final String REQUEST_LIST_URL = "admin_side/request-list";
     public static final String REQUEST_REMINDER_URL_HTML = "admin_side/request-reminder";
     public static final String REQUEST_LIST_CONTROLLER = "/manager/request-list";
+    public static final String REQUEST_REMINDER_CONTROLLER = "/manager/request-list";
     public static final String SEARCH_REQUEST_LIST_CONTROLLER = "/manager/searchRequestList";
     //REGEX
     public static final String NULL_REGEX = "^(?!\\s*$).+";
@@ -59,6 +60,7 @@ public class Constant {
     public static final String ADDRESS_REGEX = "^.{1,255}$";
     public static final String SCHOOL_INTRODUCTION_REGEX = "^.{1,65535}$";
     //CONSTANT VALUE
+    public static final Integer LEGAL_AGE = 18;
     public static final Integer PARENT_ROLE_ID = 3;
     public static final Integer SCHOOL_OWNER_ID = 2;
     public static final Integer ADMIN_ROLE_ID = 1;
@@ -69,6 +71,7 @@ public class Constant {
     public static final Integer STATUS_INACTIVE = 2;
     public static final Integer STATUS_DELETED = 0;
     public static final String WEB_SYSTEM = "WEB_SYSTEM";
+    public static final String ADMIN_SYSTEM= "ADMIN_SYSTEM";
     public static final int SEND_EMAIL_FORGOT = 1;
     public static final int SEND_EMAIL_REGISTER = 1;
     public static final String REQUEST_LIST_PAGE = "requestList";

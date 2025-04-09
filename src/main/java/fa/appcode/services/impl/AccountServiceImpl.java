@@ -46,12 +46,10 @@ public class AccountServiceImpl implements AccountService {
     private final ValidateService validateService;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     private final GlobalConfig globalConfig;
-    private final CityService cityService;
+
     private final EmailService emailService;
-    private Map<String, Object> lastValidationResult;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private static final String ERROR_ATTRIBUTE = "error";
 
     @Lazy
     @Autowired
@@ -104,22 +102,31 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
     }
 
-    @Override
-    public AccountInfo createAccount(AccountVo accountVo) {
+    private AccountInfo buildAccountInfo(AccountVo accountVo, String createId, String updateId) {
         AccountInfo accountInfo = new AccountInfo();
         accountInfo.setFullName(accountVo.getFullName());
         accountInfo.setEmail(accountVo.getEmail());
-        accountInfo.setPassword(encodePassword(accountVo.getPassword()));
         accountInfo.setPhone(accountVo.getPhone());
-        accountInfo.setStatusId(Constant.STATUS_INACTIVE);
-        accountInfo.setRoleId(Constant.PARENT_ROLE_ID);
+
+        if (accountVo.getDob() != null && !accountVo.getDob().isBlank()) {
+            accountInfo.setDob(LocalDate.parse(accountVo.getDob()));
+        }
+        accountInfo.setPassword(encodePassword(accountVo.getPassword()));
         accountInfo.setImageUrl(null);
         accountInfo.setRecordNo(1);
-        accountInfo.setCreateId(Constant.WEB_SYSTEM);
-        accountInfo.setUpdateId(Constant.WEB_SYSTEM);
-        Instant now = Instant.now();
-        accountInfo.setCreateTime(now);
-        accountInfo.setUpdateTime(now);
+        accountInfo.setCreateId(createId);
+        accountInfo.setUpdateId(updateId);
+        accountInfo.setCreateTime(Instant.now());
+        accountInfo.setUpdateTime(Instant.now());
+        return accountInfo;
+    }
+
+
+    @Override
+    public AccountInfo createAccount(AccountVo accountVo) {
+        AccountInfo accountInfo = buildAccountInfo(accountVo, Constant.WEB_SYSTEM, Constant.WEB_SYSTEM);
+        accountInfo.setStatusId(Constant.STATUS_INACTIVE);
+        accountInfo.setRoleId(Constant.PARENT_ROLE_ID);
         return accountRepository.save(accountInfo);
     }
 
@@ -129,7 +136,7 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findAllWithFullAddress(search, pageable);
     }
 
-    // Find account by Id
+    // Find account by id
     @Override
     public AccountVo getAccountById(Integer id) {
         AccountInfo accountInfo = accountRepository.findById(id)
@@ -171,7 +178,7 @@ public class AccountServiceImpl implements AccountService {
             throw new IllegalStateException(globalConfig.getNoChangeToUpdate());
         }
 
-        // if has changes, perform update
+        //  If changes, perform update
         user.setRoleId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
         user.setStatusId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
         int newRecordNo = user.getRecordNo() + 1;
@@ -213,22 +220,11 @@ public class AccountServiceImpl implements AccountService {
         // Generate password by system
         String randomPassword = UUID.randomUUID().toString();
         accountVo.setPassword(randomPassword);
-        accountVo.setConfirmPassword(randomPassword);
 
-        AccountInfo accountInfo = new AccountInfo();
-        accountInfo.setFullName(accountVo.getFullName());
-        accountInfo.setEmail(accountVo.getEmail());
-        accountInfo.setPhone(accountVo.getPhone());
-        accountInfo.setDob(LocalDate.parse(accountVo.getDob()));
+        AccountInfo accountInfo = buildAccountInfo(accountVo, Constant.ADMIN_SYSTEM, Constant.ADMIN_SYSTEM);
         accountInfo.setRoleId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ROLE", accountVo.getRole()));
-        accountInfo.setPassword(encodePassword(accountVo.getPassword()));
-        accountInfo.setStatusId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus())); // Default status
-        accountInfo.setImageUrl("null");
-        accountInfo.setRecordNo(1);
-        accountInfo.setCreateId("SYSTEM_ADMIN");
-        accountInfo.setUpdateId("SYSTEM_ADMIN");
-        accountInfo.setCreateTime(Instant.now());
-        accountInfo.setUpdateTime(Instant.now());
+        accountInfo.setStatusId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
+
         accountRepository.save(accountInfo);
 
         // Send email
@@ -269,8 +265,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountInfo getAccountInfo(Principal principal) {
         String user = principal.getName();
-        AccountInfo account = findByEmail(user);
-        return account;
+        return findByEmail(user);
     }
 
     @Override
@@ -474,7 +469,7 @@ public class AccountServiceImpl implements AccountService {
         // Validate the updated account fields
         Map<String, String> validationResult = validateService.validateAccountField(
                 accountInfo.getFullName(), accountInfo.getPhone(),
-                currentAccount.getPhone(), accountInfo.getDob()
+                currentAccount.getPhone(), accountInfo.getDob(),accountInfo.getAddress()
         );
         // If there are validation errors, return them immediately
         if (!validationResult.isEmpty()) {
