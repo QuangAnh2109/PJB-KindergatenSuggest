@@ -31,7 +31,7 @@ public class Constant {
     private static final String MANAGER_REQUEST_LIST_URL = "/manager/request-list";
     public static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
     public static final String PARENT_LIST_URL = "/manager/parent-list";
-    public static final String REQUEST_REMINDER_URL = "http://localhost:8080/manager/request-reminder";
+    public static final String REQUEST_REMINDER_URL = "/manager/request-list";
     public static final String VIEW_DETAIL_URL = "/manager/school/view-detail?id=";
 
     //ADMIN SIDE
@@ -46,6 +46,7 @@ public class Constant {
     public static final String REQUEST_LIST_URL = "admin_side/request-list";
     public static final String REQUEST_REMINDER_URL_HTML = "admin_side/request-reminder";
     public static final String REQUEST_LIST_CONTROLLER = "/manager/request-list";
+    public static final String REQUEST_REMINDER_CONTROLLER = "/manager/request-list";
     public static final String SEARCH_REQUEST_LIST_CONTROLLER = "/manager/searchRequestList";
     //REGEX
     public static final String NULL_REGEX = "^(?!\\s*$).+";
