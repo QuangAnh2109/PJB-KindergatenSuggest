@@ -91,15 +91,21 @@ public class ValidateServiceImpl implements ValidateService {
     }
 
     @Override
-    public Map<String, String> dobValidation(LocalDate dob) {
+    public Map<String, String> dobValidation(LocalDate dob, boolean isRequired) {
         if (dob == null) {
-            return Map.of("dobError", globalConfig.getRequiredField());
+            return isRequired
+                    ? Map.of("dobError", globalConfig.getRequiredField())
+                    : Collections.emptyMap();  // If not required then ignore null
         }
-        if (!dob.isBefore(LocalDate.of(2006, 1, 1))) {
+        LocalDate today = LocalDate.now();
+        LocalDate eighteenYearsAgo = today.minusYears(Constant.LEGAL_AGE);
+
+        if (!dob.isBefore(eighteenYearsAgo)) {
             return Map.of("dobError", globalConfig.getInvalidDate());
         }
         return Collections.emptyMap();
     }
+
 
 
     public Map<String, String> fullNameValidation(String fullName) {
@@ -226,7 +232,7 @@ public class ValidateServiceImpl implements ValidateService {
         return Stream.of(
                         fullNameValidation(fullName),  // Validate full name
                         validatePhone(currentPhone, newPhone),  // Validate phone numbers
-                        dobValidation(dob), // Validate date of birth,
+                        dobValidation(dob, false), // Validate date of birth,
                     fullAddressValidation(fullAddress)
                 )
                 .flatMap(map -> map.entrySet().stream())  // Flatten maps into a stream of entries
@@ -283,7 +289,7 @@ public class ValidateServiceImpl implements ValidateService {
         errors.putAll(dobValidation(
                 (accountVo.getDob() == null || accountVo.getDob().trim().isEmpty())
                         ? null
-                        : LocalDate.parse(accountVo.getDob())
+                        : LocalDate.parse(accountVo.getDob()),true
         ));
 
         if (accountVo.getRole() == null || accountVo.getRole().trim().isEmpty()) {
@@ -298,7 +304,7 @@ public class ValidateServiceImpl implements ValidateService {
 
     @Override
     public boolean validateSearchString(String searchString) {
-        return searchString.length() <= 1000;
+        return searchString.length() <= 400;
     }
 
 

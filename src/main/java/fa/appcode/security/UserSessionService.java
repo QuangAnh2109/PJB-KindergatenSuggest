@@ -12,38 +12,49 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class UserSessionService {
     private final SessionRegistry sessionRegistry;
+
+    // Map to store user's HttpSession by username
     private final ConcurrentHashMap<String, HttpSession> sessionMap = new ConcurrentHashMap<>();
+
+    // Map to store CustomUserDetails by username
+    private final ConcurrentHashMap<String, CustomUserDetails> userDetailsMap = new ConcurrentHashMap<>();
+
 
     public UserSessionService(SessionRegistry sessionRegistry) {
         this.sessionRegistry = sessionRegistry;
     }
 
+    // Registers the HttpSession for a user.
     public void registerSession(String username, HttpSession session) {
         sessionMap.put(username, session);
     }
 
+    // Registers the CustomUserDetails for a user.
+    public void registerUserDetails(CustomUserDetails userDetails) {
+        userDetailsMap.put(userDetails.getUsername(), userDetails);
+    }
+
+    //Expires and invalidates all sessions for a given user.
     public void expireUserSessions(String username) {
-        List<Object> principals = sessionRegistry.getAllPrincipals();
-        for (Object principal : principals) {
-            if (principal instanceof CustomUserDetails userDetails) {
-                if (userDetails.getUsername().equals(username)) {
-                    List<SessionInformation> sessions = sessionRegistry.getAllSessions(userDetails, false);
-                    for (SessionInformation session : sessions) {
-                        session.expireNow();
-                    }
+        CustomUserDetails userDetails = userDetailsMap.get(username);
+        if (userDetails != null) {
+            List<SessionInformation> sessions = sessionRegistry.getAllSessions(userDetails, false);
+            if (sessions != null) {
+                for (SessionInformation session : sessions) {
+                    session.expireNow();
                 }
             }
         }
-
-        // Nếu có session đang active, remove nó khỏi SecurityContext và invalidate session
+        // And also invalidate the raw HttpSession if it's being tracked
         HttpSession session = sessionMap.get(username);
         if (session != null) {
             session.removeAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
             session.invalidate();
-            sessionMap.remove(username);
         }
 
-        // Xóa SecurityContext của thread hiện tại (nếu cần)
+        // Clean up tracking maps and security context
+        sessionMap.remove(username);
+        userDetailsMap.remove(username);
         SecurityContextHolder.clearContext();
     }
 }

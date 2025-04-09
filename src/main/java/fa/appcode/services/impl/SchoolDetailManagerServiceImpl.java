@@ -61,7 +61,6 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
     @Override
     public String getSchoolCreateFormToModel(Model model) {
         model.addAttribute("citys", cityService.findAllByNoDelete());
-        model.addAttribute("serverLink", globalConfig.getServerLink());
         masterDatumService.setMasterDataToModel(model);
         return Constant.SCHOOL_CREATE_PAGE;
     }
@@ -153,7 +152,9 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             SchoolInfo schoolInfoDb = schoolInfoRepository.findSchoolInfoByIdAndRecordNoAndDeleteFlg(schoolInfo.getId(), schoolInfo.getRecordNo(), false);
             if(schoolInfoDb == null) throw new Exception();
 
-            schoolInfo.setImgageUrl(saveImage(image, schoolInfo.getId()));
+            String fileName = saveImage(image, schoolInfo.getId());
+            if(fileName != null) schoolInfo.setImgageUrl(fileName);
+            else schoolInfo.setImgageUrl(schoolInfoDb.getImageUrl());
 
             schoolUtilityService.saveAllSchoolUtility(schoolUtilityId, schoolInfoDb);
             schoolFacilityService.saveAllSchoolFacility(schoolFacilityId,schoolInfoDb);
@@ -207,11 +208,11 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
                 throw new IOException("Failed to create directory: " + Constant.IMAGE_DIR);
             }
 
-            String fileName = System.currentTimeMillis() + "_" + schoolId;
+            String fileName = System.currentTimeMillis() + "-" + schoolId + ".png";
             Path filePath = Paths.get(Constant.IMAGE_DIR).resolve(fileName);
             Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            return Constant.IMAGE_DIR + "/" + fileName;
+            return Constant.IMAGE_DIR_DB + "/" + fileName;
         }
         return null;
     }

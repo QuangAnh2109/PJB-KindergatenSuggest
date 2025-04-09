@@ -171,10 +171,12 @@ public class RestControllerAjax {
             // Check if the feedback message is provided and within length limit
             if (feedbackVo.getFeedbackMessage() == null || feedbackVo.getFeedbackMessage().trim().isEmpty()) {
                 errors.put("feedbackMessage", "Feedback message is required");
+            }
+            else if(feedbackVo.getFeedbackMessage().trim().length() < 50) {
+                errors.put("feedbackMessage", "Feedback message must be at least 50 characters");
             } else if (feedbackVo.getFeedbackMessage().trim().length() > 4000) {
                 errors.put("feedbackMessage", "Feedback message must be less than 4000 characters");
             }
-
             // Validate rating values (should be between 0.5 and 5, with 0.5 increments)
             validateRating(errors, feedbackVo.getLearningProgram(), "learningProgram");
             validateRating(errors, feedbackVo.getFacilitiesUtilities(), "facilitiesUtilities");
@@ -351,6 +353,8 @@ public class RestControllerAjax {
 
         if (inquiries == null || inquiries.trim().isEmpty()) {
             errors.put("inquiries", globalConfig.getInquiriesRequired());
+        } else if (inquiries.trim().length() < 50) {
+            errors.put("inquiries", globalConfig.getInquiriesLength());
         } else if (inquiries.trim().length() > 4000) {
             errors.put("inquiries", globalConfig.getInquiriesLength());
         }

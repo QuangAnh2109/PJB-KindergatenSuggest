@@ -177,8 +177,8 @@
                                 <!-- logo begin -->
                                 <div id="logo">
                                     <a th:href="@{/public/home}">
-                                        <img class="logo-1" src="/user_side/images/logo-light.png" alt="">
-                                        <img class="logo-2" src="/user_side/images/logo1.png" alt="">
+                                        <img class="logo-1" src="/user_side/images/logo-light.png" loading="lazy" alt="">
+                                        <img class="logo-2" src="/user_side/images/logo1.png" loading="lazy" alt="">
                                     </a>
                                 </div>
                                 <!-- logo close -->
@@ -358,7 +358,7 @@
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <img src="/user_side/images/school-model.png" alt="" class="img-fluid wow fadeInUp">
+                        <img src="/user_side/images/school-model.png" alt="" loading="lazy" class="img-fluid wow fadeInUp">
                     </div>
                     <div class="col-lg-3">
                         <div class="box-icon s2 d-invert p-small mb20 wow fadeInL fadeInLeft" data-wow-delay="1s">
@@ -380,7 +380,7 @@
             </div>
         </section>
         <section class="text-light jarallax">
-            <img src="/user_side/images/background/2.jpg" class="jarallax-img" alt="">
+            <img src="/user_side/images/background/2.jpg" class="jarallax-img" loading="lazy" alt="">
             <div class="container">
                 <div class="row g-5">
                     <div class="col-lg-6 wow fadeInRight">
@@ -556,127 +556,161 @@
         }
     }
 
+    // Replace the existing DOMContentLoaded event listener
     document.addEventListener("DOMContentLoaded", function() {
-        // Get URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const cityIdFromUrl = urlParams.get('cityId');
-
-        // Get the city select element
+        // Setup the city select change handler
         const citySelect = document.getElementById("citySelect");
-
-        // Get saved values from localStorage
-        const savedCityId = localStorage.getItem('selectedCityId');
-
-        // Determine which cityId to use (URL parameter takes precedence)
-        const cityIdToUse = cityIdFromUrl || savedCityId;
-
-        // If we have a city ID, set it as selected
-        if (cityIdToUse) {
-            citySelect.value = cityIdToUse;
-            // Save to localStorage
-            localStorage.setItem('selectedCityId', cityIdToUse);
-
-            // Load districts based on the selected city
-            loadDistrict(cityIdToUse);
+        if (citySelect) {
+            citySelect.addEventListener('change', function() {
+                loadDistrict(this.value);
+            });
         }
 
-        // Add change event listeners
-        citySelect.addEventListener('change', function() {
-            localStorage.setItem('selectedCityId', this.value);
-            // Clear district selection when city changes
-            localStorage.removeItem('selectedDistrictId');
-        });
+        // Reset the form fields to default values
+        citySelect.value = "0"; // Set to default option
+
+        // Get the district select and reset it too
+        const districtSelect = document.getElementById("district");
+        if (districtSelect) {
+            districtSelect.innerHTML = '<option value="0" selected>Select a city first</option>';
+            districtSelect.setAttribute("disabled", "disabled");
+        }
+
+        // Reset keyword field if it exists
+        const keywordInput = document.getElementById("keyword");
+        if (keywordInput) {
+            keywordInput.value = '';
+        }
+
+        // Completely ignore URL parameters - always reset to defaults
+        // Remove the URL parameter handling code to ensure full reset
     });
 
-    //load district by city id
     function loadDistrict(cityId) {
         if (!cityId || cityId == 0) {
-            document.getElementById("district").innerHTML = '<option value="0" selected>Select a city first</option>';
+            const districtSelect = document.getElementById("district");
+            districtSelect.innerHTML = '<option value="0" selected>Select a city first</option>';
+            districtSelect.setAttribute("disabled", "disabled");
             return;
         }
 
-        // Try to get district from localStorage
-        const savedDistrictId = localStorage.getItem('selectedDistrictId');
+        // Show loading animation
+        const districtSelect = document.getElementById("district");
+        districtSelect.innerHTML = '<option value="0">Loading districts...</option>';
+        districtSelect.setAttribute("disabled", "disabled");
+
+        // Add a loading class or spinner
+        districtSelect.classList.add("loading");
 
         $.ajax({
             url: "/public/districts",
             type: "GET",
             data: { cityId: cityId },
             success: function(json) {
+                // Remove loading class
+                districtSelect.classList.remove("loading");
+
                 if (!json || json.length === 0) {
                     console.warn("No districts found for cityId:", cityId);
+                    districtSelect.innerHTML = '<option value="0">No districts available</option>';
                     return;
                 }
 
-                const districtSelect = document.getElementById("district");
-                if (!districtSelect) return;
-
                 let options = '<option value="0">District</option>';
-                let districtFound = false;
 
                 json.forEach(item => {
-                    const isSelected = savedDistrictId && item.id == savedDistrictId ? 'selected' : '';
-                    if (isSelected) districtFound = true;
-                    options += `<option value="${item.id}" ${isSelected}>${item.districtName}</option>`;
+                    options += `<option value="${item.id}">${item.districtName}</option>`;
                 });
 
                 districtSelect.innerHTML = options;
                 districtSelect.removeAttribute("disabled");
-
-                // If we didn't find the saved district in the options, clear the localStorage
-                if (!districtFound && savedDistrictId) {
-                    localStorage.removeItem('selectedDistrictId');
-                }
             },
             error: function(xhr) {
+                // Remove loading class
+                districtSelect.classList.remove("loading");
+                districtSelect.innerHTML = '<option value="0">Error loading districts</option>';
                 console.error("Load district failed:", xhr);
             },
+            complete: function() {
+                // Ensure loading class is removed in all cases
+                districtSelect.classList.remove("loading");
+            }
         });
     }
 
-    // Add event listener for district selection changes
-    document.addEventListener('DOMContentLoaded', function() {
-        const districtSelect = document.getElementById('district');
-        if (districtSelect) {
-            districtSelect.addEventListener('change', function() {
-                localStorage.setItem('selectedDistrictId', this.value);
-            });
-        }
-    });
-
-
-    function searchRedirect() {
-        const input = document.getElementById("keyword").value;
-        const cityId = document.getElementById("citySelect").value;
-        const district = document.getElementById("district").value;
-        const uri = `/public/school/search?keyword=${encodeURIComponent(input)}&cityId=${cityId}&districtId=${district}`;
-        window.location.href = uri;
-    }
-
+    // Update search functions to handle loading state
     function searchRedirectByAddress() {
-        let cityId = document.getElementById("citySelect").value;
-        let district = document.getElementById("district").value;
+        const citySelect = document.getElementById("citySelect");
+        const districtSelect = document.getElementById("district");
 
-        // Save district ID to localStorage before redirecting
-        if (district) {
-            localStorage.setItem('selectedDistrictId', district);
+        // Disable if loading
+        if (districtSelect.classList.contains("loading")) {
+            alert("Please wait for districts to load");
+            return;
         }
 
+        const cityId = citySelect.value;
+        const district = districtSelect.value;
         const uri = `/public/school/search?cityId=${cityId}&districtId=${district}`;
         window.location.href = uri;
     }
 
     function searchRedirectByKeyword() {
         const input = document.getElementById("keyword").value;
+        if (!input.trim()) {
+            alert("Please enter a keyword to search");
+            return;
+        }
         const uri = `/public/school/search?keyword=${encodeURIComponent(input)}`;
         window.location.href = uri;
     }
 
-    //Catch event EnterKey
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') {
-            searchRedirect();
+    // Add this script to force form reset when page loads or when returning via back button
+    window.addEventListener('pageshow', function(event) {
+        // This triggers on page load AND when navigating back to the page
+        // The persisted property tells us if this is a back/forward navigation
+        if (event.persisted) {
+            // Coming back via browser back button - force reset
+            resetFormFields();
+        } else {
+            // Normal page load
+            resetFormFields();
         }
+    });
+
+    function resetFormFields() {
+        // Reset city select
+        const citySelect = document.getElementById("citySelect");
+        if (citySelect) {
+            citySelect.value = "0";
+        }
+
+        // Reset district select
+        const districtSelect = document.getElementById("district");
+        if (districtSelect) {
+            districtSelect.innerHTML = '<option value="0" selected>Select a city first</option>';
+            districtSelect.setAttribute("disabled", "disabled");
+        }
+
+        // Reset keyword field
+        const keywordInput = document.getElementById("keyword");
+        if (keywordInput) {
+            keywordInput.value = '';
+        }
+    }
+
+    // Keep your existing DOMContentLoaded listener, but call resetFormFields there too
+    document.addEventListener("DOMContentLoaded", function() {
+        // Setup the city select change handler
+        const citySelect = document.getElementById("citySelect");
+        if (citySelect) {
+            citySelect.addEventListener('change', function() {
+                loadDistrict(this.value);
+            });
+        }
+
+        // Reset all form fields
+        resetFormFields();
     });
 </script>
 

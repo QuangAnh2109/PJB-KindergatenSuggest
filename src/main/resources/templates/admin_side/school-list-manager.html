@@ -120,7 +120,7 @@
                     </div>
                     <div class="col-lg-11">
                     </div>
-                    <a class="col-lg-1" sec:authorize="hasAuthority('School owner')" th:href="${serverLink+'/school-owner/school/form'}"><button class="col-12 btn btn-primary">Add school</button></a>
+                    <a class="col-lg-1" sec:authorize="hasAuthority('School owner')" href="/school-owner/school/form"><button class="col-12 btn btn-primary">Add school</button></a>
                 </div>
                 <!-- end row -->
                 <div th:fragment="main-content" id="main-content-school-table">
@@ -146,7 +146,7 @@
                                 <td th:text="${#temporals.format(school.postedDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                 <td th:each="sta:${status}" th:if="${sta.typeKey == school.getStatusId()}" th:text="${sta.getTypeValue()}"></td>
                                 <td class="row">
-                                    <a th:if="${school.statusId != 7}" th:href="${serverLink+'/manager/school/view-detail?id=' + school.schoolId}"><h4 class="col mdi mdi-file-document-edit-outline"></h4></a>
+                                    <a th:if="${school.statusId != 7}" th:href="${'/manager/school/view-detail?id=' + school.schoolId}"><h4 class="col mdi mdi-file-document-edit-outline"></h4></a>
                                     <a th:if="${school.canDelete}" class="button-search"><h4 class="col mdi mdi-delete-outline" th:onclick="'deleteSchool(' + ${school.schoolId} + ', ' + ${school.recordNo} + ')'"></h4></a>
                                 </td>
                             </tr>
