@@ -41,10 +41,10 @@ public class ValidateUtils {
         if(value == null) {
             errors.put(key, msg[0]);
         }
-        else if(value.compareTo(new BigDecimal("10000000000")) > 0) {
+        else if(value.compareTo(new BigDecimal("20000000")) > 0) {
             errors.put(key, msg[1]);
         }
-        else if(value.compareTo(new BigDecimal("0")) <= 0){
+        else if(value.compareTo(new BigDecimal("1000000")) <= 0){
             errors.put(key, msg[2]);
         }
     }
