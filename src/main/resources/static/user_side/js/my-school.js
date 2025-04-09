@@ -258,7 +258,7 @@ function createSchoolHtml(school, isCurrentSchool) {
                     <div class="star-rating">
                         ${starsHtml}
                         <span>${roundRating(school.avgRating)}</span>/5
-                        (<span>${school.totalRating}</span> ratings)
+                        (<span>${school.totalRating} </span> ratings)
                     </div>
                 </div>
                 <div class="school-detail">
@@ -287,11 +287,14 @@ function createSchoolHtml(school, isCurrentSchool) {
 
 // Generate star rating HTML for user rating
 function generateUserRatingStars(rating) {
+    // Round up to nearest 0.5
+    rating = Math.ceil(rating * 2) / 2;
+
     let starsHtml = '';
     for (let i = 1; i <= 5; i++) {
         if (i <= rating) {
             starsHtml += '<span class="star-filled">★</span>';
-        } else if (i <= rating + 0.5) {
+        } else if (i - 0.5 === rating) {
             starsHtml += '<span class="star-half">★</span>';
         } else {
             starsHtml += '<span class="star-empty">★</span>';
@@ -299,6 +302,7 @@ function generateUserRatingStars(rating) {
     }
     return starsHtml;
 }
+
 
 // Format number with commas
 function formatNumber(number) {
@@ -631,14 +635,5 @@ function showToast(message, type = 'success') {
     });
 }
 function roundRating(rating) {
-    const floor = Math.floor(rating);
-    const decimal = rating - floor;
-
-    if (decimal > 0 && decimal <= 0.5) {
-        return floor + 0.5;
-    } else if (decimal > 0.5) {
-        return floor + 1.0;
-    } else {
-        return rating;
-    }
+    return Math.ceil(rating * 2) / 2;
 }

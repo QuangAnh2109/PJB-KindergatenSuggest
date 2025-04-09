@@ -246,6 +246,7 @@ public class ValidateServiceImpl implements ValidateService {
         }
         return Collections.emptyMap();
     }
+
     /**
      * Validates registration fields including full name, email, phone number, and password confirmation.
      * Combines multiple validation methods into a single map.

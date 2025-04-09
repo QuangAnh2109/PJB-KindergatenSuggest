@@ -15,7 +15,6 @@ public class Constant {
     public static final String FORGOT_PASSWORD_PAGE = "user_side/forgot-password";
     public static final String RESET_PASSWORD_PAGE = "user_side/reset-password";
     public static final String TOKEN_INVALID_PAGE = "user_side/token-invalid";
-    public static final String CHANGE_PASSWORD_PAGE = "user_side/change-password";
     public static final String LOGIN_PAGE = "user_side/login";
     public static final String REGISTER_PAGE = "user_side/register";
     public static final String VERIFY_ACCOUNT_PAGE = "user_side/verify-account";
@@ -73,7 +72,7 @@ public class Constant {
     public static final String WEB_SYSTEM = "WEB_SYSTEM";
     public static final String ADMIN_SYSTEM= "ADMIN_SYSTEM";
     public static final int SEND_EMAIL_FORGOT = 1;
-    public static final int SEND_EMAIL_REGISTER = 1;
+    public static final int SEND_EMAIL_REGISTER = 7;
     public static final String REQUEST_LIST_PAGE = "requestList";
     public static final String REQUEST_REMINDER_PAGE = "requestReminder";
     public static final String message= "message";
@@ -93,8 +92,7 @@ public class Constant {
     public static final int ENROLL_STATUS_ENROLL=3;
     public static final int ENROLL_STATUS_UNENROLL=4;
 
-    public static final String IMAGE_DIR = "src/main/resources/static/user_side/images";
-    public static final String IMAGE_DIR_DB = "/user_side/images";
+    public static final String IMAGE_DIR = "images";
     public static final String alertType = "alertType";
     public static final String parentMessage ="message";
     public static final String parentCurrentPage ="currentPage";

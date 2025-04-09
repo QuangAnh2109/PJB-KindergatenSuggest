@@ -316,8 +316,8 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
 
 
     @Query("""
-        SELECT new fa.appcode.common.vo.HomeVo(COUNT(DISTINCT si.id),COUNT(DISTINCT ai.id))
-        FROM SchoolInfo si,AccountInfo ai
+        SELECT new fa.appcode.common.vo.HomeVo(COUNT(DISTINCT si.id),COUNT(DISTINCT ai.id),COUNT(DISTINCT r.id),COUNT(DISTINCT f.id))
+        FROM SchoolInfo si,AccountInfo ai,Request r,Feedback f
         WHERE ai.roleId = 3
     """)
     HomeVo dataHomePage();

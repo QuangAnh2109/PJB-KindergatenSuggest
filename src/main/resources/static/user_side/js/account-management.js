@@ -150,7 +150,9 @@ function initializeFormHandlers() {
                     const newPasswordTab = tempDiv.querySelector('#password');
                     if (newPasswordTab) {
                         document.querySelector('#password').innerHTML = newPasswordTab.innerHTML;
+                        initializeTogglePassword();
                     }
+
                     if (tempDiv.querySelector('.success3') || tempDiv.querySelector('[th\\:if="${successMessage}"]')) {
                         let successMessage= tempDiv.querySelector('.success3').textContent;
                         Swal.fire({

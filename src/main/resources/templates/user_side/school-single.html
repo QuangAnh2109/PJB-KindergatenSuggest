@@ -111,7 +111,7 @@
 
         <!-- section begin -->
         <section id="subheader" class="jarallax text-light">
-            <img src="/user_side/images/background/school-deatil-background.jpg" class="jarallax-img" alt="">
+            <img src="/user_side/images/background/school-deatil-background.webp" class="jarallax-img" alt="">
             <div class="center-y relative text-center">
                 <div class="container">
                     <div class="row">
@@ -150,17 +150,9 @@
                         </p>
                         <p><strong>🏫 School type:</strong> <span th:text="${schoolInfo.getSchoolType()}"></span></p>
                         <p><strong><i class="fa fa-star" aria-hidden="true"></i> Rating:</strong> <span
-                                th:with="rating=${schoolInfo.getAvgRating()},
-                  roundedRating=${(rating >= 3.1 && rating <= 3.5) ? 3.5 :
-                                  (rating >= 3.6 && rating <= 4.0) ? 4.0 :
-                                  rating}"
                                 th:each="i : ${#numbers.sequence(1, 5)}"
-                                th:class="${i <= roundedRating ? 'star-filled' : (i <= roundedRating + 0.5 && i > roundedRating ? 'star-half' : 'star-empty')}">★</span>
-                            <span th:with="rating=${schoolInfo.getAvgRating()}"
-                                  th:text="${(rating >= 3.1 && rating <= 3.5) ? '3.5' :
-                    (rating >= 3.6 && rating <= 4.0) ? '4.0' :
-                    rating}"></span> Stars (<span
-                                    th:text="${schoolInfo.getTotalRating()}"> </span>/5
+                                th:class="${i <= schoolInfo.getAvgRating() ? 'star-filled' : (i <= schoolInfo.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
+                            <span th:text="${schoolInfo.getAvgRating()}"></span>/5
                             (<span th:text="${schoolInfo.getTotalRating()}"></span> ratings) </p>
                     </div>
 
@@ -230,19 +222,12 @@
                     <!-- Ratings Tab -->
                     <div class="tab-pane fade" id="ratings">
                         <h3>Average ratings</h3>
-                        <h3><span th:with="rating=${schoolInfo.getAvgRating()}"
-                                  th:text="${(rating >= 3.1 && rating <= 3.5) ? '3.5' :
-                    (rating >= 3.6 && rating <= 4.0) ? '4.0' :
-                    rating}"></span> Stars (<span
+                        <h3><span th:text="${schoolInfo.getAvgRating()}"></span> Stars (<span
                                 th:text="${schoolInfo.getTotalRating()}"> </span> Ratings)</h3>
                         <div class="rating-stars">
-    <span style="font-size: 25px;"
-          th:with="rating=${schoolInfo.getAvgRating()},
-                  roundedRating=${(rating >= 3.1 && rating <= 3.5) ? 3.5 :
-                                  (rating >= 3.6 && rating <= 4.0) ? 4.0 :
-                                  rating}"
-          th:each="i : ${#numbers.sequence(1, 5)}"
-          th:class="${i <= roundedRating ? 'star-filled' : (i <= roundedRating + 0.5 && i > roundedRating ? 'star-half' : 'star-empty')}">★</span>
+                        <span style="font-size: 25px;"
+             th:each="i : ${#numbers.sequence(1, 5)}"
+             th:class="${i <= schoolInfo.getAvgRating() ? 'star-filled' : (i <= schoolInfo.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
                         </div>
 
                         <div class="mt-3">

@@ -98,7 +98,6 @@ public class SecurityConfig {
                 .exceptionHandling(configurer -> configurer
                         .accessDeniedPage("/public/access-denied")
                 );
-
         return http.build();
     }
 }

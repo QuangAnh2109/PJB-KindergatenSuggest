@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="zxx" xmlns="http://www.w3.org/1999/html">
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+<html lang="zxx" xmlns="http://www.w3.org/1999/html"
+      xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
@@ -326,10 +326,7 @@
                                                         <div class="ms-2 star-rating"><span
                                                                 th:each="i : ${#numbers.sequence(1, 5)}"
                                                                 th:class="${i <= searchItem.getAvgRating() ? 'star-filled' : (i <= searchItem.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
-                                                            <span th:with="rating=${searchItem.getAvgRating()}"
-                                                                  th:text="${(rating >= 3.1 && rating <= 3.5) ? '3.5' :
-                                                            (rating >= 3.6 && rating <= 4.0) ? '4.0' :
-                                                                rating}"></span>/5
+                                                            <span th:text="${searchItem.getAvgRating()}"></span>/5
                                                             (<span th:text="${searchItem.getTotalRating()}"></span>
                                                             ratings)
                                                         </div>
