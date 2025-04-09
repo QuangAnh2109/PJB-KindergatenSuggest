@@ -214,7 +214,7 @@ function createSchoolHtml(school, isCurrentSchool) {
                     <p>Your Average Rating</p>
                     <div class="star-rating">
                         ${generateUserRatingStars(school.yourRating)}
-                        <span>${school.yourRating}</span>/5
+                        <span>${roundRating(school.yourRating)}</span>/5
                     </div>
                     <button class="btn-primary w-100"><a style="color: #FFFFFF" href="/public/school/details/${school.schoolId}#ratings">View Rating Details</a></button>
                 </div>
@@ -236,7 +236,7 @@ function createSchoolHtml(school, isCurrentSchool) {
                     <p>Your Average Rating</p>
                     <div class="star-rating">
                         ${generateUserRatingStars(school.yourRating)}
-                        <span>${school.yourRating}</span>/5
+                        <span>${roundRating(school.yourRating)}</span>/5
                     </div>
                     <button class="btn-primary w-100"><a style="color: #FFFFFF" href="/public/school/details/${school.schoolId}#ratings">View Rating Details</a></button>                
                     </div>
@@ -257,7 +257,7 @@ function createSchoolHtml(school, isCurrentSchool) {
                     <img src="${school.schoolImage}" class="me-3" alt="school-image" onerror="this.onerror=null;this.src='/user_side/images/school-image/school-placeholder.png';">
                     <div class="star-rating">
                         ${starsHtml}
-                        <span>${school.avgRating}</span>/5
+                        <span>${roundRating(school.avgRating)}</span>/5
                         (<span>${school.totalRating}</span> ratings)
                     </div>
                 </div>
@@ -368,7 +368,7 @@ function openRatingModal(schoolId) {
     currentSchoolId = schoolId;
 
     // Reset all star ratings
-    document.querySelectorAll('.star-rating').forEach(ratingDiv => {
+    document.querySelectorAll('.rating-item .star-rating').forEach(ratingDiv => {
         ratingDiv.setAttribute('data-rating', '0');
 
         ratingDiv.querySelectorAll('.star').forEach(star => {
@@ -389,135 +389,256 @@ function openRatingModal(schoolId) {
     ratingModal.show();
 }
 
+// Highlight stars based on rating value
+function highlightStars(container, value) {
+    const fullStars = Math.floor(value);
+    const hasHalf = value % 1 >= 0.5;
+
+    container.querySelectorAll('.star').forEach(function (star) {
+        const starValue = parseInt(star.getAttribute('data-value'));
+
+        if (starValue <= fullStars) {
+            // Full star
+            star.className = 'fa-solid fa-star star active';
+        } else if (hasHalf && starValue === fullStars + 1) {
+            // Half star
+            star.className = 'fa-solid fa-star-half-stroke star active';
+        } else {
+            // Empty star
+            star.className = 'fa-regular fa-star star';
+        }
+    });
+}
+
+// Update stars and rating value
+function updateStars(container, value) {
+    container.setAttribute('data-rating', value);
+    highlightStars(container, value);
+
+    // Update rating value display
+    const parent = container.closest('.d-flex');
+    if (parent) {
+        const ratingValue = parent.querySelector('.rating-value');
+        if (ratingValue) {
+            ratingValue.textContent = value.toFixed(1);
+        }
+    }
+}
+
 // Initialize star rating functionality
 document.addEventListener('DOMContentLoaded', function() {
     // Set up star rating interactions
     document.querySelectorAll('.star-rating .star').forEach(star => {
-        star.addEventListener('click', function() {
-            const value = parseInt(this.getAttribute('data-value'));
-            const ratingDiv = this.closest('.star-rating');
-            const stars = ratingDiv.querySelectorAll('.star');
-            const valueDisplay = ratingDiv.closest('.d-flex').querySelector('.rating-value');
+        // Handle click event for setting the rating
+        star.addEventListener('click', function(e) {
+            const starValue = parseInt(this.getAttribute('data-value'));
+            const starRect = star.getBoundingClientRect();
+            const clickX = e.clientX - starRect.left;
+            const starWidth = starRect.width;
 
-            // Update data attribute
-            ratingDiv.setAttribute('data-rating', value);
-
-            // Update stars display
-            stars.forEach(s => {
-                const starValue = parseInt(s.getAttribute('data-value'));
-                if (starValue <= value) {
-                    s.className = 'fa-solid fa-star star';
-                } else {
-                    s.className = 'fa-regular fa-star star';
-                }
-            });
-
-            // Update value display
-            if (valueDisplay) {
-                valueDisplay.textContent = value + '.0';
+            // Determine if click is on the left half (half star) or right half (full star)
+            let rating;
+            if (clickX < starWidth / 2) {
+                rating = starValue - 0.5;
+            } else {
+                rating = starValue;
             }
-        });
 
-        // Hover effect
-        star.addEventListener('mouseenter', function() {
-            const hoverValue = parseInt(this.getAttribute('data-value'));
-            const stars = this.closest('.star-rating').querySelectorAll('.star');
-
-            stars.forEach(s => {
-                const starValue = parseInt(s.getAttribute('data-value'));
-                if (starValue <= hoverValue) {
-                    s.className = 'fa-solid fa-star star';
-                }
-            });
-        });
-
-        star.addEventListener('mouseleave', function() {
             const ratingDiv = this.closest('.star-rating');
-            const currentRating = parseInt(ratingDiv.getAttribute('data-rating'));
-            const stars = ratingDiv.querySelectorAll('.star');
+            updateStars(ratingDiv, rating);
+        });
 
-            stars.forEach(s => {
-                const starValue = parseInt(s.getAttribute('data-value'));
-                if (starValue <= currentRating) {
-                    s.className = 'fa-solid fa-star star';
-                } else {
-                    s.className = 'fa-regular fa-star star';
-                }
-            });
+        // Mouseover behavior to preview ratings
+        star.addEventListener('mousemove', function(e) {
+            const starValue = parseInt(this.getAttribute('data-value'));
+            const starRect = star.getBoundingClientRect();
+            const mouseX = e.clientX - starRect.left;
+            const starWidth = starRect.width;
+
+            let rating;
+            if (mouseX < starWidth / 2) {
+                rating = starValue - 0.5;
+            } else {
+                rating = starValue;
+            }
+
+            const ratingDiv = this.closest('.star-rating');
+            highlightStars(ratingDiv, rating);
+        });
+
+        // Reset to selected rating when mouse leaves
+        star.closest('.star-rating').addEventListener('mouseleave', function() {
+            const currentRating = parseFloat(this.getAttribute('data-rating') || 0);
+            highlightStars(this, currentRating);
         });
     });
 });
 
-// Submit rating data
 function submitRating() {
     if (!currentSchoolId) {
-        console.error('No school ID set for rating');
+        showToast("No school selected for rating", "danger");
         return;
     }
 
     // Collect ratings
-    const ratingItems = document.querySelectorAll('.rating-item .star-rating');
-    const ratings = [];
-    let valid = true;
+    const learningProgram = parseFloat(document.querySelector('.rating-item:nth-child(1) .star-rating').getAttribute('data-rating') || 0);
+    const facilities = parseFloat(document.querySelector('.rating-item:nth-child(2) .star-rating').getAttribute('data-rating') || 0);
+    const extracurricular = parseFloat(document.querySelector('.rating-item:nth-child(3) .star-rating').getAttribute('data-rating') || 0);
+    const teachers = parseFloat(document.querySelector('.rating-item:nth-child(4) .star-rating').getAttribute('data-rating') || 0);
+    const hygiene = parseFloat(document.querySelector('.rating-item:nth-child(5) .star-rating').getAttribute('data-rating') || 0);
+    const feedback = document.getElementById('feedback').value.trim();
 
-    ratingItems.forEach((item, index) => {
-        const rating = parseInt(item.getAttribute('data-rating'));
-        if (rating === 0) {
-            valid = false;
-        }
+    // Create the feedback data object matching the backend FeedbackVo structure
+    const data = {
+        schoolId: parseInt(currentSchoolId),
+        learningProgram: learningProgram,
+        facilitiesUtilities: facilities,
+        extracurricularActivities: extracurricular,
+        teacherStaff: teachers,
+        hygieneNutrition: hygiene,
+        feedbackMessage: feedback
+    };
 
-        // Map index to rating type
-        let ratingType = '';
-        switch (index) {
-            case 0: ratingType = 'LEARNING_PROGRAM'; break;
-            case 1: ratingType = 'FACILITIES'; break;
-            case 2: ratingType = 'EXTRACURRICULAR'; break;
-            case 3: ratingType = 'TEACHERS_STAFF'; break;
-            case 4: ratingType = 'HYGIENE_NUTRITION'; break;
-        }
-
-        ratings.push({
-            type: ratingType,
-            value: rating
-        });
-    });
-
-    if (!valid) {
-        alert('Please rate all categories before submitting');
+    // Validate locally before sending to the server
+    if (learningProgram === 0 || facilities === 0 || extracurricular === 0 ||
+        teachers === 0 || hygiene === 0) {
+        showToast("Please provide ratings for all categories.", "danger");
         return;
     }
 
-    const feedback = document.getElementById('feedback').value;
+    // Client-side validation for feedback message
+    if (!feedback || feedback.length < 50) {
+        showToast("Feedback message must be at least 50 characters", "danger");
+        return;
+    }
 
-    // Create feedback data
-    const feedbackData = {
-        schoolId: currentSchoolId,
-        feedback: feedback,
-        ratings: ratings
-    };
-
-    // Submit to server
+    // Submit to the backend
     fetch('/api/create-feedback', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(feedbackData)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
     })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                // For error responses, try to parse as JSON first
+                return response.text().then(text => {
+                    try {
+                        // Try to parse as JSON
+                        const errorData = JSON.parse(text);
+                        if (errorData.feedbackMessage) {
+                            throw new Error(errorData.feedbackMessage);
+                        } else if (errorData.message) {
+                            throw new Error(errorData.message);
+                        } else if (typeof errorData === 'string') {
+                            throw new Error(errorData);
+                        } else {
+                            throw new Error(`Error ${response.status}: ${response.statusText}`);
+                        }
+                    } catch (e) {
+                        // If parsing fails, it's a plain text error
+                        if (e instanceof SyntaxError) {
+                            throw new Error(text || `Error ${response.status}: ${response.statusText}`);
+                        }
+                        throw e;
+                    }
+                });
+            }
+
+            // For successful responses, try to parse as JSON, but fall back to text
+            return response.text().then(text => {
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    // If it's not JSON, return the text as is
+                    return text;
+                }
+            });
+        })
         .then(data => {
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('ratingModal'));
-            modal.hide();
+            // Handle successful response (could be object or string)
+            let successMessage;
+            if (typeof data === 'object' && data.message) {
+                successMessage = data.message;
+            } else if (typeof data === 'string') {
+                successMessage = data;
+            } else {
+                successMessage = "Thank you for your rating and feedback!";
+            }
 
-            // Reload current schools to see updated rating
-            loadCurrentSchools(currentPage.currentSchools);
+            showToast(successMessage, "success");
 
-            // Show success message
-            alert('Thank you for your feedback!');
+            // Close modal - make sure it exists and fetch current instance
+            const modalElement = document.getElementById('ratingModal');
+            if (modalElement) {
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (modalInstance) {
+                    modalInstance.hide();
+                } else {
+                    // If for some reason the instance isn't found, try creating a new one
+                    const newModal = new bootstrap.Modal(modalElement);
+                    newModal.hide();
+                }
+            }
+
+            // Reset form values for future use
+            document.querySelectorAll('.star-rating').forEach(rating => {
+                updateStars(rating, 0);
+            });
+            document.getElementById('feedback').value = '';
+
+            // Reload current schools to see updated rating after short delay
+            setTimeout(() => {
+                loadCurrentSchools(currentPage.currentSchools);
+            }, 1000);
         })
         .catch(error => {
-            console.error('Error submitting rating:', error);
-            alert('There was an error submitting your rating. Please try again.');
+            console.error('Error submitting feedback:', error);
+            showToast(error.message || "Failed to submit your feedback. Please try again later.", "danger");
         });
+}
+
+// Function to show toast notification
+function showToast(message, type = 'success') {
+    // Check if toastContainer exists, create it if not
+    let toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toastContainer';
+        toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        document.body.appendChild(toastContainer);
+    }
+
+    const toastId = 'toast-' + Date.now();
+    const toastHtml = `
+        <div id="${toastId}" class="toast align-items-center text-white bg-${type}" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px; max-width: 400px;">
+            <div class="d-flex">
+                <div class="toast-body" style="white-space: normal; word-wrap: break-word;">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+
+    toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+    const toastElement = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastElement, { delay: 5000 });
+    toast.show();
+
+    // Remove the toast element after it's hidden
+    toastElement.addEventListener('hidden.bs.toast', function() {
+        toastElement.remove();
+    });
+}
+function roundRating(rating) {
+    const floor = Math.floor(rating);
+    const decimal = rating - floor;
+
+    if (decimal > 0 && decimal <= 0.5) {
+        return floor + 0.5;
+    } else if (decimal > 0.5) {
+        return floor + 1.0;
+    } else {
+        return rating;
+    }
 }

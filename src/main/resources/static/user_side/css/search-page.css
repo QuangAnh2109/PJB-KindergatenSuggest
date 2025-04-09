@@ -401,4 +401,16 @@
     display: none;
 }
 
+.error-message {
+    font-size: 0.85rem;
+    color: #dc3545;
+    margin-top: 5px;
+    position: absolute;
+    left: 0;
+    bottom: -25px;
+}
 
+.input-group {
+    position: relative;
+    margin-bottom: 30px;
+}

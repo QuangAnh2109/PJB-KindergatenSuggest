@@ -7,16 +7,15 @@ import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.*;
 import fa.appcode.services.*;
 import fa.appcode.services.impl.EnrollSchoolServiceImpl;
+import jakarta.servlet.ServletContext;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.Instant;
 import java.util.Collections;
@@ -30,7 +29,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @RestController
 public class RestControllerAjax {
-
+    @Autowired
+    ServletContext context;
     private final RequestService requestService;
     private final EnrollSchoolService enrollSchoolService;
     private final EnrollSchoolServiceImpl enrollSchoolServiceImpl;

@@ -46,7 +46,6 @@ public class SchoolListManagerServiceImpl implements SchoolListManagerService {
         // Add attributes to the model
         model.addAttribute("status", masterDatumService.findAllByTypeNameNoDelete(SchoolConstant.SCHOOL_STATUS));
         model.addAttribute("currentPage", pageNumber);
-        model.addAttribute("serverLink", globalConfig.getServerLink());
 
         // Return the page link
         if(ajaxCall) return Constant.SCHOOL_LIST_MANAGER_PAGE + " :: main-content";

@@ -116,14 +116,13 @@
                 </div>
             </div>
         </section>
-        <!-- section close -->
-        <section style="background-color: #495456">
+        <section id="section-cars">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-md-8">
                         <div class="input-group" style="display: flex;align-items: center">
                             <input type="text" class="form-control" th:value="${keyword}"
-                                   placeholder="Enter a school name" style="height: 38px">
+                                   placeholder="Enter a school name" style="height: 38px;border: lightgrey 1px solid;">
                             <select id="citySelect" name="city" class="form-select" onchange="loadDistrict(this.value)"
                                     style="width: 5%;">
                                 <option selected disabled value="0">----Select City/Province-----</option>
@@ -134,14 +133,10 @@
                             <select name="district" id="district" class="form-select">
                                 <option selected disabled value="0">Please choose city/province</option>
                             </select>
-                            <button class="btn-primary">Search</button>
+                            <button class="btn-primary" id="searchButton">Search</button>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-        <section id="section-cars">
-            <div class="container">
                 <div id="messages" class="results-container"
                      style="display: flex; justify-content: center; align-items: center; padding: 20px; margin: 15px auto; max-width: 800px; background-color: #f0f9f0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); border-left: 5px solid #4CAF50;">
                     <div class="result-message"
@@ -331,7 +326,10 @@
                                                         <div class="ms-2 star-rating"><span
                                                                 th:each="i : ${#numbers.sequence(1, 5)}"
                                                                 th:class="${i <= searchItem.getAvgRating() ? 'star-filled' : (i <= searchItem.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
-                                                            <span th:text="${searchItem.getAvgRating()}"></span>/5
+                                                            <span th:with="rating=${searchItem.getAvgRating()}"
+                                                                  th:text="${(rating >= 3.1 && rating <= 3.5) ? '3.5' :
+                                                            (rating >= 3.6 && rating <= 4.0) ? '4.0' :
+                                                                rating}"></span>/5
                                                             (<span th:text="${searchItem.getTotalRating()}"></span>
                                                             ratings)
                                                         </div>
@@ -447,13 +445,13 @@
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email" placeholder="info@gmail.com"
+                        <input type="email" class="form-control" id="email" th:value="${session.emailAccount}" placeholder="info@gmail.com"
                                name="email">
                     </div>
 
                     <div class="mb-3">
                         <label for="mobile" class="form-label">Mobile No. :</label>
-                        <input type="tel" class="form-control" id="mobile" placeholder="0xxxxxxxxx"
+                        <input type="tel" class="form-control" id="mobile" th:value="${session.phoneAccount}" placeholder="0xxxxxxxxx"
                                name="phone">
                     </div>
 

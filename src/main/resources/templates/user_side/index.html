@@ -267,6 +267,9 @@
                                                         onclick="searchRedirectByKeyword()">Search
                                                 </button>
                                             </div>
+                                            <div class="dialog-box-search">
+                                                <span id="keyword-error" style="color: #d9534f; font-size: 14px; display: none;">Search text cannot exceed 255 characters</span>
+                                            </div>
                                             <div class="jls-address-preview jls-address-preview--hidden">
                                                 <div class="jls-address-preview__header">
                                                 </div>
@@ -653,10 +656,17 @@
 
     function searchRedirectByKeyword() {
         const input = document.getElementById("keyword").value;
+
+        // First validate length
+        if (!validateKeywordLength()) {
+            return; // Stop if validation fails
+        }
+
         if (!input.trim()) {
             alert("Please enter a keyword to search");
             return;
         }
+
         const uri = `/public/school/search?keyword=${encodeURIComponent(input)}`;
         window.location.href = uri;
     }
@@ -708,6 +718,27 @@
         // Reset all form fields
         resetFormFields();
     });
+
+
+    function validateKeywordLength() {
+        const keywordInput = document.getElementById("keyword");
+        const errorSpan = document.getElementById("keyword-error");
+
+        if(keywordInput.value.length == 0) {
+            errorSpan.innerHTML = "Please enter a keyword to search";
+            errorSpan.style.display = "block";
+            return false;
+        }
+
+        if (keywordInput.value.length > 255) {
+            errorSpan.innerHTML = "Search text cannot exceed 255 characters";
+            errorSpan.style.display = "block";
+            return false;
+        } else {
+            errorSpan.style.display = "none";
+            return true;
+        }
+    }
 </script>
 
 <!-- Javascript Files

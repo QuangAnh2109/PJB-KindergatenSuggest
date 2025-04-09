@@ -189,7 +189,10 @@
                                     <!-- Show 5 stars with different classes based on rating -->
                                     <span th:each="i : ${#numbers.sequence(1, 5)}"
                                           th:class="${i <= request.getAvgRating() ? 'star-filled' : (i <= request.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
-                                    <span th:text="${request.getAvgRating()}"></span>/5
+                                    <span th:with="base=${T(java.lang.Math).floor(request.getAvgRating())},
+                                        decimal=${request.getAvgRating() - base},
+                                        rounded=${(decimal < 0.1) ? base : ((decimal < 0.6) ? base + 0.5 : base + 1.0)}"
+                                          th:text="${rounded}"></span>/5
                                     (<span th:text="${request.getTotalRating()}"></span> ratings)
                                 </div>
                             </div>

@@ -102,7 +102,8 @@ public class RequestServiceImpl implements RequestService {
                 emailList.add(email.getEmail());
             }
         }
-        String reminderLink = Constant.REQUEST_REMINDER_URL;
+        String reminderLink = globalConfig.getServerLink()+Constant.REQUEST_REMINDER_URL;
+        //System.out.println(reminderLink);
         Map<Placeholder, String> link = Map.of(Placeholder.LINK, reminderLink);
         SendMailInfo sendMailInfo = SendMailInfo.builder()
                 .toMail(emailList)

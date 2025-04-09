@@ -50,6 +50,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         }
         session.setAttribute("idAccount", accountInfo.getId());
         session.setAttribute("nameAccount", accountInfo.getFullName());
+        session.setAttribute("emailAccount", accountInfo.getEmail());
+        session.setAttribute("phoneAccount", accountInfo.getPhone());
 
         //Register session and user details for later tracking and control
         userSessionService.registerSession(email, session);

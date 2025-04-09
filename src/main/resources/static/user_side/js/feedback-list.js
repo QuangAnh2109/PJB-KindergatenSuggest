@@ -114,7 +114,7 @@ function createFeedbackHtml(review) {
             <p class="mt-2">${review.feedback}</p>
             <div class="d-flex align-items-center">
                 <div class="rating-stars me-2">${avgStarsHtml}</div>
-                <span>${review.avgRating}/5</span>
+                <span>${roundRating(review.avgRating)}</span>/5
             </div>
             <div class="mt-3">
                 <div class="d-flex justify-content-between">
@@ -143,17 +143,41 @@ function createFeedbackHtml(review) {
 }
 
 function createStarRatingHtml(rating, fontSize) {
+    // Apply the specific rounding logic
+    const floor = Math.floor(rating);
+    const decimal = rating - floor;
+
+    if (decimal > 0 && decimal <= 0.5) {
+        rating = floor + 0.5;
+    } else if (decimal > 0.5) {
+        rating = floor + 1.0;
+    }
+
+    // Generate the star HTML
     let html = '';
     for (let i = 1; i <= 5; i++) {
         let starClass = 'star-empty';
         if (i <= rating) {
             starClass = 'star-filled';
-        } else if (i <= rating + 0.5) {
+        } else if (i <= rating + 0.5 && i > rating) {
             starClass = 'star-half';
         }
         html += `<span style="font-size: ${fontSize}px" class="${starClass}">★</span>`;
     }
     return html;
+}
+
+function roundRating(rating) {
+    const floor = Math.floor(rating);
+    const decimal = rating - floor;
+
+    if (decimal > 0 && decimal <= 0.5) {
+        return floor + 0.5;
+    } else if (decimal > 0.5) {
+        return floor + 1.0;
+    } else {
+        return rating;
+    }
 }
 
 

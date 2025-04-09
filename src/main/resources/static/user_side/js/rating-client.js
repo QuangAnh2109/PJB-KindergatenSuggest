@@ -2,6 +2,75 @@
 let ratingModal;
 let toastContainer;
 
+function showToast(message, type) {
+    // Generate a unique ID for this toast
+    const toastId = `toast-${Date.now()}`;
+
+    // Map type to Bootstrap color classes and icons
+    const typeClasses = {
+        'success': 'bg-success text-white',
+        'danger': 'bg-danger text-white',
+        'warning': 'bg-warning text-dark',
+        'info': 'bg-info text-dark'
+    };
+
+    const icons = {
+        'success': '<i class="fas fa-check-circle me-2"></i>',
+        'danger': '<i class="fas fa-exclamation-circle me-2"></i>',
+        'warning': '<i class="fas fa-exclamation-triangle me-2"></i>',
+        'info': '<i class="fas fa-info-circle me-2"></i>'
+    };
+
+    // Create toast HTML
+    const toast = document.createElement('div');
+    toast.id = toastId;
+    toast.className = `toast ${typeClasses[type] || 'bg-light'} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+
+    // Set custom styles for increased width and proper wrapping
+    toast.style.maxWidth = '400px';
+    toast.style.width = 'auto';
+
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body" style="word-wrap: break-word; word-break: break-word; flex: 1;">
+                ${icons[type] || ''}${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
+
+    // Append toast to container
+    const toastContainer = document.querySelector('.toast-container');
+    if (toastContainer) {
+        toastContainer.appendChild(toast);
+    } else {
+        // Create container if it doesn't exist
+        const newContainer = document.createElement('div');
+        newContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+        newContainer.style.zIndex = '1050';
+        document.body.appendChild(newContainer);
+        newContainer.appendChild(toast);
+    }
+
+    // Initialize Bootstrap toast and show it
+    const bsToast = new bootstrap.Toast(toast, {
+        autohide: true,
+        delay: 5000
+    });
+
+    bsToast.show();
+
+    // Remove toast element after it's hidden
+    toast.addEventListener('hidden.bs.toast', function() {
+        toast.remove();
+    });
+}
+
+
 document.addEventListener('DOMContentLoaded', function () {
     ratingModal = new bootstrap.Modal(document.getElementById('ratingModal'));
 
@@ -62,31 +131,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
-// Function to show toast notification
-function showToast(message, type = 'success') {
-    const toastId = 'toast-' + Date.now();
-    const toastHtml = `
-        <div id="${toastId}" class="toast align-items-center text-white bg-${type}" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    ${message}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    `;
-
-    toastContainer.insertAdjacentHTML('beforeend', toastHtml);
-    const toastElement = document.getElementById(toastId);
-    const toast = new bootstrap.Toast(toastElement, { delay: 5000 });
-    toast.show();
-
-    // Remove the toast element after it's hidden
-    toastElement.addEventListener('hidden.bs.toast', function() {
-        toastElement.remove();
-    });
-}
 
 // Function to open the rating modal with a specific schoolId
 function openRatingModal() {
@@ -168,7 +212,7 @@ function highlightStars(container, value) {
 function submitRating() {
     const modalElement = document.getElementById('ratingModal');
     if (!modalElement) {
-        showToast('Modal element not found', 'danger');
+        showToast("Modal element not found", "danger");
         return;
     }
 
@@ -224,6 +268,41 @@ function submitRating() {
         })
         .catch(error => {
             console.error('Error:', error);
-            showToast("Error: " + error.message, "danger");
+
+            // Extract the error message
+            let errorMessage = "An unexpected error occurred";
+
+            try {
+                // Try to parse the error message
+                if (error.message) {
+                    // Check if the error message is a JSON string
+                    if (error.message.startsWith('{') && error.message.endsWith('}')) {
+                        const errorObj = JSON.parse(error.message);
+
+                        // Build a formatted error message from the object
+                        if (typeof errorObj === 'object') {
+                            errorMessage = '';
+                            for (const key in errorObj) {
+                                if (errorObj.hasOwnProperty(key)) {
+                                    errorMessage += `• ${errorObj[key]}<br>`;
+                                }
+                            }
+                        } else {
+                            errorMessage = error.message;
+                        }
+                    } else {
+                        // Not JSON, use the message directly
+                        errorMessage = error.message;
+                    }
+                }
+            } catch (e) {
+                // If parsing fails, use the original error message
+                console.error('Error parsing error message:', e);
+                errorMessage = error.message || errorMessage;
+            }
+
+            showToast(errorMessage, "danger");
         });
 }
+
+
