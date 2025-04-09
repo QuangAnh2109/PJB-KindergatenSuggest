@@ -9,7 +9,7 @@
     <meta content="Responsive bootstrap 4 admin template" name="description"/>
     <meta content="Coderthemes" name="author"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    
+
     <!-- App favicon -->
     <link rel="shortcut icon" th:href="@{/admin_side/images/favicon.ico}">
     <!-- third party css -->
@@ -82,7 +82,7 @@
                             <div class="col-lg-4">
                                 <div class="d-flex justify-content-end align-items-center mb-3" style="max-width: 100%">
                                     <input type="search" class="form-control rounded" id="userSearchField"
-                                           placeholder="Enter to search here..."
+                                           placeholder="Enter to search here..." maxlength="400"
                                            aria-label="Search" th:value="${searchField}"
                                            aria-describedby="search-addon"/>
                                     <button class="btn btn-success" id="userSearchButton" type="submit">
@@ -106,13 +106,14 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr class="clickable-row" th:each="account : ${listAccounts}" th:data-userid="${account.id}">
+                                <tr class="clickable-row" th:each="account : ${listAccounts}"
+                                    th:data-userid="${account.id}">
                                     <td th:text="${account.fullName}" th:title="${account.fullName}"></td>
-                                    <td th:text="${account.email}"  th:title="${account.email}"></td>
+                                    <td th:text="${account.email}" th:title="${account.email}"></td>
                                     <td th:text="${account.phone}" th:title="${account.phone}"></td>
-                                    <td th:text="${account.dob}"  th:title="${account.dob}"></td>
-                                    <td th:text="${account.fullAddress}"  th:title="${account.fullAddress}"></td>
-                                    <td th:text="${account.role}"  th:title="${account.role}"></td>
+                                    <td th:text="${account.dob}" th:title="${account.dob}"></td>
+                                    <td th:text="${account.fullAddress}" th:title="${account.fullAddress}"></td>
+                                    <td th:text="${account.role}" th:title="${account.role}"></td>
                                     <td>
                                         <span th:if="${account.status == 'Active'}" class="badge badge-success">Activated</span>
                                         <span th:if="${account.status != 'Active'}" class="badge badge-danger">Deactivated</span>
@@ -123,7 +124,7 @@
                                             <i class="ti-pencil"></i>
                                         </a>
                                         <a href="#" class="btn btn-sm btn-danger delete-user-btn"
-                                            th:data-userid="${account.id}">
+                                           th:data-userid="${account.id}">
                                             <i class="ti-trash"></i>
                                         </a>
                                     </td>
@@ -145,19 +146,43 @@
                                 <nav aria-label="Pagination" style="float:right" class="pagination-container">
                                     <th:block th:if="${numberPage > 1}">
                                         <ul class="pagination">
+
                                             <!-- Nút Previous -->
                                             <li th:classappend="${currentPage > 0} ? 'page-item' : 'page-item disabled'">
                                                 <a class="page-link user-page-item" href="#"
                                                    th:data-page="${currentPage - 1}">Previous</a>
                                             </li>
 
-                                            <!-- Các số trang -->
-                                            <th:block th:each="page : ${#numbers.sequence(0, numberPage - 1)}">
+                                            <!-- Trang đầu -->
+                                            <li th:if="${currentPage > 2}" class="page-item">
+                                                <a class="page-link user-page-item" href="#" th:data-page="0">1</a>
+                                            </li>
+
+                                            <!-- Dấu ... trước -->
+                                            <li th:if="${currentPage > 3}" class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+
+                                            <!-- Các trang gần trang hiện tại -->
+                                            <th:block th:each="page : ${#numbers.sequence(0, numberPage - 1)}"
+                                                      th:if="${page >= currentPage - 2 and page <= currentPage + 2}">
                                                 <li th:classappend="${page == currentPage} ? 'page-item active' : 'page-item'">
                                                     <a class="page-link user-page-item" href="#" th:data-page="${page}"
                                                        th:text="${page + 1}"></a>
                                                 </li>
                                             </th:block>
+
+                                            <!-- Dấu ... sau -->
+                                            <li th:if="${currentPage < numberPage - 4}" class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+
+                                            <!-- Trang cuối -->
+                                            <li th:if="${currentPage < numberPage - 3}" class="page-item">
+                                                <a class="page-link user-page-item" href="#"
+                                                   th:data-page="${numberPage - 1}"
+                                                   th:text="${numberPage}"></a>
+                                            </li>
 
                                             <!-- Nút Next -->
                                             <li th:classappend="${currentPage < numberPage - 1} ? 'page-item' : 'page-item disabled'">
@@ -170,6 +195,7 @@
                                 </nav>
                             </div>
                         </div>
+
 
                     </div>
                 </div>

@@ -59,6 +59,7 @@ public class Constant {
     public static final String ADDRESS_REGEX = "^.{1,255}$";
     public static final String SCHOOL_INTRODUCTION_REGEX = "^.{1,65535}$";
     //CONSTANT VALUE
+    public static final Integer LEGAL_AGE = 18;
     public static final Integer PARENT_ROLE_ID = 3;
     public static final Integer SCHOOL_OWNER_ID = 2;
     public static final Integer ADMIN_ROLE_ID = 1;
@@ -69,6 +70,7 @@ public class Constant {
     public static final Integer STATUS_INACTIVE = 2;
     public static final Integer STATUS_DELETED = 0;
     public static final String WEB_SYSTEM = "WEB_SYSTEM";
+    public static final String ADMIN_SYSTEM= "ADMIN_SYSTEM";
     public static final int SEND_EMAIL_FORGOT = 1;
     public static final int SEND_EMAIL_REGISTER = 1;
     public static final String REQUEST_LIST_PAGE = "requestList";

@@ -14,7 +14,7 @@ public interface ValidateService {
     boolean validPassword(String password);
 
     boolean validPhoneNumber(String phoneNumber);
-    Map<String,String> dobValidation(LocalDate dob);
+    Map<String,String> dobValidation(LocalDate dob, boolean isRequired);
 
     Map<String, String> validateChangePasswordRequired(String oldPassword, String newPassword, String confirmPassword);
 
