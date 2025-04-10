@@ -50,15 +50,16 @@ function searchFeedback(schoolId, pageNumber, callback) {
     });
 }
 
-function showErrorMessage(message) {
+function showErrorMessage(xhr) {
+    console.log(xhr);
     if(xhr.status === 422){
         if(xhr.responseJSON.dateFrom != null){
-            var fromDateError = document.getElementById("fromDate-error");
+            var fromDateError = document.getElementById("dateFrom-error");
             fromDateError.textContent = xhr.responseJSON.dateFrom;
             fromDateError.style.display = 'block';
         }
         if(xhr.responseJSON.dateTo != null){
-            var toDateError = document.getElementById("toDate-error");
+            var toDateError = document.getElementById("dateTo-error");
             toDateError.textContent = xhr.responseJSON.dateTo;
             toDateError.style.display = 'block';
         }

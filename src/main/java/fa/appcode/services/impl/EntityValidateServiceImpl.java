@@ -67,10 +67,10 @@ public class EntityValidateServiceImpl implements EntityValidateService {
     public void validateRatingFeedbackDateFromTo(Instant dateFrom, Instant dateTo) throws ValidationException{
         Map<String, String> errors = new HashMap<>() ;
         Instant now = Instant.now();
-        if (dateTo != null && dateTo.compareTo(now) <= 0) {
+        if (dateTo != null && dateTo.compareTo(now) >= 0) {
             errors.put(Constant.DATE_TO_MESSAGE_KEY, globalConfig.getInvalidToDate());
         }
-        if (dateFrom != null && dateFrom.compareTo(now) <= 0) {
+        if (dateFrom != null && dateFrom.compareTo(now) >= 0) {
             errors.put(Constant.DATE_FROM_MESSAGE_KEY, globalConfig.getInvalidFromDate());
         }
         if (dateFrom != null && dateTo != null && dateFrom.isAfter(dateTo)) {
