@@ -44,7 +44,7 @@ public class ValidateUtils {
         else if(value.compareTo(new BigDecimal("20000000")) > 0) {
             errors.put(key, msg[1]);
         }
-        else if(value.compareTo(new BigDecimal("1000000")) <= 0){
+        else if(value.compareTo(new BigDecimal("1000000")) < 0){
             errors.put(key, msg[2]);
         }
     }
