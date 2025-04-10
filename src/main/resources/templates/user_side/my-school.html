@@ -311,81 +311,10 @@
                         </div>
                         <div class="row school" th:each="schoolItem : ${listSchoolEnroll}">
                             <div class="col-md-9">
-                                <div class="school-card d-flex">
-                                    <div class="img-school col-md-2 justify-content-center align-content-center">
-                                        <img th:src="${schoolItem.getSchoolImage()}" class="me-3" alt="school-image" onerror="this.onerror=null;this.src='/user_side/images/school-image/school-placeholder.png';">
-                                        <div class="star-rating">
-                                            <span th:each="i : ${#numbers.sequence(1, 5)}"
-                                                  th:class="${i <= schoolItem.getAvgRating() ? 'star-filled' : (i <= schoolItem.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
 
-                                            <span th:text="${schoolItem.getAvgRating()}"></span>/5
-                                            (<span th:text="${schoolItem.getTotalRating()}"> </span> ratings)
-                                        </div>
-                                    </div>
-                                    <div class="school-detail ">
-                                        <h4><a th:href="@{/public/school/details/{id}(id=${schoolItem.getSchoolId()})}" class="text-primary fw-bold"> <span
-                                                th:text="${schoolItem.getSchoolName()}"></span></a></h4>
-                                        <ul>
-                                            <li><strong>Address:</strong> <span
-                                                    th:text="${schoolItem.getSchoolAddress()}"></span></li>
-                                            <li><strong>Email:</strong> <a
-                                                    th:href="@{'mailto:' + ${schoolItem.getSchoolEmail()}}"><span
-                                                    th:text="${schoolItem.getSchoolEmail()}"></span></a></li>
-
-                                            <li><strong>Tuition fee:</strong> From <span
-                                                    th:text="${#numbers.formatInteger(schoolItem.getFeeFrom(), 3, 'COMMA')}"></span>
-                                                VND/month
-                                            </li>
-                                            <li><strong>Admission age:</strong> From <span
-                                                    th:text="${schoolItem.getAgeRange()}"></span></li>
-                                            <li><strong>School type:</strong> <span
-                                                    th:text="${schoolItem.getSchoolType()}"></span></li>
-                                                <li><strong>Enrolled Date:</strong> <span
-                                                    th:text="${schoolItem.getEnrollDate()}"></span></li>
-
-                                            <li class="facilities" style="overflow-wrap: break-word">
-                                                <strong>Facilities and Utilities:</strong>
-                                                <th:block
-                                                        th:if="${facilitiesMapCurrentSchool.containsKey(schoolItem.getSchoolId())}">
-                                                    <span th:each="facility : ${facilitiesMapCurrentSchool.get(schoolItem.getSchoolId())}"
-                                                          th:text="${facility}"></span>
-                                                </th:block>
-                                                <th:block
-                                                        th:unless="${facilitiesMapCurrentSchool.containsKey(schoolItem.getSchoolId())}">
-                                                    <span>No facilities available</span>
-                                                </th:block>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
                             </div>
                             <div class="col-md-3">
-                                <div th:if="${schoolItem.getYourRating() != 0}">
-                                    <div class="my-rating">
-                                        <p>Your Average Rating</p>
-                                        <div class="star-rating">
-                                            <span th:each="i : ${#numbers.sequence(1, 5)}"
-                                                  th:class="${i <= schoolItem.getYourRating() ? 'star-filled' : (i - 0.5 == schoolItem.getYourRating() ? 'star-half' : 'star-empty')}">
-                                                ★
-                                            </span>
-                                            <span th:with="rating=${schoolItem.getYourRating()}"
-                                                  th:text="${(rating >= 3.1 && rating <= 3.5) ? '3.5' :
-                                        (rating >= 3.6 && rating <= 4.0) ? '4.0' :
-                                        rating}"></span>/5
-                                        </div>
-                                        <a class="btn btn-primary w-100"
-                                           th:href="@{/public/school/details/{id}(id=${schoolItem.getSchoolId()})}">
-                                            View Rating Details
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="my-rating" th:if="${schoolItem.getYourRating() == 0}">
-                                    <p>You haven't rated the school yet. Please share with us your feedback</p>
-                                    <button class="btn-primary w-100"
-                                            th:onclick="|openRatingModal(${schoolItem.getSchoolId()})|">
-                                        Rate School
-                                    </button>
-                                </div>
+
                             </div>
 
                         </div>

@@ -223,7 +223,7 @@ function createSchoolHtml(school, isCurrentSchool) {
             ratingHtml = `
                 <div class="my-rating">
                     <p>Your haven't rated the school yet. Please share with us your feedback</p>
-                    <button class="btn-primary w-100" onclick="openRatingModal(${school.schoolId})">
+                    <button class="btn-primary w-100" style="color: #FFFFFF" onclick="openRatingModal(${school.schoolId})">
                         Rate School
                     </button>
                 </div>

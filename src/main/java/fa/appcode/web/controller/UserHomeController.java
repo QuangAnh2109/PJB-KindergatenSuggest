@@ -93,10 +93,7 @@ public class UserHomeController {
                 .addAttribute("totalPages", size)
                 .addAttribute("listFacilities",listFacilitiesOfSchool)
                 .addAttribute("sortOptions", SortOption.values())
-                .addAttribute("currentSort", sortBy)
-                .addAttribute("emailErrorMessage", globalConfig.getInValidEmail())
-                .addAttribute("mobileErrorMessage", globalConfig.getInvalidPhoneNumber());
-
+                .addAttribute("currentSort", sortBy);
         return "user_side/search-school";
     }
 
@@ -114,8 +111,6 @@ public class UserHomeController {
         model.addAttribute("data_age", listDataAge);
         model.addAttribute("utilities", listUtilities);
         model.addAttribute("listCity", listCity);
-        model.addAttribute("emailErrorMessage", globalConfig.getInvalidPhoneNumber());
-        model.addAttribute("mobileErrorMessage", globalConfig.getInvalidPhoneNumber());
     }
 
 }

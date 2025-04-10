@@ -442,13 +442,15 @@
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email" th:value="${session.emailAccount}" placeholder="info@gmail.com"
+                        <input type="email" class="form-control" id="email" th:value="${session.emailAccount}"
+                               placeholder="info@gmail.com"
                                name="email">
                     </div>
 
                     <div class="mb-3">
                         <label for="mobile" class="form-label">Mobile No. :</label>
-                        <input type="tel" class="form-control" id="mobile" th:value="${session.phoneAccount}" placeholder="0xxxxxxxxx"
+                        <input type="tel" class="form-control" id="mobile" th:value="${session.phoneAccount}"
+                               placeholder="0xxxxxxxxx"
                                name="phone">
                     </div>
 
@@ -560,15 +562,6 @@
 
 <script>
 
-
-    // Show error message
-    function showErrorMessage(inputId, message) {
-        let inputElement = document.getElementById(inputId);
-        let errorElement = document.createElement("div");
-        errorElement.className = "error-message text-danger mt-1";
-        errorElement.textContent = message;
-        inputElement.parentElement.appendChild(errorElement);
-    }
 
     // Show pop-up logout
     function showPopup() {
