@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <p><i class="fa-solid fa-book-bookmark"></i> Admission age: From ${escapeHTML(String(request.ageRange))}</p>
                         <div class="star-rating">
                             ${starsHTML}
-                            <span>${escapeHTML(String(request.avgRating))}</span>/5
+                            <span>${escapeHTML((Math.ceil(request.avgRating * 2) / 2).toFixed(1))}</span>/5
                             (<span>${escapeHTML(String(request.totalRating))}</span> ratings)
                         </div>
                     </div>
