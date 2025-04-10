@@ -41,22 +41,4 @@ public class FeedbackRatingServiceImpl implements FeedbackRatingService {
         // Get the feedback list for the school
         model.addAttribute("feedbackList", schoolInfoRepository.getAllAccountFeedbackBySchoolId(feedbackRatingRequest, PageRequest.of(feedbackRatingRequest.getPageNumber(), globalConfig.getSizeOfPageSchoolRatingFeedback())));
     }
-
-    @Override
-    public void validateFeedbackRatingRequest(FeedbackRatingRequest feedbackRatingRequest) throws FromToDateException{
-        System.out.println("run");
-        Instant from = feedbackRatingRequest.getFromDate(), to = feedbackRatingRequest.getToDate(), now = Instant.now();
-        if(to != null && to.compareTo(now) > 0){
-            throw new FromToDateException();
-        }
-        System.out.println("run");
-        if(from != null && from.compareTo(now) >= 0){
-            throw new FromToDateException();
-        }
-        System.out.println("run");
-        if(to != null && from != null && to.compareTo(from) <= 0){
-            throw new FromToDateException();
-        }
-        System.out.println("run");
-    }
 }
