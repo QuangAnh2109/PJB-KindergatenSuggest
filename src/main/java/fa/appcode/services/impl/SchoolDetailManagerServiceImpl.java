@@ -208,7 +208,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
 
             File uploadFolder = new File(imageDir);
             if (!uploadFolder.exists() && !uploadFolder.mkdirs()) {
-                throw new IOException("Failed to create directory: " + imageDir);
+                throw new IOException("Failed to create directory: " + uploadFolder.getAbsolutePath() + ", " + imageDir);
             }
 
             String fileName = System.currentTimeMillis() + "-" + schoolId + ".png";
