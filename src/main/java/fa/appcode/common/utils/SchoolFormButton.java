@@ -18,7 +18,7 @@ public enum SchoolFormButton {
     // Button for owner
     owner1(SchoolFormButtonBuild.builder().submit(true).canEdit(true).build()),
     owner2(SchoolFormButtonBuild.builder().delete(true).build()),
-    owner3(SchoolFormButtonBuild.builder().canEdit(true).delete(true).publish(true).build()),
+    owner3(SchoolFormButtonBuild.builder().canEdit(true).publish(true).build()),
     owner4(SchoolFormButtonBuild.builder().delete(true).build()),
     owner5(SchoolFormButtonBuild.builder().unPublish(true).delete(true).canEdit(true).build()),
     owner6(SchoolFormButtonBuild.builder().publish(true).delete(true).canEdit(true).build()),
