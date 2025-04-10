@@ -42,6 +42,12 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
         WHERE f.id.schoolId = :schoolId
         AND (COALESCE(CAST((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 AS double), 0.0) >= :minRating
         AND COALESCE(CAST((f.learningProgram + f.facilitiesUtilities + f.extracurricularActivities + f.teacherStaff + f.hygieneNutrition)/5 AS double), 0.0) < :maxRating)
+        AND f.id.feedbackTime  = (
+            SELECT MAX(f2.id.feedbackTime)
+            FROM Feedback f2
+            WHERE f2.school.id = :schoolId
+            AND f2.id.accountId = f.id.accountId
+        ) 
     """)
     List<FeedbackListVo> findListFeedbackBySchoolIdAndRating(@Param("schoolId") Integer schoolId, @Param("minRating") Double minRating, @Param("maxRating") Double maxRating);
 
@@ -51,7 +57,12 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
         ,f.feedbackMessage)
         FROM Feedback f
         JOIN AccountInfo ai ON f.id.accountId = ai.id
-        WHERE f.id.schoolId = :schoolId
+        WHERE f.id.schoolId = :schoolId AND f.id.feedbackTime = (
+            SELECT MAX(f2.id.feedbackTime)
+            FROM Feedback f2
+            WHERE f2.school.id = :schoolId
+            AND f2.id.accountId = f.id.accountId
+        )
         ORDER BY f.id.feedbackTime DESC
     """)
     List<FeedbackListVo> findListFeedbackBySchoolId(@Param("schoolId") Integer schoolId);
