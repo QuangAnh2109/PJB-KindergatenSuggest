@@ -9,6 +9,6 @@ import java.util.Map;
 
 public interface EntityValidateService {
     void validateSchoolSearchForManager(String search, Map<String, String> errors);
-    void validateRatingFeedbackDateFromTo(Instant dateFrom, Instant dateTo, Map<String, String> errors);
+    void validateRatingFeedbackDateFromTo(Instant dateFrom, Instant dateTo) throws ValidationException;
     void validateUpdateSchool(SchoolInfo schoolInfo, MultipartFile image) throws ValidationException;
 }

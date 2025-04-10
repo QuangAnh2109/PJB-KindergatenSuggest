@@ -129,7 +129,7 @@ function addNewSchool(status){
                 }
             }
             else{
-                document.getElementById("msg-popup-1").textContent = xhr.message;
+                document.getElementById("msg-popup-1").textContent = xhr.responseJSON.message;
 
                 var modalElement = document.getElementById('notificationModel');
 

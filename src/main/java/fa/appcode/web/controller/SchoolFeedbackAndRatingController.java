@@ -4,6 +4,7 @@ import fa.appcode.common.utils.AuthenticationGet;
 import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.FeedbackRatingRequest;
 import fa.appcode.exceptions.FromToDateException;
+import fa.appcode.services.EntityValidateService;
 import fa.appcode.services.FeedbackRatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,8 @@ public class SchoolFeedbackAndRatingController {
 
     private final FeedbackRatingService feedbackRatingService;
 
+    private final EntityValidateService entityValidateService;
+
     @GetMapping("manager/school/feedback-rating/{schoolId}")
     public String getSchoolFeedbackRatingByManager(@PathVariable("schoolId") int schoolId, Model model){
         // Setup form
@@ -29,8 +32,9 @@ public class SchoolFeedbackAndRatingController {
 
     @PostMapping("/manager/school/rating/search/")
     public String searchSchoolRating(@RequestBody FeedbackRatingRequest feedbackRatingRequest, Model model) throws FromToDateException {
+        entityValidateService.validateRatingFeedbackDateFromTo(feedbackRatingRequest.getFromDate(), feedbackRatingRequest.getToDate());
+
         // Setup form
-        feedbackRatingService.validateFeedbackRatingRequest(feedbackRatingRequest);
         feedbackRatingRequest.setAccountEmail(AuthenticationGet.getAccountEmailByAuthen());
         model.addAttribute("schoolId", feedbackRatingRequest.getSchoolId());
 
@@ -41,8 +45,9 @@ public class SchoolFeedbackAndRatingController {
 
     @PostMapping("/manager/school/feedback/search/")
     public String searchSchoolFeedback(@RequestBody FeedbackRatingRequest feedbackRatingRequest, Model model) throws FromToDateException {
+        entityValidateService.validateRatingFeedbackDateFromTo(feedbackRatingRequest.getFromDate(), feedbackRatingRequest.getToDate());
+
         // Setup form
-        feedbackRatingService.validateFeedbackRatingRequest(feedbackRatingRequest);
         feedbackRatingRequest.setAccountEmail(AuthenticationGet.getAccountEmailByAuthen());
         model.addAttribute("schoolId", feedbackRatingRequest.getSchoolId());
 

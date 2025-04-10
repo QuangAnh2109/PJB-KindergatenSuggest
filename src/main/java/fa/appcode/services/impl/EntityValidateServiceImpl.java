@@ -64,7 +64,8 @@ public class EntityValidateServiceImpl implements EntityValidateService {
     }
 
     @Override
-    public void validateRatingFeedbackDateFromTo(Instant dateFrom, Instant dateTo, Map<String, String> errors) {
+    public void validateRatingFeedbackDateFromTo(Instant dateFrom, Instant dateTo) throws ValidationException{
+        Map<String, String> errors = new HashMap<>() ;
         Instant now = Instant.now();
         if (dateTo != null && dateTo.compareTo(now) <= 0) {
             errors.put(Constant.DATE_TO_MESSAGE_KEY, globalConfig.getInvalidToDate());
@@ -75,6 +76,10 @@ public class EntityValidateServiceImpl implements EntityValidateService {
         if (dateFrom != null && dateTo != null && dateFrom.isAfter(dateTo)) {
             errors.put(Constant.DATE_MESSAGE_KEY, globalConfig.getFromDateGreaterThanToDate());
         }
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
+        }
     }
 
     /**
@@ -84,7 +89,7 @@ public class EntityValidateServiceImpl implements EntityValidateService {
      */
     @Override
     public void validateUpdateSchool(SchoolInfo schoolInfo, MultipartFile image) throws ValidationException {
-        Map<String, String> errors = new HashMap<>() ;
+        Map<String, String> errors = new HashMap<>();
         validateSchoolName(schoolInfo.getSchoolName(), errors);
         validateAddress(schoolInfo.getSchoolAddress(), errors);
         validateEmail(schoolInfo.getSchoolEmail(), errors);

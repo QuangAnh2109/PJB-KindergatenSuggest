@@ -9,5 +9,4 @@ public interface FeedbackRatingService {
     void setSchoolRatingFeedbackData(Model model, FeedbackRatingRequest feedbackRatingRequest) throws DataAccessException;
     void setSchoolRatingData(Model model, FeedbackRatingRequest feedbackRatingRequest) throws DataAccessException;
     void setSchoolFeedbackData(Model model, FeedbackRatingRequest feedbackRatingRequest) throws DataAccessException;
-    void validateFeedbackRatingRequest(FeedbackRatingRequest feedbackRatingRequest) throws FromToDateException;
 }
