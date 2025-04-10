@@ -58,4 +58,25 @@ $(document).ready(function () {
         window.history.pushState({ path: newUrl }, "", newUrl);
     }
     window.onload = function() { console.log("Full page loaded!"); };
+
+    $("body").on("click", "button#downloadButton", function () {
+        $.post({
+            url: "/manager/download-parent",  // URL to your download backend endpoint
+            xhrFields: {
+                responseType: 'blob'  // Expecting a binary response (file)
+            },
+            success: function (responseData) {
+                // Create a link element to trigger the download
+                var blob = new Blob([responseData], { type: 'text/csv' });
+                var link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = "Parent-Enroll-Data.csv";  // Set the filename
+                link.click();  // Trigger the download
+                console.log("Download successful!");
+            },
+            error: function () {
+                showModalMessage("Download failed!");
+            }
+        });
+    });
 });
