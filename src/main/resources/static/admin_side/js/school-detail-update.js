@@ -132,6 +132,7 @@ function updateSchool(){
         contentType: false,
         dataType: 'json',
         success: function (json){
+            console.log(json);
             document.getElementById("msg-popup-1").textContent = json.message;
             document.getElementById("button-popup-1").addEventListener("click", function(){
                 location.reload();
@@ -143,6 +144,7 @@ function updateSchool(){
             modal.show();
         },
         error: function (xhr){
+            console.log(xhr);
             if(xhr.status === 422){
                 if(xhr.responseJSON.name != null){
                     var nameError = document.getElementById("schoolName-error");

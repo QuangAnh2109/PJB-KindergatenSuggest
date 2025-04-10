@@ -51,6 +51,7 @@ function addNewSchool(status){
             modal.show();
         },
         error: function (xhr){
+            console.log(xhr);
             if(xhr.status === 422){
                 if(xhr.responseJSON.name != null){
                     var nameError = document.getElementById("schoolName-error");
