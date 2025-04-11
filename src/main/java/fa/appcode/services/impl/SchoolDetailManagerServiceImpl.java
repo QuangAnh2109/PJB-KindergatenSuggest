@@ -128,7 +128,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
 
             responseSuccess.put("id", schoolInfo.getId());
             return ResponseEntity.ok().body(responseSuccess);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("{}: {}", e.getClass(), e.getMessage());
             return ResponseEntity.ok().body(responseFailed);
         }
