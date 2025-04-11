@@ -198,6 +198,12 @@ public class ParentController {
 
     @PostMapping({"download-parent"})
     public void exportData(HttpServletResponse response, Principal principal) throws IOException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
-        exportDataService.exportParentData(response,principal.getName());
+        String role = accountService.findAccountRoleString(principal.getName());
+        if (Constant.ADMIN_ROLE.equals(role)) {
+            exportDataService.exportParentData(response,null);
+        }
+        else if (role.equals(Constant.SCHOOL_OWNER_ROLE)) {
+            exportDataService.exportParentData(response, principal.getName());
+        }
     }
 }

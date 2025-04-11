@@ -19,7 +19,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script th:src="@{/admin_side/js/parent-list.js}"></script>
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
-<!--    <link th:href="@{/admin_side/css/request-list.css}" rel="stylesheet" type="text/css"/>-->
+    <!--    <link th:href="@{/admin_side/css/request-list.css}" rel="stylesheet" type="text/css"/>-->
 
 </head>
 
@@ -70,17 +70,23 @@
                             </div>
                             <!--                            <form action="/admin/parent-list" method="get">-->
                             <div class="row">
-                                <div class="col-lg-8">
-                                    <button class="btn" id="downloadButton" style="background-color: green"><i class="fa fa-download"></i> Download</button>
+                                <div class="col-lg-8 mb-2" >
+                                    <button class="btn" id="downloadButton" style="background-color: green"><i
+                                            class="fa fa-download"></i> Download
+                                    </button>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="d-flex justify-content-end align-items-center mb-3" style="max-width: 100%">
 
-                                        <input type="search" id="parentSearchField" name="search" class="form-control"
-                                               th:placeholder="Search" aria-label="Search" th:value="${search}" autocomplete="off" inputmode="none" maxlength="400">
+                                <div class="col-lg-4 mb-2">
+                                    <div class="d-flex justify-content-end align-items-center mb-3"
+                                         style="max-width: 100%">
+
+                                        <input type="search" id="parentSearchField" name="search" class="form-control" style="border-radius: 20px 0 0 20px"
+                                               th:placeholder="Search" aria-label="Search" th:value="${search}"
+                                               autocomplete="off" inputmode="none" maxlength="400">
                                         <button id="searchButtonParent" type="button"
-                                                class="btn btn-success"><i
-                                                class="fa fa-search"></i></button>
+                                                class="btn btn-success" style="border-radius: 0 20px 20px 0">
+                                            <i class="fa fa-search"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -94,7 +100,7 @@
                                         <th>Email</th>
                                         <th>Phone No.</th>
                                         <th>Status</th>
-<!--                                        <th>Action</th>-->
+                                        <!--                                        <th>Action</th>-->
                                     </tr>
                                     </thead>
 
@@ -113,12 +119,12 @@
                                             <span th:if="${parent.enrollStatus == 'Not Enroll'}"
                                                   class="rounded-pill stylebadge badge bg-secondary">Not Enrolled</span>
                                         </th>
-<!--                                        <td>-->
-<!--                                            <form th:action="@{'/manager/parent-list/parent-details/'+${parent.parentId}} "-->
-<!--                                                  method="get">-->
-<!--                                                <button type="submit" class="btn btn-closed">View Details</button>-->
-<!--                                            </form>-->
-<!--                                        </td>-->
+                                        <!--                                        <td>-->
+                                        <!--                                            <form th:action="@{'/manager/parent-list/parent-details/'+${parent.parentId}} "-->
+                                        <!--                                                  method="get">-->
+                                        <!--                                                <button type="submit" class="btn btn-closed">View Details</button>-->
+                                        <!--                                            </form>-->
+                                        <!--                                        </td>-->
                                     </tr>
                                     </tbody>
                                 </table>
@@ -141,27 +147,32 @@
                                             <a class="page-link" type="button"
                                                th:aria-disabled="${currentPage == 0}">Previous</a>
                                         </li>
-                                        <li class="page-item parent-page-item" th:data-page="0" th:if="${currentPage >= 3}">
+                                        <li class="page-item parent-page-item" th:data-page="0"
+                                            th:if="${currentPage >= 3}">
                                             <a class="page-link" th:if="${currentPage >= 3}" type="button">1</a>
                                         </li>
                                         <li class="page-item" th:if="${currentPage > 3}">...</li>
 
                                         <!-- Page Numbers -->
-<!--                                        <li class="page-item parent-page-item"-->
-<!--                                            th:each="pageNum : ${numberPage > 0 ? #numbers.sequence(0, numberPage - 1) : #numbers.sequence(0, 0)}"-->
-<!--                                            th:classappend="${pageNum == currentPage} ? 'active'"-->
-<!--                                            th:data-page="${pageNum}">-->
-<!--                                            <a class="page-link" type="button" th:text="${pageNum + 1}"></a>-->
-<!--                                        </li>-->
-                                        <li class="page-item parent-page-item" th:each="pageNum : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
+                                        <!--                                        <li class="page-item parent-page-item"-->
+                                        <!--                                            th:each="pageNum : ${numberPage > 0 ? #numbers.sequence(0, numberPage - 1) : #numbers.sequence(0, 0)}"-->
+                                        <!--                                            th:classappend="${pageNum == currentPage} ? 'active'"-->
+                                        <!--                                            th:data-page="${pageNum}">-->
+                                        <!--                                            <a class="page-link" type="button" th:text="${pageNum + 1}"></a>-->
+                                        <!--                                        </li>-->
+                                        <li class="page-item parent-page-item"
+                                            th:each="pageNum : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
                                             th:if="${pageNum >= 0 and pageNum < numberPage}"
-                                            th:classappend="${pageNum == currentPage} ? 'active'" th:data-page="${pageNum}">
-                                            <a class="page-link"  type="button" th:text="${pageNum + 1}"></a>
+                                            th:classappend="${pageNum == currentPage} ? 'active'"
+                                            th:data-page="${pageNum}">
+                                            <a class="page-link" type="button" th:text="${pageNum + 1}"></a>
                                         </li>
 
                                         <li class="page-item" th:if="${currentPage < numberPage - 3}">...</li>
-                                        <li class="page-item parent-page-item" th:if="${currentPage < numberPage - 1 }" th:data-page="${numberPage - 1}">
-                                            <a class="page-link" type="button" th:if="${currentPage < numberPage - 3}" th:text="${numberPage}"></a>
+                                        <li class="page-item parent-page-item" th:if="${currentPage < numberPage - 1 }"
+                                            th:data-page="${numberPage - 1}">
+                                            <a class="page-link" type="button" th:if="${currentPage < numberPage - 3}"
+                                               th:text="${numberPage}"></a>
                                         </li>
 
                                         <!-- Next Button -->
@@ -212,7 +223,8 @@
 <script th:src="@{/admin_side/js/app.min.js}"></script>
 
 
-<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -245,6 +257,7 @@
         white-space: normal;
         width: 100%;
     }
+
     .table th, .table td {
         /*word-wrap: break-word;*/
         white-space: nowrap;
@@ -252,9 +265,11 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
     th {
         font-size: clamp(10px, 2vw, 15px);
     }
+
     .clickable-row {
         cursor: pointer;
         transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
