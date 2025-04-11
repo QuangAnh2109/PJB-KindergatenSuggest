@@ -21,7 +21,7 @@
         </li>
         <li class="logout-container" style="margin-left: auto">
             <button class="logout-btn" style="border: none; outline: none; background: none; cursor: pointer;"
-                    data-toggle="modal" data-target="#exampleModal1">
+                    data-toggle="modal" data-target="#confirmModel">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 <span>Logout</span>
             </button>
@@ -29,25 +29,32 @@
     </ul>
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-            <div class="modal-content border-0 shadow-lg rounded-4"> <!-- Hiệu ứng bóng & bo góc -->
-                <div class="modal-header bg-primary text-white text-center">
-                    <h5 class="modal-title w-100 fw-bold" id="exampleModalLabel">Confirm Logout</h5>
+    <div id="confirmModel" class="modal fade" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="title-popup-2">Logout Confirmation</h5>
                 </div>
-                <div class="modal-body text-center fs-5">
-                    Are you sure you want to log out?
+                <div class="modal-body justify-content-between" >
+                    <h6 id="msg-popup-2" >Do you want to log out?</h6>
+
                 </div>
-                <div class="modal-footer d-flex justify-content-center gap-3">
-                    <button type="button" class="btn btn-danger w-45 py-2 fw-bold rounded" style="width: 80px" data-dismiss="modal">No</button>
+                <div class="modal-footer justify-content-center" >
+                    <button id="button-1-popup-2" class="btn btn-danger"
+                            data-dismiss="modal" style="width: 80px">No
+                    </button>
                     <form id="logoutForm" th:action="@{/logout}" method="post">
-                        <button type="submit" class="btn btn-success w-500 py-2 fw-bold rounded" style="width: 80px">Yes</button>
+                        <button type="submit"  class="btn btn-primary" style="width: 80px ; background-color: forestgreen" >Yes</button>
                     </form>
                 </div>
             </div>
+            <!-- /.modal-content -->
         </div>
+        <!-- /.modal-dialog -->
     </div>
+
 </div>
+
 </body>
 </html>
