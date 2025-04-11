@@ -90,6 +90,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    //@Scheduled(cron = "0 */15 * * * ?")
     @Scheduled(cron = "0 0 0 */2 * ?")
     //@Scheduled(cron = "*/5 * * * * ?")
     public void emailRequestReminder() {
