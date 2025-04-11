@@ -509,7 +509,7 @@ public class AccountServiceImpl implements AccountService {
     public List<ParentVoExportData> exportParentData(String email) {
         List<ParentVoExportData> parents = accountRepository.exportParentVo(email, Constant.STATUS_ACTIVE);
 
-        Map<Integer, ParentVoExportData> parentMap = new HashMap<>();
+        Map<Integer, ParentVoExportData> parentMap = new TreeMap<>();
 
         for (ParentVoExportData parent : parents) {
             ParentVoExportData existingParent = parentMap.get(parent.getParentId());
@@ -517,9 +517,9 @@ public class AccountServiceImpl implements AccountService {
                 parentMap.put(parent.getParentId(), parent);
             } else {
                 // Append school names
-                String currentSchools = existingParent.getEnrollStatus(); // Get the current school names
-                String newSchools = parent.getEnrollStatus(); // Get the new school name
-                existingParent.setEnrollStatus(currentSchools + " | " + newSchools); // Concatenate them
+                String currentSchools = existingParent.getEnrollSchools(); // Get the current school names
+                String newSchools = parent.getEnrollSchools(); // Get the new school name
+                existingParent.setEnrollSchools(currentSchools + " | " + newSchools); // Concatenate them
             }
         }
         return new ArrayList<>(parentMap.values());

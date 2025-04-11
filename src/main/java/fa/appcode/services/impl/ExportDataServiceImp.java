@@ -29,11 +29,10 @@ public class ExportDataServiceImp implements ExportDataService {
         String[] headers = { "Parent ID", "Name", "Email", "Phone Number", "Enroll Schools" };
         CSVWriter csvWriter = new CSVWriter(response.getWriter());
 
-// Write the headers manually
         csvWriter.writeNext(headers);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
         StatefulBeanToCsv<ParentVoExportData> writer = new StatefulBeanToCsvBuilder<ParentVoExportData>(response.getWriter())
-                .withQuotechar(CSVWriter.DEFAULT_QUOTE_CHARACTER).withSeparator(CSVWriter.DEFAULT_SEPARATOR).withOrderedResults(false).build();
+                .withQuotechar(CSVWriter.DEFAULT_QUOTE_CHARACTER).withSeparator(CSVWriter.DEFAULT_SEPARATOR).build();
         writer.write(accountService.exportParentData(principal));
         csvWriter.close();
 

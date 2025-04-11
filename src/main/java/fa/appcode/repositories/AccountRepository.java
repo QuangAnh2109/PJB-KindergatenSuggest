@@ -155,7 +155,7 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
             SELECT new fa.appcode.common.vo.ParentVoExportData(ai.id,ai.fullName,ai.email,ai.phone,e.school.schoolName)
                         FROM AccountInfo ai
                         JOIN MasterDatum ma ON ai.roleId=ma.typeKey AND ma.typeName='ROLE'
-                        LEFT JOIN EnrollSchool e ON ai.id = e.account.id AND e.status=3
+                        LEFT JOIN EnrollSchool e ON ai.id = e.account.id AND e.status=3 AND  (:email IS NULL OR e.school.account.email = :email)
                         LEFT JOIN SchoolInfo s ON e.school.id = s.id AND (:email IS NULL OR s.account.email = :email)
                         WHERE ma.id=3 AND ai.deleteFlg=false AND ai.statusId= :accountStatusId""" )
     List<ParentVoExportData> exportParentVo(@Param("email") String email, int accountStatusId);

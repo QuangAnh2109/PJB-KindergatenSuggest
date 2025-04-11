@@ -20,13 +20,13 @@ public class ParentVoExportData {
     @CsvBindByPosition(position = 3)
     private String parentPhone;
     @CsvBindByPosition(position = 4)
-    private String enrollStatus;
-    public ParentVoExportData(Integer parentId, String parentName, String parentEmail,String parentPhone, String enrollStatus){
+    private String enrollSchools;
+    public ParentVoExportData(Integer parentId, String parentName, String parentEmail,String parentPhone, String enrollSchools){
         this.parentId = parentId;
         this.parentName = parentName;
         this.parentEmail = parentEmail;
         this.parentPhone = parentPhone;
-        this.enrollStatus = enrollStatus;
+        this.enrollSchools = enrollSchools;
     }
 
     public String getParentPhone() {
