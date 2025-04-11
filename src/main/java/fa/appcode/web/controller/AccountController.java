@@ -5,6 +5,7 @@ import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.CityService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -32,7 +33,7 @@ public class AccountController {
     }
 
     @PostMapping("/view-account")
-    public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo, Model model){
+    public String updateAccount(@ModelAttribute("accountInfo") AccountInfo accountInfo,HttpSession session, Model model){
         Map<String, String> accountValidationErrors = accountService.updateAccountProcess(accountInfo);
         if(accountValidationErrors.containsKey("recordChange")) {
             model.addAttribute("recordError", globalConfig.getUpdateFailMessage());
@@ -43,6 +44,8 @@ public class AccountController {
             model.addAllAttributes(accountValidationErrors);
             return Constant.ACCOUNT_MANAGEMENT_PAGE;
         }
+        AccountInfo updatedAccount = accountService.getCurrentAccountInfo();
+        session.setAttribute("nameAccount", updatedAccount.getFullName());
         return "redirect:/auth/account-management?success=true";
     }
     @GetMapping("/view-account")

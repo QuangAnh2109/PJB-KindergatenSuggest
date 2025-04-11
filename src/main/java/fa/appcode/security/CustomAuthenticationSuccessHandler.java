@@ -11,7 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.DefaultSavedRequest;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+
 import org.springframework.stereotype.Component;
+
 
 import java.io.IOException;
 import java.util.Collection;
@@ -21,6 +25,7 @@ import java.util.Collection;
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final AccountService accountService;
     private final UserSessionService userSessionService;
+    HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -30,6 +35,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         AccountInfo accountInfo = accountService.findByEmail(email);
         if (accountInfo.getDatetimeChangePass() == null) {
             response.getWriter().write("{\"redirectUrl\": \"" + request.getContextPath() + "/auth/change-password\"}");
+            return;
+        }
+        DefaultSavedRequest savedRequest = (DefaultSavedRequest) requestCache.getRequest(request, response);
+        if (savedRequest != null) {
+            String targetUrl = savedRequest.getRedirectUrl();
+            response.getWriter().write("{\"redirectUrl\": \"" + targetUrl + "\"}");
             return;
         }
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
