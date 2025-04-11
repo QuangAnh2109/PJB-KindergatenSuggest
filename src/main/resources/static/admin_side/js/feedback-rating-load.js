@@ -18,8 +18,7 @@ function getRatingByTime(schoolId) {
             document.getElementById("main-contain").innerHTML = json;
         },
         error: function(xhr) {
-            console.log(xhr.responseText);
-            $('#unenrollModel').modal('show');
+            showErrorMessage(xhr);
         }
     });
 }
@@ -46,10 +45,39 @@ function searchFeedback(schoolId, pageNumber, callback) {
             callback(html);
         },
         error: function (xhr) {
-            console.log(xhr.responseText);
-            $('#unenrollModel').modal('show');
+            showErrorMessage(xhr);
         },
     });
+}
+
+function showErrorMessage(xhr) {
+    console.log(xhr);
+    if(xhr.status === 422){
+        if(xhr.responseJSON.dateFrom != null){
+            var fromDateError = document.getElementById("dateFrom-error");
+            fromDateError.textContent = xhr.responseJSON.dateFrom;
+            fromDateError.style.display = 'block';
+        }
+        if(xhr.responseJSON.dateTo != null){
+            var toDateError = document.getElementById("dateTo-error");
+            toDateError.textContent = xhr.responseJSON.dateTo;
+            toDateError.style.display = 'block';
+        }
+        if(xhr.responseJSON.date != null){
+            var dateError = document.getElementById("date-error");
+            dateError.textContent = xhr.responseJSON.date;
+            dateError.style.display = 'block';
+        }
+    }
+    else{
+        document.getElementById("msg-popup-1").textContent = xhr.responseJSON.message;
+
+        var modalElement = document.getElementById('unenrollModel');
+
+        var modal = new bootstrap.Modal(modalElement);
+
+        modal.show('unenrollModel');
+    }
 }
 
 function loadMoreFeedbackList(schoolId, pageNumber) {

@@ -8,7 +8,18 @@ function debounce(func, wait) {
 
 // Get all filter values (no caching to ensure fresh values)
 function getFilterValues() {
-    const keyword = document.querySelector('input[placeholder="Enter a school name"]').value || '';
+    const keywordInput = document.querySelector('input[placeholder="Enter a school name"]');
+    const keyword = keywordInput.value || '';
+
+    // Validate keyword length - trim to ensure we're checking actual content
+    if (keyword.trim().length > 255) {
+        // Show error to user
+        alert("Search keyword must be 255 characters or less");
+        // Trim the input to 255 characters
+        keywordInput.value = keyword.substring(0, 255);
+        return null; // Return null to indicate validation failed
+    }
+
     const cityId = document.querySelector('#citySelect').value || '0';
     const districtId = document.querySelector('#district').value || '0';
     const schoolType = document.querySelector('select[name="schoolType"]').value || '';
@@ -62,6 +73,12 @@ function createParams(filterValues) {
 // Navigate to a specific page with current filters
 function navigateToPage(page) {
     const filterValues = getFilterValues();
+
+    // Check if validation failed
+    if (filterValues === null) {
+        return; // Exit early if validation failed
+    }
+
     filterValues.page = page;
 
     // Show loading indicator
@@ -74,7 +91,7 @@ function navigateToPage(page) {
     const params = createParams(filterValues);
 
     // Update URL without page reload
-
+    // (Note: You may want to add code here to update the URL)
 
     // Fetch API data
     fetchResults(`/api/search-results?${params.toString()}`);
@@ -182,7 +199,10 @@ function createSchoolCard(school, facilitiesMap) {
                             <h3 class="card-title school-title"><span>${school.schoolName}</span></h3>
                         </a>
                         <div>
-                            <button class="request-btn text-white" onclick="openCounselingForm()">Request Counseling</button>
+                            <button class="btn-primary btn-custom"
+                                                                onclick=handleRequestCounseling(${school.schoolId})>
+                                                            Request Counseling
+                                                        </button>
                         </div>
                     </div>
                     <div class="school-info">
@@ -233,7 +253,7 @@ function createSchoolCard(school, facilitiesMap) {
                             <div>Rating:</div>
                             <div class="ms-2 star-rating">
                                 ${starsHTML}
-                                <span>${school.avgRating}</span>/5
+                                <span>${roundRating(school.avgRating)}</span>/5
                                 (<span>${school.totalRating}</span> ratings)
                             </div>
                         </div>
@@ -253,6 +273,18 @@ function createSchoolCard(school, facilitiesMap) {
     `;
 
     return card;
+}
+function roundRating(rating) {
+    const floor = Math.floor(rating);
+    const decimal = rating - floor;
+
+    if (decimal > 0 && decimal <= 0.5) {
+        return floor + 0.5;
+    } else if (decimal > 0.5) {
+        return floor + 1.0;
+    } else {
+        return rating;
+    }
 }
 
 // Format numbers with commas for readability
@@ -455,3 +487,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const clearBtn = document.querySelector('#clearFilterBtn');
     if (clearBtn) clearBtn.addEventListener('click', clearFilters);
 });
+
+const searchButton = document.querySelector('#searchButton'); // Use your actual button ID
+if (searchButton) {
+    searchButton.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent form submission if it's in a form
+
+        // Validate keyword length
+        const keywordInput = document.querySelector('input[placeholder="Enter a school name"]');
+        const keyword = keywordInput.value || '';
+
+        if (keyword.trim().length > 255) {
+            alert("Search keyword must be 255 characters or less");
+            keywordInput.value = keyword.substring(0, 255);
+            return; // Stop execution if validation fails
+        }
+
+        submitFilters(); // Proceed with search if validation passes
+    });
+}

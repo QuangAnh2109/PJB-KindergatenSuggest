@@ -3,6 +3,7 @@ package fa.appcode.repositories;
 import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.AccountVo;
 import fa.appcode.common.vo.ParentVo;
+import fa.appcode.common.vo.ParentVoExportData;
 import fa.appcode.entities.AccountInfo;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -105,10 +106,10 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
     //find all parent for School Owner List
     @Query("""
             SELECT new fa.appcode.common.vo.ParentVo(ai.id,ai.fullName,ai.email,ai.phone,
-                        CASE WHEN EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 1 AND (:email IS NULL OR s.account.email = :email))
+                        CASE WHEN EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 1 AND (:email IS NULL OR e.school.account.email = :email))
                         THEN (SELECT md.typeValue FROM MasterDatum md WHERE md.typeKey = 1 AND md.typeName='ENROLL STATUS')
-                        WHEN EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 3 AND (:email IS NULL OR s.account.email = :email))
-                        AND NOT EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 1 AND (:email IS NULL OR s.account.email = :email))
+                        WHEN EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 3 AND (:email IS NULL OR e.school.account.email = :email))
+                        AND NOT EXISTS (SELECT 1 FROM EnrollSchool e JOIN SchoolInfo si ON e.school.id=si.id WHERE e.account.id = ai.id AND e.status = 1 AND (:email IS NULL OR e.school.account.email = :email))
                         THEN (SELECT md.typeValue FROM MasterDatum md WHERE md.typeKey = 3 AND md.typeName='ENROLL STATUS')
                         ELSE 'Not Enroll' END )
                         FROM AccountInfo ai
@@ -150,4 +151,12 @@ public interface AccountRepository extends JpaRepository<AccountInfo, Integer> {
 
     @Query("SELECT a.email FROM AccountInfo a WHERE a.roleId = ?1 AND a.deleteFlg = ?2 AND a.statusId = ?3")
     List<String> getAllEmailByRoleAndDeleteFlgAndStatusId(int role, boolean deleteFlg, int statusId);
+    @Query("""
+            SELECT new fa.appcode.common.vo.ParentVoExportData(ai.id,ai.fullName,ai.email,ai.phone,e.school.schoolName)
+                        FROM AccountInfo ai
+                        JOIN MasterDatum ma ON ai.roleId=ma.typeKey AND ma.typeName='ROLE'
+                        LEFT JOIN EnrollSchool e ON ai.id = e.account.id AND e.status=3 AND  (:email IS NULL OR e.school.account.email = :email)
+                        LEFT JOIN SchoolInfo s ON e.school.id = s.id AND (:email IS NULL OR s.account.email = :email)
+                        WHERE ma.id=3 AND ai.deleteFlg=false AND ai.statusId= :accountStatusId""" )
+    List<ParentVoExportData> exportParentVo(@Param("email") String email, int accountStatusId);
 }

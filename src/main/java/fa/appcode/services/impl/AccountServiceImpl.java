@@ -2,6 +2,7 @@ package fa.appcode.services.impl;
 
 import fa.appcode.common.utils.*;
 
+import fa.appcode.common.vo.ParentVoExportData;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.common.utils.SendMailInfo;
 import fa.appcode.entities.AccountInfo;
@@ -35,6 +36,7 @@ import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -501,5 +503,25 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<String> getAllAccountEmailsByRole(int roleId) {
         return accountRepository.getAllEmailByRoleAndDeleteFlgAndStatusId(roleId, false, 1);
+    }
+
+    @Override
+    public List<ParentVoExportData> exportParentData(String email) {
+        List<ParentVoExportData> parents = accountRepository.exportParentVo(email, Constant.STATUS_ACTIVE);
+
+        Map<Integer, ParentVoExportData> parentMap = new TreeMap<>();
+
+        for (ParentVoExportData parent : parents) {
+            ParentVoExportData existingParent = parentMap.get(parent.getParentId());
+            if (existingParent == null) {
+                parentMap.put(parent.getParentId(), parent);
+            } else {
+                // Append school names
+                String currentSchools = existingParent.getEnrollSchools(); // Get the current school names
+                String newSchools = parent.getEnrollSchools(); // Get the new school name
+                existingParent.setEnrollSchools(currentSchools + " | " + newSchools); // Concatenate them
+            }
+        }
+        return new ArrayList<>(parentMap.values());
     }
 }

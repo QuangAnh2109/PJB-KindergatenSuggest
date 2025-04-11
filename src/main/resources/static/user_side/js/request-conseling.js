@@ -72,7 +72,6 @@ function submitRequestCounselingForm() {
         });
 }
 
-// Function to show field-specific error messages (expand your existing one)
 function showErrorMessage(inputId, message) {
     // Map backend field names to frontend input IDs
     const fieldMapping = {
@@ -84,10 +83,24 @@ function showErrorMessage(inputId, message) {
 
     const inputElement = document.getElementById(actualInputId);
     if (inputElement) {
+        // Remove any existing error messages
+        const existingErrors = inputElement.parentElement.querySelectorAll('.error-message');
+        existingErrors.forEach(e => e.remove());
+
+        // Create the error message element
         const errorElement = document.createElement("div");
         errorElement.className = "error-message text-danger mt-1 small";
-        errorElement.innerText = message;
-        inputElement.parentElement.appendChild(errorElement);
+        errorElement.style.display = "block";
+        errorElement.style.color = "#dc3545";
+        errorElement.style.fontSize = "0.8rem";
+        errorElement.style.marginTop = "4px";
+        errorElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+
+        // Insert the error message after the input element (not at the end of parent)
+        inputElement.insertAdjacentElement('afterend', errorElement);
+
+        // Add error styling to the input
+        inputElement.style.borderColor = "#dc3545";
     } else {
         console.warn(`Input element with ID '${actualInputId}' not found for field '${inputId}'`);
     }
@@ -189,3 +202,49 @@ function showLoginToast() {
         }, 500);
     }, 2000);
 }
+
+// Add this function to your script
+function clearErrorState(inputId) {
+    const input = document.getElementById(inputId);
+    if (input) {
+        input.classList.remove('is-invalid');
+        const errorMessages = input.parentElement.querySelectorAll('.error-message');
+        errorMessages.forEach(el => el.remove());
+    }
+}
+
+// Add event listeners to clear errors when user types
+document.addEventListener('DOMContentLoaded', function() {
+    const inputs = ['fullName', 'email', 'mobile', 'inquiries'];
+    inputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.addEventListener('input', function() {
+                clearErrorState(this.id);
+            });
+        }
+    });
+});
+
+
+// Add this function to your JavaScript file
+function setupErrorClearingOnInput() {
+    const formFields = ['fullName', 'email', 'mobile', 'inquiries'];
+
+    formFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener('input', function() {
+                // Remove error styling
+                this.style.borderColor = '';
+
+                // Remove error messages
+                const errorMessages = this.parentElement.querySelectorAll('.error-message');
+                errorMessages.forEach(el => el.remove());
+            });
+        }
+    });
+}
+
+// Call this when the document is loaded
+document.addEventListener('DOMContentLoaded', setupErrorClearingOnInput);

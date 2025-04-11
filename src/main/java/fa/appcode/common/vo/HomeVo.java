@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class HomeVo {
     private long numberSchool;
     private long numberOfParents;
+    private long numberOfRequests;
+    private long numberOfFeedbacks;
 }

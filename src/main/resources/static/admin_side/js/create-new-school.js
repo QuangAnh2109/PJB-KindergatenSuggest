@@ -51,6 +51,7 @@ function addNewSchool(status){
             modal.show();
         },
         error: function (xhr){
+            console.log(xhr);
             if(xhr.status === 422){
                 if(xhr.responseJSON.name != null){
                     var nameError = document.getElementById("schoolName-error");
@@ -129,7 +130,7 @@ function addNewSchool(status){
                 }
             }
             else{
-                document.getElementById("msg-popup-1").textContent = xhr.message;
+                document.getElementById("msg-popup-1").textContent = xhr.responseJSON.message;
 
                 var modalElement = document.getElementById('notificationModel');
 

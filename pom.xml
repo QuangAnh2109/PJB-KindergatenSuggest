@@ -52,6 +52,11 @@
 			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
 			<version>3.1.0.M1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>5.7.1</version>
+		</dependency>
 
 		<!-- BCrypt -->
 		<!-- https://mvnrepository.com/artifact/at.favre.lib/bcrypt -->

@@ -23,7 +23,7 @@ public class AccountController {
     private final AccountService accountService;
     private final CityService cityService;
     private final GlobalConfig globalConfig;
-
+    private final HttpSession session;
     @GetMapping("/account-management")
     public String accountManagement(Model model) {
         AccountInfo accountInfo = accountService.getCurrentAccountInfo();
