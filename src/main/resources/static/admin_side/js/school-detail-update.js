@@ -25,7 +25,6 @@ function changeSchoolStatusAjax(role, type, schoolId, recordNo){
             recordNo: recordNo,
         },
         success: function (json){
-            console.log(json);
             document.getElementById("msg-popup-1").textContent = json.message;
             document.getElementById("button-popup-1").addEventListener("click", function(){
                 location.reload();
@@ -37,7 +36,6 @@ function changeSchoolStatusAjax(role, type, schoolId, recordNo){
             modal.show();
         },
         error: function (xhr){
-            console.log(xhr);
             document.getElementById("msg-popup-1").textContent = xhr.responseJSON.message;
             document.getElementById("button-popup-1").addEventListener("click", function(){
                 location.reload();
@@ -134,6 +132,7 @@ function updateSchool(){
         contentType: false,
         dataType: 'json',
         success: function (json){
+            console.log(json);
             document.getElementById("msg-popup-1").textContent = json.message;
             document.getElementById("button-popup-1").addEventListener("click", function(){
                 location.reload();
@@ -145,6 +144,7 @@ function updateSchool(){
             modal.show();
         },
         error: function (xhr){
+            console.log(xhr);
             if(xhr.status === 422){
                 if(xhr.responseJSON.name != null){
                     var nameError = document.getElementById("schoolName-error");
@@ -223,7 +223,7 @@ function updateSchool(){
                 }
             }
             else{
-                document.getElementById("msg-popup-1").textContent = xhr.message;
+                document.getElementById("msg-popup-1").textContent = xhr.responseJSON.message;
 
                 var modalElement = document.getElementById('notificationModel');
 

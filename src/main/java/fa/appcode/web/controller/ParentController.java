@@ -1,27 +1,34 @@
 package fa.appcode.web.controller;
 
+import com.cloudinary.provisioning.Account;
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import fa.appcode.common.logging.Log4jUtils;
 import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.EnrollSchoolInfoVo;
 import fa.appcode.common.vo.EnrolledSchoolVo;
 import fa.appcode.common.vo.ParentVo;
+import fa.appcode.common.vo.ParentVoExportData;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.EnrollSchool;
 import fa.appcode.exceptions.ValidateParentException;
-import fa.appcode.services.AccountService;
-import fa.appcode.services.EnrollSchoolService;
-import fa.appcode.services.SchoolInfoService;
-import fa.appcode.services.ValidateService;
+import fa.appcode.services.*;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.time.*;
 import java.util.Collections;
@@ -43,6 +50,9 @@ public class ParentController {
 
     @Autowired
     private ValidateService validateService;
+
+    @Autowired
+    private ExportDataService exportDataService;
 
     @Autowired
     private GlobalConfig globalConfig;
@@ -186,4 +196,14 @@ public class ParentController {
         return "redirect:" + Constant.VIEW_PARENT_DETAIL_URL + id;
     }
 
+    @PostMapping({"download-parent"})
+    public void exportData(HttpServletResponse response, Principal principal) throws IOException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
+        String role = accountService.findAccountRoleString(principal.getName());
+        if (Constant.ADMIN_ROLE.equals(role)) {
+            exportDataService.exportParentData(response,null);
+        }
+        else if (role.equals(Constant.SCHOOL_OWNER_ROLE)) {
+            exportDataService.exportParentData(response, principal.getName());
+        }
+    }
 }

@@ -15,7 +15,6 @@ public class Constant {
     public static final String FORGOT_PASSWORD_PAGE = "user_side/forgot-password";
     public static final String RESET_PASSWORD_PAGE = "user_side/reset-password";
     public static final String TOKEN_INVALID_PAGE = "user_side/token-invalid";
-    public static final String CHANGE_PASSWORD_PAGE = "user_side/change-password";
     public static final String LOGIN_PAGE = "user_side/login";
     public static final String REGISTER_PAGE = "user_side/register";
     public static final String VERIFY_ACCOUNT_PAGE = "user_side/verify-account";
@@ -24,14 +23,14 @@ public class Constant {
 
     //URL
     public static final String VIEW_ACCOUNT_URL = "/auth/view-account";
-    public static final String REGISTER_VERIFY_URL = "http://localhost:8080/public/register/verify?token=";
+    public static final String REGISTER_VERIFY_URL = "http://kindergartensuggestion.site/public/register/verify?token=";
     public static final String VIEW_PARENT_DETAIL_URL = "/manager/parent-list/parent-details/";
     private static final String CHANGE_PASSWORD_URL = "/auth/change-password";
-    private static final String HOME_URL = "/public/home";
+    public static final String SIGN_IN_URL = "http://kindergartensuggestion.site/public/sign-in";
     private static final String MANAGER_REQUEST_LIST_URL = "/manager/request-list";
-    public static final String RESET_PASSWORD_URL = "http://localhost:8080/public/reset-password?token=";
+    public static final String RESET_PASSWORD_URL = "http://kindergartensuggestion.site/public/reset-password?token=";
     public static final String PARENT_LIST_URL = "/manager/parent-list";
-    public static final String REQUEST_REMINDER_URL = "http://localhost:8080/manager/request-reminder";
+    public static final String REQUEST_REMINDER_URL = "/manager/request-list";
     public static final String VIEW_DETAIL_URL = "/manager/school/view-detail?id=";
 
     //ADMIN SIDE
@@ -46,6 +45,7 @@ public class Constant {
     public static final String REQUEST_LIST_URL = "admin_side/request-list";
     public static final String REQUEST_REMINDER_URL_HTML = "admin_side/request-reminder";
     public static final String REQUEST_LIST_CONTROLLER = "/manager/request-list";
+    public static final String REQUEST_REMINDER_CONTROLLER = "/manager/request-list";
     public static final String SEARCH_REQUEST_LIST_CONTROLLER = "/manager/searchRequestList";
     //REGEX
     public static final String NULL_REGEX = "^(?!\\s*$).+";
@@ -72,7 +72,7 @@ public class Constant {
     public static final String WEB_SYSTEM = "WEB_SYSTEM";
     public static final String ADMIN_SYSTEM= "ADMIN_SYSTEM";
     public static final int SEND_EMAIL_FORGOT = 1;
-    public static final int SEND_EMAIL_REGISTER = 1;
+    public static final int SEND_EMAIL_REGISTER = 7;
     public static final String REQUEST_LIST_PAGE = "requestList";
     public static final String REQUEST_REMINDER_PAGE = "requestReminder";
     public static final String message= "message";
@@ -92,7 +92,7 @@ public class Constant {
     public static final int ENROLL_STATUS_ENROLL=3;
     public static final int ENROLL_STATUS_UNENROLL=4;
 
-    public static final String IMAGE_DIR = "src/main/resources/static/admin_side/images";
+    public static final String IMAGE_DIR = "images";
     public static final String alertType = "alertType";
     public static final String parentMessage ="message";
     public static final String parentCurrentPage ="currentPage";

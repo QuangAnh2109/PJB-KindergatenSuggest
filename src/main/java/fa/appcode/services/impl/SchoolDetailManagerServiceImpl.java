@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,6 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
     @Override
     public String getSchoolCreateFormToModel(Model model) {
         model.addAttribute("citys", cityService.findAllByNoDelete());
-        model.addAttribute("serverLink", globalConfig.getServerLink());
         masterDatumService.setMasterDataToModel(model);
         return Constant.SCHOOL_CREATE_PAGE;
     }
@@ -128,8 +128,8 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
 
             responseSuccess.put("id", schoolInfo.getId());
             return ResponseEntity.ok().body(responseSuccess);
-        } catch (IOException e) {
-            log.error(e.getMessage());
+        } catch (Exception e) {
+            log.error("{}: {}", e.getClass(), e.getMessage());
             return ResponseEntity.ok().body(responseFailed);
         }
     }
@@ -153,7 +153,9 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             SchoolInfo schoolInfoDb = schoolInfoRepository.findSchoolInfoByIdAndRecordNoAndDeleteFlg(schoolInfo.getId(), schoolInfo.getRecordNo(), false);
             if(schoolInfoDb == null) throw new Exception();
 
-            schoolInfo.setImgageUrl(saveImage(image, schoolInfo.getId()));
+            String fileName = saveImage(image, schoolInfo.getId());
+            if(fileName != null) schoolInfo.setImgageUrl(fileName);
+            else schoolInfo.setImgageUrl(schoolInfoDb.getImageUrl());
 
             schoolUtilityService.saveAllSchoolUtility(schoolUtilityId, schoolInfoDb);
             schoolFacilityService.saveAllSchoolFacility(schoolFacilityId,schoolInfoDb);
@@ -165,6 +167,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             }
             return ResponseEntity.ok().body(Map.of("message", globalConfig.getUpdateSuccess()));
         } catch (Exception e) {
+            log.error("{}: {}", e.getClass(), e.getMessage());
             return ResponseEntity.badRequest().body(Map.of("message", globalConfig.getUpdateFailed()));
         }
     }
@@ -201,17 +204,18 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
 
     private String saveImage(MultipartFile image, int schoolId) throws IOException {
         if(image != null && !image.isEmpty()){
+            String imageDir = Constant.IMAGE_DIR;
 
-            File uploadFolder = new File(Constant.IMAGE_DIR);
+            File uploadFolder = new File(imageDir);
             if (!uploadFolder.exists() && !uploadFolder.mkdirs()) {
-                throw new IOException("Failed to create directory: " + Constant.IMAGE_DIR);
+                throw new IOException("Failed to create directory: " + uploadFolder.getAbsolutePath() + ", " + imageDir);
             }
 
-            String fileName = System.currentTimeMillis() + "_" + schoolId;
-            Path filePath = Paths.get(Constant.IMAGE_DIR).resolve(fileName);
+            String fileName = System.currentTimeMillis() + "-" + schoolId + ".png";
+            Path filePath = Paths.get(imageDir).resolve(fileName);
             Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            return Constant.IMAGE_DIR + "/" + fileName;
+            return "/" + imageDir + "/" + fileName;
         }
         return null;
     }

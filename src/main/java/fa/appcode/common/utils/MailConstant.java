@@ -7,4 +7,6 @@ public class MailConstant {
     public static final int MAIL_APPROVE_SCHOOL = 4;
     public static final int MAIL_REJECT_SCHOOL = 5;
     public static final int MAIL_PUBLISH_SCHOOL = 6;
+    public static final int MAIL_VERIFY_ACCOUNT = 8;
+
 }

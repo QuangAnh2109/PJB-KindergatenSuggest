@@ -1,6 +1,7 @@
 package fa.appcode.services;
 
 import fa.appcode.common.vo.AccountVo;
+import fa.appcode.common.vo.ParentVoExportData;
 import fa.appcode.exceptions.ValidateParentException;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -132,4 +133,5 @@ public interface AccountService {
 
     List<String> getAllAccountEmailsByRole(int roleId);
 
+    List<ParentVoExportData> exportParentData(String email);
 }

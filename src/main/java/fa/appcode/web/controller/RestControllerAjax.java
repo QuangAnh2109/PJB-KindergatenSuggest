@@ -7,16 +7,15 @@ import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.*;
 import fa.appcode.services.*;
 import fa.appcode.services.impl.EnrollSchoolServiceImpl;
+import jakarta.servlet.ServletContext;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.Instant;
 import java.util.Collections;
@@ -30,7 +29,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @RestController
 public class RestControllerAjax {
-
+    @Autowired
+    ServletContext context;
     private final RequestService requestService;
     private final EnrollSchoolService enrollSchoolService;
     private final EnrollSchoolServiceImpl enrollSchoolServiceImpl;
@@ -300,6 +300,24 @@ public class RestControllerAjax {
         }
 
         return ResponseEntity.ok(filteredFeedback);
+    }
+
+    @GetMapping("/my-request")
+    public ResponseEntity<PageVo<MyRequestVo>> myRequest(
+            @SessionAttribute(name = "idAccount", required = true) Integer accountId,
+            @RequestParam(defaultValue = Constant.INIT_PAGE) int page,
+            @RequestParam(defaultValue = Constant.PAGE_SIZE) int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createTime").descending());
+        Page<MyRequestVo> requestPage = requestService.findRequestByAccountId(accountId, pageable);
+
+        PageVo<MyRequestVo> pageDto = new PageVo<>();
+        pageDto.setContent(requestPage.getContent());
+        pageDto.setTotalPages(requestPage.getTotalPages());
+        pageDto.setTotalElements(requestPage.getTotalElements());
+        pageDto.setCurrentPage(page);
+
+        return ResponseEntity.ok(pageDto);
     }
 
 

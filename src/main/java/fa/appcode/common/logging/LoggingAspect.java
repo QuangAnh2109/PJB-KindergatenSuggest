@@ -44,6 +44,7 @@ public class LoggingAspect {
             if (logDir.mkdirs()) {
                 log.info("Created log directory: {}", logDir.getAbsolutePath());
             }
+
             log.info("Logging system initialized. Logs will be written to: {}", new File(logFilePath).getAbsolutePath());
             log.debug("Debug logging is enabled");
             log.warn("This is a test warning message");

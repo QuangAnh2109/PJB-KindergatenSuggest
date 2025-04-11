@@ -26,11 +26,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@EnableAsync
+
 @Service
 @AllArgsConstructor
-@Validated
-
 public class EmailServiceImpl implements EmailService {
 
     private static final Logger log = LoggerFactory.getLogger(EmailServiceImpl.class);
@@ -43,25 +41,8 @@ public class EmailServiceImpl implements EmailService {
 
     private final Validator validator;
 
-    @Async
     @Override
-    public void sendEmail(String toEmail, String subject, String text) {
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(emailConfig.getSYSTEM_MAIL());
-            message.setTo(toEmail);
-            message.setSubject(subject);
-            message.setText(text);
-            javaMailSender.send(message);
-            log.info(" Email sent successfully to {}", toEmail);
-        } catch (Exception e) {
-            log.error("Failed to send email: {}", e.getMessage());
-        }
-    }
-
-    @Async
-    @Override
-    public void sendEmailToMany(SendMailInfo sendMailInfo) {
+    public boolean sendEmailToMany(SendMailInfo sendMailInfo) {
         try {
             //check if sendMailInfo is valid
             validate(sendMailInfo);
@@ -86,6 +67,7 @@ public class EmailServiceImpl implements EmailService {
             //send message
             javaMailSender.send(message);
             log.info("Email sent successfully to {}", sendMailInfo.getToMail());
+            return true;
         } catch (ConstraintViolationException e) {
             log.error("SendMailInfo is not valid: {}", e.getMessage());
         } catch (NullPointerException e) {
@@ -95,6 +77,7 @@ public class EmailServiceImpl implements EmailService {
         } catch (Exception e) {
             log.error("Failed to send email: {}", e.getMessage());
         }
+        return false;
     }
 
     private void validate(SendMailInfo sendMailInfo) throws ConstraintViolationException{

@@ -103,7 +103,7 @@
     </header>
     <!-- header close -->
     <!-- content begin -->
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1050">
         <!-- Toasts will be dynamically added here -->
     </div>
     <div class="no-bottom no-top zebra" id="content">
@@ -111,7 +111,7 @@
 
         <!-- section begin -->
         <section id="subheader" class="jarallax text-light">
-            <img src="/user_side/images/background/school-deatil-background.jpg" class="jarallax-img" alt="">
+            <img src="/user_side/images/background/school-deatil-background.webp" class="jarallax-img" alt="">
             <div class="center-y relative text-center">
                 <div class="container">
                     <div class="row">
@@ -150,7 +150,6 @@
                         </p>
                         <p><strong>🏫 School type:</strong> <span th:text="${schoolInfo.getSchoolType()}"></span></p>
                         <p><strong><i class="fa fa-star" aria-hidden="true"></i> Rating:</strong> <span
-                                class="star-rating"
                                 th:each="i : ${#numbers.sequence(1, 5)}"
                                 th:class="${i <= schoolInfo.getAvgRating() ? 'star-filled' : (i <= schoolInfo.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
                             <span th:text="${schoolInfo.getAvgRating()}"></span>/5
@@ -163,8 +162,10 @@
                                 Request Counseling
                             </button>
                         </div>
-                        <div style="width: 100%; margin-top: 10px" th:if="${isEnroll != false}" sec:authorize="isAuthenticated()">
-                            <button class="btn btn-block btn-custom" onclick="openRatingModal()">
+                        <div style="width: 100%; margin-top: 10px" th:if="${isEnroll != false}"
+                             sec:authorize="isAuthenticated()">
+                            <button class="btn btn-block btn-custom"
+                                    th:onclick="|openRatingModal('${schoolInfo.getSchoolId()}')|">
                                 Rate School
                             </button>
                         </div>
@@ -222,10 +223,11 @@
                     <div class="tab-pane fade" id="ratings">
                         <h3>Average ratings</h3>
                         <h3><span th:text="${schoolInfo.getAvgRating()}"></span> Stars (<span
-                                th:text="${schoolInfo.getTotalRating()}"></span> Ratings)</h3>
-                        <div class="rating-stars"><span style="font-size: 25px;"
-                                                        th:each="i : ${#numbers.sequence(1, 5)}"
-                                                        th:class="${i <= schoolInfo.getAvgRating() ? 'star-filled' : (i <= schoolInfo.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
+                                th:text="${schoolInfo.getTotalRating()}"> </span> Ratings)</h3>
+                        <div class="rating-stars">
+                        <span style="font-size: 25px;"
+             th:each="i : ${#numbers.sequence(1, 5)}"
+             th:class="${i <= schoolInfo.getAvgRating() ? 'star-filled' : (i <= schoolInfo.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
                         </div>
 
                         <div class="mt-3">
@@ -311,7 +313,10 @@
                                                                                  th:each="i : ${#numbers.sequence(1, 5)}"
                                                                                  th:class="${i <= reviewList.getAvgRating() ? 'star-filled' : (i <= reviewList.getAvgRating() + 0.5 ? 'star-half' : 'star-empty')}">★</span>
                                             </div>
-                                            <span><span th:text="${reviewList.getAvgRating()}"></span>/5</span>
+                                            <span><span th:with="rating=${reviewList.getAvgRating()}"
+                                                        th:text="${(rating >= 3.1 && rating <= 3.5) ? '3.5' :
+                                            (rating >= 3.6 && rating <= 4.0) ? '4.0' :
+                                            rating}"></span>/5</span>
                                         </div>
 
                                         <div class="mt-3">
@@ -461,7 +466,8 @@
         <!--End log out-->
 
         <!-- Rating Modal -->
-        <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true" th:data-school-id="${schoolInfo.getSchoolId()}">
+        <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true"
+             th:data-school-id="${schoolInfo.getSchoolId()}">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header border-0 pb-0">
@@ -611,13 +617,15 @@
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="email" placeholder="info@gmail.com"
+                            <input type="email" class="form-control" id="email" th:value="${session.emailAccount}"
+                                   placeholder="info@gmail.com"
                                    name="email">
                         </div>
 
                         <div class="mb-3">
                             <label for="mobile" class="form-label">Mobile No. :</label>
-                            <input type="tel" class="form-control" id="mobile" placeholder="0xxxxxxxxx"
+                            <input type="tel" class="form-control" id="mobile" th:value="${session.phoneAccount}"
+                                   placeholder="0xxxxxxxxx"
                                    name="phone">
                         </div>
 
@@ -712,7 +720,7 @@
                         if (response.ok) {
                             return response.text().then(text => {
                                 // Show success toast
-                                showToast('success', 'Request sent successfully!');
+                                showCounselingToast('success', 'Request sent successfully!');
 
                                 // Hide the modal
                                 const counselingModal = bootstrap.Modal.getInstance(document.getElementById('counselingModal'));
@@ -723,28 +731,28 @@
                                 document.getElementById("mobile").value = "";
                                 document.getElementById("inquiries").value = "";
 
-                                return { success: true };
+                                return {success: true};
                             });
                         } else {
                             // For error responses, try to parse as JSON
                             return response.json().then(errorData => {
                                 if (errorData.error) {
                                     // General error message
-                                    showToast('error', errorData.error);
+                                    showCounselingToast('error', errorData.error);
                                 } else {
                                     // Field-specific validation errors
                                     Object.keys(errorData).forEach(field => {
                                         showErrorMessage(field, errorData[field]);
                                     });
-                                    showToast('error', 'Please correct the errors in the form');
+                                    showCounselingToast('error', 'Please correct the errors in the form');
                                 }
-                                return { success: false };
+                                return {success: false};
                             });
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        showToast('error', 'An error occurred. Please try again.');
+                        showCounselingToast('error', 'An error occurred. Please try again.');
                     });
             }
 
@@ -770,33 +778,50 @@
             }
 
             // Universal toast function for both success and error messages
-            function showToast(type, message) {
-                const toastContainer = document.querySelector('.position-fixed.top-0.end-0.p-3');
+            function showCounselingToast(type, message) {
+                const toastContainer = document.querySelector('.toast-container');
 
-                const bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
-                const icon = type === 'success' ? '✅' : '❌';
+                // Create a unique ID for this toast
+                const toastId = 'toast-' + new Date().getTime();
 
-                const toastElement = document.createElement('div');
-                toastElement.className = `toast align-items-center text-white ${bgClass} border-0`;
-                toastElement.setAttribute('role', 'alert');
-                toastElement.setAttribute('aria-live', 'assertive');
-                toastElement.setAttribute('aria-atomic', 'true');
+                // Set colors based on toast type
+                const bgColor = type === 'success' ? '#198754' : '#dc3545';
+                const icon = type === 'success' ? '✅' : '⚠️';
 
-                toastElement.innerHTML = `
-        <div class="d-flex">
-            <div class="toast-body">
-                ${icon} ${message}
+                // Create a completely custom toast with explicit styling
+                const toastHTML = `
+            <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true"
+                 style="background-color: ${bgColor} !important; border: none !important;">
+                <div class="d-flex">
+                    <div class="toast-body" style="color: white !important; font-weight: 500;">
+                        ${icon} <span>${message}</span>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                            data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-    `;
+        `;
 
-                toastContainer.appendChild(toastElement);
+                // Add the toast to the container
+                toastContainer.innerHTML += toastHTML;
 
+                // Get the toast element
+                const toastElement = document.getElementById(toastId);
+
+                // Set HTML content if needed (supports <br> and other HTML tags)
+                toastElement.querySelector('.toast-body span').innerHTML = message;
+
+                // Make sure Bootstrap classes don't override our styles
+                toastElement.setAttribute('data-bs-theme', 'dark');
+
+                // Initialize the Bootstrap toast
                 const toast = new bootstrap.Toast(toastElement, {
+                    animation: true,
                     autohide: true,
                     delay: 5000
                 });
+
+                // Show the toast
                 toast.show();
 
                 // Remove the toast element after it's hidden
@@ -804,8 +829,6 @@
                     toastElement.remove();
                 });
             }
-
-
         </script>
         <script>
             function showLoginToast() {
@@ -841,7 +864,7 @@
         </script>
         <!-- Loading Tab Rating when load page -->
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 // Check if URL has a hash and it's #ratings
                 if (window.location.hash === '#ratings') {
                     // Select the ratings tab
@@ -853,7 +876,7 @@
                         setTimeout(() => {
                             const tabContent = document.querySelector('a[href="#ratings"]');
                             if (tabContent) {
-                                tabContent.scrollIntoView({ behavior: 'smooth' });
+                                tabContent.scrollIntoView({behavior: 'smooth'});
                             }
                         }, 150);
                     }

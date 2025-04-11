@@ -196,7 +196,7 @@
                         </div>
                         <div class="de-flex-col">
                             <div class="menu_side_area" sec:authorize="!isAuthenticated()">
-                                <a th:href="@{/sign-in}" class="btn-main">Login</a>
+                                <a th:href="@{/public/sign-in}" class="btn-main">Login</a>
                                 <span class="menu-btn"></span>
                             </div>
                             <div class="menu_side_area" sec:authorize="!isAuthenticated()">
@@ -267,6 +267,9 @@
                                                         onclick="searchRedirectByKeyword()">Search
                                                 </button>
                                             </div>
+                                            <div class="dialog-box-search">
+                                                <span id="keyword-error" style="color: #d9534f; font-size: 14px; display: none;">Search text cannot exceed 255 characters</span>
+                                            </div>
                                             <div class="jls-address-preview jls-address-preview--hidden">
                                                 <div class="jls-address-preview__header">
                                                 </div>
@@ -304,24 +307,20 @@
                             <div class="container-timeline">
                                 <ul>
                                     <li>
-                                        <h4>Choose a school</h4>
-                                        <p>Unlock unparalleled adventures and memorable journeys with our vast fleet of
-                                            vehicles tailored to suit every need, taste, and destination.</p>
+                                        <h4>Choose a School</h4>
+                                        <p>Find the perfect school for your child with our comprehensive database, tailored to match every educational need, location, and aspiration.</p>
                                     </li>
                                     <li>
-                                        <h4>Pick location &amp; date</h4>
-                                        <p>Pick your ideal location and date, and let us take you on a journey filled
-                                            with convenience, flexibility, and unforgettable experiences.</p>
+                                        <h4>Pick Location & School</h4>
+                                        <p>Select your preferred city or district, and explore a wide range of schools that best match your child’s needs and your family’s expectations.</p>
                                     </li>
                                     <li>
-                                        <h4>Make a booking</h4>
-                                        <p>Secure your reservation with ease, unlocking a world of possibilities and
-                                            embarking on your next adventure with confidence.</p>
+                                        <h4>Make a Request</h4>
+                                        <p>Submit your request to receive detailed information, schedule a visit, or connect directly with your chosen school — it's simple and hassle-free.</p>
                                     </li>
                                     <li>
-                                        <h4>Sit back &amp; relax</h4>
-                                        <p>Hassle-free convenience as we take care of every detail, allowing you to
-                                            unwind and embrace a journey filled comfort.</p>
+                                        <h4>Sit Back & Relax</h4>
+                                        <p>We’ll handle the rest — from connecting with schools to scheduling visits — so you can focus on what truly matters: your child’s future.</p>
                                     </li>
                                 </ul>
                             </div>
@@ -416,14 +415,14 @@
                     </div>
                     <div class="col-md-3 col-sm-6 mb-sm-30">
                         <div class="de_count bg-dark text-light wow fadeInUp">
-                            <h3 class="timer" data-to="25" data-speed="3000">0</h3>
-                            School with 5 star
+                            <h3 class="timer" th:data-to="${dataHome.getNumberOfRequests()}" data-speed="3000">0</h3>
+                            Request Sent
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6 mb-sm-30">
                         <div class="de_count bg-dark text-light wow fadeInUp">
                             <h3 class="timer" data-to="15" data-speed="3000">0</h3>
-                            Years Experience
+                            Feedback Received
                         </div>
                     </div>
                 </div>
@@ -657,10 +656,17 @@
 
     function searchRedirectByKeyword() {
         const input = document.getElementById("keyword").value;
+
+        // First validate length
+        if (!validateKeywordLength()) {
+            return; // Stop if validation fails
+        }
+
         if (!input.trim()) {
             alert("Please enter a keyword to search");
             return;
         }
+
         const uri = `/public/school/search?keyword=${encodeURIComponent(input)}`;
         window.location.href = uri;
     }
@@ -712,6 +718,27 @@
         // Reset all form fields
         resetFormFields();
     });
+
+
+    function validateKeywordLength() {
+        const keywordInput = document.getElementById("keyword");
+        const errorSpan = document.getElementById("keyword-error");
+
+        if(keywordInput.value.length == 0) {
+            errorSpan.innerHTML = "Please enter a keyword to search";
+            errorSpan.style.display = "block";
+            return false;
+        }
+
+        if (keywordInput.value.length > 255) {
+            errorSpan.innerHTML = "Search text cannot exceed 255 characters";
+            errorSpan.style.display = "block";
+            return false;
+        } else {
+            errorSpan.style.display = "none";
+            return true;
+        }
+    }
 </script>
 
 <!-- Javascript Files

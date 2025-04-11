@@ -40,5 +40,11 @@ public class MySchoolVo {
     private LocalDate enrollEndDate;
     private List<String> facilities;
 
+    public Double getAvgRating() {
+        return avgRating != null ? Math.ceil(avgRating * 2) / 2.0 : 0.0;
+    }
 
+    public Double getYourRating() {
+        return yourRating != null ? Math.ceil(yourRating * 2) / 2.0 : 0.0;
+    }
 }

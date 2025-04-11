@@ -5,6 +5,7 @@ import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.AccountInfo;
 import fa.appcode.services.AccountService;
 import fa.appcode.services.CityService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -22,7 +23,7 @@ public class AccountController {
     private final AccountService accountService;
     private final CityService cityService;
     private final GlobalConfig globalConfig;
-
+    private final HttpSession session;
     @GetMapping("/account-management")
     public String accountManagement(Model model) {
         AccountInfo accountInfo = accountService.getCurrentAccountInfo();
@@ -43,6 +44,8 @@ public class AccountController {
             model.addAllAttributes(accountValidationErrors);
             return Constant.ACCOUNT_MANAGEMENT_PAGE;
         }
+        AccountInfo updatedAccount = accountService.getCurrentAccountInfo();
+        session.setAttribute("nameAccount", updatedAccount.getFullName());
         return "redirect:/auth/account-management?success=true";
     }
     @GetMapping("/view-account")
