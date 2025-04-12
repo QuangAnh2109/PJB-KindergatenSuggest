@@ -12,15 +12,13 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
-import org.springframework.scheduling.annotation.Async;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.*;
 import java.util.regex.Matcher;

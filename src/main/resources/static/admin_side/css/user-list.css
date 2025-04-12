@@ -68,17 +68,33 @@
     text-overflow: ellipsis; /* Hiển thị dấu "..." nếu quá dài */
 }
 
+.app-search-box {
+    max-width: 300px;
+}
 
+
+.app-search-box .form-control {
+    border-radius: 20px;
+    border: 2px solid #ccc;
+    padding: 10px 15px;
+}
+
+.app-search-box .btn {
+    background-color: #28a745;
+    color: white;
+    border-radius: 20px;
+    padding: 8px 15px;
+    border: none;
+}
 
 .btn {
     font-size: 10px;
     padding: 8px 16px;
-    border-radius: 4px;
 }
 
 .btn-success {
-    background-color: #28a745;
-    border-color: #28a745;
+    background-color: #458bc4;
+    border-color: #0a58ca;
     font-size: 16px;
     padding: 10px 20px;
     border-radius: 20px;

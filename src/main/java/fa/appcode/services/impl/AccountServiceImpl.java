@@ -185,7 +185,7 @@ public class AccountServiceImpl implements AccountService {
         user.setStatusId(masterDatumRepository.getMasterKeyByTypeNameAndTypeValue("ACCOUNT STATUS", accountVo.getStatus()));
         int newRecordNo = user.getRecordNo() + 1;
         user.setRecordNo(newRecordNo);
-        user.setUpdateId("SYSTEM_ADMIN");
+        user.setUpdateId(Constant.ADMIN_SYSTEM);
         user.setUpdateTime(Instant.now());
 
         accountRepository.save(user);
