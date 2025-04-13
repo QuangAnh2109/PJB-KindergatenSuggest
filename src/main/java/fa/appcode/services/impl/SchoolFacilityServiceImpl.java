@@ -1,6 +1,5 @@
 package fa.appcode.services.impl;
 
-import fa.appcode.common.utils.RoleConstant;
 import fa.appcode.entities.*;
 import fa.appcode.repositories.SchoolFacilityRepository;
 import fa.appcode.services.SchoolFacilityService;

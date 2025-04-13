@@ -1,23 +1,17 @@
 package fa.appcode.services.impl;
 
 import fa.appcode.common.utils.Constant;
-import fa.appcode.common.utils.RoleConstant;
 import fa.appcode.common.utils.SchoolConstant;
-import fa.appcode.common.utils.SchoolFormButton;
-import fa.appcode.common.vo.SchoolFormManager;
-import fa.appcode.config.GlobalConfig;
 import fa.appcode.services.MasterDatumService;
 import fa.appcode.services.SchoolInfoService;
 import fa.appcode.services.SchoolListManagerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import java.sql.SQLException;
 
 @Service
 @RequiredArgsConstructor
@@ -26,8 +20,6 @@ public class SchoolListManagerServiceImpl implements SchoolListManagerService {
     private final MasterDatumService masterDatumService;
 
     private final SchoolInfoService schoolInfoService;
-
-    private final GlobalConfig globalConfig;
 
     @Override
     public String setSchoolDataToModelBySearchAndPage(String search, int pageNumber, boolean ajaxCall, Model model) throws NullPointerException, DataAccessException {

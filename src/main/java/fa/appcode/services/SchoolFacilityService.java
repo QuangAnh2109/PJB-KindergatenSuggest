@@ -1,6 +1,5 @@
 package fa.appcode.services;
 
-import fa.appcode.entities.SchoolFacility;
 import fa.appcode.entities.SchoolInfo;
 import org.springframework.dao.DataAccessException;
 
