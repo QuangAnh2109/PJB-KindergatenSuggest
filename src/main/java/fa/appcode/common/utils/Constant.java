@@ -59,7 +59,8 @@ public class Constant {
     public static final String ADDRESS_REGEX = "^.{1,255}$";
     public static final String SCHOOL_INTRODUCTION_REGEX = "^.{1,65535}$";
     //CONSTANT VALUE
-    public static final Integer LEGAL_AGE = 18;
+    public static final Integer MIN_AGE = 18;
+    public static final Integer MAX_AGE = 100;
     public static final Integer PARENT_ROLE_ID = 3;
     public static final Integer SCHOOL_OWNER_ID = 2;
     public static final Integer ADMIN_ROLE_ID = 1;

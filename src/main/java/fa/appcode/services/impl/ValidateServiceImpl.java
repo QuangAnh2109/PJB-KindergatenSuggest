@@ -95,14 +95,17 @@ public class ValidateServiceImpl implements ValidateService {
         if (dob == null) {
             return isRequired
                     ? Map.of("dobError", globalConfig.getRequiredField())
-                    : Collections.emptyMap();  // If not required then ignore null
+                    : Collections.emptyMap();   // If not required then ignore null
         }
-        LocalDate today = LocalDate.now();
-        LocalDate eighteenYearsAgo = today.minusYears(Constant.LEGAL_AGE);
 
-        if (!dob.isBefore(eighteenYearsAgo)) {
+        LocalDate today = LocalDate.now();
+        LocalDate minAge = today.minusYears(Constant.MIN_AGE); // MIN_AGE = 18
+        LocalDate maxAge = today.minusYears(Constant.MAX_AGE); //MAX_AGE = 100
+
+        if (!dob.isBefore(minAge) || dob.isBefore(maxAge)) {
             return Map.of("dobError", globalConfig.getInvalidDate());
         }
+
         return Collections.emptyMap();
     }
 
