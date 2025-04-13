@@ -31,7 +31,7 @@ public class Constant {
     public static final String RESET_PASSWORD_URL = "http://kindergartensuggestion.site/public/reset-password?token=";
     public static final String PARENT_LIST_URL = "/manager/parent-list";
     public static final String REQUEST_REMINDER_URL = "/manager/request-list";
-    public static final String VIEW_DETAIL_URL = "/manager/school/view-detail?id=";
+    public static final String VIEW_DETAIL_URL = "/manager/school/view-detail/";
 
     //ADMIN SIDE
     public static final String SCHOOL_FEEDBACK_RATING_MANAGER_PAGE = "admin_side/school-feedback-rating";
@@ -120,4 +120,6 @@ public class Constant {
     public static final String WARD_MESSAGE_KEY = "ward";
     public static final String CHILD_RECEIVING_AGE_MESSAGE_KEY = "childReceivingAge";
     public static final String EDUCATION_METHOD_MESSAGE_KEY = "educationMethod";
+
+    public static final String TOKEN_PIPE = "|";
 }

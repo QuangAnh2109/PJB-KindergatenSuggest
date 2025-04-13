@@ -18,9 +18,24 @@
     <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css" id="bootstrap-stylesheet" />
     <link th:href="@{/admin_side/css/icons.min.css}" rel="stylesheet" type="text/css" />
     <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css" id="app-stylesheet" />
+    <link th:href="@{/admin_side/css/app-search.css}" rel="stylesheet" type="text/css"/>
 
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
     <style>
+        .clickable-row {
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .clickable-row:hover {
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .table-font{
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.6);
+        }
+
         .button-search{
             pointer-events: auto;
             cursor: pointer;
@@ -56,6 +71,15 @@
         .table {
             width: 100%;
             table-layout: auto;
+        }
+
+        .text-truncate {
+            max-width: 400px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            vertical-align: middle;
         }
     </style>
 </head>
@@ -102,16 +126,16 @@
                             <h5 style="font-size: 25px;">School list</h5>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-2">
 
                     </div>
-                    <div class="col-lg-2" style="padding-right: 0px;">
+                    <div class="col-lg-4" style="padding-right: 0px;">
                         <div class="app-search-box" style="max-width: 100%">
                             <div class="input-group">
-                                <input id="enter-search" type="text" class="form-control" placeholder="Search..."  style="max-width: 100%">
+                                <input id="enter-search" type="text" class="form-control input-search" placeholder="Search..."  style="max-width: 100%">
                                 <input id="search" value="" hidden>
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary" id="search-button">
+                                    <button class="btn btn-primary btn-search" id="search-button">
                                         <i class="fas fa-search"></i>
                                     </button>
                                 </div>
@@ -125,29 +149,41 @@
                 <!-- end row -->
                 <div th:fragment="main-content" id="main-content-school-table">
                     <div class="table-responsive table-wrapper">
-                        <table class="table table-striped m-0">
+                        <table class="table table-striped table-bordered table-hover table-font">
                             <thead>
                             <tr>
-                                <th>School Name</th>
+                                <th>School&nbspName</th>
                                 <th>Address</th>
-                                <th>Phone No.</th>
+                                <th>Phone&nbspNo.</th>
                                 <th>Email</th>
-                                <th>Posted Date</th>
+                                <th>Posted&nbspDate</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
                             <tbody id="school-table">
-                            <tr th:each="school:${schoolList}" style="height: 80px">
-                                <th scope="row" th:text="${school.schoolName}"></th>
-                                <td th:text="${school.schoolAddress + ', ' + school.ward + ', ' + school.district + ', ' + school.city}"></td>
+                            <tr th:each="school:${schoolList}" class="clickable-row">
+                                <th>
+                                    <span class="text-truncate" style="max-width: 200px" th:text="${school.schoolName}"
+                                          th:title="${school.schoolName}">
+                                    </span>
+                                </th>
+                                <td>
+                                    <span class="text-truncate" th:text="${school.schoolAddress + ', ' + school.ward + ', ' + school.district + ', ' + school.city}"
+                                          th:title="${school.schoolAddress + ', ' + school.ward + ', ' + school.district + ', ' + school.city}">
+                                    </span>
+                                </td>
                                 <td th:text="${school.schoolPhone}"></td>
                                 <td th:text="${school.schoolEmail}"></td>
-                                <td th:text="${#temporals.format(school.postedDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td>
+                                    <span class="text-truncate" th:text="${#temporals.format(school.postedDate, 'yyyy-MM-dd HH:mm:ss')}"
+                                          th:title="${#temporals.format(school.postedDate, 'yyyy-MM-dd HH:mm:ss')}">
+                                    </span>
+                                </td>
                                 <td th:each="sta:${status}" th:if="${sta.typeKey == school.getStatusId()}" th:text="${sta.getTypeValue()}"></td>
-                                <td class="row">
-                                    <a th:if="${school.statusId != 7}" th:href="${'/manager/school/view-detail?id=' + school.schoolId}"><h4 class="col mdi mdi-file-document-edit-outline"></h4></a>
-                                    <a th:if="${school.canDelete}" class="button-search"><h4 class="col mdi mdi-delete-outline" th:onclick="'deleteSchool(' + ${school.schoolId} + ', ' + ${school.recordNo} + ')'"></h4></a>
+                                <td class="text-truncate" style="width: 100%; height: 47.475px;">
+                                    <a th:if="${school.statusId != 7}" th:href="${'/manager/school/view-detail?id=' + school.schoolId}"><i class="col mdi mdi-file-document-edit-outline" style="font-size: 20px; color: rgba(0, 0, 0, 0.6);"></i></a>
+                                    <a th:if="${school.canDelete}" class="button-search"><i class="col mdi mdi-delete-outline" th:onclick="'deleteSchool(' + ${school.schoolId} + ', ' + ${school.recordNo} + ')'" style="font-size: 20px; color: rgba(0, 0, 0, 0.6);"></i></a>
                                 </td>
                             </tr>
                             </tbody>
@@ -158,17 +194,27 @@
                             <span th:text="#{ME_012}">No results found.</span>
                         </div>
                     </div>
-                    <div id="page-bar">
+                    <div id="page-bar" style="margin-top: 20px">
                         <th:block th:if="${schoolList.getTotalPages() > 0}">
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination justify-content-end">
-                                    <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, schoolList.getTotalPages() - 1)}" th:id="${'page'+pageNum}"
-                                        th:classappend="${pageNum == currentPage} ? 'active'">
-                                        <a class="page-link button-search" th:onclick="'loadSchoolInPage('+${pageNum}+')'"
-                                           th:text="${pageNum + 1}"></a>
-                                    </li>
-                                </ul>
-                            </nav>
+                            <ul class="pagination justify-content-end">
+                                <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                                    <a class="page-link" th:style="${currentPage == 0 ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
+                                       th:onclick="${currentPage > 0} ? 'loadSchoolInPage(' + (${currentPage} - 1) + ')' : 'return false;'">«</a>
+                                </li>
+
+                                <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, schoolList.getTotalPages() - 1)}"
+                                    th:id="${'page'+pageNum}"
+                                    th:classappend="${pageNum == currentPage} ? 'active'">
+                                    <a class="page-link button-search"
+                                       th:onclick="'loadSchoolInPage('+${pageNum}+')'"
+                                       th:text="${pageNum + 1}"></a>
+                                </li>
+
+                                <li class="page-item" th:classappend="${currentPage == schoolList.getTotalPages() - 1 ? 'disabled' : ''}">
+                                    <a class="page-link" th:style="${currentPage == schoolList.getTotalPages() - 1 ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
+                                       th:onclick="${currentPage < schoolList.getTotalPages() - 1} ? 'loadSchoolInPage(' + (${currentPage} + 1) + ')' : 'return false;'">»</a>
+                                </li>
+                            </ul>
                         </th:block>
                     </div>
                 </div>

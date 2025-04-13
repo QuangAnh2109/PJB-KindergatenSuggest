@@ -7,6 +7,7 @@ import fa.appcode.entities.District;
 import fa.appcode.entities.SchoolInfo;
 import fa.appcode.services.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,9 +43,18 @@ public class SchoolDetailByManagerController {
 
     private final WardService wardService;
 
+    @GetMapping("/view-detail/{token}")
+    public String viewDetail(@PathVariable("token") String token, Model model) throws DataAccessException {
+        String[] decodedToken = TokenUtils.decodeToken(token);
+        if(entityValidateService.validateViewSchoolDetailToken(decodedToken)){
+            return schoolDetailManagerService.getSchoolDetail(model, Integer.parseInt(decodedToken[0]), Integer.parseInt(decodedToken[1]));
+        }
+        else return Constant.ERROR_PAGE;
+    }
+
     @GetMapping("/view-detail")
     public String getSchoolDetail(@RequestParam("id") int id, Model model) {
-        return schoolDetailManagerService.getSchoolDetail(model, id);
+        return schoolDetailManagerService.getSchoolDetail(model, id, null);
     }
 
     @ResponseBody
@@ -118,9 +128,6 @@ public class SchoolDetailByManagerController {
         // Get school owner email
         String email = accountService.getSchoolOwnerEmailBySchoolIdAndActiveAndNoDelete(id);
         List<String> toEmail = email != null ? List.of(email) : null;
-
-        System.out.println(toEmail);
-        System.out.println("public 123455");
 
         List<Integer> inStatus = List.of(SchoolConstant.STATUS_APPROVED, SchoolConstant.STATUS_UNPUBLISHED);
         Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "Admin Public School", Placeholder.SCHOOL_NAME, schoolInfoService.getSchoolNameBySchoolIdAndNoDelete(id), Placeholder.USER_NAME, accountService.getAccountNameByEmailAndNoDelete(SecurityContextHolder.getContext().getAuthentication().getName()), Placeholder.LINK, globalConfig.getServerLink() + Constant.VIEW_DETAIL_URL + id);

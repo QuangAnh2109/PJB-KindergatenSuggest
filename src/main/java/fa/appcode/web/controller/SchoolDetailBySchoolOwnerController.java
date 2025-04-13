@@ -90,7 +90,7 @@ public class SchoolDetailBySchoolOwnerController {
     @PostMapping("/submit")
     public ResponseEntity<Map<String,Object>> submitSchool(@RequestParam("schoolId") int id, @RequestParam("recordNo") int recordNo) {
         List<Integer> inStatus = List.of(SchoolConstant.STATUS_SAVED);
-        Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "waiting for approve", Placeholder.LINK,  globalConfig.getServerLink()+ Constant.VIEW_DETAIL_URL + id);
+        Map<Placeholder, String> detail = Map.of(Placeholder.TITLE, "waiting for approve", Placeholder.LINK,  globalConfig.getServerLink()+ Constant.VIEW_DETAIL_URL + TokenUtils.encodeToken(Integer.toString(id), Integer.toString(recordNo + 1)));
         List<String> toMail = accountService.getAllAccountEmailsByRole(RoleConstant.ADMIN_ROLE.getKey());
         return schoolDetailManagerService.changeSchoolStatus(id, recordNo, SchoolConstant.STATUS_SUBMITTED, inStatus, MailConstant.MAIL_SUBMIT_SCHOOL, detail, toMail, List.of());
     }

@@ -8,5 +8,5 @@ import org.springframework.validation.BindingResult;
 import java.util.Map;
 
 public interface EmailService {
-    boolean sendEmailToMany(SendMailInfo sendMailInfo);
+    void sendEmailToMany(SendMailInfo sendMailInfo);
 }

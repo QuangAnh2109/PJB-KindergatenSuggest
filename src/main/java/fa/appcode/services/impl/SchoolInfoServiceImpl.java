@@ -92,8 +92,8 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     }
 
     @Override
-    public SchoolFormManager getSchoolFormBySchoolIdAndEmailAndNoDelete(int id, String email) {
-        return schoolInfoRepository.getSchoolFormBySchoolIdAndEmailAndDeleteFlg(id, email, false);
+    public SchoolFormManager getSchoolFormBySchoolIdAndEmailAndNoDelete(int id, String email, Integer recordNo) {
+        return schoolInfoRepository.getSchoolFormBySchoolIdAndEmailAndDeleteFlg(id, email, recordNo, false);
     }
 
 
