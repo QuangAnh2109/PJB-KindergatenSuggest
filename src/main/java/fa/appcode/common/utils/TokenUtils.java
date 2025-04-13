@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.regex.Pattern;
 
 @Component
 public class TokenUtils {
@@ -28,6 +29,10 @@ public class TokenUtils {
         staticExpirationTime = expirationTime;
     }
 
+    public static String[] decodeToken(String token) {
+        return new String(Base64.getDecoder().decode(token), StandardCharsets.UTF_8).split(Pattern.quote(Constant.TOKEN_PIPE));
+    }
+
     public static String generateTokenForgot(String email, Instant passwordChange) {
         long expireAt = Instant.now().getEpochSecond() + Long.parseLong(staticExpirationTime);
         String passwordChangeEpoch = (passwordChange != null) ? String.valueOf(passwordChange.getEpochSecond()) : "0";
@@ -38,8 +43,8 @@ public class TokenUtils {
         return encodeToken(staticTokenKey, email);
     }
 
-    private static String encodeToken(String... parts) {
-        return Base64.getEncoder().encodeToString(String.join("|", parts).getBytes(StandardCharsets.UTF_8));
+    public static String encodeToken(String... parts) {
+        return Base64.getEncoder().encodeToString(String.join(Constant.TOKEN_PIPE, parts).getBytes(StandardCharsets.UTF_8));
     }
 
     private static String[] parseToken(String token) {

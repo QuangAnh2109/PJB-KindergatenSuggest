@@ -18,6 +18,7 @@
     <link th:href="@{/admin_side/css/bootstrap.min.css}" rel="stylesheet" type="text/css" id="bootstrap-stylesheet" />
     <link th:href="@{/admin_side/css/icons.min.css}" rel="stylesheet" type="text/css" />
     <link th:href="@{/admin_side/css/app.min.css}" rel="stylesheet" type="text/css" id="app-stylesheet" />
+    <link th:href="@{/admin_side/css/app-search.css}" rel="stylesheet" type="text/css"/>
 
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css}">
     <style>
@@ -102,16 +103,16 @@
                             <h5 style="font-size: 25px;">School list</h5>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-2">
 
                     </div>
-                    <div class="col-lg-2" style="padding-right: 0px;">
+                    <div class="col-lg-4" style="padding-right: 0px;">
                         <div class="app-search-box" style="max-width: 100%">
                             <div class="input-group">
-                                <input id="enter-search" type="text" class="form-control" placeholder="Search..."  style="max-width: 100%">
+                                <input id="enter-search" type="text" class="form-control input-search" placeholder="Search..."  style="max-width: 100%">
                                 <input id="search" value="" hidden>
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary" id="search-button">
+                                    <button class="btn btn-primary btn-search" id="search-button">
                                         <i class="fas fa-search"></i>
                                     </button>
                                 </div>
@@ -126,6 +127,15 @@
                 <div th:fragment="main-content" id="main-content-school-table">
                     <div class="table-responsive table-wrapper">
                         <table class="table table-striped m-0">
+                            <colgroup>
+                                <col style="width: 4%">
+                                <col style="max-width: 1%">
+                                <col style="width: 1%">
+                                <col style="width: 1%">
+                                <col style="width: 1%">
+                                <col style="width: 1%">
+                                <col style="width: 10%">
+                            </colgroup>
                             <thead>
                             <tr>
                                 <th>School Name</th>

@@ -75,7 +75,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
     }
 
     @Override
-    public String getSchoolDetail(Model model, int schoolId) {
+    public String getSchoolDetail(Model model, int schoolId, Integer recordNo) {
         // Get the current user's authentication
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName(), role = RoleConstant.FROM_BUTTON_OWNER;
@@ -87,7 +87,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             }
         }
 
-        SchoolFormManager school = schoolInfoService.getSchoolFormBySchoolIdAndEmailAndNoDelete(schoolId, email);
+        SchoolFormManager school = schoolInfoService.getSchoolFormBySchoolIdAndEmailAndNoDelete(schoolId, email, recordNo);
         SchoolFormButton.valueOf(role+school.getStatusId()).getSchoolFormButtonBuild().setButton(model);
         model.addAttribute("school", school);
         setAllAddressToModel(model, school.getCityId(), school.getDistrictId());
@@ -120,11 +120,11 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             schoolInfoRepository.save(schoolInfo);
             schoolUtilityService.saveAllSchoolUtility(schoolUtilityId, schoolInfo);
             schoolFacilityService.saveAllSchoolFacility(schoolFacilityId,schoolInfo);
-            if(schoolInfo.getStatusId()==SchoolConstant.STATUS_SUBMITTED){
-                sendEmailForSubmitted(schoolInfo.getId());
-            }
             schoolInfo.setImageUrl(saveImage(image, schoolInfo.getId()));
             schoolInfoRepository.save(schoolInfo);
+            if(schoolInfo.getStatusId()==SchoolConstant.STATUS_SUBMITTED){
+                sendEmailForSubmitted(schoolInfo.getId(), schoolInfo.getRecordNo());
+            }
 
             responseSuccess.put("id", schoolInfo.getId());
             return ResponseEntity.ok().body(responseSuccess);
@@ -163,7 +163,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
             schoolInfoService.updateSchoolInfoBySchoolFormManager(schoolInfo);
 
             if(schoolInfo.getStatusId() == SchoolConstant.STATUS_SUBMITTED){
-                sendEmailForSubmitted(schoolInfo.getId());
+                sendEmailForSubmitted(schoolInfo.getId(), schoolInfo.getRecordNo()+1);
             }
             return ResponseEntity.ok().body(Map.of("message", globalConfig.getUpdateSuccess()));
         } catch (Exception e) {
@@ -194,11 +194,11 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
         } else return ResponseEntity.badRequest().body(Map.of("message", getUpdateStatusFailMsg(newStatus)));
     }
 
-    private void sendEmailForSubmitted(int schoolId) {
+    private void sendEmailForSubmitted(int schoolId, int recordNo) {
         List<String> sendTo = accountService.getAllAccountEmailsByRole(RoleConstant.ADMIN_ROLE.getKey());
         Map<Placeholder, String> details = new HashMap<Placeholder, String>();
         details.put(Placeholder.TITLE, "Review Submitted");
-        details.put(Placeholder.LINK, globalConfig.getServerLink() + Constant.VIEW_DETAIL_URL + schoolId);
+        details.put(Placeholder.LINK, globalConfig.getServerLink() + Constant.VIEW_DETAIL_URL + TokenUtils.encodeToken(Integer.toString(schoolId), Integer.toString(recordNo)));
         emailService.sendEmailToMany(SendMailInfo.builder().toMail(sendTo).ccMail(List.of()).detail(details).build());
     }
 
