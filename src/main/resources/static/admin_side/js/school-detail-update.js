@@ -27,7 +27,7 @@ function changeSchoolStatusAjax(role, type, schoolId, recordNo){
         success: function (json){
             document.getElementById("msg-popup-1").textContent = json.message;
             document.getElementById("button-popup-1").addEventListener("click", function(){
-                location.reload();
+                reloadPage(schoolId);
             });
             var modalElement = document.getElementById('notificationModel');
 
@@ -38,7 +38,7 @@ function changeSchoolStatusAjax(role, type, schoolId, recordNo){
         error: function (xhr){
             document.getElementById("msg-popup-1").textContent = xhr.responseJSON.message;
             document.getElementById("button-popup-1").addEventListener("click", function(){
-                location.reload();
+                reloadPage(schoolId);
             });
             var modalElement = document.getElementById('notificationModel');
 
@@ -135,7 +135,7 @@ function updateSchool(){
             console.log(json);
             document.getElementById("msg-popup-1").textContent = json.message;
             document.getElementById("button-popup-1").addEventListener("click", function(){
-                location.reload();
+                reloadPage(document.getElementById("schoolId").value);
             });
             var modalElement = document.getElementById('notificationModel');
 
@@ -264,4 +264,8 @@ function enableSelected(isFacility){
     facilityCheckboxes.forEach(checkbox => {
         checkbox.removeAttribute("disabled");
     });
+}
+
+function reloadPage(schoolId){
+    window.location.href = "/manager/school/view-detail?id=" + schoolId;
 }

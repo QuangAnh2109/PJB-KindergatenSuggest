@@ -48,7 +48,7 @@ public interface SchoolInfoService {
 
     String getSchoolNameBySchoolIdAndNoDelete(int id);
 
-    SchoolFormManager getSchoolFormBySchoolIdAndEmailAndNoDelete(int id, String email);
+    SchoolFormManager getSchoolFormBySchoolIdAndEmailAndNoDelete(int id, String email, Integer recordNo);
 
     public Page<MySchoolVo> searchSchoolInfoByCategories(String keyword, Integer cityId, Integer districtId,
                                                          Integer schoolType, Integer admissionAge, Double minFee,

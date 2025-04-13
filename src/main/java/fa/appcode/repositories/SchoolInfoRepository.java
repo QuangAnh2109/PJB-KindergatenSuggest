@@ -88,9 +88,10 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Integer>
             FROM SchoolInfo si
             WHERE si.id = ?1
             AND (?2 IS NULL OR si.account.email = ?2)
-            AND si.deleteFlg = ?3
+            AND (?3 IS NULL OR si.recordNo = ?3)
+            AND si.deleteFlg = ?4
             """)
-    SchoolFormManager getSchoolFormBySchoolIdAndEmailAndDeleteFlg(int id, String email, boolean deleteFlg);
+    SchoolFormManager getSchoolFormBySchoolIdAndEmailAndDeleteFlg(int id, String email, Integer recordNo, boolean deleteFlg);
 
     @Modifying
     @Query("""

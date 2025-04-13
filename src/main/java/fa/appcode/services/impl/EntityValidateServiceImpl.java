@@ -1,12 +1,16 @@
 package fa.appcode.services.impl;
 
 import fa.appcode.common.utils.Constant;
+import fa.appcode.common.utils.TokenUtils;
 import fa.appcode.common.utils.ValidateUtils;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.SchoolInfo;
 import fa.appcode.exceptions.ValidationException;
 import fa.appcode.services.EntityValidateService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,10 +19,13 @@ import java.time.Instant;
 import java.util.*;
 import java.util.regex.Pattern;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EntityValidateServiceImpl implements EntityValidateService {
     private final GlobalConfig globalConfig;
+
+    private final Logger logger = LoggerFactory.getLogger(EntityValidateServiceImpl.class);
 
     private void validateSchoolName(String schoolName, Map<String, String> errors) {
         ValidateUtils.validateString(schoolName, Constant.SCHOOL_NAME_REGEX, Constant.NAME_MESSAGE_KEY, globalConfig.getSchoolNameNotNull(), globalConfig.getSchoolNameTooLong(), errors);
@@ -107,6 +114,25 @@ public class EntityValidateServiceImpl implements EntityValidateService {
         if (!errors.isEmpty()) {
             throw new ValidationException(errors);
         }
+    }
+
+    /**
+     * @param decoded
+     * @return
+     */
+    @Override
+    public boolean validateViewSchoolDetailToken(String[] decoded) {
+        if(decoded != null && decoded.length == 2) {
+            try{
+                Integer.parseInt(decoded[0]);
+                Integer.parseInt(decoded[1]);
+                return true;
+            }
+            catch(NumberFormatException e){
+                logger.info("Invalid view school detail token {}", e.getMessage());
+            }
+        }
+        return false;
     }
 
 }
