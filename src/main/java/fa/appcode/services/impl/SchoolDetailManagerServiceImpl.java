@@ -198,7 +198,7 @@ public class SchoolDetailManagerServiceImpl implements SchoolDetailManagerServic
         Map<Placeholder, String> details = new HashMap<Placeholder, String>();
         details.put(Placeholder.TITLE, "Review Submitted");
         details.put(Placeholder.LINK, globalConfig.getServerLink() + Constant.VIEW_DETAIL_URL + TokenUtils.encodeToken(Integer.toString(schoolId), Integer.toString(recordNo)));
-        emailService.sendEmailToMany(SendMailInfo.builder().toMail(sendTo).ccMail(List.of()).detail(details).build());
+        emailService.sendEmailToMany(SendMailInfo.builder().toMail(sendTo).ccMail(List.of()).detail(details).mailId(MailConstant.MAIL_SUBMIT_SCHOOL).build());
     }
 
     private String saveImage(MultipartFile image, int schoolId) throws IOException {
