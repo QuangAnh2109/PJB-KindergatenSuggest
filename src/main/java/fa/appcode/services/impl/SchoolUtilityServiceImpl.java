@@ -1,6 +1,5 @@
 package fa.appcode.services.impl;
 
-import fa.appcode.common.utils.RoleConstant;
 import fa.appcode.entities.SchoolInfo;
 import fa.appcode.entities.SchoolUtility;
 import fa.appcode.entities.SchoolUtilityId;

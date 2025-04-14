@@ -67,10 +67,10 @@ $(document).ready(function () {
 
         const currentPage = pageData.number;
         if (pageData.totalPages > 0) {
-            if(currentPage>0) {
+            if(currentPage>-1) {
                 const prevDisabled = currentPage === 0 ? 'disabled' : '';
                 pagination.append(`
-            <li class="page-item ${prevDisabled}">
+            <li class="page-item">
                 <a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>
             </li>
         `);
@@ -84,10 +84,10 @@ $(document).ready(function () {
                 `;
                 pagination.append(pageItem);
             }
-            if(currentPage!=pageData.totalPages - 1){
+            if(currentPage!=pageData.totalPages ){
             const nextDisabled = currentPage === pageData.totalPages - 1 ? 'disabled' : '';
             pagination.append(`
-            <li class="page-item ${nextDisabled}">
+            <li class="page-item">
                 <a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>
             </li>
         `);}

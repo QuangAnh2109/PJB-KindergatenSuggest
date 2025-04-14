@@ -4,7 +4,6 @@ import fa.appcode.common.utils.Constant;
 import fa.appcode.common.vo.*;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.SchoolInfo;
-import fa.appcode.exceptions.TokenException;
 import fa.appcode.repositories.SchoolInfoRepository;
 import fa.appcode.services.SchoolInfoService;
 import jakarta.transaction.Transactional;
@@ -12,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.Instant;
 import java.util.List;

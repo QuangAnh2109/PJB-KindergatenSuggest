@@ -1,6 +1,5 @@
 package fa.appcode.common.utils;
 
-import fa.appcode.common.vo.AccountVo;
 
 import java.security.Principal;
 import java.time.Instant;
@@ -73,7 +72,8 @@ public class EmailBuilder {
                 Placeholder.USER_NAME, email,
                 Placeholder.EMAIL, email,
                 Placeholder.PASSWORD, password,
-                Placeholder.OWNER_ACCOUNT, ownerName
+                Placeholder.OWNER_ACCOUNT, ownerName,
+                Placeholder.LINK, Constant.SIGN_IN_URL
         );
 
         return SendMailInfo.builder()

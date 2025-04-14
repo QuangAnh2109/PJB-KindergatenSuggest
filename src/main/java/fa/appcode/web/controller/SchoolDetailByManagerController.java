@@ -3,7 +3,6 @@ package fa.appcode.web.controller;
 import fa.appcode.common.utils.*;
 import fa.appcode.common.vo.SchoolFormManager;
 import fa.appcode.config.GlobalConfig;
-import fa.appcode.entities.District;
 import fa.appcode.entities.SchoolInfo;
 import fa.appcode.services.*;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 

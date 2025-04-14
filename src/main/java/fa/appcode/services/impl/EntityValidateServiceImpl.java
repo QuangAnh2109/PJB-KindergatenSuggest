@@ -1,7 +1,6 @@
 package fa.appcode.services.impl;
 
 import fa.appcode.common.utils.Constant;
-import fa.appcode.common.utils.TokenUtils;
 import fa.appcode.common.utils.ValidateUtils;
 import fa.appcode.config.GlobalConfig;
 import fa.appcode.entities.SchoolInfo;
@@ -17,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -63,11 +61,6 @@ public class EntityValidateServiceImpl implements EntityValidateService {
                 errors.put(Constant.IMAGE_MESSAGE_KEY,globalConfig.getImageMustBePng());
             }
         }
-    }
-
-    @Override
-    public void validateSchoolSearchForManager(String search, Map<String, String> errors) {
-
     }
 
     @Override

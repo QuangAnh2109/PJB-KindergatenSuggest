@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Fetch error:", error);
             Swal.fire({
                 title: "Error",
-                text: "An unexpected error occurred. Please try again!",
+                text: message.errorMessage,
                 icon: "error",
                 confirmButtonText: "OK"
             });

@@ -305,7 +305,7 @@
 <script>
     function initializeTogglePassword() {
         document.querySelectorAll('.toggle-password').forEach(function (icon) {
-            icon.removeEventListener('click', togglePasswordHandler); // tránh duplicate event
+            icon.removeEventListener('click', togglePasswordHandler);
             icon.addEventListener('click', togglePasswordHandler);
         });
     }
@@ -317,8 +317,6 @@
         this.classList.toggle('fa-eye');
         this.classList.toggle('fa-eye-slash');
     }
-
-    // Gọi khi trang load
     document.addEventListener('DOMContentLoaded', initializeTogglePassword);
 </script>
 
