@@ -84,7 +84,7 @@
                                                th:placeholder="Search" aria-label="Search" th:value="${search}"
                                                autocomplete="off" inputmode="none" maxlength="400">
                                         <button id="searchButtonParent" type="button"
-                                                class="btn btn-success" style="border-radius: 0 20px 20px 0">
+                                                class="btn" style="border-radius: 0 20px 20px 0; background-color: #458bc4">
                                             <i class="fa fa-search"></i>
                                         </button>
                                     </div>
@@ -151,7 +151,7 @@
                                             th:if="${currentPage >= 3}">
                                             <a class="page-link" th:if="${currentPage >= 3}" type="button">1</a>
                                         </li>
-                                        <li class="page-item" th:if="${currentPage > 3}">...</li>
+                                        <li class="page-item" th:if="${currentPage > 3}"><a class="page-link">...</a></li>
 
                                         <!-- Page Numbers -->
                                         <!--                                        <li class="page-item parent-page-item"-->
@@ -168,7 +168,7 @@
                                             <a class="page-link" type="button" th:text="${pageNum + 1}"></a>
                                         </li>
 
-                                        <li class="page-item" th:if="${currentPage < numberPage - 3}">...</li>
+                                        <li class="page-item" th:if="${currentPage < numberPage - 3}"><a class="page-link">...</a></li>
                                         <li class="page-item parent-page-item" th:if="${currentPage < numberPage - 1 }"
                                             th:data-page="${numberPage - 1}">
                                             <a class="page-link" type="button" th:if="${currentPage < numberPage - 3}"
