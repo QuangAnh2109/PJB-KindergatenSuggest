@@ -129,7 +129,7 @@
                     <div class="col-lg-2">
 
                     </div>
-                    <div class="col-lg-4" style="padding-right: 0px;">
+                    <div class="col-lg-4 col-md-12" style="padding-right: 0px;">
                         <div class="app-search-box" style="max-width: 100%">
                             <div class="input-group">
                                 <input id="enter-search" type="text" class="form-control input-search" placeholder="Search..."  style="max-width: 100%">
@@ -142,9 +142,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-11">
+                    <div class="col-lg-10 col-md-7">
                     </div>
-                    <a class="col-lg-1" sec:authorize="hasAuthority('School owner')" href="/school-owner/school/form"><button class="col-12 btn btn-primary">Add school</button></a>
+                    <a class="col-lg-2 col-md-5 col-sm-12 mt-2" sec:authorize="hasAuthority('School owner')" href="/school-owner/school/form"><button class="col-12 btn btn-primary">Add&nbspschool</button></a>
                 </div>
                 <!-- end row -->
                 <div th:fragment="main-content" id="main-content-school-table">
