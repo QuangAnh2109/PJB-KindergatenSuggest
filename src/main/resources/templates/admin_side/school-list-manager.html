@@ -199,7 +199,7 @@
                             <ul class="pagination justify-content-end">
                                 <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
                                     <a class="page-link" th:style="${currentPage == 0 ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
-                                       th:onclick="${currentPage > 0} ? 'loadSchoolInPage(' + (${currentPage} - 1) + ')' : 'return false;'">«</a>
+                                       th:onclick="${currentPage > 0} ? 'loadSchoolInPage(' + (${currentPage} - 1) + ')' : 'return false;'">Previous</a>
                                 </li>
 
                                 <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, schoolList.getTotalPages() - 1)}"
@@ -212,7 +212,7 @@
 
                                 <li class="page-item" th:classappend="${currentPage == schoolList.getTotalPages() - 1 ? 'disabled' : ''}">
                                     <a class="page-link" th:style="${currentPage == schoolList.getTotalPages() - 1 ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
-                                       th:onclick="${currentPage < schoolList.getTotalPages() - 1} ? 'loadSchoolInPage(' + (${currentPage} + 1) + ')' : 'return false;'">»</a>
+                                       th:onclick="${currentPage < schoolList.getTotalPages() - 1} ? 'loadSchoolInPage(' + (${currentPage} + 1) + ')' : 'return false;'">Next</a>
                                 </li>
                             </ul>
                         </th:block>

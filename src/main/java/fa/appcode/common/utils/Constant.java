@@ -52,8 +52,7 @@ public class Constant {
     public static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{12,72}$";
     public static final String HOME_PAGE = "user_side/index";
     public static final String HOME_PAGE_URL = "/home";
-    public static final String EMAIL_REGEX = "^[a-z][a-z0-9]{0,244}@gmail.com$";
-    public static final String SCHOOL_NAME_REGEX = "^[a-zA-Z][a-zA-Z0-9\\s]{0,254}$";
+    public static final String SCHOOL_NAME_REGEX = "^.{1,255}$";
     public static final String PHONE_REGEX = "^(0|\\+84)\\d{9}$";
     public static final String MAIL_REGEX = "^(?=.{1,255}$)[a-zA-Z0-9._%+-]+@gmail\\.com$";
     public static final String ADDRESS_REGEX = "^.{1,255}$";

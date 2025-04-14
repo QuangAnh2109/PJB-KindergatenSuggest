@@ -36,7 +36,7 @@ public class EntityValidateServiceImpl implements EntityValidateService {
     }
 
     private void validateEmail(String email, Map<String, String> errors) {
-        ValidateUtils.validateString(email, Constant.EMAIL_REGEX, Constant.EMAIL_MESSAGE_KEY, globalConfig.getEmailNotNull(), globalConfig.getInValidEmail(), errors);
+        ValidateUtils.validateString(email, Constant.MAIL_REGEX, Constant.EMAIL_MESSAGE_KEY, globalConfig.getEmailNotNull(), globalConfig.getInValidEmail(), errors);
     }
 
     private void validatePhone(String phone, Map<String, String> errors) {
